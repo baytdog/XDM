@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+
+</head>
+    <script src="#(ctx)/common/js/jquery-2.2.4.min.js"></script>
+   <script src="#(ctx)/common/js/bootstrap.min.js"></script>
+  <script src="#(ctx)/common/js/printThis.js"></script>
+<body>
+<div class="modal fade" id="myModal_qrcode" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"> 
+ <div class="modal-dialog" role="document"> 
+  <div class="modal-content"> 
+   <div class="modal-body"  > 
+ <!--    <center>  -->
+     <div id="qrcode" style="border:1px solid #000;">
+     
+     <div style="border-bottom:1px solid #000;">
+    			 <h2 class="modal-title" id="myModalLabel" align="center" style="font-size: 50">上海市交通委员会行政服务中心热线处理单</h2> 
+     </div>
+ 
+   <div style="height: 50px;border-bottom: 1px solid black;">
+   	 <div style="display:inline-block;width: 45%;  border-right: 1px solid #000; height: 50px;  line-height:50px; padding-left: 20px;" align="left" >信访编号:#(o.num)</div>
+     <div  style="display:inline-block;width: 45%; font-size: 16px; padding-left: 20px;" align="left">信访人姓名: #(o.fromer)</div>
+   </div>
+     
+     
+ <div style="border-bottom:1px solid #000;">
+   	 <div style="display:inline-block;width: 100%; border-right: 1px solid #000; height: 100px; " align="left">
+   	 <br/>
+   	  调查及处理情况： 
+   	 <pre style="padding-left: 50px; font-size: 15px;">#(o.cbrremark)</pre> 
+   	 <br/>
+   	 #(fileName)
+   	 
+   	 <br/>
+   	 <br/>
+   	  
+   	  </div>
+     
+ </div>
+    
+    
+    
+    <div style="height: 50px;border-bottom: 1px solid black;">
+   	 <div style="display:inline-block;width: 45%;  border-right: 1px solid #000; height: 50px;  line-height:50px; padding-left: 20px;" align="left" >处理部门:#(doDepart)</div>
+     <div  style="display:inline-block;width: 45%; font-size: 16px; padding-left: 20px;" align="left">时间:#(doTime)</div>
+   </div>   
+      
+   
+ 
+ 
+ 
+ 
+     
+ 
+     
+  </div> 
+   </div> 
+   <br>
+   <br>
+   <div class="modal-footer" align="center"> 
+   
+     <button type="button" id="btn_print" class="btn btn-primary" data-dismiss="modal" > 
+     <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>打印 
+    </button> 
+    <button type="button" class="btn btn-default" data-dismiss="modal" onclick="window.history.back();" > 
+     <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>关闭 
+    </button> 
+  
+   </div> 
+   <br/>
+   <br/>
+   <br/>
+  </div> 
+ </div> 
+</div> 
+<script type="text/javascript">
+$("#btn_print").click(function(event) { 
+	  /* Act on the event */ 
+	   $("#qrcode").printThis({ 
+	    debug: false, 
+	    importCSS: true, 
+	    importStyle: false, 
+	    printContainer: true, 
+//	    loadCSS: "/Content/Themes/Default/style.css", 
+	    pageTitle: "二维码", 
+	    removeInline: false, 
+	    printDelay: 333, 
+	    header: null, 
+	    formValues: false 
+	   }); 
+	//  alert("等待打印"); 
+	 }); 
+	 
+	 
+ 
+</script>
+	
+
+</body>
+</html>

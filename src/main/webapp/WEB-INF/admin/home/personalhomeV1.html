@@ -1,0 +1,694 @@
+<link href="#(ctx)/common/plugins/fullcalendar/fullcalendar.css" rel="stylesheet">
+<link href="#(ctx)/common/plugins/fullcalendar/nifty-skin/fullcalendar-nifty.min.css" rel="stylesheet">
+<script src="#(ctx)/common/plugins/fullcalendar/lib/moment.min.js"></script>
+<script src="#(ctx)/common/plugins/fullcalendar/lib/jquery-ui.custom.min.js"></script>
+<script src="#(ctx)/common/plugins/fullcalendar/fullcalendar.min.js"></script>
+
+<style>
+.list{width:500px;display:block;overflow:hidden;word-break:break-all;white-space:nowrap;text-overflow:ellipsis;}
+</style>
+<!-- 信息简报 -->
+#define makeXxjb(list)
+	#if(list&&list.size()>0)
+		   #for(x : list)
+		   
+		   	#if(for.index<5)
+			   <div class="row" style="" >
+				   	<div class="col-lg-9" style="text-align:left;">
+					   	<a   href="#(ctx)/admin/oa/showinfo/homeViewNotice?id=#(x.id)" title="#(x.infotitle)">
+					   		 <h4 class="list"  >#(x.infotitle) </h4> 
+					   	</a>
+					</div>
+					 <div class="col-lg-3">
+		   				<h6 class="text-right" >#(x.changetime.substring(0,10))</h6>	
+		   			 </div>
+			    </div>
+		     #end
+		   #end
+	#end
+#end
+
+<!--待办-->
+
+
+
+
+
+<!-- 事务公开 -->
+#define makeswgk(list)
+	#if(list&&list.size()>0)
+		   #for(x : list)
+		     	#if(for.index<5)
+				   <div  class="row" style="background-color: blue;">
+				   <div  class="col-sm-9" align="left">
+				   		<a  href="#(ctx)/admin/oa/showinfo/homeViewNotice?id=#(x.id)" title="#(x.title)" >
+				   		 <h4 style="color: gray;height: 30px;" >#(x.infotitle) </h4> 
+				   	</a>
+				    </div>
+				      <div  class="col-sm-3">
+				   		<h6 class="text-right" >#(x.changetime.substring(0,10))</h6>	
+				   	  </div>
+				  </div>
+		  
+		  	  #end
+		   #end
+	#end
+#end
+
+
+
+#define makeShowPic(list)
+	#if(list&&list.size()>0)
+		<div id="carousel-example-generic" class="carousel slide" data-ride="carousel" style="background-color: black; margin-left: -8px; margin-right: -8px;">
+		  	 <!-- Indicators -->
+			 <ol class="carousel-indicators">
+			    <li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>
+			    <li data-target="#carousel-example-generic" data-slide-to="1"></li>
+			    <li data-target="#carousel-example-generic" data-slide-to="2"></li>
+	  		 </ol>	
+			 <!-- Wrapper for slides -->
+  			<div class="carousel-inner" role="listbox" >
+         #for(x : list)
+       		 
+  			 <div  #if(for.first) class="item active"  	#else class="item" #end  style="padding-top: 0px; ">
+  			 
+		       		 <a   href="#(ctx)/admin/oa/picnews/showAllPic?busid=#(x.id)" >  
+					  	<img src="#(ctx)/admin/sys/attachment/showFile?id=#(x.imgurl)&view=detail" style="height: 350px; width: 100%;"/>
+					 </a>  
+					      <div class="carousel-caption">
+					 		 #(x.title)
+					      </div>
+			  </div>
+          #end 
+          
+
+				  <!-- Controls -->
+				  <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
+				    <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+				    <span class="sr-only">Previous</span>
+				  </a>
+				  <a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
+				    <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+				    <span class="sr-only">Next</span>
+				  </a>
+			 </div>
+	  		 
+		</div>
+     #end
+#end
+ 
+ 
+ 
+ 
+#define dbList(list)
+	#if(list&&list.size()>0)
+		   #for(x : list)
+		   	#if(for.index<5)
+			    <tr>
+                    <td class="text-center" style="font-size: 16px; color: #2b425b; font-family: 微软雅黑;" >#(for.index+1)</td>
+                       #if(x.type=="1")
+                       <td><a style="font-size: 16px; color: #2b425b; font-family: 微软雅黑;" href="#(ctx)/admin/oa/bumph/openReceivePage?view=edit&id=#(x.oid)&sid=#(x.id)&sstep=#(x.step)">#(x.title)</a></td>
+                       <td style="font-size: 16px; color: #2b425b; font-family: 微软雅黑;" >收文</td>
+                       #else if(x.type=="2")
+                       <td><a style="font-size: 16px; color: #2b425b; font-family: 微软雅黑;"  href="#(ctx)/admin/oa/senddoc/getPersonalForm?view=detail&id=#(x.oid)&sid=#(x.id)&sstep=#(x.step)">#(x.title)</a></td>
+                       <td style="font-size: 16px; color: #2b425b; font-family: 微软雅黑;" >发文</td>
+                       #else if(x.type=="3")
+                       <td><a style="font-size: 16px; color: #2b425b; font-family: 微软雅黑;"  href="#(ctx)/admin/oa/hotline/getPHotLineForm?id=#(x.oid)&type=#(x.type)&sid=#(x.id)&sstep=#(x.step)&view=detail">#(x.title)</a></td>
+                       <td style="font-size: 16px; color: #2b425b; font-family: 微软雅黑;" >热线</td>
+                       #else if(x.type=="4")
+                       <td><a style="font-size: 16px; color: #2b425b; font-family: 微软雅黑;"  href="#(ctx)/admin/oa/letter/getPLetterForm?id=#(x.oid)&type='#(x.type)&sid=#(x.id)&sstep=#(x.step)&view=detail">#(x.title)</a></td>
+                       <td style="font-size: 16px; color: #2b425b; font-family: 微软雅黑;" >信访</td>
+                       #end
+                       <td style="font-size: 16px; color: #2b425b; font-family: 微软雅黑;" >#(x.ctime)</td>
+				 </tr>
+		     #end
+		   #end
+	#end
+#end 
+ 
+ #define overList(list)
+	#if(list&&list.size()>0)
+		   #for(x : list)
+		   	#if(for.index<5)
+			    <tr style="font-size: 16px; color: #2b425b; font-family: 微软雅黑;" >
+                    <td class="text-center" style="font-size: 16px; color: #2b425b; font-family: 微软雅黑;" >#(for.index+1)</td>
+                     <td><a style="font-size: 16px; color: #2b425b; font-family: 微软雅黑;"  href="#(ctx)/admin/oa/stephistory/getEditPage?id=#(x.id)&type=#(x.type)&oid=#(x.oid)&view=detail">#(x.title)</a></td>
+                       #if(x.type=="1")
+                       <td style="font-size: 16px; color: #2b425b; font-family: 微软雅黑;" >收文</td>
+                       #else if(x.type=="2")
+                       <td style="font-size: 16px; color: #2b425b; font-family: 微软雅黑;" >发文</td>
+                       #else if(x.type=="3")
+                       <td style="font-size: 16px; color: #2b425b; font-family: 微软雅黑;" >热线</td>
+                       #else if(x.type=="4")
+                       <td style="font-size: 16px; color: #2b425b; font-family: 微软雅黑;" >信访</td>
+                       #end
+                       <td style="font-size: 16px; color: #2b425b; font-family: 微软雅黑;" >#(x.ctime)</td>
+				 </tr>
+		     #end
+		   #end
+	#end
+#end 
+ 
+ 
+ 
+ <!-- 办事指南 -->
+#define makeBszn(list)
+	#if(list&&list.size()>0)
+		   #for(x : list)
+		   
+		   	#if(for.index<5)
+			 <p><a style="font-size: 16px; color: #2b425b; font-family: 微软雅黑;"  href="#(ctx)/admin/oa/bumph/getBsznEditPage?id=#(x.id)&view=detail">#(x.title)</a></p>
+		     #end
+		   #end
+	#end
+#end
+ 
+
+<div class="row" align="center">
+
+	<div class="col-lg-6" style="">
+		<div class="row">
+			<div class="col-lg-4" style="margin-right: -15px;"  >
+				 <button class="btn  btn-icon" style="height: 150px;  width: 200px;background-color: red;" onclick="receiveDoc()">
+						 <div style=" height: 100%;line-height: 100%; color: white; ">
+						   	<div style="height: 30px;  line-height:30px; font-size: 20px; ">
+						   		收文11111111111111
+						   	</div>
+					   	  	<div style="font-size: 50px;">
+					  			  <i class="demo-pli-file-add icon-lg"></i> 
+					      	</div>
+				      	  	<div style="height: 30px; line-height:30px;  font-size: 20px;  color:#FFD200; ">
+				   	 		#(receiveSize)
+				   	  	 	</div>
+						   	   	
+						  </div>
+					 </button>
+			</div>
+			
+			
+			<div class="col-lg-4" style="margin-right: -15px;">
+					 <button class="btn btn-icon" style="height: 150px;  width: 200px; background-color: #56DE37;color: white;" onclick="senddoc()">
+						 <div style=" height: 100%;line-height: 100%;">
+						   	<div style="height: 30px;  line-height:30px; font-size: 20px;  ">
+						   		发文
+						   	</div>
+					   	  	<div style="font-size: 50px;">
+					  			  <i class="demo-pli-file-edit icon-lg"></i> 
+					      	</div>
+				      	  	<div style="height: 30px; line-height:30px;  font-size: 20px;  color: red; ">
+				   	 		#(sendSize)
+				   	  	 	</div>
+						   	   	
+						  </div>
+					 </button>
+			</div>
+			
+			
+			
+			
+			<div class="col-lg-4" style="margin-right: -15px;" >
+					 <button class="btn  btn-icon" style="height: 150px;  width: 100px; background-color: #CB61FE;color: white;" onclick="hotline()">
+						 <div style=" height: 100%;line-height: 100%;">
+						   	<div style="height: 30px;  line-height:30px; font-size: 20px;  ">
+						   	热线
+						   	</div>
+					   	  	<div style="font-size: 50px;">
+					  			  <i class="demo-pli-old-telephone icon-lg"></i> 
+					      	</div>
+				      	  	<div style="height: 30px; line-height:30px;  font-size: 20px;  color: orange; ">
+				   	 		 #(hotSize)
+				   	  	 	</div>
+						   	   	
+						  </div>
+					 </button>
+	 
+					<button class="btn  btn-icon" style="height: 150px;  width: 100px;   background-color: #33A3FF;color: white;" onclick="letter()">
+						 <div style=" height: 100%;line-height: 100%;">
+						   	<div style="height: 30px;  line-height:30px; font-size: 20px;   ">
+						   		信访
+	 				   	</div>
+					   	  	<div style="font-size: 50px;">
+					  			  <i class="demo-psi-speech-bubble-4 icon-lg"></i> 
+					      	</div>
+				      	  	<div style="height: 30px; line-height:30px;  font-size: 20px;  color: white; ">
+				   	 			#(letterSize)
+				   	  	 	</div>
+						   	   	
+						  </div>
+					 </button>
+			</div>
+			
+			
+			<!-- <div class="col-lg-4" style="margin-right: -15px;" >
+					 <button class="btn  btn-icon" style="height: 150px;  width: 100px; color: white;background-color: #FFD200" onclick="plan()">
+						 <div style=" height: 100%;line-height: 100%;">
+						   	<div style="height: 30px;  line-height:30px; font-size: 20px;  ">
+						   		计划
+						   	</div>
+					   	  	<div style="font-size: 50px;">
+					  			  <i class="demo-pli-clock icon-lg"></i> 
+					      	</div>
+				      	  	<div style="height: 30px; line-height:30px;  font-size: 20px;  color: orange; ">
+				   	 
+				   	  	 	</div>
+						   	   	
+						  </div>
+					 </button>
+	 
+					<button class="btn  btn-icon" style="height: 150px;  width: 100px;  color: white; background-color: orange; color: white;" onclick="email()">
+						 <div style=" height: 100%;line-height: 100%;">
+						   	<div style="height: 30px;  line-height:30px; font-size: 20px;   ">
+						   		邮件1111
+	 				   	</div>
+					   	  	<div style="font-size: 50px;">
+					  			  <i class="demo-psi-mail icon-lg"></i> 
+					      	</div>
+				      	  	<div style="height: 30px; line-height:30px;  font-size: 20px;  color: white; ">
+				   	 	
+				   	  	 	</div>
+						   	   	
+						  </div>
+					 </button>
+			</div> -->
+		<!-- 	<div class="col-lg-4" style="">
+					 <button class="btn  btn-icon" style="height: 150px;  width: 200px; background-color: #CB61FE;color: white;" onclick="hotline()">
+						 <div style=" height: 100%;line-height: 100%;">
+						   	<div style="height: 30px;  line-height:30px; font-size: 20px;  ">
+						   		热线
+						   	</div>
+					   	  	<div style="font-size: 50px;">
+					  			  <i class="demo-pli-old-telephone icon-lg"></i> 
+					      	</div>
+				      	  	<div style="height: 30px; line-height:30px;  font-size: 20px;  color: orange; ">
+				   	 	
+				   	  	 	</div>
+						   	   	
+						  </div>
+					 </button>
+			</div> -->
+		</div>
+		
+		<div class="row">
+		
+				<div class="col-lg-4" style="margin-right: -15px;">
+					 <button class="btn  btn-icon" style="height: 150px;  width: 204px; background-color: #6F7879;color: white;" onclick="history()">
+						 <div style=" height: 100%;line-height: 100%;">
+						   	<div style="height: 30px;  line-height:30px; font-size: 20px;  ">
+						   		历史
+						   	</div>
+					   	  	<div style="font-size: 50px;">
+					  			  <i class="demo-psi-recycling icon-lg"></i> 
+					      	</div>
+				      	  	<div style="height: 30px; line-height:30px;  font-size: 20px;  color: orange; ">
+				   	 		  
+				   	  	 	</div>
+						   	   	
+						  </div>
+					 </button>
+			</div>
+		
+		
+		
+				<div class="col-lg-4" style="margin-right: -15px;">
+					 <button class="btn  btn-icon" style="height: 150px;  width: 204px; color: white;background-color: #FFD200" onclick="plan()">
+						 <div style=" height: 100%;line-height: 100%;">
+						   	<div style="height: 30px;  line-height:30px; font-size: 20px;  ">
+						   		计划
+						   	</div>
+					   	  	<div style="font-size: 50px;">
+					  			  <i class="demo-pli-clock icon-lg"></i> 
+					      	</div>
+				      	  	<div style="height: 30px; line-height:30px;  font-size: 20px;  color: orange; ">
+				   	 		  
+				   	  	 	</div>
+						   	   	
+						  </div>
+					 </button>
+			</div>
+		
+		
+			<div class="col-lg-4" style="margin-right: -15px;">
+						<button class="btn  btn-icon" style="height: 150px;  width: 204px;  color: white; background-color: orange; color: white;" onclick="email()">
+						 <div style=" height: 100%;line-height: 100%;">
+						   	<div style="height: 30px;  line-height:30px; font-size: 20px;  ">
+						   	邮件
+						   	</div>
+					   	  	<div style="font-size: 50px;">
+					  			  <i class="demo-psi-recycling icon-lg"></i> 
+					      	</div>
+				      	  	<div style="height: 30px; line-height:30px;  font-size: 20px;  color: white; ">
+				   	 		  	#(emailSize)
+				   	  	 	</div>
+						   	   	
+						  </div>
+					 </button>
+			</div>
+		
+		</div>
+<!-- 		<div class="row" style="padding-top: 5px; ">
+			 	
+				<div class="col-lg-4" style="">
+					 <button class="btn  btn-icon" style="height: 150px;  width: 200px;background-color: #33A3FF;color: white;" onclick="letter()">
+						 <div style=" height: 100%;line-height: 100%;">
+						   	<div style="height: 30px;  line-height:30px; font-size: 20px;  ">
+						   		信访
+						   	</div>
+					   	  	<div style="font-size: 50px;">
+					  			  <i class="demo-psi-speech-bubble-4 icon-lg"></i> 
+					      	</div>
+				      	  	<div style="height: 30px; line-height:30px;  font-size: 20px;  color: orange; ">
+				   	 	
+				   	  	 	</div>
+						   	   	
+						  </div>
+					 </button>
+			</div>
+			
+		</div> -->
+		<div class="row" style="">
+		
+		 <div class="col-lg-12" style="margin-top: 15px;">
+					
+					            <div class="panel-heading" style="background-color: red; width: 620px; margin-left: -30px;" align="left">
+					                <div class="panel-control">
+					                    <ul class="nav nav-tabs">
+					                        <li class="active">
+					                            <a data-toggle="tab" href="#demo-tabs2-box-1">
+					                                <i class="demo-pli-monitor-2 icon-lg" style="font-size: 15px;font-weight:bold;">待办</i>
+					                            </a>
+					                        </li>
+					                        <li>
+					                            <a data-toggle="tab" href="#demo-tabs2-box-2">
+					                                <i class="demo-pli-laptop icon-lg" style="font-size: 15px;font-weight:bold;">已办</i>
+					                            </a>
+					                        </li>
+					                    </ul>
+					                </div>
+					            </div>
+					
+					            <!--Panel Body-->
+					            <div class="panel-body">
+					                <div class="tab-content">
+					                    <div id="demo-tabs2-box-1" class="tab-pane fade in active" style="margin-left: -30px;">
+					                        <div class="media" >
+					                    
+					                            <table class="table">
+					       
+					
+					                <tbody style="font-weight: bold;font-size: 15px;">
+					                   
+					                    #@dbList(waitDos)
+					                </tbody>
+					            </table>
+					                        
+					                        </div>
+					                    </div>
+                 <div id="demo-tabs2-box-2" class="tab-pane fade" style="margin-left: -15px;margin-right: 15px; ">
+                                     <table class="table">
+					                <tbody>
+					                  <!--   <tr>
+					                        <td class="text-center">1</td>
+					                        <td>Mark</td>
+					                        <td>Otto</td>
+					                        <td>@mdo</td>
+					                    </tr>
+					                    <tr>
+					                        <td class="text-center">2</td>
+					                        <td>Jacob</td>
+					                        <td>Thornton</td>
+					                        <td>@fat</td>
+					                    </tr>
+					                    <tr>
+					                        <td class="text-center">3</td>
+					                        <td>Larry</td>
+					                        <td>the Bird</td>
+					                        <td>@twitter</td>
+					                    </tr> -->
+					                    #@overList(over)
+					                </tbody>
+					            </table>
+                 </div>
+					                </div>
+					            </div>
+					        </div>
+		
+		</div>
+	
+	
+	
+	<div class="row" style="">
+		
+		 <div class="col-lg-12" style="margin-top: 15px;">
+					
+					            <div class="panel-heading" style="background-color: orange; width: 620px; margin-left: -30px;" >
+					                <div class="panel-control">
+					                    <ul class="nav nav-tabs" style="text-align: left;" >
+					                        <li class="active">
+					                            <a data-toggle="tab" href="#demo-tabs2-box-3">
+					                                <i style="font-size: 15px;font-weight:bold;">通知</i>
+					                            </a>
+					                        </li>
+					                  <!--       <li>
+					                            <a data-toggle="tab" href="#demo-tabs2-box-4">
+					                                <i style="font-size: 15px;font-weight:bold;">通知</i>
+					                            </a>
+					                        </li> -->
+					                    </ul>
+					                </div>
+					            </div>
+					
+					            <!--Panel Body-->
+					            <div class="panel-body">
+					                <div class="tab-content">
+					                    <div id="demo-tabs2-box-3" class="tab-pane fade in active" style="margin-left: -15px;margin-right: 15px;">
+					                          	#@makeXxjb(xxjb)
+					                    </div>
+               <!--   <div id="demo-tabs2-box-4" class="tab-pane fade" style="margin-left: -15px;margin-right: 15px; ">
+                              
+                 </div> -->
+					                </div>
+					            </div>
+					        </div>
+		
+		</div>
+					        
+					        
+					        
+	
+	</div>
+	<div class="col-lg-6" align="center" style="padding-right: 20px;padding-left: 20px;">
+		<div class="row" style="background-color: orange;">
+		<div class="col-lg-12">
+		
+		
+		#@makeShowPic(picNewsList)
+		</div>
+		
+		</div>
+		
+<div class="row" style=" margin-top: 15px;">
+		 <div class=" col-lg-12 panel" style="margin-top: 5px;">
+					                <div class="panel-heading" align="left" style="display: inline-block; text-align: left;">
+					                    <h3 class="panel-title">信息简报</h3>
+					                </div>
+					                <div  class="panel-heading" align="right"  style="display: inline-block; text-align: right;">
+					                    <h3 class="panel-title">更多</h3>
+					                </div>
+					                <div class="panel-body" align="left" style="font-size: 15px;font-weight: bold;"> 
+					                
+					           	#@makeXxjb(xxjb)
+					     
+					                          	 
+					                </div>
+		 </div>
+	
+	</div>		
+		
+		
+		
+	<div class="row" style=" margin-top: 15px;">
+		 <div class=" col-lg-12 panel" style="margin-top: 5px;">
+					                <div class="panel-heading" align="left">
+					                    <h3 class="panel-title">办事指南</h3>
+					                </div>
+					                <div class="panel-body" align="left" style="font-size: 15px;font-weight: bold;"> 
+					                
+					                
+					                #@makeBszn(bsznList)
+					               <!--      <p>*从事船舶港口服务、港口设施设备和机械租赁维修、港口理货业务备案办事指南</p>
+					                    <p>*港口理货业务备案办事指南</p>
+					                    <p>*从事船舶港口服务、港口设施设备和机械租赁维修办事指南</p>
+					                    <p>*港口设施设备和机械租赁维修办事指南</p>
+					                    <p>*港口设施设备和机械租赁维修、港口理货业务备案办事指南</p> -->
+					                <!--       <p>Lorem ipsum dolor sit amet.</p>
+					                      
+					                        <p>Lorem ipsum dolor sit amet.</p>
+					                          <p>Lorem ipsum dolor sit amet.</p>
+					                           -->
+					                          	 
+					                </div>
+		 </div>
+	
+	</div>
+	</div>
+
+
+</div>
+
+
+
+
+
+<script type="text/javascript">
+ 	function senddoc(){
+ 		
+ 		//alert("111");
+ 		
+ 		 window.location.href="#(ctx)/admin/oa/senddoc/getListPersonal";
+ 	}
+ 	
+ 	
+ 	function  receiveDoc(){
+ 		 window.location.href="#(ctx)/admin/oa/bumph/getPReceivePage";
+ 		
+ 	}
+ 	
+ 	//热线
+ 	function  hotline(){
+ 		 window.location.href="#(ctx)/admin/oa/hotline/getPHotLineListPage";
+ 	}
+ 	//信访
+ 	function  letter(){
+ 		 window.location.href="#(ctx)/admin/oa/letter/getPLetterListPage";
+ 	}
+ 	
+ 	
+ 	//邮件
+ 	
+ 	function  email(){
+		 window.location.href="#(ctx)/admin/oa/email/getListPage";
+ 
+ 	}
+ 	//历史
+ 	
+ 	function  history(){
+		 window.location.href="#(ctx)/admin/oa/stephistory/getListPage";
+ 
+ 	}
+ 	
+ 	function  moreinfo(){
+ 		
+ 		 window.location.href="#(ctx)/admin/oa/showinfo/homeMorListPage?menuid=9b576e6581204cda90ae04722d8640c9";
+ 	}
+ 	
+ 	
+ 	function plan(){
+ 		
+ 		 window.location.href="#(ctx)/admin/oa/workplan/getWorkPlanPage";
+ 		
+ 	}
+ 	
+ 	
+ 	
+ 	$(document).ready(function() {
+ 		$('#demo-external-events .fc-event').each(function() {
+ 			$(this).data('event', {
+ 				title: $.trim($(this).text()), // use the element's text as the event title
+ 				stick: true, // maintain when user navigates (see docs on the renderEvent method)
+ 				className : $(this).data('class')
+ 			});
+ 			$(this).draggable({
+ 				zIndex: 99999,
+ 				revert: true,      // will cause the event to go back to its
+ 				revertDuration: 0  //  original position after the drag
+ 			});
+ 		});
+ 		
+ 	 
+ 	 
+ 		
+ 		$('#demo-calendar').fullCalendar({
+ 		    height: 250,
+ 			header: {
+ 			/* 	left: 'prev,next,prevYear,nextYear today', */
+ 				center: 'title',
+ 				/* right: 'month,agendaWeek,agendaDay,basicWeek' */
+ 				 right: 'basicWeek'
+ 				
+ 			},
+ 			buttonText:{
+ 					prev: '‹', // ‹
+ 					next: '›', // ›
+ 					prevYear: '«', // «
+ 					nextYear: '»', // »
+ 					today: '今天',
+ 					month: '月',
+ 					week: '周',
+ 					day: '天',
+ 					basicWeek:'一周',
+ 				},
+ 		    
+ 			editable: false,//设置是否允许拖拽
+ 			droppable: true, // this allows things to be dropped onto the calendar
+ 			drop: function() {
+ 				if ($('#drop-remove').is(':checked')) {
+ 					$(this).remove();
+ 				}
+ 			},
+ 			dayClick: function(date, allDay, jsEvent, view) {
+ 				 
+ 			},
+ 			eventClick: function(event, jsEvent, view) {
+ 		 
+ 			 
+ 			        
+ 			},
+ 			eventRender: function (event, element) {//title以HTML显示（换行）
+ 		            element.html(event.title);           
+ 		    },
+ 			header:false,
+ 			weekends:false,
+ 			isRTL:false,
+ 			selectable:true,
+ 			weekNumbers:false,
+ 			weekNumberTitle:'周次',
+ 			monthNames:['一月', '二月', '三月', '四月', '五月', '六月','七月', '八月', '九月', '十月', '十一月', '十二月'],
+ 			monthNamesShort:['一月', '二月', '三月', '四月', '五月', '六月','七月', '八月', '九月', '十月', '十一月', '十二月'],
+ 			dayNames:['周日', '周一', '周二', '周三', '周四', '周五', '周六'],
+ 			dayNamesShort:['周日', '周一', '周二', '周三', '周四', '周五', '周六'],
+ 			defaultDate: '#(today)',
+ 			defaultView: 'basicWeek' ,
+ 		
+ 			eventLimit: true, // allow "more" link when too many events
+ 			
+ 			
+ 			/* events:'#(ctx)/admin/oa/workplan/getWorkPlan', */
+ 			   events:  function(start, end, timezone, callback) {
+ 				  
+ 		        $.ajax({
+ 		            url: '#(ctx)/admin/oa/workplan/getWorkPlan',
+ 		            dataType: 'json',
+ 		            
+ 		            success: function(doc) {
+ 		                var events = [];
+ 		                $(doc).each(function() {
+ 		                    events.push({
+ 		                    	id:$(this).attr('id'),
+ 		                        title: $(this).attr('title'),
+ 		                        start: $(this).attr('start'),
+ 		                        end:$(this).attr('end')// will be parsed
+ 		                    });
+ 		                });
+ 		                
+ 		                callback(events);
+ 		            }
+ 		        });
+ 		    }   
+ 		      
+ 		 	
+ 		});
+ 	});
+ 	    
+    
+ 
+</script>

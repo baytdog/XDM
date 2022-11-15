@@ -1,0 +1,308 @@
+                <div id="page-content">
+			        <div class="col-sm-12 eq-box-sm">
+						<div class="panel">
+							<div class="panel panel-search">
+								<div class="panel-body">
+									<div class="form-inline">
+									
+										<div class="form-group">
+											<input id="lnum" placeholder="信访编号" class="form-control">
+										</div>
+										
+									 
+										<div class="form-group">
+											<input id="lfromer" placeholder="来信人" class="form-control">
+										</div>
+										
+										 
+										<div class="form-group">
+											<div class="input-group date form_datetime">
+												<input id="searchStartTime" placeholder="开始日期" class="form-control">
+												<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+											</div>
+										</div>
+										<div class="form-group">
+											<div class="input-group date form_datetime">
+												<input id="searchEndTime" placeholder="结束日期" class="form-control">
+												<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+											</div>
+										</div>
+										
+										
+										<div class="form-group">
+											<select class="selectpicker form-control"  id="lstate"  >
+											<option value="">------请选择分类------</option>
+											 #for(lt:lettertype)
+											 <option value="#(lt.value)">#(lt.name)</option>
+									         #end
+												 
+				    						</select>
+										
+										</div>
+										
+										<div class="form-group">
+											<button class="btn btn-primary" type="button" onclick="searchTable()">搜索</button>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="panel ">
+								<div class="panel-body">
+									<a id="add" class="btn btn-primary data-toolbar" href="#(ctx)/admin/oa/edletter/getEditPage?view=edit"><i class="demo-pli-add"></i> 添加</a>
+									<a id="del" class="btn btn-danger data-toolbar" onclick="delSel()" href="javascript:void(0);"><i class="demo-pli-cross"></i> 批量删除</a>
+									
+									 <a id="export" class="btn btn-primary data-toolbar" onclick="exportExcel()" target="_blank"><i class="demo-pli-add"></i> 导出</a>
+									  <a id="exportTatol" class="btn btn-primary data-toolbar" onclick="exportTotalExcel()" target="_blank"><i class="demo-pli-add"></i> 导出统计</a>
+									<table id="pageTable" class="demo-add-niftycheck" data-toolbar="#del,#add,#export,#exportTatol"
+										   data-search="true"
+										   data-show-refresh="true"
+										   data-show-toggle="true"
+										   data-show-columns="true"
+										   data-sort-name="id"
+										   data-page-list="[5, 10, 20]"
+										   data-page-size="5"
+										   data-pagination="true" data-show-pagination-switch="true" ></table>
+								</div>
+							</div>
+			        	</div>
+                	</div>
+				</div>
+<script>
+	
+	var col = [
+		   {
+				field: 'Number',
+				title: '',
+			 	width:50,
+			 	align: 'center',
+				formatter: function (value, row, index) {
+				return index+1;
+				}
+			},
+		
+		
+		   {field: 'checked', checkbox : true, align: 'center'},
+	   
+		   {field: 'letternum', title: '信访编号', align: 'center'},
+		   {field: 'letters', title: '来信人', align: 'center'},
+		   {field: 'lettertel', title: '联系方式', align: 'center'},
+		   {field: 'letterdate', title: '来信日期', align: 'center'},
+		   {field: 'lettetype', title: '分类', align: 'center',
+			   formatter:function(value,row,index){
+				   if(value=="1"){
+					   //return "<span style='color:green;'>完成</span>";
+					   return "参拍";
+				   }
+				   else if(value=="2"){
+					   
+					   return "流转";
+				   }
+				   else if(value=="3"){
+					   
+					   return "额度审核";
+				   }
+				   else if(value=="4"){
+					   
+					   return "app";
+				   }else if(value=="5"){
+					   
+					   return "居住证";
+				   }
+				   else if(value=="6"){
+					   
+					   return "社保个税";
+				   }else if(value=="7"){
+					   return "驾驶证";
+				   }else if(value=="8"){
+					   return "名下有额度";
+				   }else if(value=="9"){
+					   return "军人";
+				   }else if(value=="10"){
+					   return "额度有效期";
+				   }else if(value=="11"){
+					   return "新能源备案";
+				   }else if(value=="12"){
+					   return "投诉";
+				   }else if(value=="13"){
+					   return "车管所";
+				   }else if(value=="14"){
+					   return "国拍";
+				   }else if(value=="15"){
+					   return "经信委";
+				   }else if(value=="16"){
+					   return "专用车";
+				   }else if(value=="17"){
+					   return "营运撤辆";
+				   }
+				 
+			   }
+		   },  
+		    
+	   
+	   {field: 'control', title: '操作', align: 'left', width:'200',
+	       formatter:function(value,row,index){
+	    
+	           	var a='';		
+	           			
+	          a = '<a class="label label-table label-success" href="'+ctx+'/admin/oa/edletter/getEditPage?id='+row.id+'&type='+row.type+'&view=detail" >查看</a>&nbsp;';
+	        	
+	          
+	          if(row.status!='6'){
+	        	  
+	          a = a + '<a class="label label-table label-success" href="'+ctx+'/admin/oa/edletter/getEditPage?id='+row.id+'&type='+row.type+'&view=edit" >编辑</a>&nbsp;'; 
+	          }
+	        	
+	         
+	        	
+	           	return a;
+	       }
+	   }];
+	var opt = {
+		    //请求方法
+			   method: 'get',
+			    //是否显示行间隔色
+			   striped: true,
+			   //是否使用缓存，默认为true，所以一般情况下�?要设置一下这个属性（*�?     
+			   cache: false,  
+			   //data-toolbar: "#demo-delete-row",
+			   //是否显示分页�?*�?  
+			   pagination: true,   
+			    //是否启用排序  
+			   sortable: false,    
+			    //排序方式 
+			   sortOrder: "asc",    
+			   //初始化加载第�?页，默认第一�?
+			   //我设置了这一项，但是貌似没起作用，�?�且我这默认�?0,- -
+			   //pageNumber:1,   
+			   //每页的记录行数（*�?   
+			   pageSize: 10,  
+			   //可供选择的每页的行数�?*�?    
+			   pageList: [10, 25, 50, 100],
+			   //这个接口�?要处理bootstrap table传�?�的固定参数,并返回特定格式的json数据  
+			   url: ctx+"/admin/oa/edletter/listData",
+			   //默认值为 'limit',传给服务端的参数为：limit, offset, search, sort, order Else
+			   //queryParamsType:'',   
+			   ////查询参数,每次调用是会带上这个参数，可自定�?                         
+			   queryParams : function(params) {
+			       return {
+			             pageNumber: (params.offset/params.limit)+1,
+			             pageSize: params.limit,
+			             
+			             "lnum":encodeURIComponent($("#lnum").val()),
+							"lfromer":encodeURIComponent($("#lfromer").val()),
+							"startTime": $("#searchStartTime").val(),
+							"endTime": $("#searchEndTime").val(),
+							"lstate":$("#lstate").val(),
+			 
+			           };
+			   },
+			   //分页方式：client客户端分页，server服务端分页（*�?
+			   sidePagination: "server",
+			   //是否显示搜索
+			   search: false,  
+			   //Enable the strict search.    
+			   strictSearch: true,
+			   //Indicate which field is an identity field.
+			   idField : "id",
+			   columns: col,
+			   pagination:true,paginationShowPageGo: true
+			}; 
+		
+	//表格
+	function initTable(){
+		$('#pageTable').bootstrapTable(opt);
+		$('#pageTable').bootstrapTable('hideColumn', 'id');
+	}
+	function refreshTable(){
+		$("#pageTable").bootstrapTable('refresh', opt);
+		$('#pageTable').bootstrapTable('hideColumn', 'id');
+	}
+	
+	//批量删除
+	function delSel(){
+		var data = [];
+		$("#pageTable input[type='checkbox'][name!='btSelectAll']:checked").each(function(){
+			data.push($(this).val());
+		});
+		if(data.length==0){
+			pointLion.alertMsg("请选择要删除的数据!","danger",null,null);
+			return;
+		}
+		del(data.join(","));//执行删除
+	}
+	//删除
+	function del(ids){
+		pointLion.confimMsg("您是否要删除选择得信息??<br/> 点击确认进行删除 , 点击取消取消该操作",null,function(){
+			//执行删除
+			var data = common_ajax.ajaxFunc("/admin/oa/edletter/delete",{"ids":ids}, "json", null);
+			//删除结果
+			if(data.success){
+				pointLion.alertMsg(data.message,"success",null,function(){
+					location.href = ctx+'/admin/oa/edletter/getListPage';//跳转到列表页
+				});
+			}else{
+				pointLion.alertMsg(data.message,"success",null,null);
+			}
+		});
+	};
+ 
+	 
+	/***
+	 * 导出
+	 */
+	function exportExcel(){
+		
+		
+		var lnum = $("#lnum").val();
+		var lfromer = $("#lfromer").val();
+		var startTime = $("#searchStartTime").val();
+		var endTime = $("#searchEndTime").val();
+		var lstate = $("#lstate").val();
+		/* var type_name = $("#type_name").val();
+		var order_code = $("#order_code").val();
+		var order_num = $("#order_num").val(); */
+		//location.href = "#(ctx)/admin/oa/edletter/exportExcel?type_name="+type_name+"&order_code="+order_code+"&order_num="+order_num;
+		location.href = "#(ctx)/admin/oa/edletter/exportExcel?lnum="+encodeURIComponent(lfromer)+"&lfromer="+encodeURIComponent(lfromer)+"&startTime="+startTime+"&endTime="+endTime+"&lstate="+lstate;
+	}
+	/***
+	 * 导出统计
+	 */
+	function exportTotalExcel(){
+		var lnum = $("#lnum").val();
+		var lfromer = $("#lfromer").val();
+		var startTime = $("#searchStartTime").val();
+		var endTime = $("#searchEndTime").val();
+		var lstate = $("#lstate").val();
+		location.href = "#(ctx)/admin/oa/edletter/exportTotal?lnum="+encodeURIComponent(lfromer)+"&lfromer="+encodeURIComponent(lfromer)+"&startTime="+startTime+"&endTime="+endTime+"&lstate="+lstate;
+	}
+
+	
+	
+ 
+
+	//查询
+	function searchTable(){
+		
+		var lnum = $("#lnum").val();
+		var lfromer = $("#lfromer").val();
+		var startTime = $("#searchStartTime").val();
+		var endTime = $("#searchEndTime").val();
+		var lstate = $("#lstate").val();
+		var param = {
+			query: {
+				"lnum":encodeURIComponent(lnum),
+				"lfromer":encodeURIComponent(lfromer),
+				"startTime":startTime,
+				"endTime":endTime,
+				"lstate":lstate,
+			}
+		}
+		// 刷新表格
+		$('#pageTable').bootstrapTable('refresh',param);
+	}
+
+	$(document).ready(function(){
+		$('.form_datetime').datepicker({format: 'yyyy-mm-dd',weekStart: 1,todayBtn:  1,autoclose: 1,language:  'zh-CN',todayHighlight: 1,forceParse: 0,clearBtn: true }).on('changeDate',null);
+		initTable();//初始�?
+	});
+</script>

@@ -1,0 +1,274 @@
+					<form id="editForm" class="panel-body form-horizontal form-padding"  >
+		            	<input id="infoid" type="hidden" name="#(formModelName).id" value="#(o?o.id:'')">
+		            	<input type="hidden" name="#(formModelName).type"   value="#(o.type?o.type: type)"  >
+		            	<div class="form-group">
+		                    <label class="col-md-2 control-label">公文文号</label>
+		                    
+		                      <div class="col-md-1"  >
+		                      	<h5>沪交行收文(</h5>
+		                      </div>
+		                    
+		                    <div class="col-md-1" style="padding-left: 15px;">
+		                    		
+		                         <input type="text" name="#(formModelName).doc_type" value="#(o.doc_type)"  class="form-control"  value="#(o?o.doc_type:'')" #if(view=="detail") readonly #end>
+		            
+		                    </div>
+		                    <div class="col-md-1"  >
+		                      	<h5>)</h5>
+		                      </div>
+		                    
+		                    <div class="col-md-2">
+			                    <input type="text" name="#(formModelName).doc_num_year" value="#(o.doc_num_year)"  class="form-control" readonly>
+		                    </div>
+		                        <div class="col-md-1"  >
+		                      	<h5>第(</h5>
+		                      </div>
+		                    <div class="col-md-1">
+			                    <input type="text" name="#(formModelName).doc_num_n" value="#(o.doc_num_n)" class="form-control" #if(view=="detail") readonly #end>
+		                    </div>
+		                    <div class="col-md-1"  >
+		                      	<h5>)</h5>
+		                      </div>
+		                    <div class="col-md-1" style="line-height: 32px;">
+			                    	号
+		                    </div>
+		                </div>
+		                
+		            
+	                	
+	                	
+	                	  <div class="form-group">
+		                		<label class="col-md-2 control-label">登记日期</label>
+					            <div class="input-group date form_datetime col-md-4" style="float:left">
+				                    <input type="text" id="startTime" name="#(formModelName).regeit_time" class="form-control"  value="#(o?o.regeit_time:'')"   readonly  >
+									<span class="input-group-addon"> <span class="glyphicon glyphicon-th"></span> 
+								 
+									</span>
+				                </div>
+			                    <label class="col-md-1 control-label">收文日期</label>
+					            <div class="input-group date form_datetime col-md-3" style="float:left">
+				                    <input type="text" id="endTime" name="#(formModelName).receive_time" class="form-control" value="#(o?o.receive_time:'')"  readonly >
+									<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+				                </div>
+			                </div>
+	                	
+		                
+		                    	<input type="hidden" name="#(formModelName).sender_orgid" value="#(o.sender_orgid)">
+		                        <input type="hidden" name="#(formModelName).sender_orgname" value="#(o.sender_orgname)" readonly class="form-control">
+		                    	<input type="hidden" name="#(formModelName).sender_id" value="#(o.sender_id)">
+		                        <input type="hidden" name="#(formModelName).sender_name" value="#(o.sender_name)" readonly class="form-control">
+		                <div class="form-group">
+		                    <label class="col-md-2 control-label">文件名称</label>
+		                    <div class="col-md-9">
+		                        <input type="text"  name="#(formModelName).title" class="form-control"  value="#(o?o.title:'')" #if(view=="detail") readonly #end />
+		                    </div>
+		                </div>
+		            
+		                
+		            
+		                
+		                
+		                
+		                
+		            #if(o.status>='2')
+		                
+		                 <div class="form-group">
+                           <label class="col-md-2 control-label">领导</label>
+                           <input type="hidden" id="leadersid" name="#(formModelName).leadersid" value="#(o?o.leadersid:'')">
+                            <div class="col-md-9">
+                                <select id="leader" name="#(formModelName).leadersname"  value="#(leadersname)" title="请选择领导"  class="selectpicker show-tick form-control" actionsBox="true"  multiple data-live-search="false">
+                                        
+                                        #for(u:userList)
+
+											 <option value="#(u.id)">#(u.name)</option>
+							 
+									    #end
+									 
+                                </select>
+                            </div>
+                          </div>
+		          
+	 
+		                
+		                
+		                
+		               <div class="form-group">
+		                    <label class="col-md-2 control-label" for="demo-textarea-input">主办</label>
+		                    <div class="col-md-9" style="line-height: 30px;">
+		                    	<div #if(view!="detail") class="input-group mar-btm" #end>
+		                    		<input type="hidden" id="hostsid" name="#(formModelName).hostsid" value="#(o?o.hostsid:'')">
+			                        <input type="text"   id="hostsname" name="#(formModelName).hostsname" value="#(o?o.hostsname:'')" readonly class="form-control">
+			                        #if(view!="detail") 
+				                        <span class="input-group-btn">
+				                            <button class="btn btn-primary" type="button" onclick="openSlectFirstOrgIdDialog()">选择</button>
+				                        </span>
+				                    #end
+			                    </div>
+		                   
+		                    </div>
+		                </div>
+		                
+		                  
+		               <div class="form-group">
+		                    <label class="col-md-2 control-label" for="demo-textarea-input">会办</label>
+		                    <div class="col-md-9" style="line-height: 30px;">
+		                    	<div #if(view!="detail") class="input-group mar-btm" #end>
+		                    		<input type="hidden" id="customersid" name="#(formModelName).customersid" value="#(o?o.customersid:'')">
+			                        <input type="text"   id="customersname" name="#(formModelName).customersname" value="#(o?o.customersname:'')"  readonly class="form-control">
+			                        #if(view!="detail") 
+				                        <span class="input-group-btn">
+				                            <button class="btn btn-primary" type="button" onclick="openSlectSecondOrgIdDialog()">选择</button>
+				                        </span>
+				                    #end
+			                    </div>
+		                   
+		                    </div>
+		                </div>
+		                
+		                #end
+		                
+		                #if(o!=null && o.content!=null)
+		                
+		                <div class="form-group">
+		                    <label class="col-md-2 control-label">领导批示</label>
+		                    <div class="col-md-9">
+		                        <textarea name="#(formModelName).content" rows="6" class="form-control"  readonly  >#(o?o.content.replace('**',''):'')</textarea>
+		                    </div>
+		                </div>
+		                #end
+		                         
+		                #if(o!=null && o.nbyj!=null)
+		              <div class="form-group">
+		                    <label class="col-md-2 control-label">拟办意见</label>
+		                    <div class="col-md-9">
+		                        <textarea name="#(formModelName).nbyj" rows="6" class="form-control" #if(view=="detail" ||o.nbyj!=null) readonly #end>#(o?o.nbyj.replace('**',''):'')</textarea>
+		                    </div>
+		                </div>
+		                     #end
+		                 #if(o!=null && o.clqk!=null)
+		                <div class="form-group">
+		                    <label class="col-md-2 control-label">处理情况</label>
+		                    <div class="col-md-9">
+		                        <textarea name="#(formModelName).clqk" rows="12" class="form-control"  readonly  >#(o?o.clqk.replace('**',''):'')</textarea>
+		                    </div>
+		                </div>
+		                
+		                  #end 
+			            
+			        
+			           <div class="form-group">
+		                    <label class="col-md-2 control-label">来文单位</label>
+		                     <div class="col-md-9">
+			                    <input type="text" name="#(formModelName).doc_from"  value="#(o?o.doc_from:'')"    class="form-control" #if(view=="detail") readonly #end>
+		                    </div>
+		                </div>
+			            	
+			            <div class="form-group">
+		                    <label class="col-md-2 control-label">文号</label>
+		                     <div class="col-md-9">
+			                    <input type="text" name="#(formModelName).file_no"  value="#(o?o.file_no:'')"   class="form-control" #if(view=="detail") readonly #end>
+		                    </div>
+		                </div>
+		                
+		                
+		                
+		                 <div  class="form-group"  style="text-align: right;">
+		                
+		                   	 <label class="col-md-2 control-label">附件列表</label>
+		           
+		                	<div class="col-md-9 ">
+		                			
+									<table id="pageTable" class="demo-add-niftycheck" data-toolbar="#del,#add"
+										   data-search="false"
+										   data-show-refresh="false"
+										   data-show-toggle="false"
+										   data-show-columns="false"
+										   data-sort-name="id"
+										   data-page-list="[5, 10, 20]"
+										   data-page-size="10"
+										   data-pagination="true" data-show-pagination-switch="false" >
+									</table>
+									<a id="filePicker"  class="btn"  href="javascript:void(0);" style="text-align: right;"><i class="demo-pli-add"></i> 添加附件</a>  
+		                	</div>
+		                </div>
+		                
+		                
+		                
+		                
+			               <div class="form-group">
+			                    <label class="col-md-2 control-label">是否归档</label>
+			                     <div class="col-md-9">
+				                        <input id="level0" class="magic-radio" type="radio" name="#(formModelName).file_ornot" value="1" #if(o&&o.file_ornot=="1") checked #end #if(view=='detail') disabled #end>
+			                            <label for="level0">是</label>
+				                        <input id="level1" class="magic-radio" type="radio" name="#(formModelName).file_ornot" value="0" #if(o&&o.file_ornot=="0") checked #end #if(view=='detail') disabled #end>
+			                            <label for="level1">否</label>
+				                 </div>
+			                </div>
+			                
+				            <div class="form-group">
+			                    <label class="col-md-2 control-label">暂存</label>
+			                     <div class="col-md-9">
+				                    <input type="text" name="#(formModelName).zc"   value="#(o?o.zc:'')"   class="form-control" #if(view=="detail") readonly #end>
+			                    </div>
+			                </div>
+			                
+			                
+			                 <div class="form-group">
+							    <div class="col-sm-offset-2 col-sm-10">
+							      <div class="checkbox">
+							        <label>
+							         <input    id="bszn"  type="hidden" value="1"  name="#(formModelName).backup2" >
+							          <input   type="checkbox"     onclick="checkedornot()"> 办事指南
+							        </label>
+							      </div>
+							    </div>
+  							</div>
+			                
+			                
+			                
+			                
+			               <div class="form-group">
+                           <label class="col-md-2 control-label">拟办人</label>
+                           <input type="hidden" id="nbrids" name="#(formModelName).nbrids" value="#(o?o.nbrids:'')">
+                            <div class="col-md-9">
+                                <select id="nbr" name="#(formModelName).nbrnames"  value="#(nbrnames)" title="请选择领导"  class="selectpicker show-tick form-control" actionsBox="true"  multiple data-live-search="false">
+                                          
+                                        #for(u:nbr)
+											 <option value="#(u.id)">#(u.name)</option>
+									    #end
+                                </select>
+                            </div>
+                          </div>
+                          
+                          
+			                    <div class="row">
+			                        <div class="col-sm-11 " align="right">
+			                 
+			                           
+								   #if(view=="edit")
+			               
+			               			#if(o.status!='0'&&o.status!='5')
+			               			  <button  class="btn btn-danger" type="button"  onclick="eidtSave()" style="font-size: 20px;">保存</button>
+			                         #end 
+			                          #if(o.status=='0')
+			                           <button class="btn btn-primary" type="submit" style="font-size: 20px;">送拟办</button> 
+			                           
+			                           #end
+			                           #if(o.status!='5'&&o.status!='0')
+			                           		<button class="btn btn-danger" type="button"  onclick="SendCb()" style="font-size: 20px;">送承办</button> 
+			                           #end
+			                       #end
+			                       
+			                       
+			                                 <button class="btn btn-primary" type="button" onclick="window.history.back();" style="font-size: 20px;">返回</button>
+			                        </div>
+			                    </div>
+			                    
+                          
+		                </div>
+		              
+			            <br/>
+			            <br/>
+			        
+			         
+		            </form>

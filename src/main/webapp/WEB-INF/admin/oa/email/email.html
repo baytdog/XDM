@@ -1,0 +1,915 @@
+ 
+ <div class="tab-base tab-stacked-right">
+					
+					            <!--Tabs Content-->
+					            
+ <div class="tab-content">
+	 <div id="demo-stk-rgt-tab-1" class="tab-pane fade  active in ">
+											                  	
+							<div id="page-content">
+									<div class="col-lg-12">
+								        <div class="panel">
+								            <div class="panel-heading">
+								                <h3 class="panel-title" style="text-align: center;">
+								                	发送邮件
+								                </h3>
+								            </div>
+								            <form id="editForm" class="panel-body form-horizontal form-padding">
+								            	<input  id="infoid" type="hidden" name="oaEmail.id" value="#(o?o.id:'')">
+											            	 
+								              <div class="form-group">
+														<label class="col-md-2 control-label">收件人</label>
+														<div class="col-md-10">
+															<div class="input-group mar-btm col-md-12">
+																<input type="hidden"  name="oaEmail.suserid" id="suserid" class="form-control"  value="#(o?o.suserid:'')">
+																<input type="text"  name="oaEmail.bcc" id="bcc" class="form-control"  value="#(o?o.bcc:'')" readonly>
+																#if(view!="detail")
+																<span class="input-group-btn">
+																		<button class="btn btn-primary" type="button" onclick="openSlectCostOneUser(1)">选择</button>
+																	</span>
+																#end
+															</div>
+														</div>
+												</div>
+												
+												
+												   <div class="form-group">
+														<label class="col-md-2 control-label">抄送</label>
+														<div class="col-md-10">
+															<div class="input-group mar-btm col-md-12">
+															 <input type="hidden"  name="oaEmail.ccid" id="ccid" class="form-control"  value="#(o?o.ccid:'')">
+																<input type="text"  name="oaEmail.cc" id="cc" class="form-control"  value="#(o?o.cc:'')" readonly>
+																#if(view!="detail")
+																<span class="input-group-btn">
+																		<button class="btn btn-primary" type="button" onclick="openSlectCostOneUser(2)">选择</button>
+																	</span>
+																#end
+															</div>
+														</div>
+												</div>
+												
+												
+												   <div class="form-group">
+														<label class="col-md-2 control-label">暗送</label>
+														<div class="col-md-10">
+															<div class="input-group mar-btm col-md-12">
+																 <input type="hidden"  name="oaEmail.dcid" id="dcid" class="form-control"  value="#(o?o.dcid:'')">  
+																<input type="text"  name="oaEmail.dc" id="dc" class="form-control"  value="#(o?o.dc:'')" readonly>
+																#if(view!="detail")
+																<span class="input-group-btn">
+																		<button class="btn btn-primary" type="button" onclick="openSlectCostOneUser(3)">选择</button>
+																	</span>
+																#end
+															</div>
+														</div>
+												</div>
+												
+								            	<div class="form-group">
+								                    <label class="col-md-2 control-label">邮件主题</label>
+								                    <div class="col-md-10">
+										                <input type="text"  name="oaEmail.subject" class="form-control"  value="#(o?o.subject:'')" #if(view=="detail") readonly #end />
+								                    </div>
+								                </div>
+								      
+								                
+								                 <div  class="form-group"  style="text-align: right;">
+								                
+								                   	 <label class="col-md-2 control-label">附件列表</label>
+								           
+								                	<div class="col-md-9 ">
+								                			
+															<table id="fileTable" class="demo-add-niftycheck" data-toolbar="#del,#add"
+																   data-search="false"
+																   data-show-refresh="false"
+																   data-show-toggle="false"
+																   data-show-columns="false"
+																   data-sort-name="id"
+																   data-page-list="[5, 10, 20]"
+																   data-page-size="10"
+																   data-pagination="true" data-show-pagination-switch="false" >
+															</table>
+															<a id="filePicker"  class="btn"  href="javascript:void(0);" ><i class="demo-pli-add"></i> 添加附件</a>  
+								                	</div>
+								                </div>
+														         
+								             
+									             <div class="form-group" id="index-textarea">
+										            <label   class="control-label col-md-2 " >邮件内容</label>
+										            <div class="col-md-10">
+										               	<input type="hidden" name="oaEmail.body" id = "content">
+										             <div id="demo-summernote" align="right">#(o?o.body:'')</div>
+										            </div>
+						      					  </div> 
+								             
+									                <div class="panel-footer">
+									                    <div class="row" align="center">
+									                        <div class="col-sm-12 ">
+									                           	   #if(view!="detail") 
+									                            <!-- <button class="btn btn-warning" type="reset">重置</button> -->
+									                            <button class="btn btn-primary" type="button" onclick="doSave()" >发邮件</button>
+									                             #end
+									                   <!--     <a href="javascript:void(0);" onclick="doUploadAttachment()" style="position: relative;">
+																	<button class="btn btn-warning" type="button">附件</button>
+														<span class="pull-right badge badge-success" style="position: absolute;right: -8px;top: -14px;" id="businessAttachmentCount">0</span>
+														</a> -->
+														
+														#if(fromway=="home")
+															<a  class="btn btn-primary" href="#(ctx)/admin/home/getPersonalHomePage?action=openPage">返回</a>
+														#end
+														
+									                        </div>
+									                    </div>
+									                </div>
+									           
+								            </form>
+								        </div>
+								    </div>
+							</div>
+							
+								 <script src="#(ctx)/common/plugins/sparkline/jquery.sparkline.min.js"></script>	 
+							<script>
+							
+					 
+							
+							
+							function openSlectCostOneUser(sp){
+								pointLion.selectManyUser("orgid="+encodeURIComponent("root"),$("#flowCCId").val(),function(data){
+									if(sp=="1"){
+										$("#suserid").val(data.idData);
+										$("#bcc").val(data.nameData);
+									}
+									if(sp=="2"){
+										$("#ccid").val(data.idData);
+										$("#cc").val(data.nameData);
+									}
+									if(sp=="3"){
+										$("#dcid").val(data.idData);
+										$("#dc").val(data.nameData);
+									}
+									
+								});
+							}
+							
+							
+							
+							
+							
+								function save(){
+									var data = common_ajax.ajaxFunc("/admin/oa/email/save", $('#editForm').serialize(), "json", null);
+									if(data.success){
+										pointLion.alertMsg("发送成功!" , "success" , "small" , function(){
+											//location.href = ctx+'/admin/oa/notice/getListPage';//跳转到列表页
+											
+										 
+											 
+											
+											 document.getElementById("editForm").reset();
+											 
+											 
+											 
+											 $('#demo-summernote').summernote('code','');
+											 
+											 $("#infoid").val(data.data);
+											 refreshFileTable();
+											 
+											 
+										},data);
+									}else{
+										pointLion.alertMsg(data.message , "danger" , "small" , function(){
+											$(".btn").removeAttr("disabled");
+										},data);
+									}
+								}
+								//表单校验
+								function formValidate(){
+									$('#editForm').bootstrapValidator({
+							    		excluded:[":disabled"],
+							            fields: {
+							            	"oaNotice.title": {
+							                    validators: {
+							                        notEmpty: {
+							                            message: '*公文标题不能为空'
+							                        },
+							                        stringLength: {
+							                            max: 50,
+							                            message: '*公文标题长度必须小于50'
+							                        }
+							                    }
+							                },
+							                "oaNotice.to_org_id":{
+							                	validators: {
+							                        notEmpty: {
+							                            message: '*公文标题不能为空'
+							                        }
+							                    }
+							                }
+							            }
+							        }).bootstrapValidator('validate');
+								}
+								//进行保存
+								function doSave(){
+									var content = $("#demo-summernote").summernote('code');
+									$("#content").val(content);
+									 
+									
+									
+									var validator = formValidate();//表单校验
+									var va = $("#editForm").data('bootstrapValidator').isValid();
+									if(va){
+										save();
+									}
+								}
+								//选择通知到单位
+								function selectManyOrg(){
+									pointLion.selectManyOrg(function(orgNode){
+										var orgidArr = [];
+										var orgnameArr = [];
+										$.each(orgNode,function(i,d){
+											orgidArr.push(d.id);
+											orgnameArr.push(d.name);
+										});
+										$("#toOrgid").val(orgidArr.join(","));
+										$("#toOrgName").val(orgnameArr.join(","));
+										//重新校验
+										if($("#editForm").data('bootstrapValidator')){
+											$("#editForm").data('bootstrapValidator').destroy();
+									        $('#editForm').data('bootstrapValidator', null);
+										}
+								        formValidate();
+									});
+								}
+								//页面初始化
+								$(document).ready(function() {
+									$('#demo-summernote').summernote({
+										toolbar: [    
+													['style', ['style','bold', 'italic', 'underline', 'clear']],
+												    ['font', ['strikethrough', 'superscript', 'subscript']],
+												    ['fontname', ['fontname']],
+												    ['fontsize', ['fontsize']],
+												    ['color', ['color']],
+												    ['para', ['ul', 'ol', 'paragraph']],
+												    ['height', ['height']],
+												    ['table', ['table']],
+												    ['insert', ['link', 'picture', 'video']],
+												    ['view', ['codeview','fullscreen']]
+										      ],
+										lang : 'zh-CN',
+										dialogsFade : true,
+										dialogsInBody : true,
+										disableDragAndDrop : false,
+										minHeight : '500px'
+								    });
+									var type="#(view)";
+									if(type=="detail"){
+										$('#demo-summernote').summernote('disable');
+									}
+								});
+								
+								
+								
+								
+								
+								
+								function initSelectOptions(selectId, parentId) {
+									var selectObj = $("#" + selectId);
+									$.ajax({
+								        url : "getSecondMenu?parentid="+parentId,
+								        async : false,
+								        type : "GET",
+								        success : function(result) {
+								        	if (result.success) {
+								        		var configs = result.data;
+								        		selectObj.find("option:not(:first)").remove();
+								        		for (var i in configs) {
+								        			var addressConfig = configs[i];
+								        			var optionValue = addressConfig.id;
+								        			var optionText = addressConfig.menuname;	
+								        			selectObj.append(new Option(optionText, optionValue));
+								        		}
+								        		
+								        		// 刷新select
+								    			selectObj.selectpicker('refresh');
+								        	} else {
+								        		toastr.error('获取['+ parentId + ']信息失败，原因：' + result.errorMessage);
+								        	}
+								        },
+								        error : function(result) {
+								        	toastr.error('获取['+ parentId + ']信息失败，原因：' + result.errorMessage);
+								        }
+									});// ajax
+								}
+						
+								
+								
+								
+								/**
+								 * 根据选择的省份动态初始化城市options
+								 * @returns
+								 */
+								function initSecondMenu() {
+									// 当省份变动时，初始化城市和清空县区和街道
+									var firstmenuSel = $("#firstmenu").val();
+									initSelectOptions("secondmenu", firstmenuSel);
+									$("#region").find("option:not(:first)").remove();
+									$("#region").selectpicker('refresh');
+									$("#street").find("option:not(:first)").remove();
+									$("#street").selectpicker('refresh');
+								}
+								
+								var view = "#(view?view:'')";
+								
+								function doUploadAttachment(){
+									var  busid=$("#infoid").val();
+									if(busid){
+										pointLion.openBusinessAttachmentPage(busid,view,function(){
+											
+											setAttachmentCount();//关闭之后回调
+										});
+									}else{
+										pointLion.alertMsg("请先保存再上传附件！" , "danger" , "small" , null);
+									}
+								}
+								//设置附件数量
+								function setAttachmentCount(){
+									var data = common_ajax.ajaxFunc("/admin/sys/attachment/getBusinessAttachmentCount", {"busid":busid}, "json", null);
+									if(data.success){
+										$("#businessAttachmentCount").html(data.data);
+									}
+								}
+								
+								
+								function  secondMenuChange(){
+									 $("#secondmenu").val();
+									 
+									 $("#menuid").val( $("#secondmenu").val());
+									
+								}
+						
+								
+								$(function(){
+								
+									#if(view=="edit")
+								 	 $('#firstmenu').selectpicker('val','#(firstMenuId)').trigger("change");
+									
+									 $('#secondmenu').selectpicker('val','#(o.menuid)').trigger("change");
+									 #end
+									 
+									 $("#infoid").val("#(eid)");
+									 
+							 
+										initFileTable();
+									
+											pointLion.initUploader("/admin/sys/attachment/emailAttachmentUpload?busid="+$("#infoid").val(),function(data){
+												pointLion.alertMsg(data.message,"success",null,null);
+												refreshFileTable();
+										 
+											});
+									 
+									 
+								});
+								
+								
+								
+								var busid = $("#infoid").val();//可能是业务ID，也可能是TEMP_UUID
+								var filecol = [
+
+									   {
+									       field: 'id',
+									       title: '主键',
+									       align: 'center'
+									   },
+									  {
+									       field: 'create_user_name',
+									       title: '上传人',
+									       align: 'center'
+									   },
+									     {
+									       field: 'create_time',
+									       title: '上传时间',
+									       align: 'center'
+									   },  
+									   {
+									       field: 'file_name',
+									       title: '文件名',
+									       align: 'center'
+									   },
+								 
+								{
+								    field: 'control',
+								    title: '操作',
+								    align: 'left',
+								    width:'120',
+								    formatter:function(value,row,index){
+								        	//通过formatter可以自定义列显示的内容
+								        	//value：当前field的值，即id
+								        	//row：当前行的数据
+										   
+								        	var a = '<a class="label label-table label-success" href="'+ctx+'/admin/sys/attachment/downloadFile?id='+row.id+'&view=detail" target="_blank">下载</a>&nbsp;';
+										    	
+								        	
+								     	/* 	 a=a+'<a class="label label-table label-success" href="'+ctx+'/admin/sys/attachment/showFile?id='+row.id+'&view=detail" target="_blank">查看</a>&nbsp;'  */
+								     		 a=a+'<a class="label label-table label-success" href="'+ctx+'/admin/sys/attachment/lookFile?id='+row.id+'&view=detail" target="_blank" title="附件查看">查看</a>&nbsp;' 
+								        	
+								        	#if(view=='detail')
+											#else
+												 
+												if(row.create_user_id=="#(currentUserId)"){
+													
+										    	a = a + '<a class="label label-table label-danger" onclick="delFile(\''+row.id+'\')" href="javascript:void(0);" >删除</a>';
+													
+												}
+												
+											
+										    	 
+										    #end
+								        	return a;
+								    }
+								}];
+								var fileopt = {
+									    //请求方法
+										   method: 'get',
+										    //是否显示行间隔色
+										   striped: true,
+										   //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）     
+										   cache: false,  
+										   //data-toolbar: "#demo-delete-row",
+										   //是否显示分页（*）  
+										   pagination: true,   
+										    //是否启用排序  
+										   sortable: false,    
+										    //排序方式 
+										   sortOrder: "asc",    
+										   //初始化加载第一页，默认第一页
+										   //我设置了这一项，但是貌似没起作用，而且我这默认是0,- -
+										   //pageNumber:1,   
+										   //每页的记录行数（*）   
+										   pageSize: 50,  
+										   //可供选择的每页的行数（*）    
+										   pageList: [5, 10, 15, 20,50,100],
+										   //这个接口需要处理bootstrap table传递的固定参数,并返回特定格式的json数据  
+										   url: ctx+"/admin/sys/attachment/getBusinessUploadList",
+										   //默认值为 'limit',传给服务端的参数为：limit, offset, search, sort, order Else
+										   //queryParamsType:'',   
+										   ////查询参数,每次调用是会带上这个参数，可自定义                         
+										   queryParams : function(params) {
+										       return {
+										             pageNumber: (params.offset/params.limit)+1,
+										             pageSize: params.limit,
+										             busid:$("#infoid").val()
+										             
+										           };
+										   },
+										   //分页方式：client客户端分页，server服务端分页（*）
+										   sidePagination: "server",
+										   //是否显示搜索
+										   search: false,  
+										   //Enable the strict search.    
+										   strictSearch: true,
+										   paginationDetailHAlign:' hidden',
+										   //Indicate which field is an identity field.
+										   idField : "id",
+										   columns: filecol,
+										   pagination:true,paginationShowPageGo: false
+										}; 
+									
+								//表格
+								function initFileTable(){
+									$('#fileTable').bootstrapTable(fileopt);
+									$('#fileTable').bootstrapTable('hideColumn', 'id');
+								}
+								function refreshFileTable(){
+									
+									$("#fileTable").bootstrapTable('refresh', fileopt);
+									$('#fileTable').bootstrapTable('hideColumn', 'id');
+								}
+								 
+								
+							
+								
+								//删除
+								function delFile(ids){
+									pointLion.confimMsg("您是否要删除所选信息 ?<br/> 点击确认进行删除 , 点击取消取消该操作",null,function(){
+										//执行删除
+										var data = common_ajax.ajaxFunc("/admin/sys/attachment/delete",{"ids":ids}, "json", null);
+										//删除结果
+										if(data.success){
+											pointLion.alertMsg(data.message,"success",null,function(){
+												refreshFileTable();
+											});
+										}else{
+											pointLion.alertMsg(data.message,"success",null,null);
+										}
+									});
+								};
+								
+							</script>
+ 		</div>
+					
+					                <div id="demo-stk-rgt-tab-2" class="tab-pane fade  ">
+					                
+					            
+					                                 <div id="page-content">
+			        <div class="col-sm-12 eq-box-sm">
+						<div class="panel">
+						 
+							<div class="panel ">
+								<div class="panel-body">
+									#if(fromway=="home")
+									<a   class="btn btn-primary data-toolbar" href="#(ctx)/admin/home/getPersonalHomePage?action=openPage">返回</a>
+									#end
+									<!-- <a id="add" class="btn btn-primary data-toolbar" href="#(ctx)/admin/oa/showinfo/getEditPage?view=edit"><i class="demo-pli-add"></i> 添加</a>
+									<a id="del" class="btn btn-danger data-toolbar" onclick="delSel()" href="javascript:void(0);"><i class="demo-pli-cross"></i> 批量删除</a> -->
+									<table id="pageTable" class="demo-add-niftycheck" data-toolbar="#del,#add"
+										   data-search="true"
+										   data-show-refresh="true"
+										   data-show-toggle="true"
+										   data-show-columns="true"
+										   data-sort-name="id"
+										   data-page-list="[5, 10, 20]"
+										   data-page-size="5"
+										   data-pagination="true" data-show-pagination-switch="true" ></table>
+								</div>
+							</div>
+			        	</div>
+                	</div>
+				</div>
+<script>
+	
+	var col = [{field: 'checked', checkbox : true, align: 'center'},
+	   
+		   {field: 'name', title: '发件人', align: 'center'},
+		   {field: 'subject', title: '标题', align: 'center',
+		       formatter:function(value,row,index){
+			    	 var a  ='<a  href="#(ctx)/admin/oa/email/getEditPage?view=detail&id='+row.id+'">'+value+'</a>';
+			     
+				       return a;
+			       }   
+		   
+		   },
+		   
+		   {field: 'filenum', title: '附件数', align: 'center'},
+		   {field: 'timeflage', title: '发送时间', align: 'center'},
+		   {field: 'isreaded', title: '是否已读', align: 'center',
+			   formatter:function(value,row,index){
+				   if(value=='0'){//未提交
+					   return "未读";
+				   }else{
+					   return "已读";
+				   }
+			   }   
+		   },
+		   
+	   
+	   
+	   {field: 'control', title: '操作', align: 'left', width:'200',
+	       formatter:function(value,row,index){
+	       
+	           	//var a = '<a class="label label-table label-success" href="'+ctx+'/admin/showinfo/getEditPage?id='+row.id+'&view=detail" >查看</a>&nbsp;';
+	        	/* var a = '<a class="label label-table label-success" href="'+ctx+'/admin/oa/showinfo/getEditPage?id='+row.id+'&view=edit" >编辑</a>&nbsp;'; */
+					var a = '<a class="label label-table label-success" href="'+ctx+'/admin/oa/email/getEditPage?id='+row.id+'&view=detail" >查看</a>&nbsp;';
+	        	a = a + '<a class="label label-table label-danger" onclick="delReceive(\''+row.id+'\')" href="javascript:void(0);" >删除</a>';
+	           	return a;
+	       }
+	   }];
+	var opt = {
+		    //请求方法
+			   method: 'get',
+			    //是否显示行间隔色
+			   striped: true,
+			   //是否使用缓存，默认为true，所以一般情况下�?要设置一下这个属性（*�?     
+			   cache: false,  
+			   //data-toolbar: "#demo-delete-row",
+			   //是否显示分页�?*�?  
+			   pagination: true,   
+			    //是否启用排序  
+			   sortable: false,    
+			    //排序方式 
+			   sortOrder: "asc",    
+			   //初始化加载第�?页，默认第一�?
+			   //我设置了这一项，但是貌似没起作用，�?�且我这默认�?0,- -
+			   //pageNumber:1,   
+			   //每页的记录行数（*�?   
+			   pageSize: 10,  
+			   //可供选择的每页的行数�?*�?    
+			   pageList: [10, 25, 50, 100],
+			   //这个接口�?要处理bootstrap table传�?�的固定参数,并返回特定格式的json数据  
+			   url: ctx+"/admin/oa/email/listData?vs=1",
+			   //默认值为 'limit',传给服务端的参数为：limit, offset, search, sort, order Else
+			   //queryParamsType:'',   
+			   ////查询参数,每次调用是会带上这个参数，可自定�?                         
+			   queryParams : function(params) {
+			       return {
+			             pageNumber: (params.offset/params.limit)+1,
+			             pageSize: params.limit
+			           };
+			   },
+			   //分页方式：client客户端分页，server服务端分页（*�?
+			   sidePagination: "server",
+			   //是否显示搜索
+			   search: false,  
+			   //Enable the strict search.    
+			   strictSearch: true,
+			   //Indicate which field is an identity field.
+			   idField : "id",
+			   columns: col,
+			   pagination:true,paginationShowPageGo: true
+			}; 
+		
+	//表格
+	function initTable(){
+		$('#pageTable').bootstrapTable(opt);
+		$('#pageTable').bootstrapTable('hideColumn', 'id');
+	}
+	function refreshTable(){
+		$("#pageTable").bootstrapTable('refresh', opt);
+		$('#pageTable').bootstrapTable('hideColumn', 'id');
+	}
+ 
+ 
+
+	//查询
+	function searchTable(){
+		var title = "";
+	 
+		var startTime = "";
+		var endTime = "";
+		var pubisher = "";
+		var secondmenu = "";
+	 
+		var param = {
+			query: {
+				"title":"",
+				"startTime":"",
+				"endTime":"",
+				"pubisher":"",
+				"secondmenu":""
+			}
+		}
+		// 刷新表格
+		$('#pageTable').bootstrapTable('refresh',param);
+	}
+
+/* 	$(document).ready(function(){
+		$('.form_datetime').datepicker({format: 'yyyy-mm-dd',weekStart: 1,todayBtn:  1,autoclose: 1,language:  'zh-CN',todayHighlight: 1,forceParse: 0,clearBtn: true }).on('changeDate',null);
+		initTable();//初始�?
+	}); */
+	
+	
+	
+	
+	 
+
+	
+	
+	
+	 
+	
+	
+</script>
+					                </div>
+					
+					
+			<!--  发件start  -->
+					
+			 <div id="demo-stk-rgt-tab-3" class="tab-pane fade">
+					                
+					      
+				  <div id="page-content">
+			        <div class="col-sm-12 eq-box-sm">
+						<div class="panel">
+						 
+							<div class="panel ">
+								<div class="panel-body">
+								
+									#if(fromway=="home")
+									<a   class="btn btn-primary data-toolbar" href="#(ctx)/admin/home/getPersonalHomePage?action=openPage">返回</a>
+									#end
+									<!-- <a id="add" class="btn btn-primary data-toolbar" href="#(ctx)/admin/oa/showinfo/getEditPage?view=edit"><i class="demo-pli-add"></i> 添加</a>
+									<a id="del" class="btn btn-danger data-toolbar" onclick="delSel()" href="javascript:void(0);"><i class="demo-pli-cross"></i> 批量删除</a> -->
+									<table id="pageTable1" class="demo-add-niftycheck" data-toolbar="#del,#add"
+										   data-search="true"
+										   data-show-refresh="true"
+										   data-show-toggle="true"
+										   data-show-columns="true"
+										   data-sort-name="id"
+										   data-page-list="[5, 10, 20]"
+										   data-page-size="5"
+										   data-pagination="true" data-show-pagination-switch="true" ></table>
+								</div>
+							</div>
+			        	</div>
+                	</div>
+				</div>
+<script>
+	
+	var col1 = [{field: 'checked', checkbox : true, align: 'center'},
+		   
+		   {field: 'name', title: '发件人', align: 'center'},
+		   {field: 'subject', title: '标题', align: 'center'
+			   ,
+		       formatter:function(value,row,index){
+			    	 var a  ='<a  href="#(ctx)/admin/oa/email/getEditPage?view=detail&id='+row.id+'">'+value+'</a>';
+			     
+				       return a;
+			       }   
+		   
+		   
+		   },
+		   {field: 'filenum', title: '附件数', align: 'center'},
+		   {field: 'timeflage', title: '发送时间', align: 'center'
+		   },
+		   
+	   
+	   
+	   {field: 'control', title: '操作', align: 'left', width:'200',
+	       formatter:function(value,row,index){
+	           	//通过formatter可以自定义列显示的内�?
+	           	//value：当前field的�?�，即id
+	           	//row：当前行的数�?
+	           	//var a = '<a class="label label-table label-success" href="'+ctx+'/admin/showinfo/getEditPage?id='+row.id+'&view=detail" >查看</a>&nbsp;';
+	        	/* var a = '<a class="label label-table label-success" href="'+ctx+'/admin/oa/email/getEditPage?id='+row.id+'&view=edit" >编辑</a>&nbsp;'; */
+				var a =  '<a class="label label-table label-danger" onclick="delSend(\''+row.id+'\')" href="javascript:void(0);" >删除</a>';
+	           	return a;
+	       }
+	   }];
+	var opt1 = {
+		    //请求方法
+			   method: 'get',
+			    //是否显示行间隔色
+			   striped: true,
+			   //是否使用缓存，默认为true，所以一般情况下�?要设置一下这个属性（*�?     
+			   cache: false,  
+			   //data-toolbar: "#demo-delete-row",
+			   //是否显示分页�?*�?  
+			   pagination: true,   
+			    //是否启用排序  
+			   sortable: false,    
+			    //排序方式 
+			   sortOrder: "asc",    
+			   //初始化加载第�?页，默认第一�?
+			   //我设置了这一项，但是貌似没起作用，�?�且我这默认�?0,- -
+			   //pageNumber:1,   
+			   //每页的记录行数（*�?   
+			   pageSize: 10,  
+			   //可供选择的每页的行数�?*�?    
+			   pageList: [10, 25, 50, 100],
+			   //这个接口�?要处理bootstrap table传�?�的固定参数,并返回特定格式的json数据  
+			   url: ctx+"/admin/oa/email/listData?vs=2",
+			   //默认值为 'limit',传给服务端的参数为：limit, offset, search, sort, order Else
+			   //queryParamsType:'',   
+			   ////查询参数,每次调用是会带上这个参数，可自定�?                         
+			   queryParams : function(params) {
+			       return {
+			             pageNumber: (params.offset/params.limit)+1,
+			             pageSize: params.limit
+			           };
+			   },
+			   //分页方式：client客户端分页，server服务端分页（*�?
+			   sidePagination: "server",
+			   //是否显示搜索
+			   search: false,  
+			   //Enable the strict search.    
+			   strictSearch: true,
+			   //Indicate which field is an identity field.
+			   idField : "id",
+			   columns: col1,
+			   pagination:true,paginationShowPageGo: true
+			}; 
+		
+	//表格
+	function initTable1(){
+		$('#pageTable1').bootstrapTable(opt1);
+		$('#pageTable1').bootstrapTable('hideColumn', 'id');
+	}
+	function refreshTable1(){
+		$("#pageTable1").bootstrapTable('refresh', opt1);
+		$('#pageTable1').bootstrapTable('hideColumn', 'id');
+	}
+	
+	//查询
+	function searchTable1(){
+		var title = "";
+	 
+		var startTime = "";
+		var endTime = "";
+		var pubisher = "";
+		var secondmenu = "";
+	 
+		var param = {
+			query: {
+				"title":"",
+				"startTime":"",
+				"endTime":"",
+				"pubisher":"",
+				"secondmenu":""
+			}
+		}
+		// 刷新表格
+		$('#pageTable1').bootstrapTable('refresh',param);
+	}
+
+	
+	
+
+	$(document).ready(function(){
+		$('.form_datetime').datepicker({format: 'yyyy-mm-dd',weekStart: 1,todayBtn:  1,autoclose: 1,language:  'zh-CN',todayHighlight: 1,forceParse: 0,clearBtn: true }).on('changeDate',null);
+		initTable();
+		initTable1();
+	});
+	
+	
+	
+	
+	 function initTableClick(type){
+			 
+		 	  if(type=='0'){
+		 		
+		 		 searchTable();
+		 		
+		 	}else if(type=="2"){
+		 		
+		 
+			 
+		 	}else{
+		 		searchTable1();
+		 		
+		 	} 
+			
+	 }
+	
+	
+	
+	 function delSend(ids){
+			pointLion.confimMsg("您是否要删除该信息<br/> 点击确认进行删除 , 点击取消取消该操作",null,function(){
+				//执行删除
+				
+					var data = common_ajax.ajaxFunc("/admin/oa/email/delete",{"ids":ids,"fromtype":"1"}, "json", null);
+				//删除结果
+				if(data.success){
+					pointLion.alertMsg(data.message,"success",null,function(){
+						
+					 
+							
+							searchTable1();
+						 
+						//location.href = ctx+'/admin/oa/email/getListPage';//跳转到列表页
+					});
+				}else{
+					pointLion.alertMsg(data.message,"success",null,null);
+				}
+			});
+		};
+ 
+		
+		 function delReceive(ids){
+				pointLion.confimMsg("您是否要删除该信息<br/> 点击确认进行删除 , 点击取消取消该操作",null,function(){
+					//执行删除
+					
+						var data = common_ajax.ajaxFunc("/admin/oa/email/delete",{"ids":ids,"fromtype":"0"}, "json", null);
+					//删除结果
+					if(data.success){
+						pointLion.alertMsg(data.message,"success",null,function(){
+							
+						 
+								 searchTable();
+						 
+							//location.href = ctx+'/admin/oa/email/getListPage';//跳转到列表页
+						});
+					}else{
+						pointLion.alertMsg(data.message,"success",null,null);
+					}
+				});
+			};
+	
+			
+			
+			$(function (){
+				
+		 
+				
+				
+			 //$('a[href="#demo-stk-rgt-tab-2"]').tab('show')
+			})
+</script>
+									</div>
+									
+									   
+ </div>
+					
+					            <!--Nav Tabs-->
+					            <ul class="nav nav-tabs">
+					                <li  id="writeEamil"  class="active">
+					                    <a  id="writea" data-toggle="tab" href="#demo-stk-rgt-tab-1" onclick="initTableClick(2)">写邮件</a>
+					                    
+					                </li>
+					                <li id="receive" >
+					                    <a  id="recivea" data-toggle="tab" href="#demo-stk-rgt-tab-2" onclick="initTableClick(0)">收件箱</a>
+					                </li>
+					                <li>
+					                    <a data-toggle="tab" href="#demo-stk-rgt-tab-3" onclick="initTableClick(1)">已发邮件</a>
+					                </li>
+					            </ul>
+					        </div>
+					        
+					        
+ 

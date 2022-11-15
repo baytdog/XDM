@@ -1,0 +1,153 @@
+					<form id="editForm" class="panel-body form-horizontal form-padding"  >
+		            	<input id="infoid" type="hidden" name="#(formModelName).id" value="#(o?o.id:'')">
+		            	<input type="hidden" name="#(formModelName).type"   value="#(o.type?o.type: type)"  >
+		            	<div class="form-group">
+		                    <label class="col-md-2 control-label">公文文号</label>
+		                    
+		                  
+		                    
+		                    <div class="col-md-1" style="padding-left: 15px;">
+		                
+		                         <input type="text" name="#(formModelName).doc_type" value="#(o.documentnumber)"  class="form-control"  value="#(o?o.documentnumber:'')" #if(view=="detail") readonly #end>
+		            
+		                    </div>
+		                    
+		                </div>
+		                
+		            
+	                	
+	                	
+	                	  <div class="form-group">
+		                		<label class="col-md-2 control-label">登记日期</label>
+					            <div class="input-group date form_datetime col-md-4" style="float:left">
+				                    <input type="text" id="startTime" name="#(formModelName).registrationdate" class="form-control"  value="#(o?o.registrationdate:'')"   readonly  >
+									<span class="input-group-addon"> <span class="glyphicon glyphicon-th"></span> 
+								 
+									</span>
+				                </div>
+			                    <label class="col-md-1 control-label">收文日期</label>
+					            <div class="input-group date form_datetime col-md-3" style="float:left">
+				                    <input type="text" id="endTime" name="#(formModelName).takedate" class="form-control" value="#(o?o.takedate:'')"  readonly >
+									<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+				                </div>
+			                </div>
+	                	
+		                
+		              <!--   <div class="form-group">
+		                    <label class="col-md-2 control-label">起草部门</label> -->
+		                <!--     <div class="col-md-4"> -->
+		                    	<input type="hidden" name="#(formModelName).sender_orgid" value="#(o.sender_orgid)">
+		                        <input type="hidden" name="#(formModelName).sender_orgname" value="#(o.sender_orgname)" readonly class="form-control">
+		                    <!-- </div>
+		                    <div class="col-md-4"> -->
+		                    	<input type="hidden" name="#(formModelName).sender_id" value="#(o.sender_id)">
+		                        <input type="hidden" name="#(formModelName).sender_name" value="#(o.sender_name)" readonly class="form-control">
+		                  <!--   </div> -->
+		              <!--   </div> -->
+		                <div class="form-group">
+		                    <label class="col-md-2 control-label">题目</label>
+		                    <div class="col-md-9">
+		                        <input type="text"  name="#(formModelName).title" class="form-control"  value="#(o?o.title:'')" #if(view=="detail") readonly #end />
+		                    <!--     <small class="help-block">请输入公文标题</small> -->
+		                    </div>
+		                </div>
+		               <div class="form-group">
+		                    <label class="col-md-2 control-label">内容</label>
+		                    <div class="col-md-9">
+		                        <textarea name="#(formModelName).content" rows="6" class="form-control" readonly >#(o?o.content.replace('**',''):'')</textarea>
+		                     <!--    <small class="help-block">请输入拟办意见</small> -->
+		                    </div>
+		                </div>
+		                
+		                
+		     
+		    
+		              <div class="form-group">
+		                    <label class="col-md-2 control-label">拟办意见</label>
+		                    <div class="col-md-9">
+		                        <textarea name="#(formModelName).lzqk" rows="6" class="form-control"  readonly >#(o?o.lzqk.replace('**',''):'')</textarea>
+		                     <!--    <small class="help-block">请输入拟办意见</small> -->
+		                    </div>
+		                </div>
+		     
+		             
+		                <div class="form-group">
+		                    <label class="col-md-2 control-label">处理情况</label>
+		                    <div class="col-md-9">
+		                        <textarea name="#(formModelName).clqk" rows="12" class="form-control"  readonly  >#(o?o.clqk.replace('**',''):'')</textarea>
+		                      <!--   <small class="help-block">请输入拟办意见</small> -->
+		                    </div>
+		                </div>
+		                
+		           
+			            
+			        
+			           <div class="form-group">
+		                    <label class="col-md-2 control-label">来文单位</label>
+		                     <div class="col-md-9">
+			                    <input type="text" name="#(formModelName).doc_from"  value="#(o?o.doc_from:'')"    class="form-control" #if(view=="detail") readonly #end>
+		                    </div>
+		                </div>
+			       
+			       
+			            <div class="form-group">
+		                    <label class="col-md-2 control-label">文件名称</label>
+		                    <div class="col-md-9">
+		                        <input type="text"  name="#(formModelName).doucumentname" class="form-control"  value="#(o?o.doucumentname:'')" #if(view=="detail") readonly #end />
+		                    <!--     <small class="help-block">请输入公文标题</small> -->
+		                    </div>
+		                </div>
+			            <div class="form-group">
+		                    <label class="col-md-2 control-label">文号</label>
+		                     <div class="col-md-9">
+			                    <input type="text" name="#(formModelName).wh"  value="#(o?o.wh:'')"   class="form-control" #if(view=="detail") readonly #end>
+		                    </div>
+		                </div>
+		                
+		                
+		           
+		                
+		                
+		                
+		                
+			               <div class="form-group">
+			                    <label class="col-md-2 control-label">是否归档</label>
+			                     <div class="col-md-9">
+				                        <input id="level0" class="magic-radio" type="radio" name="#(formModelName).needgd" value="1" #if(o&&o.needgd=="1") checked #end #if(view=='detail') disabled #end>
+			                            <label for="level0">是</label>
+				                        <input id="level1" class="magic-radio" type="radio" name="#(formModelName).needgd" value="0" #if(o&&o.needgd=="0") checked #end #if(view=='detail') disabled #end>
+			                            <label for="level1">否</label>
+				                 </div>
+			                </div>
+			                
+				            <div class="form-group">
+			                    <label class="col-md-2 control-label">暂存</label>
+			                     <div class="col-md-9">
+				                    <input type="text" name="#(formModelName).zc"   value="#(o?o.zc:'')"   class="form-control" #if(view=="detail") readonly #end>
+			                    </div>
+			                </div>
+			                
+			                
+			             
+			    
+			                
+			                
+			            
+                          
+			                    <div class="row">
+			                        <div class="col-sm-11 " align="right">
+			                 
+			                       
+			                       
+			                                 <button class="btn btn-primary" type="button" onclick="window.history.back();" style="font-size: 20px;">返回</button>
+			                        </div>
+			                    </div>
+			                    
+                          
+		                </div>
+		              
+			            <br/>
+			            <br/>
+			        
+			         
+		            </form>

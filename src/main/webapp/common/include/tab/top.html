@@ -1,0 +1,261 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- <link href="../../css/top.css" rel="stylesheet" type="text/css" /> -->
+<link href="#(ctx)/common/css/top.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+<div class="top_bg"  onclick="clickTest()">
+
+
+<!--    <div class="div_serch">
+        <input id="wholesearch" class="input_serch" />
+        <button   id="wholesearchbutton" class="btn_serch" onclick="tt()">搜索</button>	
+    </div> -->
+
+    #if(oanotices!=null)
+    
+    
+    
+    <div class="top_title">
+        <marquee id="affiche" align="left"  color="red"  bgcolor="" behavior="scroll" align="absmiddle"  direction="left"  hspace="-15" vspace="5" loop="-1" scrollamount="10" scrolldelay="100" onMouseOut="this.start()" onMouseOver="this.stop()">
+             <a  href="javascript:void(0)" onclick="shownotice('#(oanotices.id)')" style="font-size: 18px;" >#(oanotices.showhomepageinfo)</a>
+         </marquee>
+
+    </div>
+    #end
+
+   
+
+</div>
+
+
+
+</body>
+
+       
+        <script type="text/javascript">
+        
+        
+        
+        
+        $("#wholesearch").bind("click",function(event){
+			event.stopPropagation();
+        })
+        
+        
+        $("#wholesearchbutton").bind("click",function(event){
+        	event.stopPropagation();
+        });
+        
+        
+        $("#mainnav-menu a.open-menu").tab();
+        function  shownotice(noticeid){
+        	layer.open({
+        		  type: 2,
+        		  title: false, //不显示标题栏
+        		  area: ['1000px', '620px'],
+        		  shade: 0.2,
+        		  id: 'showonenotice', //设定一个id，防止重复弹出
+        		  resize: false,
+        		  closeBtn: true,
+        		  isOutAnim : false , 
+        		  btnAlign: 'c',
+        		  content: ctx+'/admin/oa/notices/homeViewNotice?id='+noticeid,
+        		  success: function(layero){
+        				//nowTask = o;
+        		  }
+        	});
+
+
+        }
+       function clickTest(){
+    	    moveToHomeTab();
+    	  		var linkUrl =ctx+'/admin/home/getPersonalHomePage?action=openPage';
+			    var linkHtml = '首页';
+	    		 $("#jfinaloa-tab-page-content iframe[data-url='" + linkUrl + "'][data-value='" + linkHtml + "']")[0].src=linkUrl;
+       }
+       
+       
+       
+       
+       
+       var scrollSetp = 500;
+       var  operationWidth = 90;
+       var leftOperationWidth = 30;
+       var animatSpeed = 150;
+       
+       
+      function  tt(){
+    	  
+       var linkUrl = "#(ctx)/admin/home/getWholeSearchList";
+          
+      	if(linkUrl.indexOf("?")>0){//绑定打开新页面的。使用iframe打开
+      		linkUrl = linkUrl + "&action=openPage";
+      	}else{
+      		linkUrl = linkUrl + "?action=openPage";
+      	}
+          var linkHtml = "功能测试";
+          var selDom = $("#menu-list a[data-url='" + linkUrl + "'][data-value='" + linkHtml + "']");
+          if (selDom.length === 0) {
+          	//创建关闭按钮以及事件
+              var iel = $("<i>", {
+                  "class": "menu-close ion-close"
+              }).bind("click", closemenu);
+          
+              //创建tab页签以及事件
+              $("<a>", {
+                  "html": linkHtml,
+                  "href": "javascript:void(0);",
+                  "data-url": linkUrl,
+                  "data-value": linkHtml
+              }).bind("click",function() {//点击事件
+                  var jthis = $(this);
+                  linkframe(jthis.data("url"), jthis.data("value"))
+              }).on("contextmenu",function(e){//右键下拉事件
+              	bindMouseRightClickMenu(e,this);
+              })
+              .append(iel).appendTo("#menu-list");
+              //创建iframe以及事件
+              $("<iframe>", {
+                  "class": "iframe-content",
+                  "data-url": linkUrl,
+                  "data-value": linkHtml,
+                  src: linkUrl
+              }).appendTo("#jfinaloa-tab-page-content");
+              //创建下拉菜单以及事件
+              $("<li>", {
+                  "html": linkHtml,
+                  "data-url": linkUrl,
+                  "data-value": linkHtml
+              }).bind("click",function(event) {
+                  var jthis = $(this);
+                  linkframe(jthis.data("url"), jthis.data("value"));
+                  move($("#menu-list a[data-url='" + linkUrl + "'][data-value='" + linkHtml + "']"));
+                  $("#jfinaloa-menu-all").hide();
+                  event.stopPropagation()
+              }).appendTo("#jfinaloa-menu-all-ul");
+              //创建移动
+              createmove();
+              
+              
+				var linkUrl1 =ctx+'/admin/home/getWholeSearchList?keyword='+encodeURI(encodeURI($("#wholesearch").val()));
+              
+         	  $("#jfinaloa-tab-page-content iframe[data-url='" + linkUrl + "'][data-value='" + linkHtml + "']")[0].src=linkUrl1;
+    
+          } else {
+              move(selDom)
+              
+                var linkUrl1 =ctx+'/admin/home/getWholeSearchList?keyword='+encodeURI(encodeURI($("#wholesearch").val()));
+              
+         	  $("#jfinaloa-tab-page-content iframe[data-url='" + linkUrl + "'][data-value='" + linkHtml + "']")[0].src=linkUrl1;
+              
+              
+          }
+          linkframe(linkUrl, linkHtml);
+          return false
+      
+ 
+	  //alert( $("#jfinaloa-tab-page-content  iframe"));
+	
+      }
+       
+      createmove = function() {//创建新菜单的时候移动移动
+          var nav = $("#menu-list");
+          var wwidth = parseInt($("#page-tab").width());
+          var navwidth = parseInt(nav.width());
+          if (wwidth - operationWidth < navwidth) {
+              nav.animate({
+                  "margin-left": "-" + (navwidth - wwidth + operationWidth) + "px"
+              },
+              animatSpeed)
+          }
+      }
+       
+      linkframe = function(url, value) {//链接iframe---控制显示隐藏
+          $("#menu-list a.active").removeClass("active");
+          $("#menu-list a[data-url='" + url + "'][data-value='" + value + "']").addClass("active");
+          $("#jfinaloa-tab-page-content iframe.active").removeClass("active");
+          $("#jfinaloa-tab-page-content .iframe-content[data-url='" + url + "'][data-value='" + value + "']").addClass("active");
+          $("#jfinaloa-menu-all-ul li.active").removeClass("active");
+          $("#jfinaloa-menu-all-ul li[data-url='" + url + "'][data-value='" + value + "']").addClass("active")
+      }
+      
+      closemenu = function(event) {//关闭
+      	
+          $(this.parentElement).animate({
+              "width": "0",
+              "padding": "0"
+          },
+          0,
+          function() {
+              var jthis = $(this);
+              if (jthis.hasClass("active")) {
+                  var linext = jthis.next();
+                  console.log("----")
+               	console.log(linext);
+                  console.log("----")
+                  if (linext.length > 0) {
+                  	
+                      linext.click();
+                      move(linext)
+                      
+                    console.log("====")
+                  	
+                  	  
+                  } else {
+                      var liprev = jthis.prev();
+                      console.log("--+++--")
+                   	console.log(liprev);
+                      console.log("--+++--")
+                      if (liprev.length > 0) {
+                          liprev.click();
+                          move(liprev)
+                      }
+                  }
+              }
+              $(this).remove();
+              $("#jfinaloa-menu-all #jfinaloa-menu-all-ul li[data-url='" + jthis.data("url") + "'][data-value='" + jthis.data("value") + "']").remove();
+              $("#jfinaloa-tab-page-content .iframe-content[data-url='" + jthis.data("url") + "'][data-value='" + jthis.data("value") + "']").remove();
+          });
+          event.stopPropagation()
+      } 
+      move = function(selDom) {//移动
+      	var marginLeft = 0;
+      	if($("#container").hasClass("mainnav-lg")){
+      		marginLeft = 220;
+      	}else if($("#container").hasClass("mainnav-sm")){
+      		marginLeft = 20;
+      	}
+          var nav = $("#menu-list");
+          var releft = selDom.offset().left;
+          var wwidth = parseInt($("#page-tab").width());
+          var left = parseInt(nav.css("margin-left"));
+          if (releft < 0 && releft <= wwidth) {
+              nav.animate({
+                  "margin-left": (left - releft + leftOperationWidth + marginLeft) + "px"
+              },
+              animatSpeed)
+          } else {
+          	
+          	console.log("===========")
+          	console.log(releft)
+          	console.log(selDom.width())
+              console.log(wwidth)
+               console.log(operationWidth)
+               console.log(left - releft + wwidth - selDom.width() - operationWidth - marginLeft)
+          	console.log("===========")
+          	
+          	
+              if (releft + selDom.width() > wwidth - operationWidth) {
+                  nav.animate({
+                      "margin-left": (left - releft + wwidth - selDom.width() - operationWidth - marginLeft) + "px"
+                  },
+                  animatSpeed)
+              }
+          }
+      }
+</script>
+</html>

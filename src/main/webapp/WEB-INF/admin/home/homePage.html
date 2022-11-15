@@ -1,0 +1,374 @@
+<link href="#(ctx)/common/plugins/fullcalendar/fullcalendar.css" rel="stylesheet">
+<link href="#(ctx)/common/plugins/fullcalendar/nifty-skin/fullcalendar-nifty.min.css" rel="stylesheet">
+<script src="#(ctx)/common/plugins/fullcalendar/lib/moment.min.js"></script>
+<script src="#(ctx)/common/plugins/fullcalendar/lib/jquery-ui.custom.min.js"></script>
+<script src="#(ctx)/common/plugins/fullcalendar/fullcalendar.min.js"></script>
+
+<style>
+ .paneltab{
+ background-color:#208E83;
+ 
+ border-radius: 4px;
+ text-align: center;
+ vertical-align: middle;
+ 
+ }
+ 
+ .paneltab .panel-title {
+ 	
+ 	text-align:left;	
+ 	font-size:20px; 
+ 	color:white;
+
+   	
+   	padding-bottom: 20px;
+   	
+ 
+ }
+</style>
+
+<!-- 信息简报 -->
+#define makeXxjb(list)
+	#if(list&&list.size()>0)
+		<!-- <table class="table"> -->
+		   #for(x : list)
+		   <div  class="row" style="height: 55px;text-align: center; " >
+		   
+		   <div  class="col-sm-10 center-block" align="left"   >
+			<!--    	<a  href="#(ctx)/admin/oa/notice/homeViewNotice?id=#(x.id)" title="#(x.title)" >
+			   		 <h4 style="color: gray;" >#(x.infotitle) </h4> 
+			   	</a> -->
+			   	
+			   	<a  href="#(ctx)/admin/oa/showinfo/homeViewNotice?id=#(x.id)" title="#(x.title)" >
+			   		 <h4 style="color: gray;" >#(x.infotitle) </h4> 
+			   	</a>
+		    </div>
+	      <div  class="col-sm-2"  >
+	   		<h6 class="text-right" >#(x.changetime.substring(0,10))</h6>	
+	   	  </div>
+		 	
+		 
+		  </div>
+	<!-- 	<hr style="height:1px;border:none;border-top:1px solid white"/>   -->
+		   #end
+		<!--  </table> -->  
+	#end
+#end
+
+
+<!-- 事务公开 -->
+#define makeswgk(list)
+	#if(list&&list.size()>0)
+		<!-- <table class="table"> -->
+		   #for(x : list)
+		   <div  class="row" style="margin-right: 30px;">
+		   
+		   <div  class="col-sm-9" align="left">
+		  <!--  	<a  href="#(ctx)/admin/oa/showinfo/getEditPage?view=detail&id=#(x.id)" title="#(x.title)" >
+		   		 <h4 style="color: gray;height: 30px;" >#(x.infotitle) </h4> 
+		   	</a> -->
+		   		<a  href="#(ctx)/admin/oa/showinfo/homeViewNotice?id=#(x.id)" title="#(x.title)" >
+		   		 <h4 style="color: gray;height: 30px;" >#(x.infotitle) </h4> 
+		   	</a>
+		   	
+		    </div>
+		      <div  class="col-sm-3">
+		   		<h6 class="text-right" >#(x.changetime.substring(0,10))</h6>	
+		   	  </div>
+		 	
+		 
+		  </div>
+	<!-- 	<hr style="height:1px;border:none;border-top:1px solid white"/>   -->
+		   #end
+		<!--  </table> -->  
+	#end
+#end
+
+
+
+
+
+#define makeShowPic(list)
+	#if(list&&list.size()>0)
+		<div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+  				<!-- Indicators -->
+	 	 <ol class="carousel-indicators">
+		    <li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>
+		    <li data-target="#carousel-example-generic" data-slide-to="1"></li>
+		    <li data-target="#carousel-example-generic" data-slide-to="2"></li>
+	  	</ol>
+
+  <!-- Wrapper for slides -->
+  			<div class="carousel-inner" role="listbox">
+         
+         #for(x : list)
+   
+    
+       	
+       		 #if(for.first)
+  				 <div class="item active">
+  				
+  				#else
+  				  <div class="item">
+  				
+  				#end
+       		    
+       		 <a   href="#(ctx)/admin/oa/picnews/showAllPic?busid=#(x.id)" >  
+			  	<img src="#(ctx)/admin/sys/attachment/showFile?id=#(x.imgurl)&view=detail" style="height: 350px; width: 100%;"/>
+			 </a>  
+			      <div class="carousel-caption">
+			  #(x.title)
+			      </div>
+			    </div>
+         
+          #end 
+         
+          </div>
+
+				  <!-- Controls -->
+				  <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
+				    <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+				    <span class="sr-only">Previous</span>
+				  </a>
+				  <a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
+				    <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+				    <span class="sr-only">Next</span>
+				  </a>
+				</div>
+     #end
+#end
+ 
+
+
+
+ 
+<!-- <div id="page-head">
+ 
+</div> -->
+ 
+<!-- <div  class="container-fluid" align="center"> -->
+
+    <div class="row">
+        <div class="col-lg-6">
+
+         
+            <div id="demo-panel-network" class="panel paneltab"  >
+                <div class="panel-heading">
+                    <div class="panel-control">
+                 
+                 	<a href="#(ctx)/admin/oa/picnews/showPicNewsList" style="font-size: 20px;color: white;">更多</a>
+                    <!--    	 <button id="showPicList" class="btn btn-default btn-active-primary"  onclick="showLists()">更多</button> -->
+                    </div>
+                    <h3 class="panel-title" align="left" style="font-size: 20px;color: white;">图片新闻</h3>
+                </div>
+            </div>
+  
+			#@makeShowPic(picNewsList)
+        </div>
+        <div class="col-lg-6"  >
+           
+ 		 <div id="demo-panel-network" class="panel paneltab"  >
+                <div class="panel-heading">
+                    <div class="panel-control">
+                    
+                    	<!-- <a href="#(ctx)/admin/oa/notice/homeReceiveNoticeListPage" style="font-size: 18px;color: white;display: inline-block;">更多</a> -->
+                     <a href="#(ctx)/admin/oa/showinfo/homeMorListPage?menuid=9b576e6581204cda90ae04722d8640c9" style="font-size: 18px;color: white;display: inline-block;">更多</a> 
+                       	 <!-- <button id="demo-panel-network-refresh" class="btn btn-default btn-active-primary" data-toggle="panel-overlay" data-target="#demo-panel-network">更多</button> -->
+                     
+                    </div>
+                    <h3 class="panel-title" align="left"  style="font-size: 18px; color: white; ">信息简报</h3>
+                </div>
+
+
+             
+
+            </div>
+           			#@makeXxjb(xxjb)
+
+        </div>
+    </div>
+    <br>
+
+    <div class="row">
+        <div class="col-md-4">
+            	<div id="demo-panel-network" class="panel paneltab"  >
+                <div class="panel-heading">
+                    <div class="panel-control">
+                       	 <!-- <button id="demo-panel-network-refresh" class="btn btn-default btn-active-primary" data-toggle="panel-overlay" data-target="#demo-panel-network">更多</button> -->
+                    <!--  <a href="#(ctx)/admin/oa/showinfo/homeMorListPage?menuid=4af75c3436574f86a123f6f31afb557a" style="font-size: 18px;color: white;">更多</a> -->
+                  	 <a href="#(ctx)/admin/oa/showinfo/homeMorListPage?menuid=4af75c3436574f86a123f6f31afb557a" style="font-size: 18px;color: white;display: inline-block;">更多</a> 
+                    </div>
+                    <h3 class="panel-title"  align="left"  style="font-size: 18px; color: white;">事务公开</h3>
+                </div>
+
+            </div>
+           	#@makeswgk(swgk)
+        </div>
+        <div class="col-md-4">
+           <div id="demo-panel-network" class="panel paneltab" >
+                <div class="panel-heading">
+                    <div class="panel-control">
+                       <!--  <button id="demo-panel-network-refresh" class="btn btn-default btn-active-primary" data-toggle="panel-overlay" data-target="#demo-panel-network"><i class="demo-psi-repeat-2"></i></button> -->
+                       	 <!-- <button id="demo-panel-network-refresh" class="btn btn-default btn-active-primary" data-toggle="panel-overlay" data-target="#demo-panel-network">更多</button> -->
+                   
+                   <!-- 	<a href="#(ctx)/admin/oa/showinfo/homeMorListPage?menuid=cff2723852f5445c90dbec2bc826e5e1" style="font-size: 18px;color: white;">更多</a> -->
+                   	<a href="#(ctx)/admin/oa/showinfo/homeMorListPage?menuid=cff2723852f5445c90dbec2bc826e5e1" style="font-size: 18px;color: white;display: inline-block;">更多</a> 
+                    </div>
+                    <h3 class="panel-title">学习交流</h3>
+                </div>
+            </div>
+            		#@makeswgk(xxjl)
+        </div>
+        <div class="col-md-4">
+               <div id="demo-panel-network" class="panel paneltab" >
+                <div class="panel-heading">
+                    <div class="panel-control">
+                       <!--  <button id="demo-panel-network-refresh" class="btn btn-default btn-active-primary" data-toggle="panel-overlay" data-target="#demo-panel-network"><i class="demo-psi-repeat-2"></i></button> -->
+                       <!-- 	 <button id="demo-panel-network-refresh" class="btn btn-default btn-active-primary" data-toggle="panel-overlay" data-target="#demo-panel-network">更多</button> -->
+                    	 	<!-- <a href="#(ctx)/admin/oa/notice/homeReceiveNoticeListPage" style="font-size: 18px;color: white;">更多</a> -->
+                   		<a href="#(ctx)/admin/oa/showinfo/homeMorListPage?menuid=9b36bb2a18e54b86be3176e0433335c4" style="font-size: 18px;color: white;display: inline-block;">更多</a> 
+                    </div>
+                    <h3 class="panel-title" align="left"  style="font-size: 18px; color: white;">党务公开</h3>
+                </div>
+
+            </div>
+           
+             	
+             	#@makeswgk(dwgk)
+        </div>
+        <div class="col-lg-12">
+          <div id="demo-panel-network" class="panel paneltab" >
+                <div class="panel-heading">
+                     
+                    <h3 class="panel-title" style="text-align: center;">一周安排</h3>
+                </div>
+            </div>
+            <!-- 日历开始 -->
+            
+            <div class="row"  >
+				  
+				    <div class="col-md-12 col-lg-12" >
+				        <div class="panel" >
+				            <div class="panel-body" >
+				
+				                <!-- ============================================ -->
+				                <div id='demo-calendar' ></div>
+				                <!-- ============================================ -->
+				
+				            </div>
+				        </div>
+				    </div>
+			</div>
+         <!--    日历 结束 -->
+         
+         <br>
+         
+      
+        </div>
+
+    </div>
+
+<script>
+
+$(document).ready(function() {
+	$('#demo-external-events .fc-event').each(function() {
+		$(this).data('event', {
+			title: $.trim($(this).text()), // use the element's text as the event title
+			stick: true, // maintain when user navigates (see docs on the renderEvent method)
+			className : $(this).data('class')
+		});
+		$(this).draggable({
+			zIndex: 99999,
+			revert: true,      // will cause the event to go back to its
+			revertDuration: 0  //  original position after the drag
+		});
+	});
+	
+ 
+ 
+	
+	$('#demo-calendar').fullCalendar({
+	    height: 250,
+		header: {
+		/* 	left: 'prev,next,prevYear,nextYear today', */
+			center: 'title',
+			/* right: 'month,agendaWeek,agendaDay,basicWeek' */
+			 right: 'basicWeek'
+			
+		},
+		buttonText:{
+				prev: '‹', // ‹
+				next: '›', // ›
+				prevYear: '«', // «
+				nextYear: '»', // »
+				today: '今天',
+				month: '月',
+				week: '周',
+				day: '天',
+				basicWeek:'一周',
+			},
+	    
+		editable: false,//设置是否允许拖拽
+		droppable: true, // this allows things to be dropped onto the calendar
+		drop: function() {
+			if ($('#drop-remove').is(':checked')) {
+				$(this).remove();
+			}
+		},
+		dayClick: function(date, allDay, jsEvent, view) {
+			 
+		},
+		eventClick: function(event, jsEvent, view) {
+	 
+		 
+		        
+		},
+		eventRender: function (event, element) {//title以HTML显示（换行）
+	            element.html(event.title);           
+	    },
+		header:false,
+		weekends:false,
+		isRTL:false,
+		selectable:true,
+		weekNumbers:false,
+		weekNumberTitle:'周次',
+		monthNames:['一月', '二月', '三月', '四月', '五月', '六月','七月', '八月', '九月', '十月', '十一月', '十二月'],
+		monthNamesShort:['一月', '二月', '三月', '四月', '五月', '六月','七月', '八月', '九月', '十月', '十一月', '十二月'],
+		dayNames:['周日', '周一', '周二', '周三', '周四', '周五', '周六'],
+		dayNamesShort:['周日', '周一', '周二', '周三', '周四', '周五', '周六'],
+		defaultDate: '#(today)',
+		defaultView: 'basicWeek' ,
+	
+		eventLimit: true, // allow "more" link when too many events
+		
+		
+		/* events:'#(ctx)/admin/oa/workplan/getWorkPlan', */
+		   events:  function(start, end, timezone, callback) {
+			  
+	        $.ajax({
+	            url: '#(ctx)/admin/oa/workplan/getWorkPlan',
+	            dataType: 'json',
+	            
+	            success: function(doc) {
+	                var events = [];
+	                $(doc).each(function() {
+	                    events.push({
+	                    	id:$(this).attr('id'),
+	                        title: $(this).attr('title'),
+	                        start: $(this).attr('start'),
+	                        end:$(this).attr('end')// will be parsed
+	                    });
+	                });
+	                
+	                callback(events);
+	            }
+	        });
+	    }   
+	      
+	 	
+	});
+});
+    
+ 
+
+</script>

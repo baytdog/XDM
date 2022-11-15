@@ -1,0 +1,148 @@
+<form id="editForm" class="panel-body form-horizontal form-padding">
+						<input type="hidden"  name="#(formModelName).id" class="form-control" value="#(o?o.id:'')">
+			                <div class="form-group">
+			                    <label class="col-md-2 control-label">报销人</label>
+			                    <div class="col-md-4">
+			                    	<input type="hidden"  name="#(formModelName).userid" class="form-control"  value="#if(o)#(o.userid)#else#(user.id)#end">
+			                        <input type="text"  name="#(formModelName).applyer_name" class="form-control"  value="#if(o)#(o.applyer_name)#else#(user.name)#end" readonly>
+			                    </div>
+			                    <label class="col-md-1 control-label">部门</label>
+			                    <div class="col-md-4">
+			                        <input type="hidden"  name="#(formModelName).org_id" class="form-control"  value="#if(o)#(o.org_id)#else#(org.id)#end">
+			                        <input type="text"  name="#(formModelName).org_name" class="form-control"  value="#if(o)#(o.org_name)#else#(org.name)#end" readonly>
+			                    </div>
+			                </div>
+							<div class="form-group">
+								<label class="col-md-2 control-label">类型</label>
+								<div class="col-md-4">
+									<input type="text" class="form-control"  value="#if(o.type=='1')费用报销申请#elseif(o.type=='2')出差费用申请#elseif(o.type=='3')业务招待费用申请#end" readonly>
+									<input type="hidden"  name="#(formModelName).type" class="form-control"  value="#(o?o.type:type)">
+								</div>
+							</div>
+			                <div class="form-group">
+			                    <label class="col-md-2 control-label">标题</label>
+			                    <div class="col-md-9">
+			                        <input type="text"  name="#(formModelName).title" class="form-control"  value="#(o?o.title:'')" #if(view=='detail') readonly #end>
+			                        <small class="help-block">请输入标题</small>
+			                    </div>
+			                </div>
+							#@installSelectProjectButton(formModelName)
+							#@installSelectBusinessButton(formModelName,0,"借款单据","borrow_id","borrow_code",o.borrow_id,o.borrow_code,"oa_apply_borrow_money","id:主键","code:借款单","money:金额,pay_type:付款方式,repay_type:还款方式")
+			                <div class="form-group">
+			                    <label class="col-md-2 control-label">金额</label>
+			                    <div class="col-md-2">
+			                        <input type="text"  name="#(formModelName).money" class="form-control"  value="#(o?o.money:'')" #if(view=='detail') readonly #end>
+			                        <small class="help-block">请输入金额</small>
+			                    </div>
+		                        <label class="col-md-2 control-label" style="text-align:left;">元</label>
+			                </div>
+							<div class="form-group">
+								<label class="col-md-2 control-label">领款人</label>
+								<div class="col-md-2">
+									<div class="input-group mar-btm col-md-12">
+										<input type="hidden"  name="#(formModelName).get_money_userid" id="get_money_userid" class="form-control"  value="#(o?o.get_money_userid:'')">
+										<input type="text"  name="#(formModelName).get_money_user" id="get_money_user" class="form-control"  value="#(o?o.get_money_user:'')" readonly>
+										#if(view!="detail")
+										<span class="input-group-btn">
+												<button class="btn btn-primary" type="button" onclick="openSlectCostOneUser()">选择</button>
+											</span>
+										#end
+									</div>
+								</div>
+							</div>
+			                <div class="form-group">
+				                #if(o&&o.type=="2")<!--出差费用申请-->
+			                		<label class="col-md-2 control-label">开始时间</label>
+						            <div class="input-group date form_datetime col-md-4" style="float:left">
+					                    <input type="text" id="startTime" name="#(formModelName).start_time" class="form-control"  value="#(o?o.start_time:'')" readonly>
+										<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+					                </div>
+				                    <label class="col-md-1 control-label">结束时间</label>
+						            <div class="input-group date form_datetime col-md-3" style="float:left">
+					                    <input type="text" id="endTime" name="#(formModelName).end_time" class="form-control"  value="#(o?o.end_time:'')" readonly>
+										<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+					                </div>
+					            #elseif(o&&o.type=="3")
+					            	<label class="col-md-2 control-label">招待日期</label>
+						            <div class="input-group date form_datetime col-md-4" style="float:left">
+					                    <input type="text" id="serveTime" name="#(formModelName).serve_time" class="form-control"  value="#(o?o.serve_time:'')" readonly>
+										<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+					                </div>
+				                #end
+			                </div>
+							<div class="form-group">
+								<label class="col-md-2 control-label">用途</label>
+								<div class="col-md-9">
+									<textarea rows="8" name="#(formModelName).use_to" class="form-control" #if(view=='detail') readonly #end>#(o?o.use_to:'')</textarea>
+									<small class="help-block">请输入用途</small>
+								</div>
+							</div>
+			                <div class="form-group">
+			                    <label class="col-md-2 control-label">备注</label>
+			                    <div class="col-md-9">
+			                        <textarea rows="8" name="#(formModelName).des" class="form-control" #if(view=='detail') readonly #end>#(o?o.des:'')</textarea>
+			                        <small class="help-block">请输入申请意见</small>
+			                    </div>
+			                </div>
+			                <!-- <div class="form-group">
+			                    <label class="col-md-2 control-label">上级领导批示</label>
+			                    <div class="col-md-9">
+			                        <textarea rows="8" name="#(formModelName).leader_message" class="form-control" readonly>#(o?o.leader_message:'')</textarea>
+			                        <small class="help-block">请输入领导批示</small>
+			                    </div>
+			                </div>
+			                <div class="form-group">
+			                    <label class="col-md-2 control-label">领导批示</label>
+			                    <div class="col-md-9">
+			                        <textarea rows="8" name="#(formModelName).leader2_message" class="form-control" readonly>#(o?o.leader2_message:'')</textarea>
+			                        <small class="help-block">请输入领导批示</small>
+			                    </div>
+			                </div> -->
+			            	#if(view=='edit')
+								<div class="panel-footer">
+									<div class="row">
+										<div class="col-sm-8 col-sm-offset-3">
+											<button class="btn btn-warning" type="reset">重置</button>
+											<button class="btn btn-primary" type="submit" >保存</button>
+										</div>
+									</div>
+								</div>
+							#else
+
+				            #end
+		            </form>
+<script>
+	$(document).ready(function() {
+		$('.form_datetime').datepicker({format: 'yyyy-mm-dd',weekStart: 1,todayBtn:  1,autoclose: 1,language:  'zh-CN',todayHighlight: 1,forceParse: 0,showMeridian: 1}).on('changeDate',function(){
+			if(type=="2"){
+				var startTime = $("#startTime").val();
+				var endTime = $("#endTime").val();
+				if(startTime&&endTime){
+					if(!dateUtil.compareCalendar(startTime,endTime)){
+						pointLion.alertMsg("开始时间大于结束时间","danger",null,null);
+						$("#editForm .btn").attr("disabled","disabled");
+					}else{
+						resetVali();
+					}
+				}
+			}
+		});
+		$('#editForm').bootstrapValidator({
+			fields: {
+				"#(formModelName).money": {
+					validators: {
+						notEmpty: {
+							message: '*金额不能为空'
+						},
+						digits: {
+							message: '请填写数字'
+						}
+					}
+				}
+			}
+		}).on("success.form.bv", function (e) {
+			save();
+			return false;//阻止表单跳转
+		});
+	});
+</script>

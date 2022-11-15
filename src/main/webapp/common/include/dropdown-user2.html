@@ -1,0 +1,25 @@
+<ul class="head-list">
+ 
+ 	<li>
+        <a href="#(ctx)/admin/oa/bumph/getDraftListPage2"><span class="badge badge-danger pull-right">#(bumpcount)</span><i class="demo-pli-mail icon-lg icon-fw"></i>收文签阅</a>
+    </li>
+ 
+ 	<li>
+        <a href="#(ctx)/admin/oa/hotline/getListPage1"><span class="badge badge-danger pull-right">#(bumpcount)</span><i class="demo-pli-mail icon-lg icon-fw"></i>热线、信访</a>
+    </li>
+ 
+    <li>
+        <a href="#(ctx)/admin/oa/email/getListPage"><span class="badge badge-danger pull-right">#(emailcount)</span><i class="demo-pli-mail icon-lg icon-fw"></i> 未读邮件</a>
+    </li>
+     
+  <!--   <li>
+        <a href="#(ctx)/admin/login/logout"><i class="demo-pli-unlock icon-lg icon-fw"></i> 登出</a>
+    </li> -->
+</ul>
+<script>
+    function changeIndexPageType(type){
+        var data = {"sysCustomSetting.index_page_type":type};
+        setCustomStatus(data);
+        location.reload()
+    }
+</script>

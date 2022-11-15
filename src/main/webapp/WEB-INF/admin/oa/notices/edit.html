@@ -1,0 +1,253 @@
+	<div id="page-content">
+			<div class="col-lg-12">
+		        <div class="panel">
+		            <div class="panel-heading">
+		                <h3 class="panel-title" style="text-align: center;">
+				 	通知
+		                </h3>
+		            </div>
+			 
+					<form id="editForm" class="panel-body form-horizontal form-padding">
+		            	<input id="infoid" type="hidden" name="oaNotices.id" value="#(o?o.id:'')">
+		            	<div class="form-group">
+		                    <label class="col-md-2 control-label">通知名称</label>
+		                    <div class="col-md-9">
+				                <input type="text"  name="oaNotices.noticename" class="form-control"  value="#(o?o.noticename:'')" #if(view=="detail") readonly #end />
+				         <!--        <small class="help-block">请输入公告标题</small> -->
+		                    </div>
+		                </div>
+		                
+		                
+		                      
+		                <div class="form-group">
+		                    <label class="col-md-2 control-label">通知内容</label>
+		                    <div class="col-md-9">
+		                        <textarea name="oaNotices.noticeinfo" rows="12" class="form-control" #if(view=="detail") readonly #end>#(o?o.noticeinfo:'')</textarea>
+		                       <!--  <small class="help-block">请输入公文描述内容</small> -->
+		                    </div>
+		                </div>
+		                	<div class="form-group">
+		                    <label class="col-md-2 control-label">首页滚动显示内容</label>
+		                    <div class="col-md-9">
+				                <input type="text"  name="oaNotices.showhomepageinfo" class="form-control"  value="#(o?o.showhomepageinfo:'')" #if(view=="detail") readonly #end />
+				             <!--    <small class="help-block">请输入公告标题</small> -->
+		                    </div>
+		                </div>
+		                 <div class="form-group">
+		                    <label class="col-md-2 control-label">是否显示再首页</label>
+		                     <div class="col-md-2">
+			                        <input id="level0" class="magic-radio" type="radio" name="oaNotices.sfshowhomepage" value="1" #if(o&&o.sfshowhomepage=="1") checked #end #if(view=='detail') disabled #end>
+		                            <label for="level0">是</label>
+			                        <input id="level1" class="magic-radio" type="radio" name="oaNotices.sfshowhomepage" value="0" #if(o&&o.sfshowhomepage=="0") checked #end #if(view=='detail') disabled #end>
+		                            <label for="level1">否</label>
+			                 </div>
+			              </div>
+			              
+			              
+			                   <div class="form-group">
+		                    <label class="col-md-2 control-label">是否发布</label>
+		              
+				               <div class="col-md-2">
+			                        <input id="level2" class="magic-radio" type="radio" name="oaNotices.sfpublish" value="1" #if(o&&o.sfpublish=="1") checked #end #if(view=='detail') disabled #end>
+		                            <label for="level2">是</label>
+			                        <input id="level3" class="magic-radio" type="radio" name="oaNotices.sfpublish" value="0" #if(o&&o.sfpublish=="0") checked #end #if(view=='detail') disabled #end>
+		                            <label for="level3">否</label>
+			                 </div>
+		                  
+		                </div>	
+			             <div class="form-group">
+		                    <label class="col-md-2 control-label">显示截至时间</label>
+		                       <div class="input-group date form_datetime col-md-4" style="float:left">
+				                    <input type="text" id="showtime" name="oaNotices.showtime" class="form-control"  value="#(o?o.showtime:'')"   readonly  >
+									<span class="input-group-addon"> <span class="glyphicon glyphicon-th"></span> 
+								 
+									</span>
+				                </div>
+		                </div>
+			            
+			            
+			           <div class="form-group">
+		                    <label class="col-md-2 control-label">发送部门</label>
+		                    <div class="col-md-9">
+		                    	<input type="hidden"  id="departments" name="oaNotices.departments" value="#(o?o.departments:'')" >
+		                       #for(org:orglist)
+
+								<label class="checkbox-inline">
+  									<input type="checkbox"  name="departs"  value="#(org.id)" onclick="departsCheckValue()"> #(org.name)
+								</label>
+							 
+							  #end
+				         
+		                    </div>
+		                </div>
+		                
+		           
+			         
+		               
+			                <div class="panel-footer" align="center">
+			                    <div class="row">
+			                        <div class="col-sm-12">
+			                         	<button class="btn btn-primary" onclick="window.history.back();" type="reset">返回</button>
+			                         	 #if(view!="detail") 
+				                            <button class="btn btn-warning" type="reset">重置</button>
+				                            <button class="btn btn-primary" type="button" onclick="doSave()" >保存</button>
+			                            #end
+			                            
+			                            	<a href="javascript:void(0);" onclick="doUploadAttachment()" style="position: relative;">
+											<button class="btn btn-warning" type="button">附件</button>
+								<span class="pull-right badge badge-success" style="position: absolute;right: -8px;top: -14px;" id="businessAttachmentCount">#(fileSize)</span>
+								</a>
+			                        </div>
+			                    </div>
+			                </div>
+			        
+		            </form>
+		        </div>
+		    </div>
+	</div>
+	<script>
+	
+	
+	//进行保存
+	function doSave(){
+ 
+		var validator = formValidate();//表单校验
+		var va = $("#editForm").data('bootstrapValidator').isValid();
+		if(va){
+			save();
+		}
+	}
+	
+	
+
+	
+	
+	var  busid=$("#infoid").val();
+	
+	function save(){
+		var data = common_ajax.ajaxFunc("/admin/oa/notices/save", $('#editForm').serialize(), "json", null);
+		if(data.success){
+			pointLion.alertMsg("保存成功!" , "success" , "small" , function(){
+			//location.href = ctx+'/admin/oa/notices/getListPage';//跳转到列表页
+			 
+			/* 	var o=#(o);
+			 o=data.data;
+			 alert(o); */
+			 busid=data.data.id;
+			 
+			   
+			},data);
+		}else{
+			pointLion.alertMsg(data.message , "danger" , "small" , function(){
+				$(".btn").removeAttr("disabled");
+			},data);
+		}
+	}
+	var view = "#(view?view:'')";
+	
+	function doUploadAttachment(){
+		
+		if(busid){
+			pointLion.openBusinessAttachmentPage(busid,view,function(){
+				
+				setAttachmentCount();//关闭之后回调
+			});
+		}else{
+			pointLion.alertMsg("请先保存再上传附件！" , "danger" , "small" , null);
+		}
+	}
+	//设置附件数量
+	function setAttachmentCount(){
+		var data = common_ajax.ajaxFunc("/admin/sys/attachment/getBusinessAttachmentCount", {"busid":busid}, "json", null);
+		if(data.success){
+			$("#businessAttachmentCount").html(data.data);
+		}
+	}
+	
+	//表单校验
+	function formValidate(){
+		$('#editForm').bootstrapValidator({
+    		excluded:[":disabled"],
+            fields: {
+            	"oaNotices.noticename": {
+                    validators: {
+                        notEmpty: {
+                            message: '*通知名称不能为空'
+                        },
+                       /*  stringLength: {
+                            max: 50,
+                            message: '*公文标题长度必须小于50'
+                        } */
+                    }
+                }
+              /* ,  "oaNotice.to_org_id":{
+                	validators: {
+                        notEmpty: {
+                            message: '*公文标题不能为空'
+                        }
+                    }
+                } */
+            }
+        }).bootstrapValidator('validate');
+	}
+	
+	
+	
+	$(document).ready(function() {
+		
+		$('.form_datetime').datepicker({format: 'yyyy-mm-dd',weekStart: 1,todayBtn:  1,autoclose: 1,language:  'zh-CN',todayHighlight: 1,forceParse: 0,showMeridian: 1}).on('changeDate',function(){
+			var showtime = $("#showtime").val();
+		  
+		});
+		
+		
+		$(".selectpicker").selectpicker({});
+		$(".bootstrap-select").attr("style","width:100%;");
+		
+		//var departs=[];
+	
+		var departs="#(o.departments)".split(",") ;
+		
+		 $.each(departs,function(i,item){
+
+		$("input[name='departs'][value="+item+"]").attr("checked","checked");
+
+		});  
+	});
+	
+	
+	function departsCheckValue(){
+
+		var value =	$("input[name='departs']:checked").val();
+		
+		var departsCheck =[];
+		$("input[name='departs']:checked").each(function(){
+			departsCheck.push($(this).val());
+		});
+ 	
+		
+		$("#departments").val(departsCheck);
+	}
+	
+/* 		function save(){
+			var data = common_ajax.ajaxFunc("/admin/notices/save", $('#editForm').serialize(), "json", null);
+			if(data.success){
+				pointLion.alertMsg("保存成功!" , "success" , "small" , function(){
+					location.href = ctx+'/admin/notices/getListPage';//跳转到列表页
+				},data);
+			}else{
+				pointLion.alertMsg(data.message , "danger" , "small" , function(){
+					$(".btn").removeAttr("disabled");
+				},data);
+			}
+		} */
+	/* 	$(document).ready(function() {
+			$('#editForm').bootstrapValidator({
+	            fields: {
+	            }
+	        }).on("success.form.bv", function (e) {
+	            save();
+	            return false;//阻止表单跳转
+	        });
+		}); */
+	</script>

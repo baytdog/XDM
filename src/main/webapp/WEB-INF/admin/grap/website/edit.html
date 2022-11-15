@@ -1,0 +1,100 @@
+	
+	<div id="page-content">
+			<div class="col-lg-12">
+		        <div class="panel">
+		            <div class="panel-heading">
+		                <h3 class="panel-title" style="text-align: right;">
+		                	#@installPJaxGoBackBtn()
+		                	添加站点
+		                </h3>
+		            </div>
+		            <form id="editForm" class="panel-body form-horizontal form-padding">
+							<input type="hidden"  name="#(formModelName).id" class="form-control" value="#(o?o.id:'')">
+			                <div class="form-group">
+			                    <label class="col-md-2 control-label">站点名称</label>
+			                    <div class="col-md-9">
+			                        <input type="text"  name="#(formModelName).name" class="form-control"  value="#(o?o.name:'')">
+			                        <small class="help-block">请输入站点名称</small>
+			                    </div>
+			                </div>
+			                <div class="form-group">
+			                    <label class="col-md-2 control-label">站点地址</label>
+			                    <div class="col-md-9">
+			                        <input type="text"  name="#(formModelName).url" class="form-control"  value="#(o?o.url:'')">
+			                        <small class="help-block">请输入站点地址</small>
+			                    </div>
+			                </div>
+			                <div class="form-group">
+			                    <label class="col-md-2 control-label">是否需要登录</label>
+			                    <div class="col-md-9">
+			                        <input id="ifNeedLoginNo" class="magic-radio" type="radio" name="#(formModelName).if_need_login" value="0" #if(o&&o.if_need_login=="0") checked #end>
+			                        <label for="ifNeedLoginNo">不需要</label>
+			                        <input id="ifNeedLoginYes" class="magic-radio" type="radio" name="#(formModelName).if_need_login" value="1" #if(o&&o.if_need_login=="1") checked #end>
+			                        <label for="ifNeedLoginYes">需要</label>
+			                    </div>
+			                </div>
+			                <div class="form-group">
+			                    <label class="col-md-2 control-label">登录是否需要验证码</label>
+			                    <div class="col-md-9">
+			                        <input id="ifNeedLoginValicodeNo" class="magic-radio" type="radio" name="#(formModelName).if_login_need_valicode" value="0" #if(o&&o.if_login_need_valicode=="0") checked #end>
+			                        <label for="ifNeedLoginValicodeNo">不需要</label>
+			                        <input id="ifNeedLoginValicodeYes" class="magic-radio" type="radio" name="#(formModelName).if_login_need_valicode" value="1" #if(o&&o.if_login_need_valicode=="1") checked #end>
+			                        <label for="ifNeedLoginValicodeYes">需要</label>
+			                    </div>
+			                </div>
+			                <div class="form-group">
+			                    <label class="col-md-2 control-label">登录页地址</label>
+			                    <div class="col-md-9">
+			                        <input type="text"  name="#(formModelName).login_url" class="form-control"  value="#(o?o.login_url:'')">
+			                        <small class="help-block">请输入登录页地址</small>
+			                    </div>
+			                </div>
+			                <div class="form-group">
+			                    <label class="col-md-2 control-label">登录实现类名</label>
+			                    <div class="col-md-9">
+			                        <input type="text"  name="#(formModelName).login_impl_class" class="form-control"  value="#(o?o.login_impl_class:'')">
+			                        <small class="help-block">请输入登录实现类名</small>
+			                    </div>
+			                </div>
+		                	#if(view=='detail')
+			                
+				            #else
+			            	<div class="panel-footer">
+			                    <div class="row">
+			                        <div class="col-sm-8 col-sm-offset-3">
+			                            <button class="btn btn-warning" type="reset" #if(view=='detail') disabled #end>重置</button>
+			                            <button class="btn btn-primary" type="submit" #if(view=='detail') disabled #end>保存</button>
+			                        </div>
+			                    </div>
+			                </div>
+				            #end
+		            </form>
+		        </div>
+		    </div>
+	</div>
+	<script>
+		function save(){
+			var data = common_ajax.ajaxFunc("/admin/grap/website/save", $('#editForm').serialize(), "json", null);
+			if(data.success){
+				pointLion.alertMsg("保存成功!" , "success" , "small" , function(){
+					location.href = ctx+'/admin/grap/website/getListPage';//跳转到列表页
+				},data);
+			}else{
+				pointLion.alertMsg(data.message , "danger" , "small" , function(){
+					$(".btn").removeAttr("disabled");
+				},data);
+			}
+		}
+		$(document).ready(function() {
+			$('#editForm').bootstrapValidator({
+	            fields: {
+	            }
+	        }).on("success.form.bv", function (e) {
+	            save();
+	            return false;//阻止表单跳转
+	        });
+			if("#(view)"=="detail"){//控制是否只读
+				$("input,textarea").attr("readonly","readonly");
+			}
+		});
+	</script>

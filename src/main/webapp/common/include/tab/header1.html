@@ -1,0 +1,184 @@
+<header>
+
+
+
+   #if(username!="moa" && username!="tdog")
+      <!--  <div  align="center" style="background-image:url(#(ctx)/common/img/bg-img/bg-img-oa.jpg);height: 150px;" > -->
+<!--         <div   align="center" style="background-image:url(#(ctx)/common/img/bg-img/bg-img-oa.jpg);background-color:green;height: 180px;margin-left: 20px;margin-right: 20px;" > -->
+               <div   align="center" style="background-image:url(#(ctx)/common/img/bg-img/tit-bg.png); height: 230px;margin-left: 20px;margin-right: 20px; background-size: 100% 230px;" >
+       		<div class="container">
+       		
+       				
+       				
+       				
+       				<div style=" height: 80px; margin-top: 30px; margin-left: -15px; margin-right: -15px;"> 
+       				
+       							
+       				
+       				
+       				
+		       				<div  style="display: inline-block;float: right; margin-top: 5px; padding-right: 50px;">
+			 
+								<!-- <a style="font-size: 30px;">
+								<span class="pull-right badge badge-warning todoListCount">123</span>
+								 <span class="glyphicon glyphicon-envelope" aria-hidden="true" style="color: white;" ></span>		
+								 
+								</a> -->
+								
+								
+								
+						  <ul class="nav navbar-top-links pull-right" > 
+                      <li id="dropdown-user" class="dropdown" >
+                            <a href="#" data-toggle="dropdown" class="dropdown-toggle text-right"  style="font-size: 30px;">
+                         
+                                <span class="pull-right badge badge-warning todoListCount">#(todonum)</span>
+								 <span class="glyphicon glyphicon-envelope" aria-hidden="true" style="color: white;" ></span>	
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-md dropdown-menu-right panel-default">
+                               
+                             #include("/common/include/dropdown-user2.html")  
+                            </div>
+                        </li>
+                 
+                    </ul>  
+								
+								
+							 
+							 
+								
+								
+								
+								
+								
+								
+								
+								
+								
+						
+								
+								
+								
+								
+		  					</div>
+        
+					        <div class="btn-group"  style="display: inline-block;float: right; padding-right: 20px;" >
+					 	 
+								  <button type="button" class="btn btn-default"  disabled="disabled" style=" font-size: 20px; ">
+								 	 <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+								  </button>
+								
+								  <div class="btn-group" role="group" >
+								    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style=" font-size: 20px;">
+								      #(username)
+								      <span class="caret"></span>
+								    </button>
+								    <ul class="dropdown-menu">
+								    
+							 	 <a href="#(ctx??)/admin/login/logout" class="list-group-item">
+					                 <i class="demo-pli-unlock icon-lg icon-fw"></i> 登出
+					          	 </a>  
+								    <!--   <li><a href="#(ctx??)/admin/login/logout">登出</a></li> -->
+								   
+								    </ul>
+								  </div>
+							</div>
+			        
+							<div  class="btn-group"  style="display: inline-block;float: right;  font-size: 20px; padding-right: 20px; margin-top: 5px;">
+					  			<input  id="searchWord" type="text"/>
+								<button  onclick="searchbyWord()">搜索1</button>  		
+					  		</div>
+					        	<div  style="float: left; margin-top: 25px; padding-left: 50px;">
+       									<p>
+       										<img alt="" src="#(ctx)/common/img/bg-img/logo-tit.png">
+       									</p>
+       								
+       						   </div>
+       				
+       				</div>
+       		
+       				<div style="height: 60px;"> 
+       				
+       				
+       				
+       				
+       				
+	       				   	 <div >
+	       				   	 
+	       		 
+	       		 
+	       		 <div class="btn-group" style="margin-top: 10px;"  >
+										  <button  type="button" onclick="javascript:window.location.href='#(ctx)/admin/home/getHomePage'"  style="border-radius: 8px; font-size: 23px; background-color: #BBECFB;color:#333333 "  class="btn  dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" >
+									  首页 
+										  </button>
+					 </div> 
+	       				  
+	       				  
+		       <!-- ！！！动态菜单！！！开始！！！下面受到权限控制，使用sql查询出来的 -->
+														#for(a:mlist)
+															<div class="btn-group" style="margin-top: 10px;"  >
+																  <button  type="button"  style="border-radius: 8px; font-size: 23px; background-color: #BBECFB;color:#333333 "  class="btn  dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" >
+																  #(a.name) <!-- <span class="caret"></span> -->
+																  </button>
+																    <ul class="dropdown-menu" style="background-color: #C0C0C0;">
+																		#for(b:a.children)
+																		
+																		    <li><a href="#(ctx)#(b.url)" style="font-size:20px;">#(b.name)</a></li>
+																		 
+																		#end
+																    </ul>
+															</div>
+														#end
+										<!-- 					<li class="list-header" style="margin-bottom: 30px;"></li>占位 -->
+											<!-- ！！！动态菜单！！！结束！！！ -->   
+		         			 </div>
+       				</div>
+       				
+       			 
+       				<div   style="height: 40px; margin-left: -15px;margin-right: -15px;">
+       			 
+       				 	<marquee id="affiche" align="left"  color="red" bgcolor="#49AEDF" behavior="scroll" align="absmiddle"  direction="left"  hspace="-15" vspace="5" loop="-1" scrollamount="10" scrolldelay="100" onMouseOut="this.start()" onMouseOver="this.stop()">
+								<a  href="javascript:void(0)" onclick="shownotice('#(oanotices.id)')" style="font-size: 20px; color: #217CAA">#(oanotices.showhomepageinfo)</a>
+						</marquee>
+       				 
+       				 </div>
+       			 
+       		</div>
+       
+  
+  
+        </div> 
+       #end  
+       
+       <script type="text/javascript">
+       function  shownotice(noticeid){
+			layer.open({
+				  type: 2,
+				  title: false, //不显示标题栏
+				  area: ['1000px', '620px'],
+				  shade: 0.2,
+				  id: 'showonenotice', //设定一个id，防止重复弹出
+				  resize: false,
+				  closeBtn: true,
+				  isOutAnim : false , 
+				  btnAlign: 'c',
+				  content: ctx+'/admin/oa/notices/homeViewNotice?id='+noticeid,
+				  success: function(layero){
+						//nowTask = o;
+				  }
+			});
+		
+
+       }
+       
+       
+       
+       function  searchbyWord(){
+    	   alert($("#searchWord").val());
+    	   
+    	   
+    	   
+       }
+       
+       </script>
+     
+ </header>

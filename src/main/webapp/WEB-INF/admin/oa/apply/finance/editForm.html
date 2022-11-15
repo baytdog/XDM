@@ -1,0 +1,326 @@
+					<form id="editForm" class="panel-body form-horizontal form-padding">
+							<input type="hidden"  name="#(formModelName).id" class="form-control" value="#(o?o.id:'')">
+							<input type="hidden"  name="#(formModelName).type" class="form-control" value="#(type)">
+							<div class="form-group">
+			                    <label class="col-md-2 control-label">申请编号</label>
+			                    <div class="col-md-4">
+			                        <input type="text" class="form-control"  value="#(o?o.finance_num:'')" disabled>
+			                    </div>
+			                </div>
+			                <div class="form-group">
+			                    <label class="col-md-2 control-label">申请人</label>
+			                    <div class="col-md-4">
+			                    	<input type="hidden"  name="#(formModelName).userid" class="form-control"  value="#if(o)#(o.userid)#else#(user.id)#end">
+			                        <input type="text"  name="#(formModelName).applyer_name" class="form-control"  value="#if(o)#(o.applyer_name)#else#(user.name)#end" readonly>
+			                    </div>
+			                    <label class="col-md-1 control-label">部门</label>
+			                    <div class="col-md-4">
+			                        <input type="hidden"  name="#(formModelName).org_id" class="form-control"  value="#if(o)#(o.org_id)#else#(org.id)#end">
+			                        <input type="text"  name="#(formModelName).org_name" class="form-control"  value="#if(o)#(o.org_name)#else#(org.name)#end" readonly>
+			                    </div>
+			                </div>
+							#@installSelectProjectButton(formModelName)
+			                #if(type=="1"||type=="2")<!--建材及设备采购款支付申请，工程款支付申请-->
+			                	#@installSelectContractButton()
+				                <div class="form-group">
+				                    <label class="col-md-2 control-label">收款单位名称</label>
+				                    <div class="col-md-9">
+				                        <input type="text"  name="#(formModelName).receive_money_org_name" class="form-control"  value="#(o?o.receive_money_org_name:'')" #if(view=='detail') readonly #end>
+				                        <small class="help-block">请输入收款单位名称</small>
+				                    </div>
+				                </div>
+				                <div class="form-group">
+				                    <label class="col-md-2 control-label">合同总价</label>
+				                    <div class="col-md-4">
+				                        <input type="text"  name="#(formModelName).contract_all_price" class="form-control"  value="#(o?o.contract_all_price:'')" #if(view=='detail') readonly #end>
+				                        <small class="help-block">请输入合同总价</small>
+				                    </div>
+				                    <label class="col-md-1 control-label">结算价</label>
+				                    <div class="col-md-4">
+				                        <input type="text"  name="#(formModelName).result_price" class="form-control"  value="#(o?o.result_price:'')" #if(view=='detail') readonly #end>
+				                        <small class="help-block">请输入结算价</small>
+				                    </div>
+				                </div>
+				                <div class="form-group">
+				                    <label class="col-md-2 control-label">截至上期累计付款</label>
+				                    <div class="col-md-4">
+				                        <input type="text"  name="#(formModelName).to_before_sum_pay" class="form-control"  value="#(o?o.to_before_sum_pay:'')" #if(view=='detail') readonly #end>
+				                        <small class="help-block">请输入截至上期累计付款</small>
+				                    </div>
+				                </div>
+				                <div class="form-group">
+				                    <label class="col-md-2 control-label">本次申请拨款金额</label>
+				                    <div class="col-md-4">
+				                        <input type="text"  name="#(formModelName).now_apply_pay_price" class="form-control"  value="#(o?o.now_apply_pay_price:'')" #if(view=='detail') readonly #end>
+				                        <small class="help-block">请输入本次申请拨款金额</small>
+				                    </div>
+				                </div>
+				                <div class="form-group">
+				                    <label class="col-md-2 control-label">截至本期累计付款</label>
+				                    <div class="col-md-4">
+				                        <input type="text"  name="#(formModelName).to_now_sum_pay" class="form-control"  value="#(o?o.to_now_sum_pay:'')" #if(view=='detail') readonly #end>
+				                        <small class="help-block">请输入截至本期累计付款</small>
+				                    </div>
+				                </div>
+				                <div class="form-group">
+				                    <label class="col-md-2 control-label">累计付款比例</label>
+				                    <div class="col-md-4">
+				                        <input type="text"  name="#(formModelName).sum_pay_rate" class="form-control"  value="#(o?o.sum_pay_rate:'')" #if(view=='detail') readonly #end>
+				                        <small class="help-block">请输入累计付款比例</small>
+				                    </div>
+				                </div>
+				                <div class="form-group">
+				                    <label class="col-md-2 control-label">截至本期累计完成</label>
+				                    <div class="col-md-4">
+				                        <input type="text"  name="#(formModelName).to_now_sum_complete" class="form-control"  value="#(o?o.to_now_sum_complete:'')" #if(view=='detail') readonly #end>
+				                        <small class="help-block">请输入截至本期累计完成</small>
+				                    </div>
+				                </div>
+				            #elseif(type=="3")<!--税费申请-->
+					            <div class="form-group">
+				                    <label class="col-md-2 control-label">收款单位名称</label>
+				                    <div class="col-md-4">
+				                        <input type="text"  name="#(formModelName).receive_money_org_name" class="form-control"  value="#(o?o.receive_money_org_name:'')" #if(view=='detail') readonly #end>
+				                        <small class="help-block">请输入收款单位名称</small>
+				                    </div>
+				                </div>
+				                <div class="form-group">
+				                    <label class="col-md-2 control-label">税费名称</label>
+				                    <div class="col-md-4">
+				                        <input type="text"  name="#(formModelName).tax_price_name" class="form-control"  value="#(o?o.tax_price_name:'')" #if(view=='detail') readonly #end>
+				                        <small class="help-block">请输入税费名称</small>
+				                    </div>
+				                </div>
+				                <div class="form-group">
+				                    <label class="col-md-2 control-label">税费金额</label>
+				                    <div class="col-md-4">
+				                        <input type="text"  name="#(formModelName).tax_price" class="form-control"  value="#(o?o.tax_price:'')" #if(view=='detail') readonly #end>
+				                        <small class="help-block">请输入税费金额</small>
+				                    </div>
+				                </div>
+				            #elseif(type=="4")<!--归还贷款申请-->
+				            	#@installSelectContractButton()
+					            <div class="form-group">
+				                    <label class="col-md-2 control-label">收款单位名称</label>
+				                    <div class="col-md-9">
+				                        <input type="text"  name="#(formModelName).receive_money_org_name" class="form-control"  value="#(o?o.receive_money_org_name:'')" #if(view=='detail') readonly #end>
+				                        <small class="help-block">请输入收款单位名称</small>
+				                    </div>
+				                </div>
+				                <div class="form-group">
+			                    	<label class="col-md-2 control-label">贷款合同总额</label>
+				                    <div class="col-md-4">
+				                        <input type="text"  name="#(formModelName).loan_sum_money" class="form-control"  value="#(o?o.loan_sum_money:'')" #if(view=='detail') readonly #end>
+				                        <small class="help-block">请输入贷款合同总额</small>
+				                    </div>
+				                    <label class="col-md-1 control-label">贷款发放总额</label>
+				                    <div class="col-md-4">
+				                        <input type="text"  name="#(formModelName).load_sum_give_money" class="form-control"  value="#(o?o.load_sum_give_money:'')" #if(view=='detail') readonly #end>
+				                        <small class="help-block">请输入贷款发放总额</small>
+				                    </div>
+				                </div>
+				                <div class="form-group">
+				                    <label class="col-md-2 control-label">截至上期累计还贷</label>
+				                    <div class="col-md-4">
+				                        <input type="text"  name="#(formModelName).to_bofore_sum_back_money" class="form-control"  value="#(o?o.to_bofore_sum_back_money:'')" #if(view=='detail') readonly #end>
+				                        <small class="help-block">请输入截至上期累计还贷</small>
+				                    </div>
+				                </div>
+				                <div class="form-group">
+				                    <label class="col-md-2 control-label">本次申请还贷金额</label>
+				                    <div class="col-md-4">
+				                        <input type="text"  name="#(formModelName).now_apply_back_money" class="form-control"  value="#(o?o.now_apply_back_money:'')" #if(view=='detail') readonly #end>
+				                        <small class="help-block">请输入本次申请还贷金额</small>
+				                    </div>
+				                </div>
+				                <div class="form-group">
+				                    <label class="col-md-2 control-label">截至本期累计还贷金额</label>
+				                    <div class="col-md-4">
+				                        <input type="text"  name="#(formModelName).to_now_sum_back_money" class="form-control"  value="#(o?o.to_now_sum_back_money:'')" #if(view=='detail') readonly #end>
+				                        <small class="help-block">请输入截至本期累计还贷金额</small>
+				                    </div>
+				                </div>
+				            #elseif(type=="5"||type=="6"||type=="7"||type=="8")<!--财务相关费用支付申请，管理费用支付申请（差旅，应酬），管理费用支付申请（其他），无票报销-->
+					            <div class="form-group">
+				                    <label class="col-md-2 control-label">收款单位名称</label>
+				                    <div class="col-md-9">
+				                        <input type="text"  name="#(formModelName).receive_money_org_name" class="form-control"  value="#(o?o.receive_money_org_name:'')" #if(view=='detail') readonly #end>
+				                        <small class="help-block">请输入收款单位名称</small>
+				                    </div>
+				                </div>
+				                <div class="form-group">
+				                    <label class="col-md-2 control-label">费用名称</label>
+				                    <div class="col-md-9">
+				                        <input type="text"  name="#(formModelName).common_price_name" class="form-control"  value="#(o?o.common_price_name:'')" #if(view=='detail') readonly #end>
+				                        <small class="help-block">请输入费用名称</small>
+				                    </div>
+				                </div>
+				                <div class="form-group">
+				                    <label class="col-md-2 control-label">费用金额</label>
+				                    <div class="col-md-9">
+				                        <input type="text"  name="#(formModelName).common_price" class="form-control"  value="#(o?o.common_price:'')" #if(view=='detail') readonly #end>
+				                        <small class="help-block">请输入费用金额</small>
+				                    </div>
+				                </div>
+				            #elseif(type=="9")<!--业务暂借款申请-->
+					            <div class="form-group">
+				                    <label class="col-md-2 control-label">相关职能部门</label>
+				                    <div class="col-md-4">
+					                    <div class="input-group mar-btm">
+					                        <input type="hidden" id="orgid" name="#(formModelName).about_orgid" class="form-control" value="#if(o)#(o.about_orgid)#elseif(aboutOrg)#(aboutOrg.id)#end">
+					                        <input type="text" id="orgname" class="form-control" disabled value="#(aboutOrg?aboutOrg.name:'')">
+					                        <span class="input-group-btn">
+					                            <button class="btn btn-primary" type="button" onclick="selectOneOrg()">选择</button>
+					                        </span>
+				                    	</div>
+				                    </div>
+				                </div>
+					            <div class="form-group">
+				                    <label class="col-md-2 control-label">借款人</label>
+				                    <div class="col-md-9">
+				                        <input type="text"  name="#(formModelName).borrow_user_name" class="form-control"  value="#(o?o.borrow_user_name:'')" #if(view=='detail') readonly #end>
+				                        <small class="help-block">请输入借款人</small>
+				                    </div>
+				                </div>
+				                <div class="form-group">
+				                    <label class="col-md-2 control-label">借款金额</label>
+				                    <div class="col-md-9">
+				                        <input type="text"  name="#(formModelName).common_price" class="form-control"  value="#(o?o.common_price:'')" #if(view=='detail') readonly #end>
+				                        <small class="help-block">请输入借款金额</small>
+				                    </div>
+				                </div>
+				                <div class="form-group">
+				                    <label class="col-md-2 control-label">借款用途</label>
+				                    <div class="col-md-9">
+				                        <input type="text"  name="#(formModelName).borrow_reason" class="form-control"  value="#(o?o.borrow_reason:'')" #if(view=='detail') readonly #end>
+				                        <small class="help-block">请输入借款用途</small>
+				                    </div>
+				                </div>
+				                
+				            #elseif(type=="10")<!--资金调拨申请-->
+					            <div class="form-group">
+				                    <label class="col-md-2 control-label">借款金额</label>
+				                    <div class="col-md-9">
+				                        <input type="text"  name="#(formModelName).common_price" class="form-control"  value="#(o?o.common_price:'')" #if(view=='detail') readonly #end>
+				                        <small class="help-block">请输入借款金额</small>
+				                    </div>
+				                </div>
+				                <div class="form-group">
+				                    <label class="col-md-2 control-label">资金调拨路线</label>
+				                    <div class="col-md-9">
+				                        <input type="text"  name="#(formModelName).change_way" class="form-control"  value="#(o?o.change_way:'')" #if(view=='detail') readonly #end>
+				                        <small class="help-block">请输入资金调拨路线</small>
+				                    </div>
+				                </div>
+				                <div class="form-group">
+				                    <label class="col-md-2 control-label">收款单位</label>
+				                    <div class="col-md-4">
+				                        <input type="text"  name="#(formModelName).change_receive_orgname" class="form-control"  value="#(o?o.change_receive_orgname:'')" #if(view=='detail') readonly #end>
+				                        <small class="help-block">请输入收款单位</small>
+				                    </div>
+				                    <label class="col-md-2 control-label">付款单位</label>
+				                    <div class="col-md-4">
+				                        <input type="text"  name="#(formModelName).change_send_orgname" class="form-control"  value="#(o?o.change_send_orgname:'')" #if(view=='detail') readonly #end>
+				                        <small class="help-block">请输入付款款单位</small>
+				                    </div>
+				                </div>
+				                <div class="form-group">
+				                    <label class="col-md-2 control-label">收款开户银行</label>
+				                    <div class="col-md-4">
+				                        <input type="text"  name="#(formModelName).change_receive_open_bank" class="form-control"  value="#(o?o.change_receive_open_bank:'')" #if(view=='detail') readonly #end>
+				                        <small class="help-block">请输入收款方开户银行</small>
+				                    </div>
+				                    <label class="col-md-2 control-label">付款开户银行</label>
+				                    <div class="col-md-4">
+				                        <input type="text"  name="#(formModelName).change_send_open_bank" class="form-control"  value="#(o?o.change_send_open_bank:'')" #if(view=='detail') readonly #end>
+				                        <small class="help-block">请输入付款方开户银行</small>
+				                    </div>
+				                </div>
+				                <div class="form-group">
+				                    <label class="col-md-2 control-label">收款方银行账号</label>
+				                    <div class="col-md-4">
+				                        <input type="text"  name="#(formModelName).change_receive_bank_num" class="form-control"  value="#(o?o.change_receive_bank_num:'')" #if(view=='detail') readonly #end>
+				                        <small class="help-block">请输入收款方银行账号</small>
+				                    </div>
+				                    <label class="col-md-2 control-label">付款方方银行账号</label>
+				                    <div class="col-md-4">
+				                        <input type="text"  name="#(formModelName).change_send_bank_num" class="form-control"  value="#(o?o.change_send_bank_num:'')" #if(view=='detail') readonly #end>
+				                        <small class="help-block">请输入付款方银行账号</small>
+				                    </div>
+				                </div>
+				                <div class="form-group">
+				                    <label class="col-md-2 control-label">资金到位时间</label>
+				                    <div class="input-group date form_datetime col-md-3" style="float:left">
+					                    <input type="text" id="endTime" name="#(formModelName).change_money_receive_time" class="form-control"  value="#(o?o.change_money_receive_time:'')" readonly>
+										<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+					                </div>
+				                </div>
+				                <div class="form-group">
+				                    <label class="col-md-2 control-label">汇款摘要</label>
+				                    <div class="col-md-9">
+				                        <textarea rows="8" name="#(formModelName).change_des" class="form-control" #if(view=='detail') readonly #end>#(o?o.change_des:'')</textarea>
+				                        <small class="help-block">请输入汇款摘要</small>
+				                    </div>
+				                </div>
+				                <div class="form-group">
+				                    <label class="col-md-2 control-label">资金用途说明</label>
+				                    <div class="col-md-9">
+				                        <textarea rows="8" name="#(formModelName).change_renson" class="form-control" #if(view=='detail') readonly #end>#(o?o.change_renson:'')</textarea>
+				                        <small class="help-block">请输入资金用途说明</small>
+				                    </div>
+				                </div>
+			                #end
+			                #if(type=="15")
+			                	<div class="form-group">
+				                    <label class="col-md-2 control-label">收款单位名称</label>
+				                    <div class="col-md-9">
+				                        <input type="text"  name="#(formModelName).receive_money_org_name" class="form-control"  value="#(o?o.receive_money_org_name:'')" #if(view=='detail') readonly #end>
+				                        <small class="help-block">请输入收款单位名称</small>
+				                    </div>
+				                </div>
+				                <div class="form-group">
+				                    <label class="col-md-2 control-label">固定资产名称</label>
+				                    <div class="col-md-9">
+				                        <input type="text"  name="#(formModelName).change_des" class="form-control"  value="#(o?o.change_des:'')" #if(view=='detail') readonly #end>
+				                        <small class="help-block">请输入固定资产名称</small>
+				                    </div>
+				                </div>
+				                <div class="form-group">
+				                    <label class="col-md-2 control-label">费用金额</label>
+				                    <div class="col-md-9">
+				                        <input type="text"  name="#(formModelName).common_price" class="form-control"  value="#(o?o.common_price:'')" #if(view=='detail') readonly #end>
+				                        <small class="help-block">请输入费用金额</small>
+				                    </div>
+				                </div>
+			                #end
+			                #if(type=="11"||type=="12"||type=="13"||type=="14")
+			                	<div class="form-group">
+				                    <label class="col-md-2 control-label">申请事项简要说明</label>
+				                    <div class="col-md-9">
+				                        <textarea rows="8" name="#(formModelName).des" class="form-control" #if(view=='detail') readonly #end>#(o?o.des:'')</textarea>
+				                        <small class="help-block">请输入申请事项简要说明</small>
+				                    </div>
+				                </div>
+				            #else
+				            	<div class="form-group">
+				                    <label class="col-md-2 control-label">备注</label>
+				                    <div class="col-md-9">
+				                        <textarea rows="8" name="#(formModelName).des" class="form-control" #if(view=='detail') readonly #end>#(o?o.des:'')</textarea>
+				                        <small class="help-block">请输入备注</small>
+				                    </div>
+				                </div>
+			                #end
+			                #@installFlowCCButton()
+		                	#if(view=='edit')
+		                		<div class="panel-footer">
+				                    <div class="row">
+				                        <div class="col-sm-8 col-sm-offset-3">
+				                            <button class="btn btn-warning" type="reset" #if(view=='detail') disabled #end>重置</button>
+				                            <button class="btn btn-primary" type="submit" #if(view=='detail') disabled #end>保存</button>
+				                        </div>
+				                    </div>
+				                </div>
+				            #else
+			            	
+				            #end
+		            </form>

@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+
+    #include("/common/include/include.html")
+ <style type="text/css">
+ 
+ html,body{height: 100%;}
+ *{
+  	padding: 0px;
+    	margin: 0px;
+ box-sizing: border-box;
+ -webkit-box-sizing:border-box;
+ }
+ 
+ body{
+ font-family: "微软雅黑";
+ }
+ 
+ ul{list-style: none;}
+ li{list-style: none;}
+ 
+ a,a:hover{text-decoration: none;}
+ 
+    .cyz_header{
+ 	  background:url("#(ctx)/common/img/bg-img/611166611.jpg")  no-repeat;  
+ 	
+ 	background:red
+    height: 180px;
+    margin-bottom: -180px;
+    margin-right:50px
+    position: relative;
+  
+    }
+    
+    .cyz_header_top{
+    	height: 100px;
+    }
+    
+   .cyz_header_nva{
+    	height: 40px;
+    }
+    
+    .cyz_header_marquee{
+    	height: 30px;
+    	text-align: center;
+    }
+    
+    .cyz_logo{
+    	width: 400px;
+    	height: 100px;
+    	background: url("#(ctx)/common/img/bg-img/logo-tit.png") center center no-repeat;
+    	float: left;
+    }
+    
+    
+    .cyz_slogan{
+    	display: inline-block;
+    	color:#fff;
+    	font-size: 20px;
+    	margin-top: 40px;
+    	margin-left: 20px;	
+    }
+    
+    .cyz_header_right{
+    	float:right;
+    	height:100px;
+    	padding-right: 10px;
+    	padding-left: 10px;
+    }
+    
+    .cyz_searchBox{
+    	margin-top:40px;
+    	display:inline-block;
+    	border:none;
+  	  	height: 80px;
+    	/* border:none;
+    	
+    	padding: 5px;
+    	border-top-left-radius: 2px;
+      	border-bottom-left-radius: 2px; */
+    }
+    
+    
+  .cyz_searchBox input{
+  border: none; 
+   height: 40px;
+	 padding: 5px;
+  	border-top-left-radius: 2px;
+  	border-bottom-left-radius: 2px;
+
+   }
+    
+    
+     .cyz_searchBox input:focus{
+     outline: none;
+     }
+     
+      .cyz_searchBox button{
+      height: 40px;
+      	font-size: 14px;
+      	  border: none; 
+    	  margin-left:-5px;
+  		
+      	background-color: #758697;
+      	color: white;
+      	width: 60px;
+      	border-top-right-radius: 2px;
+      	border-bottom-right-radius: 2px;
+     
+      }
+     
+    
+    .cyz_user{
+    	display: inline-block;
+    }
+    
+     
+    
+    .cyz_nav{
+    
+    	border-radius:2px;
+    	
+   		height: 40px;
+   		text-align: center;
+    }
+   /*    .cyz_nav li+li:before{
+    	content: "/\00a0";
+    	color: #25465a;
+    	
+    } */
+  
+  
+  	.cyz_nav div>a{
+  	 	font-size: 50px;
+  	}
+  
+  
+  	 
+    
+    
+  	 
+       .cyz_nav div>a{
+    	 font-size: 25px;
+    	 border: none;
+    	 border-style: none;
+		 border-color:orange;
+		 border-width: 0px;   	
+		 outline:none;
+		 background: none;
+    }
+    
+     .cyz_nav .abv:before{
+      	content: "/\00a0";
+    	color: orange; 
+  	 }
+    
+     /*   .cyz_nav div>button:first-child:before {
+     content:none;
+    
+    } */
+      
+    
+    
+    
+    .cyz_main_container{
+	 
+    min-height: 100%;
+    padding: 180px 0px 25px 0px ;
+     
+    }
+    .cyz_main_row{
+  
+    }
+    .cyz_main_left{
+    
+    padding: 10px 5px 10px 0px;
+    }
+    .cyz_main_right{
+        padding: 10px 0px 10px 5px;
+    }
+    .cyz_footer{
+   	 background-color:#4697CE;
+     height: 25px;
+     color:white;
+     margin-top: -25px;
+     padding-bottom:30px;
+     text-align: center;
+     font-size: 20px;
+    }
+    
+    .containeroa{
+    	margin-left: 50px;
+    	margin-right: 50px;
+    
+    }
+  
+    .cyz_header_userop{
+    	 padding-left:50px;
+    	 padding-right: 20px;
+    }
+    
+    .cyz_header_userop button{
+    	font-size: 20px;
+    }
+    .infolists{
+    	padding-left: 50px;
+    }
+ </style>
+</head>
+<body>
+
+ 
+
+<div class="cyz_header "   >
+<div class="container-fluid containeroa"  style="background-color:">
+
+	
+	
+	
+	<div class="cyz_header_marquee">
+		 	<marquee id="affiche" align="left"  color="red" bgcolor="" behavior="scroll" align="absmiddle"  direction="left"  hspace="-15" vspace="5" loop="-1" scrollamount="10" scrolldelay="100" onMouseOut="this.start()" onMouseOver="this.stop()">
+								<a  href="javascript:void(0)" onclick="shownotice('#(oanotices.id)')" style="font-size: 20px; color: yellow;">#(oanotices.showhomepageinfo)</a>
+			 </marquee>
+	
+	</div>
+ 	
+</div>
+ 
+</div>
+
+<!-- #033EB4   #067EF3-->
+<div class="cyz_main_container"  style="">
+ 
+	<div class="container-fluid containeroa" style="#if(ifHome) margin-bottom: 50px;#end">
+			#render(iframeRenderUrl)
+	</div>
+</div>
+<!-- <div class="cyz_footer">上海市交通委员会行政服务中心</div> -->
+
+<script type="text/javascript">
+function  shownotice(noticeid){
+	layer.open({
+		  type: 2,
+		  title: false, //不显示标题栏
+		  area: ['1000px', '620px'],
+		  shade: 0.2,
+		  id: 'showonenotice', //设定一个id，防止重复弹出
+		  resize: false,
+		  closeBtn: true,
+		  isOutAnim : false , 
+		  btnAlign: 'c',
+		  content: ctx+'/admin/oa/notices/homeViewNotice?id='+noticeid,
+		  success: function(layero){
+				//nowTask = o;
+		  }
+	});
+
+
+}
+
+
+var validPassword = {};//密码1
+var validPassword2 = {};//密码2
+
+validPassword = {
+        stringLength: {
+            max: 15,
+            message: '*密码长度必须小于15'
+        }
+    };
+	validPassword2 = {
+        stringLength: {
+            max: 15,
+            message: '*确认密码长度必须小于15'
+        },
+        identical: {
+        	field: 'password',
+        	message: '*两次输入密码不一致'
+        }
+};
+
+
+	$(document).ready(function() {
+		    $('#editFormp').bootstrapValidator({
+		    		excluded:[":hidden"],//关键配置，表示只对于隐藏域不进行验证，其他的表单元素都要验证
+		            fields: {
+		                "password": {
+						    validators: validPassword
+		                },
+		                "password2": {
+						    validators: validPassword2
+		                },
+		          
+		            }
+		        }).on("success.form.bv", function (e) {
+		        	
+		            save();
+		            return false;//阻止表单跳转
+		        });
+		});
+	function pSave(){
+		
+ 
+		var data = common_ajax.ajaxFunc("/admin/sys/user/updatePwd", $('#editFormp').serialize(), "json", null);
+		if(data.success){
+		
+		 	pointLion.alertMsg("修改成功!" , "success" , "small" , function(){
+				//location.href = ctx+'/admin/sys/user/getListPage';//跳转到列表页
+				$('#myModal').modal('hide');
+			}); 
+		}
+	}
+	
+	
+    function  searchbyWord(){
+ 	   //alert($("#searchWord").val());
+ 	  var keyWord=$("#searchWord").val();
+ 	  //var data = common_ajax.ajaxFunc("/admin/oa/showinfo/homeWorkKeySearch",{"keyWord":keyWord}, "json", null);
+ 	   
+    }
+    
+    
+    function  toHome(){
+    	
+    	
+    }
+    
+</script>
+</body>
+</html>

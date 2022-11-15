@@ -1,0 +1,183 @@
+					<form id="editForm" class="panel-body form-horizontal form-padding">
+		            	<input id="infoid" type="hidden" name="#(formModelName).id" value="#(o?o.id:'')">
+		            	<input type="hidden" name="#(formModelName).type"   value="#(o.type?o.type: type)"  >
+		            	<input type="hidden" name="hid"   value="#(hid)"  >
+		            	<input type="hidden" name="hstep" value="#(hstep)"  >
+		        
+		                <div class="form-group">
+		                    <label class="col-md-2 control-label">编号</label>
+		                    <div class="col-md-9">
+		                        <input type="text"  name="#(formModelName).num" class="form-control"  value="#(o?o.num:'')" #if(view=="detail") readonly #end />
+		                    </div>
+		                </div>
+		                
+		                 <div class="form-group">
+		                		<label class="col-md-2 control-label">日期</label>
+					            <div class="input-group date form_datetime col-md-4" style="float:left;padding-left: 10px;">
+				                    <input type="text" id="startTime" name="#(formModelName).fromtime" class="form-control"  value="#(o?o.fromtime:'')"   readonly  >
+									<span class="input-group-addon"> <span class="glyphicon glyphicon-th"></span> 
+									</span>
+				                </div>
+			                </div>
+		                <div class="form-group">
+		                    <label class="col-md-2 control-label">来人</label>
+		                    <div class="col-md-9">
+		                        <input type="text"  name="#(formModelName).fromer" class="form-control"  value="#(o?o.fromer:'')" #if(view=="detail") readonly #end />
+		                    </div>
+		                </div>
+		                <div class="form-group">
+		                    <label class="col-md-2 control-label">联系方式</label>
+		                    <div class="col-md-9">
+		                        <input type="text"  name="#(formModelName).contact" class="form-control"  value="#(o?o.contact:'')" #if(view=="detail") readonly #end />
+		                    </div>
+		                </div>
+		                <div class="form-group">
+		                    <label class="col-md-2 control-label">单位</label>
+		                    <div class="col-md-9">
+		                        <input type="text"  name="#(formModelName).fromunit" class="form-control"  value="#(o?o.fromunit:'')" #if(view=="detail") readonly #end />
+		                    </div>
+		                </div>
+		                <div class="form-group">
+		                    <label class="col-md-2 control-label">来文字号</label>
+		                    <div class="col-md-9">
+		                        <input type="text"  name="#(formModelName).fromnum" class="form-control"  value="#(o?o.fromnum:'')" #if(view=="detail") readonly #end />
+		                    </div>
+		                </div>
+		                
+		                
+		                
+		                
+		                
+		                
+		                <div class="form-group">
+		                    <label class="col-md-2 control-label">投诉、咨询事由</label>
+		                    <div class="col-md-9">
+		                        <textarea name="#(formModelName).contents" rows="12" class="form-control" #if(view=="detail") readonly #end>#(o?o.contents:'')</textarea>
+		                    </div>
+		                </div>
+		             <div class="form-group">
+		                    <label class="col-md-2 control-label">处理期限（工作日）</label>
+		                    <div class="col-md-9">
+		                        <input type="text"  name="#(formModelName).clqx" class="form-control"  value="#(o?o.clqx:'')" #if(view=="detail") readonly #end />
+		                    </div>
+		             </div>
+                #if(o.nbshrremark!=null)
+		           <div class="form-group">
+		                 <label class="col-md-2 control-label">拟办意见</label>
+		                 <div class="col-md-9">
+		                     <textarea name="#(formModelName).nbshrremark" rows="3" class="form-control" #if(view=="detail") readonly #end>#(o?o.nbshrremark:'')</textarea>
+		                 </div>
+		             </div>
+                 #end
+                 
+                 #if(o.status=="2"||o.status=='5')
+                 
+	              	<div class="form-group">
+	                   <label class="col-md-2 control-label" for="demo-textarea-input">承办人</label>
+	                   <div class="col-md-9" style="line-height: 30px;">
+	                   	<div  class="input-group mar-btm"  >
+	                   		<input type="hidden" id="cbrids" name="#(formModelName).cbrids" value="#(o?o.cbrids:'')">
+	                        <input type="text"   id="cbrnames" name="#(formModelName).cbrnames" value="#(o?o.cbrnames:'')" readonly class="form-control">
+	               
+		                        <span class="input-group-btn">
+		                            <button class="btn btn-primary" type="button" onclick="openSlectDoDialog()">选择</button>
+		                        </span>
+		              
+	                    </div>
+	                  
+	                   </div>
+	               </div>
+              
+                 #end
+                 
+                 
+                 
+                 
+                   #if(o.cbrremark!=null&&o.cbrremark!='')
+		           <div class="form-group">
+		                 <label class="col-md-2 control-label">处理情况</label>
+		                 <div class="col-md-9">
+		                     <textarea name="#(formModelName).cbrremark" rows="3" class="form-control" #if(view=="detail") readonly #end>#(o?o.cbrremark:'')</textarea>
+		                 </div>
+		             </div>
+                 #end
+                 
+                 
+                 
+		                      #if(o.recontents!=null)
+		                <div class="form-group">
+		                    <label class="col-md-2 control-label">处理情况</label>
+		                    <div class="col-md-9">
+		                        <textarea id="doDeal" name="#(formModelName).recontents" rows="6" class="form-control" 
+		                        
+		                        #if(hotUser)
+		                        	#if(hotUser.buttontype!="3")
+		                        	readonly
+		                        	#end
+		                        
+		                        #else 
+		                        #if(view=="detail") readonly #end
+		                        #end
+		                        
+		                        >#(o?o.recontents:'')</textarea>
+		                  
+		                    </div>
+		                </div>
+		               #end
+		               
+		            #if(showCommont)
+		     
+				           <div class="form-group">
+								<label class="col-md-2 control-label">#if(o.status=="3") 处理情况#else 意见 #end</label>
+								<div class="col-md-9">
+							 
+									<textarea  id="comment" name="comment"   rows="8"  class="form-control"></textarea>
+								</div>
+							</div>
+					#end		 	
+			 
+						#if(ifneedadd)
+			      		 
+				                  <div class="panel-body">
+										#@addOtherPersonDoTask()  
+								  </div>
+							 
+			            #end
+                          
+		              
+			                <div class="panel-footer">
+			                    <div class="row">
+			                        <div class="col-sm-12 " align="center">
+			                           <button class="btn btn-primary" type="button" onclick="window.history.back();" >返回</button>
+			                           
+			                     <a href="javascript:void(0);" onclick="doUploadAttachment()" style="position: relative;">
+											<button class="btn btn-warning" type="button">附件</button>
+											<span class="pull-right badge badge-success" style="position: absolute;right: -8px;top: -14px;" id="businessAttachmentCount">#(attachments)</span>
+								 </a>  
+								 
+								 
+								 #if(o.status=="1")
+								   <button class="btn btn-primary" type="button" onclick="sendReg()" >送登记</button>
+								 #end
+								 #if(o.status=="2"||o.status=='5')
+								   <button class="btn btn-primary" type="button" onclick="sendDo()" >送承办</button>
+								 #end
+								 #if(o.status=="3")
+								   <button class="btn btn-primary" type="button" onclick="sendDleader()" >送审批</button>
+								 #end
+								 #if(o.status=="4")
+								   <button class="btn btn-primary" type="button" onclick="dleaderOver()" >办结</button>
+								   <button class="btn btn-primary" type="button" onclick="leaderSendCb()" >送承办</button>
+								 #end
+								 #if(o.status=="5")
+								   <button class="btn btn-primary" type="button" onclick="hotlineOver()" >归档</button>
+								 #end
+							  
+								  #if(view=="edit")
+			                           <button class="btn btn-warning" type="reset">重置</button>
+			                           <button class="btn btn-primary" type="submit" >保存</button> 
+			            		  #end
+			                        </div>
+			                    </div>
+			                </div>
+		            </form>

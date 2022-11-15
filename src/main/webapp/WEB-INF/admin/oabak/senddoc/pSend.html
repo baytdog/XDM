@@ -1,0 +1,539 @@
+	<div id="page-content">
+			<div class="col-lg-12">
+		        <div class="panel">
+		            <div class="panel-heading">
+		                <h3 class="panel-title" style="text-align: center;">
+		        
+							上海市交通委员会行政服务中心发文
+		                </h3>
+		            </div>
+				 
+			         #include("pSendForm.html")
+		        </div>
+		    </div>
+	</div>
+	 <style>
+	/*   .form-horizontal .control-label {
+ 
+    font-size: 20px;
+ 
+}
+.form-control{
+font-size: 20px;
+background-color: red;
+}  
+  */
+	 </style>
+    <script src="#(ctx)/common/js/demo/nifty-demo.js"></script>
+    <script src="#(ctx)/common/plugins/morris-js/morris.min.js"></script>
+	<script src="#(ctx)/common/plugins/morris-js/raphael-js/raphael.min.js"></script>
+    <script src="#(ctx)/common/plugins/sparkline/jquery.sparkline.min.js"></script>	 
+	 
+	 
+<script type="text/javascript">
+<!-- 按钮 start-->
+//送分管领导
+function save(){
+	
+	 
+	var data = common_ajax.ajaxFunc("/admin/oa/senddoc/save", $('#editForm').serialize(), "json", null);
+	if(data.success){
+		pointLion.alertMsg("保存成功!" , "success" , "small" , function(){
+			location.href = ctx+'/admin/oa/senddoc/getListPage';//跳转到列表页
+		},data);
+	}else{
+		pointLion.alertMsg(data.message , "danger" , "small" , function(){
+			$(".btn").removeAttr("disabled");
+		},data);
+	}
+}
+
+
+//分管领导批示
+
+function osFgldps(){
+	var data = common_ajax.ajaxFunc("/admin/oa/senddoc/osFgldps", $('#editForm').serialize(), "json", null);
+	if(data.success){
+		pointLion.alertMsg("操作成功!" , "success" , "small" , function(){
+			location.href = ctx+'/admin/oa/senddoc/getListPersonal';//跳转到列表页
+		},data);
+	}else{
+		pointLion.alertMsg(data.message , "danger" , "small" , function(){
+			$(".btn").removeAttr("disabled");
+		},data);
+	}
+	
+}
+
+
+
+
+//送会签
+
+function osSendHq(){
+ 
+	var data = common_ajax.ajaxFunc("/admin/oa/senddoc/osSendHq", $('#editForm').serialize(), "json", null);
+	if(data.success){
+		pointLion.alertMsg("操作成功!" , "success" , "small" , function(){
+			location.href = ctx+'/admin/oa/senddoc/getListPersonal';//跳转到列表页
+		},data);
+	}else{
+		pointLion.alertMsg(data.message , "danger" , "small" , function(){
+			$(".btn").removeAttr("disabled");
+		},data);
+	}
+	
+}
+
+//会签
+
+function  osHq(){
+	var data = common_ajax.ajaxFunc("/admin/oa/senddoc/osHq", $('#editForm').serialize(), "json", null);
+	if(data.success){
+		pointLion.alertMsg("操作成功!" , "success" , "small" , function(){
+			location.href = ctx+'/admin/oa/senddoc/getListPersonal';//跳转到列表页
+		},data);
+	}else{
+		pointLion.alertMsg(data.message , "danger" , "small" , function(){
+			$(".btn").removeAttr("disabled");
+		},data);
+	}
+	
+}
+
+//送核稿
+function osSendHg(){
+	var data = common_ajax.ajaxFunc("/admin/oa/senddoc/osSendHg", $('#editForm').serialize(), "json", null);
+	if(data.success){
+		pointLion.alertMsg("操作成功!" , "success" , "small" , function(){
+			location.href = ctx+'/admin/oa/senddoc/getListPersonal';//跳转到列表页
+		},data);
+	}else{
+		pointLion.alertMsg(data.message , "danger" , "small" , function(){
+			$(".btn").removeAttr("disabled");
+		},data);
+	}
+	
+}
+
+//核稿
+function osHg(){
+	var data = common_ajax.ajaxFunc("/admin/oa/senddoc/osHg", $('#editForm').serialize(), "json", null);
+	if(data.success){
+		pointLion.alertMsg("操作成功!" , "success" , "small" , function(){
+			location.href = ctx+'/admin/oa/senddoc/getListPersonal';//跳转到列表页
+		},data);
+	}else{
+		pointLion.alertMsg(data.message , "danger" , "small" , function(){
+			$(".btn").removeAttr("disabled");
+		},data);
+	}
+}
+
+//送签发
+function osSendQf(){
+	
+	var data = common_ajax.ajaxFunc("/admin/oa/senddoc/osSendQf", $('#editForm').serialize(), "json", null);
+	if(data.success){
+		pointLion.alertMsg("操作成功!" , "success" , "small" , function(){
+			location.href = ctx+'/admin/oa/senddoc/getListPersonal';//跳转到列表页
+		},data);
+	}else{
+		pointLion.alertMsg(data.message , "danger" , "small" , function(){
+			$(".btn").removeAttr("disabled");
+		},data);
+	}
+}
+
+
+//签发
+
+function osQf(){
+	
+	var data = common_ajax.ajaxFunc("/admin/oa/senddoc/osQf", $('#editForm').serialize(), "json", null);
+	if(data.success){
+		pointLion.alertMsg("操作成功!" , "success" , "small" , function(){
+			location.href = ctx+'/admin/oa/senddoc/getListPersonal';//跳转到列表页
+		},data);
+	}else{
+		pointLion.alertMsg(data.message , "danger" , "small" , function(){
+			$(".btn").removeAttr("disabled");
+		},data);
+	}
+}
+
+
+//送发文
+function osSendfw(){
+	var data = common_ajax.ajaxFunc("/admin/oa/senddoc/osSendfw", $('#editForm').serialize(), "json", null);
+	if(data.success){
+		pointLion.alertMsg("操作成功!" , "success" , "small" , function(){
+			location.href = ctx+'/admin/oa/senddoc/getListPersonal';//跳转到列表页
+		},data);
+	}else{
+		pointLion.alertMsg(data.message , "danger" , "small" , function(){
+			$(".btn").removeAttr("disabled");
+		},data);
+	}
+	
+}
+
+//发文保存
+function osSendSave(){
+	var data = common_ajax.ajaxFunc("/admin/oa/senddoc/osSendSave", $('#editForm').serialize(), "json", null);
+	if(data.success){
+		pointLion.alertMsg("保存成功!" , "success" , "small" , function(){
+			location.href = ctx+'/admin/oa/senddoc/getListPersonal';//跳转到列表页
+		},data);
+	}else{
+		pointLion.alertMsg(data.message , "danger" , "small" , function(){
+			$(".btn").removeAttr("disabled");
+		},data);
+	}
+}
+//送文印
+function osSendWy(){
+	var data = common_ajax.ajaxFunc("/admin/oa/senddoc/osSendWy", $('#editForm').serialize(), "json", null);
+	if(data.success){
+		pointLion.alertMsg("操作成功!" , "success" , "small" , function(){
+		/* 	location.href = ctx+'/admin/oa/senddoc/getListPage';//跳转到列表页 */
+			location.href = ctx+'/admin/oa/senddoc/getListPersonal';//跳转到列表页
+		},data);
+	}else{
+		pointLion.alertMsg(data.message , "danger" , "small" , function(){
+			$(".btn").removeAttr("disabled");
+		},data);
+	}
+	
+}
+//文印完成
+function  osWyOver(){
+	
+	var data = common_ajax.ajaxFunc("/admin/oa/senddoc/osWyOver", $('#editForm').serialize(), "json", null);
+	if(data.success){
+		pointLion.alertMsg("操作成功!" , "success" , "small" , function(){
+			location.href = ctx+'/admin/oa/senddoc/getListPersonal';//跳转到列表页
+		},data);
+	}else{
+		pointLion.alertMsg(data.message , "danger" , "small" , function(){
+			$(".btn").removeAttr("disabled");
+		},data);
+	}
+}
+
+//归档
+
+function  osOver(){
+	var data = common_ajax.ajaxFunc("/admin/oa/senddoc/osOver", $('#editForm').serialize(), "json", null);
+	if(data.success){
+		pointLion.alertMsg("归档成功!" , "success" , "small" , function(){
+			location.href = ctx+'/admin/oa/senddoc/getListPersonal';//跳转到列表页
+		},data);
+	}else{
+		pointLion.alertMsg(data.message , "danger" , "small" , function(){
+			$(".btn").removeAttr("disabled");
+		},data);
+	}
+	
+}
+
+//内部发送
+function  osSendInPerson(){
+	var data = common_ajax.ajaxFunc("/admin/oa/senddoc/osSendInPerson", $('#editForm').serialize(), "json", null);
+	if(data.success){
+		pointLion.alertMsg("操作成功!" , "success" , "small" , function(){
+			location.href = ctx+'/admin/oa/senddoc/getListPersonal';//跳转到列表页
+		},data);
+	}else{
+		pointLion.alertMsg(data.message , "danger" , "small" , function(){
+			$(".btn").removeAttr("disabled");
+		},data);
+	}
+	
+}
+
+
+//打印
+function  osPrint(){
+	var data = common_ajax.ajaxFunc("/admin/oa/senddoc/osSendInPerson", $('#editForm').serialize(), "json", null);
+	if(data.success){
+		pointLion.alertMsg("保存成功!" , "success" , "small" , function(){
+			location.href = ctx+'/admin/oa/senddoc/getListPage';//跳转到列表页
+		},data);
+	}else{
+		pointLion.alertMsg(data.message , "danger" , "small" , function(){
+			$(".btn").removeAttr("disabled");
+		},data);
+	}
+	
+}
+
+function  upload(){
+  	$('#filePicker').click()  
+	
+/* 	$("#abc").attr("id","filePicker") */
+}
+
+
+ 
+
+<!-- 按钮 end-->
+</script>
+	 
+	 
+	 
+	<script>
+		
+		$(document).ready(function() {
+			$('#editForm').bootstrapValidator({
+	            fields: {
+	            }
+	        }).on("success.form.bv", function (e) {
+	            save();
+	            return false;//阻止表单跳转
+	        });
+		});
+		
+		$('#depart').on('changed.bs.select', function (e) {
+			
+			
+			$('#secondOrgId').val($('#depart').val())
+			
+			if($('#depart').val()){
+				
+				$('#sendhgks').show();
+				$('#sendoffice').hide();
+			}else{
+				$('#sendhgks').hide();
+				$('#sendoffice').show();
+			}
+		}); 
+		
+		var  busid=$("#infoid").val();
+		var view = "#(view?view:'')";
+		function doUploadAttachment(){
+			
+			if(busid){
+				pointLion.openBusinessAttachmentPage(busid,view,function(){
+					
+					setAttachmentCount();//关闭之后回调
+				});
+			}else{
+				pointLion.alertMsg("请先保存再上传附件！" , "danger" , "small" , null);
+			}
+		}
+		
+ 
+		
+		
+		//设置附件数量
+		function setAttachmentCount(){
+			var data = common_ajax.ajaxFunc("/admin/sys/attachment/getBusinessAttachmentCount", {"busid":busid}, "json", null);
+			if(data.success){
+				$("#businessAttachmentCount").html(data.data);
+			}
+		}
+		
+		$(document).ready(function() {
+			
+			$('.form_datetime').datepicker({format: 'yyyy-mm-dd',weekStart: 1,todayBtn:  1,autoclose: 1,language:  'zh-CN',todayHighlight: 1,forceParse: 0,showMeridian: 1}).on('changeDate',function(){
+			/* 	var startTime = $("#startTime").val();
+				var endTime = $("#endTime").val();
+				if(startTime&&endTime){
+					if(!dateUtil.compareCalendar(startTime,endTime)){
+						pointLion.alertMsg("开始时间大于结束时间","danger",null,null);
+						$("#editForm .btn").attr("disabled","disabled");
+					}else{
+						resetVali();
+					}
+				} */
+			});
+			
+			setAttachmentCount();
+	     	 $('#dtype').selectpicker('val',#(o.dtype)).trigger("change");
+	     	 $('#depart').selectpicker('val','#(o.dhgksids)').trigger("change");
+	     	 
+	     	  $('#dtype').selectpicker('setStyle', 'disabled', 'add');  
+			
+		}); 
+		
+		
+		
+		function openSlectFgLeaderDialog(){
+    		pointLion.selectManyUser("orgid="+encodeURIComponent("root"),$("#nbrids").val(),function(data){
+    			
+    		 
+				$("#dfgldids").val(data.idData);
+				$("#dfgldnames").val(data.nameData);
+			});
+    	}
+		
+		
+		
+		function openSlectDialog(type){
+			
+			var oldvalue="";
+			
+			if(type=="1"){
+				oldvalue=$("#dhqrids").val()==""?"":$("#dhqrids").val();
+			}else if(type=="2"){
+				oldvalue=$("#dhgrids").val()==""?"":$("#dhgrids").val();
+			}else if(type=="3"){
+				oldvalue=$("#dqfldids").val();
+			}else if(type=="4"){
+				oldvalue=$("#dfwids").val();
+			}else if(type=="5"){
+				oldvalue=$("#dwyids").val();
+			}
+			
+		 
+			
+			
+			
+    		pointLion.selectManyUser1("orgid="+encodeURIComponent("root"),oldvalue,function(data){
+    			
+    		 if(type=="1"){
+				$("#dhqrids").val(data.idData);
+				$("#dhqrnames").val(data.nameData);
+				if(data.idData!=""&&data.idData!=null){
+				 	#if(o.status=="2")
+						$("#hg").hide();
+						$("#sendHg").hide();
+				 	
+				 	#end
+				}else{
+					#if(o.status=="2")
+					$("#hg").show();
+					$("#sendHg").show();
+					#end
+				}
+				
+    		 }else if(type=="2"){
+    				$("#dhgrids").val(data.idData);
+    				$("#dhgrnames").val(data.nameData);
+    				if(data.idData!=""&&data.idData!=null){
+    				 	#if(o.status=="2")
+    						$("#hq").hide();
+    						$("#sendHq").hide();
+    				 	
+    				 	#end
+    				}else{
+    					#if(o.status=="2")
+    					$("#hq").show();
+    					$("#sendHq").show();
+    					#end
+    				}
+    				
+    				
+    				
+    				
+    		 }else if(type=="3"){
+    				$("#dqfldids").val(data.idData);
+    				$("#dqfldnames").val(data.nameData);
+    		 }else if(type=="4"){
+    				$("#dfwids").val(data.idData);
+    				$("#dfwnames").val(data.nameData);
+    		 }else if(type=="5"){
+    				$("#dwyids").val(data.idData);
+    				$("#dwynames").val(data.nameData);
+    		 }else if(type=="6"){
+    				$("#dnbcyids").val(data.idData);
+    				$("#dnbcynames").val(data.nameData);
+    			 
+    			 
+    			 
+    		 }
+			});
+    	}
+		$(document).ready(function() {
+			//var clientH = document.body.clientHeight-131;
+			var clientH = 440;
+			$(".lay-body").css("height",clientH+"px");
+			//initTable();//初始化
+			//初始化上传组件
+			pointLion.initUploader("/admin/sys/attachment/attachmentUpload1?busid="+busid,function(data){
+				pointLion.alertMsg(data.message,"success",null,null);
+				
+			/* 	alert(data.data.file_name)
+				alert(data.data.id) */
+				
+				
+			    $("#uploadperson").text(data.data.create_user_name);
+			    $("#uploadName").text(data.data.file_name);
+			   $("#uploadName").attr("href","#(ctx)/admin/sys/attachment/downloadFile?id="+data.data.id+"&view=detail");
+				//refreshTable();
+			});
+			
+
+			
+			
+ var dfgldids=$('#dfgldids').val();
+ 
+ 
+			 
+			 if(dfgldids){
+				
+			    	
+	        	 $('#dfgld').selectpicker('val', dfgldids.split(",")).trigger("change");
+			 }
+			
+			 
+ var dqfldids=$('#dqfldids').val();
+ 
+ 
+			 
+			 if(dqfldids){
+				
+			    	
+	        	 $('#dqfld').selectpicker('val', dfgldids.split(",")).trigger("change");
+			 }
+			 
+			 
+		/* 		alert( $("#back").attr("style"))
+				alert( $("#filePicker").attr("style")) */
+		/*   $("#back").removeAttr("class");
+			$("#back").removeAttr("style");
+			$("#back").addClass("btn btn-warning");   */
+		});
+		$('#commonsuggesion').on('changed.bs.select', function (e) {
+			
+			 
+			 
+			$('#comment').val($('#commonsuggesion').val())  
+	 
+			});
+		
+		 
+	$('#dqfld').on('changed.bs.select', function (e) {
+			
+			
+			$('#dqfldids').val($('#dqfld').val())
+			
+			 
+		}); 
+	
+	
+	function  clickback(){
+		window.location.href="#(ctx)/admin/home/getPersonalHomePage?action=openPage"
+	}
+		
+	</script>
+	
+	
+	<style>
+.webuploader-pick {
+	 
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+  /*   background: red; */
+  	padding: 0px;
+  	margin :0px;
+    /* color: #red; */
+    text-align: center;
+   /*  border-radius: 3px; */
+    overflow: hidden;  
+ 
+ 
+}
+</style>

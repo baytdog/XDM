@@ -1,0 +1,166 @@
+<form id="editForm" class="panel-body form-horizontal form-padding">
+						<input type="hidden"  name="#(formModelName).id" class="form-control" value="#(o?o.id:'')">
+			                <div class="form-group">
+			                    <label class="col-md-2 control-label">申请人</label>
+			                    <div class="col-md-4">
+			                    	<input type="hidden"  name="#(formModelName).userid" class="form-control"  value="#if(o)#(o.userid)#else#(user.id)#end">
+			                        <input type="text"  name="#(formModelName).applyer_name" class="form-control"  value="#if(o)#(o.applyer_name)#else#(user.name)#end" readonly>
+			                    </div>
+			                    <label class="col-md-1 control-label">部门</label>
+			                    <div class="col-md-4">
+			                        <input type="hidden"  name="#(formModelName).org_id" class="form-control"  value="#if(o)#(o.org_id)#else#(org.id)#end">
+			                        <input type="text"  name="#(formModelName).org_name" class="form-control"  value="#if(o)#(o.org_name)#else#(org.name)#end" readonly>
+			                    </div>
+			                </div>
+			                <div class="form-group">
+			                    <label class="col-md-2 control-label">项目名称</label>
+			                    <div class="col-md-4">
+			                        <input type="text"  name="#(formModelName).project_name" class="form-control"  value="#(o?o.project_name:'')" #if(view=='detail') readonly #end>
+			                        <small class="help-block">请输入项目名称</small>
+			                    </div>
+			                    <label class="col-md-1 control-label">客户名称</label>
+			                    <div class="col-md-4">
+			                        <input type="text"  name="#(formModelName).customer_name" class="form-control"  value="#(o?o.customer_name:'')" #if(view=='detail') readonly #end>
+			                        <small class="help-block">请输入客户名称</small>
+			                    </div>
+			                </div>
+							<div class="form-group">
+								<label class="col-md-2 control-label">专案代码</label>
+								<div class="col-md-4">
+									<input type="text"  name="#(formModelName).project_code" class="form-control"  value="#(o?o.project_code:'')" #if(view=='detail') readonly #end>
+									<small class="help-block">专案代码</small>
+								</div>
+							</div>
+							#@installDctSelectBtn('项目类别','OA_PROJECT_BUILD_TYPE','project_type','project_type_name',o?o.project_type:'',o?o.project_type_name:'')
+			                <div class="form-group">
+			                    <label class="col-md-2 control-label">客户联系人名称</label>
+			                    <div class="col-md-4">
+			                        <input type="text"  name="#(formModelName).customer_contact_name" class="form-control"  value="#(o?o.customer_contact_name:'')" #if(view=='detail') readonly #end>
+			                        <small class="help-block">请输入客户联系人名称</small>
+			                    </div>
+			                    <label class="col-md-1 control-label">联系人电话</label>
+			                    <div class="col-md-4">
+			                        <input type="text"  name="#(formModelName).customer_contact_mobile" class="form-control"  value="#(o?o.customer_contact_mobile:'')" #if(view=='detail') readonly #end>
+			                        <small class="help-block">请输入联系人电话</small>
+			                    </div>
+			                </div>
+			                <div class="form-group">
+								<label class="col-md-2 control-label">项目启动时间</label>
+								<div class="input-group date form_datetime col-md-4" style="float:left">
+									<input type="text" id="startTime" name="#(formModelName).project_start_time" class="form-control"  value="#(o?o.project_start_time:'')" readonly>
+									<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+								</div>
+								<label class="col-md-1 control-label">项目结束时间</label>
+								<div class="input-group date form_datetime col-md-3" style="float:left">
+									<input type="text" id="endTime" name="#(formModelName).project_end_time" class="form-control"  value="#(o?o.project_end_time:'')" readonly>
+									<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+								</div>
+			                </div>
+							<div class="form-group">
+								<label class="col-md-2 control-label">项目金额</label>
+								<div class="col-md-4">
+									<input type="text"  name="#(formModelName).project_money" class="form-control"  value="#(o?o.project_money:'')" #if(view=='detail') readonly #end>
+									<small class="help-block">请输入项目金额</small>
+								</div>
+							</div>
+			                <div class="form-group">
+			                    <label class="col-md-2 control-label">项目经理</label>
+			                    <div class="col-md-4">
+			                    	<div class="input-group mar-btm">
+				                        <input type="text" id="leaderName" class="form-control" disabled value = "#(leadersNameStr?leadersNameStr:'')">
+				                        <input type="hidden" id="leaderId" name="#(formModelName).leader" class="form-control" value="#(o?o.leader:'')">
+				                        <span class="input-group-btn">
+				                            <button class="btn btn-primary" type="button" onclick="selectLeader()">选择</button>
+				                        </span>
+			                    	</div>
+			                        <small class="help-block">请选择项目经理</small>
+			                    </div>
+			                </div>
+			               <div class="form-group">
+			                    <label class="col-md-2 control-label">项目成员</label>
+			                    <div class="col-md-4">
+			                    	<div class="input-group mar-btm">
+				                        <input type="text" id="memberName" class="form-control" disabled value="#(membersNameStr?membersNameStr:'')">
+				                        <input type="hidden" id="memberId" name="#(formModelName).member" class="form-control" value="#(o?o.member:'')">
+				                        <span class="input-group-btn">
+				                            <button class="btn btn-primary" type="button" onclick="selectMember()">选择</button>
+				                        </span>
+			                    	</div>
+			                        <small class="help-block">请选择项目成员</small>
+			                    </div>
+			                </div>
+			                <script>
+				                $('.form_datetime').datetimepicker({format: 'yyyy-mm-dd hh:ii:ss',weekStart: 1,todayBtn:  1,autoclose: 1,language:  'zh-CN',todayHighlight: 1,startView: 2,forceParse: 0,showMeridian: 1});
+				                function selectLeader(){
+				        			pointLion.selectManyUser("","",function(data){
+				        				$("#leaderId").val(data.idData);
+				        				$("#leaderName").val(data.nameData);
+				        			});
+				                }
+				                function selectMember(){
+				        			pointLion.selectManyUser("","",function(data){
+				        				$("#memberId").val(data.idData);
+				        				$("#memberName").val(data.nameData);
+				        			});
+				                }
+			                </script>
+			                <div class="form-group">
+			                    <label class="col-md-2 control-label">实施中需要注意的问题和建议 </label>
+			                    <div class="col-md-9">
+			                         <textarea rows="8" name="#(formModelName).act_suggest" class="form-control" #if(view=='detail') readonly #end>#(o?o.act_suggest:'')</textarea>
+			                        <small class="help-block">请输入实施中需要注意的问题和建议 </small>
+			                    </div>
+			                </div>
+			                <div class="form-group">
+			                    <label class="col-md-2 control-label">客户对项目的期望</label>
+			                    <div class="col-md-9">
+			                        <textarea rows="8" name="#(formModelName).custom_hope" class="form-control" #if(view=='detail') readonly #end>#(o?o.custom_hope:'')</textarea>
+			                        <small class="help-block">请输入客户对项目的期望</small>
+			                    </div>
+			                </div>
+			                <div class="form-group">
+			                    <label class="col-md-2 control-label">项目预测风险和应对措施</label>
+			                    <div class="col-md-9">
+			                        <textarea rows="8" name="#(formModelName).risk_and_measure" class="form-control" #if(view=='detail') readonly #end>#(o?o.risk_and_measure:'')</textarea>
+			                        <small class="help-block">请输入项目预测风险和应对措施</small>
+			                    </div>
+			                </div>
+			                <div class="form-group">
+			                    <label class="col-md-2 control-label">项目实施整体策略建议</label>
+			                    <div class="col-md-9">
+			                        <textarea rows="8" name="#(formModelName).act_all_strategy_suggest" class="form-control" #if(view=='detail') readonly #end>#(o?o.act_all_strategy_suggest:'')</textarea>
+			                        <small class="help-block">请输入项目实施整体策略建议</small>
+			                    </div>
+			                </div>
+			                <div class="form-group">
+			                    <label class="col-md-2 control-label">联系人</label>
+			                    <div class="col-md-9">
+			                        <input type="text"  name="#(formModelName).contact_name" class="form-control"  value="#(o?o.contact_name:'')" #if(view=='detail') readonly #end>
+			                        <small class="help-block">请输入联系人</small>
+			                    </div>
+			                </div>
+			                <div class="form-group">
+			                    <label class="col-md-2 control-label">联系人电话</label>
+			                    <div class="col-md-9">
+			                        <input type="text"  name="#(formModelName).contact_mobile" class="form-control"  value="#(o?o.contact_mobile:'')" #if(view=='detail') readonly #end>
+			                        <small class="help-block">请输入联系人电话</small>
+			                    </div>
+			                </div>
+			                <div class="form-group">
+			                    <label class="col-md-2 control-label">联系人邮箱</label>
+			                    <div class="col-md-9">
+			                        <input type="text"  name="#(formModelName).contact_mail" class="form-control"  value="#(o?o.contact_mail:'')" #if(view=='detail') readonly #end>
+			                        <small class="help-block">请输入联系人邮箱</small>
+			                    </div>
+			                </div>
+			                #if(view=='edit')
+				            	<div class="panel-footer">
+				                    <div class="row">
+				                        <div class="col-sm-8 col-sm-offset-3">
+				                            <button class="btn btn-warning" type="reset" #if(view=='detail') disabled #end>重置</button>
+			                            <button class="btn btn-primary" type="submit" #if(view=='detail') disabled #end>保存</button>
+				                        </div>
+				                    </div>
+				                </div>
+				            #end
+		            </form>

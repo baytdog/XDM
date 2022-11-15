@@ -1,0 +1,43 @@
+	
+	<div id="page-content">
+			<div class="col-lg-12">
+		        <div class="panel">
+		            <div class="panel-heading">
+		                <h3 class="panel-title" style="text-align: right;">
+		                	#@installPJaxGoBackBtn()
+		                	#@installFlowHisBtn(defId,procInsId)
+		                	#@installAttachment(o?o.id:'')
+		                </h3>
+		            </div>
+					#@buildFormPanelContainer(formName,"/WEB-INF/admin/oa/apply/cost/editForm.html")
+		            #@buildWorkFlowHisTable(procInsId,hislist)
+		        </div>
+		    </div>
+	</div>
+	<script>
+		var type = "#(type)";
+		function save(){
+			var data = common_ajax.ajaxFunc("/admin/oa/apply/cost/save", $('#editForm').serialize(), "json", null);
+			if(data.success){
+				pointLion.alertMsg("保存成功!" , "success" , "small" , function(){
+					location.href = ctx+'/admin/oa/apply/cost/getApplyListPage?type='+type;//跳转到列表页
+				},data);
+			}else{
+				pointLion.alertMsg(data.message , "danger" , "small" , function(){
+					$(".btn").removeAttr("disabled");
+				},data);
+			}
+		}
+		function resetVali(){
+			if(!$("#editForm").data('bootstrapValidator').isValid()) {  
+		        $("#editForm").data('bootstrapValidator').resetForm();
+		        $(".btn").removeAttr("disabled");
+		    }
+		}
+		function openSlectCostOneUser(){
+			pointLion.selectOneUser(encodeURIComponent("root"),function(data){
+				$("#get_money_userid").val(data.idData);
+				$("#get_money_user").val(data.nameData);
+			});
+		}
+	</script>

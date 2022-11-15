@@ -1,0 +1,689 @@
+	#define  addOtherPersonDoTask()
+<!-- 	<div class="form-group">
+		<label class="col-md-2 control-label">是否需要增加其他人审阅</label>
+		<div class="col-md-6">
+			<input id="needAddOtherAuditPersons" class="magic-radio" type="radio" name="ifneed" value="1"  #if(!ifneedadd) disabled="disabled" #end onclick="checkAddOtherAuditPerson()">
+			<label for="needAddOtherAuditPersons">需要</label>
+			<input id="notNeedAddOtherAuditPersons" class="magic-radio" type="radio" name="ifneed" value="0" #if(!ifneedadd) disabled="disabled" #end  checked="checked" onclick="checkAddOtherAuditPerson()">
+			<label for="notNeedAddOtherAuditPersons">不需要</label>
+		</div>
+	</div> -->
+	<div class="form-group addOtherAuditPersonDiv">
+		<label class="col-md-2 control-label">#if(o.status=="3"&&o.type!='3')审批人员 #else 承办人 #end</label>
+		<div class="col-md-4">
+			<div class="input-group mar-btm col-md-12">
+ 
+		            
+		              <input type="hidden" id="commonuserid" name="commonuserid" >
+                            <div class="col-md-8">
+                                <select id="commonuser"   title="请选择人员"  class="selectpicker show-tick form-control" actionsBox="true"  data-live-search="false">
+                                        #for(u:commonusers)
+											 <option value="#(u.id)">#(u.name)</option>
+									    #end
+                                </select>
+                            </div>
+		            
+			</div>
+		</div>
+	</div>
+	<script>
+	
+			$('#commonuser').on('changed.bs.select', function (e) {
+				$('#commonuserid').val($('#commonuser').val())
+			});
+	
+	
+	
+		function opernAddOtherPersonDoTaskDialog(){
+			pointLion.selectManyUser("orgid="+encodeURIComponent("root"),$("#flowCCId").val(),function(data){
+				$("#addOtherPersonAuditValues").val(data.idData);
+				$("#addOtherPersonAuditUsernames").val(data.usernameData);
+				$("#addOtherPersonAuditNames").val(data.nameData);
+			});
+		}
+		function checkAddOtherAuditPerson(){
+			
+			var value =	$("input[name='ifneed']:checked").val();
+			//var value = $("input[name='ifneed'] :checked").val();
+			if(value=="1"){
+				$(".addOtherAuditPersonDiv").show();
+			}else{
+				$(".addOtherAuditPersonDiv").hide();
+			}
+		}
+	</script>
+#end
+
+
+
+	<div id="page-content">
+			<div class="col-lg-12">
+		        <div class="panel">
+		            <div class="panel-heading">
+		                <h2 class="panel-title" style="text-align: center;">
+								信访
+		                </h2>
+		            </div>
+		 
+				  #include("hpLetterForm.html")
+		        </div>
+		        
+		        <!-- 
+		           	 <div>
+		        	<div class="row">
+					    <div class="col-lg-12">
+					        <h4 class="text-main pad-btm bord-btm" style="width: 100%;" align="center">阅示历史</h4>
+					    </div>
+					  	<div   class="col-lg-12">
+					  			<div class="fixed-table-container bootstrap-table" style="padding-bottom: 0px;">
+						<table id="treetable" class="demo-add-niftycheck table table-hover table-striped">
+							<thead>
+							<tr>
+								<th style="width: 100px;"><div class="th-inner">任务名称</div></th>
+								<th style="width: 100px;"><div class="th-inner">阅示人</div></th>
+								<th style="width: 200px;"><div class="th-inner">意见</div></th>
+								<th style="width: 140px;"><div class="th-inner">阅示时间</div></th>
+								<th style="width: 140px;"><div class="th-inner">是否完成</div></th>
+							</tr>
+							</thead>
+							<tbody>
+							#for(t:syLlist)
+							<tr>
+						 
+								<td>#(t.backup1)</td>
+								<td>#(t.leaderremark)</td>
+								<td>#(t.ifcomplete=="1"?t.readtime:"")</td>
+								<td>#if(t.ifcomplete=="1")<span style="color:green">已阅示</span>#else<span style="color:red">未阅示</span>#end</td>
+							</tr>
+							#end
+							</tbody>
+						</table>
+					</div>
+					  	
+					  	</div>
+					</div>
+		        
+		        </div> -->
+		   
+ 
+		        <!-- <div>
+		        	<div class="row">
+					    <div class="col-lg-12">
+					        <h4 class="text-main pad-btm bord-btm" style="width: 100%;" align="center">进度</h4>
+					    </div>
+					  	<div id="step"  class="col-lg-12">
+					  	
+					  	
+					  	</div>
+					</div>
+		        
+		        </div> -->
+		    </div>
+	</div>
+	<script>
+	function save(){
+		var data = common_ajax.ajaxFunc("/admin/oa/hotline/save", $('#editForm').serialize(), "json", null);
+		if(data.success){
+			pointLion.alertMsg("保存成功!" , "success" , "small" , function(){
+				//location.href = ctx+'/admin/oa/bumph/getDraftListPage';//跳转到列表页\
+				 busid=data.data.id;
+			},data);
+		}else{
+			pointLion.alertMsg(data.message , "success" , "small" , function(){
+				$(".btn").removeAttr("disabled");
+			},data);
+		}
+	}
+	//选择主送单位
+	function selectFirst(){
+		pointLion.selectManyOrg(function(orgNode){
+			var firstId = [];
+			var firstName = [];
+			$.each(orgNode,function(i,d){
+				firstId.push(d.id);
+				firstName.push(d.name);
+			});
+			$("#firstOrgId").val(firstId.join(","));
+			$("#firstOrgName").val(firstName.join(","));
+			//重新校验
+			$("#editForm").data('bootstrapValidator').destroy();
+	        $('#editForm').data('bootstrapValidator', null);
+	        formValidate();
+		});
+	}
+	//选择抄送单位
+	function selectSecond(){
+		pointLion.selectManyOrg(function(orgNode){
+			var firstId = [];
+			var firstName = [];
+			$.each(orgNode,function(i,d){
+				
+				if(d.name!='行政服务中心'){
+				firstId.push(d.id);
+				firstName.push(d.name);
+				}
+			});
+			$("#secondOrgId").val(firstId.join(","));
+			$("#secondOrgName").val(firstName.join(","));
+			
+		});
+	}
+	
+	
+	function openSlectFlowCCDialog(){
+		pointLion.selectManyUser("orgid="+encodeURIComponent("root"),$("#flowCCId").val(),function(data){
+			$("#firstOrgId").val(data.idData);
+			$("#firstOrgName").val(data.nameData);
+		});
+	}
+	
+	
+	
+	//表单校验
+	function formValidate(){
+		$('#editForm').bootstrapValidator({
+    		excluded:[":disabled"],
+            fields: {
+            	"#(formModelName).doc_num_n": {
+                    validators: {
+                        notEmpty: {
+                            message: '*公文文号不能为空'
+                        },
+                        lessThan: {
+        					inclusive:true,
+        					value: 99999999,
+        					message: '*请输入小于99999999的数字'
+        				}
+                    }
+                },
+            	"#(formModelName).title": {
+                    validators: {
+                        notEmpty: {
+                            message: '*公文标题不能为空'
+                        },
+                        stringLength: {
+                            max: 25,
+                            message: '*公文标题长度必须小于25'
+                        }
+                    }
+                },
+                "firstOrgId": {
+                    validators: {
+                    	notEmpty: {
+                            message: '*主送单位不能为空'
+                        }
+                    }
+                },
+                "#(formModelName).content": {
+                    validators: {
+                    	
+                    	notEmpty: {
+                            message: '*公文描述内容不能为空'
+                        }
+                    }
+                }
+            }
+        }).on("success.form.bv", function (e) {
+            save();
+            return false;//阻止表单跳转
+        });
+	}
+	
+	var view = "#(view?view:'')";
+	var  busid=$("#infoid").val();
+    function doUploadAttachment(){
+		
+		if(busid){
+			pointLion.openBusinessAttachmentPage(busid,view,function(){
+				
+				setAttachmentCount();//关闭之后回调
+			});
+		}else{
+			pointLion.alertMsg("请先保存再上传附件！" , "danger" , "small" , null);
+		}
+	}
+	
+	
+  //设置附件数量
+	function setAttachmentCount(){
+		var data = common_ajax.ajaxFunc("/admin/sys/attachment/getBusinessAttachmentCount", {"busid":busid}, "json", null);
+		if(data.success){
+			$("#businessAttachmentCount").html(data.data);
+		}
+	}
+	
+	
+	
+	function resetVali(){
+		if(!$("#editForm").data('bootstrapValidator').isValid()) {  
+	        $("#editForm").data('bootstrapValidator').resetForm();
+	        $(".btn").removeAttr("disabled");
+	    }
+	}
+	
+	$(document).ready(function() {
+		
+		$('.form_datetime').datepicker({format: 'yyyy-mm-dd',weekStart: 1,todayBtn:  1,autoclose: 1,language:  'zh-CN',todayHighlight: 1,forceParse: 0,showMeridian: 1}).on('changeDate',function(){
+			var startTime = $("#startTime").val();
+			var endTime = $("#endTime").val();
+			if(startTime&&endTime){
+				if(!dateUtil.compareCalendar(startTime,endTime)){
+					pointLion.alertMsg("开始时间大于结束时间","danger",null,null);
+					$("#editForm .btn").attr("disabled","disabled");
+				}else{
+					resetVali();
+				}
+			}
+		});
+		
+		
+		$(".selectpicker").selectpicker({});
+		$(".bootstrap-select").attr("style","width:100%;");
+		formValidate();
+	});
+	
+	
+	$(window).on('load', function () {
+	    $('#usertype').selectpicker({
+	    	
+	   
+	   /*      'selectedText': 'cat' */
+	    });
+	});
+	
+	$('#leader').on('changed.bs.select', function (e) {
+		
+		
+		$('#firstOrgId').val($('#leader').val())
+ 
+		});
+   
+		$('#depart').on('changed.bs.select', function (e) {
+		
+		
+			$('#secondOrgId').val($('#depart').val())
+		}); 
+	 
+	 $(function(){ 
+		　  
+		 #if(view=="detail") 
+			  $('#leader').selectpicker('setStyle', 'disabled', 'add');  
+			  $('#depart').selectpicker('setStyle', 'disabled', 'add');  
+			  $('#firstmenu').selectpicker('setStyle', 'disabled', 'add');  
+		 
+		 #end
+       
+            var oldleader = new Array();
+        	 #for(x : o.leadersid)
+        		 oldleader.push('#(x)'); 
+        	 #end
+    
+        	 $('#leader').selectpicker('val',oldleader).trigger("change");
+        	 
+        	  var olddepart= new Array();
+	        	 #for(x : o.departsid)
+	        		 olddepart.push('#(x)'); 
+	        	 #end
+	         
+        	 
+        	 $('#firstmenu').selectpicker('val',#(o.type)).trigger("change"); 
+				 
+		}); 
+	 
+	 
+	/*  $(function(){
+		 var $step = $("#step");
+		 var titles = new Array();
+		   //titles.push("收文登记");
+        	 #for(x : stepList)
+        		 titles.push('#(x.stepdesc)'); 
+        	 #end
+        	 
+        	 titles.push("完成");
+			$step.step({
+				index: #(completeCount),
+				time: 500,
+				//title: ["收文登记", "上传资料", "待确认", "已确认", "上传资料", "待确认", "已确认", "上传资料", "待确认", "已确认", "完成"]
+				title:titles
+			});
+		 
+	 }) */
+	 
+	 
+	  function completeTask(){
+			var comment=$("#comment").val();
+				pointLion.confimMsg("确定签阅 ？ <br/> 点击确认进行签阅 , 点击取消取消该操作",null,function(){
+		 
+				
+				
+					
+					  var data = common_ajax.ajaxFunc("/admin/oa/hotline/doys" , {"hotlineid":"#(o?o.id:'')", "comment":comment}, "json", null);
+					if(data.success){
+						pointLion.alertMsg(data.message , "success" , "small" , function(){
+					    location.href = ctx+'/admin/home/getHomePage';//跳转到列表页
+						});
+					}else{
+						pointLion.alertMsg(data.message , "success" , "small" , function(){
+							//$(".btn").removeAttr("disabled");
+						});
+					} 
+				});
+			}
+	 
+	 
+	 function addOpperson(){
+		 
+		 var  commonuserid= $("#commonuserid").val();
+		 if(!commonuserid){
+				pointLion.alertMsg("请选择要增加得操作人员!","danger",null,null);
+				return;
+		 }
+		 
+		 
+		  var data = common_ajax.ajaxFunc("/admin/oa/hotline/addOpPerson" , {"hotlineid":"#(o?o.id:'')", "commonuserid":commonuserid}, "json", null);
+			if(data.success){
+				pointLion.alertMsg(data.message , "success" , "small" , function(){
+			    location.href = ctx+'/admin/home/getHomePage';//跳转到列表页
+				});
+			}else{
+				pointLion.alertMsg(data.message , "success" , "small" , function(){
+					//$(".btn").removeAttr("disabled");
+				});
+			} 
+		 
+	 }
+	 
+	 
+	 function  toUpper(){
+		 
+		var doDeal= $("#doDeal").val();
+		 var data = common_ajax.ajaxFunc("/admin/oa/hotline/toUpperSure" , {"hotlineid":"#(o?o.id:'')", "doDeal":doDeal}, "json", null);
+			if(data.success){
+				pointLion.alertMsg(data.message , "success" , "small" , function(){
+			    location.href = ctx+'/admin/home/getHomePage';//跳转到列表页
+				});
+			}else{
+				pointLion.alertMsg(data.message , "success" , "small" , function(){
+					//$(".btn").removeAttr("disabled");
+				});
+			} 
+	 }
+	 
+	 
+	 
+	 function  upLeaderSure(){
+		 var data = common_ajax.ajaxFunc("/admin/oa/hotline/departLeaderSure" , {"hotlineid":"#(o?o.id:'')"}, "json", null);
+			if(data.success){
+				pointLion.alertMsg(data.message , "success" , "small" , function(){
+			    location.href = ctx+'/admin/home/getHomePage';//跳转到列表页
+				});
+			}else{
+				pointLion.alertMsg(data.message , "success" , "small" , function(){
+					//$(".btn").removeAttr("disabled");
+				});
+			} 
+	 }
+	</script>
+	
+<script type="text/javascript">
+
+//送登记
+
+function  sendReg(){
+	var data = common_ajax.ajaxFunc("/admin/oa/letter/sendReg", $('#editForm').serialize(), "json", null);
+	if(data.success){
+		pointLion.alertMsg("操作成功!" , "success" , "small" , function(){
+			location.href = ctx+'/admin/oa/letter/getPLetterListPage';//跳转到列表页\
+		},data);
+	}else{
+		pointLion.alertMsg(data.message , "success" , "small" , function(){
+			$(".btn").removeAttr("disabled");
+		},data);
+	}
+	
+}
+//拟办送领导批示
+function  sendLeaderPs(){
+	var data = common_ajax.ajaxFunc("/admin/oa/letter/sendLeaderPs", $('#editForm').serialize(), "json", null);
+	if(data.success){
+		pointLion.alertMsg("操作成功!" , "success" , "small" , function(){
+			location.href = ctx+'/admin/oa/letter/getPLetterListPage';//跳转到列表页
+		},data);
+	}else{
+		pointLion.alertMsg(data.message , "success" , "small" , function(){
+			$(".btn").removeAttr("disabled");
+		},data);
+	}
+	
+}
+//领导批示
+function  leaderPs(){
+	var data = common_ajax.ajaxFunc("/admin/oa/letter/leaderPs", $('#editForm').serialize(), "json", null);
+	if(data.success){
+		pointLion.alertMsg("操作成功!" , "success" , "small" , function(){
+			location.href = ctx+'/admin/oa/letter/getPLetterListPage';//跳转到列表页
+		},data);
+	}else{
+		pointLion.alertMsg(data.message , "success" , "small" , function(){
+			$(".btn").removeAttr("disabled");
+		},data);
+	}
+	
+}
+//送承办
+function  sendDo(){
+	
+	var data = common_ajax.ajaxFunc("/admin/oa/letter/sendDo", $('#editForm').serialize(), "json", null);
+	if(data.success){
+		pointLion.alertMsg("操作成功!" , "success" , "small" , function(){
+			location.href = ctx+'/admin/oa/letter/getPLetterListPage';//跳转到列表页
+		},data);
+	}else{
+		pointLion.alertMsg(data.message , "success" , "small" , function(){
+			$(".btn").removeAttr("disabled");
+		},data);
+	}
+	
+}
+
+//送部门领导审批
+function  sendDleader(){
+	
+	
+	var data = common_ajax.ajaxFunc("/admin/oa/letter/sendDleader", $('#editForm').serialize(), "json", null);
+	if(data.success){
+		pointLion.alertMsg("操作成功!" , "success" , "small" , function(){
+			location.href = ctx+'/admin/oa/letter/getPLetterListPage';//跳转到列表页
+		},data);
+	}else{
+		pointLion.alertMsg(data.message , "success" , "small" , function(){
+			$(".btn").removeAttr("disabled");
+		},data);
+	}
+}
+
+
+//部门领导审核办结
+function  dleaderOver(){
+	var data = common_ajax.ajaxFunc("/admin/oa/letter/dleaderOver", $('#editForm').serialize(), "json", null);
+	if(data.success){
+		pointLion.alertMsg("操作成功!" , "success" , "small" , function(){
+			location.href = ctx+'/admin/oa/letter/getPLetterListPage';//跳转到列表页
+		},data);
+	}else{
+		pointLion.alertMsg(data.message , "success" , "small" , function(){
+			$(".btn").removeAttr("disabled");
+		},data);
+	}
+}
+
+//归档
+function letterOver(){
+	
+	var data = common_ajax.ajaxFunc("/admin/oa/letter/letterOver", $('#editForm').serialize(), "json", null);
+	if(data.success){
+		pointLion.alertMsg("操作成功!" , "success" , "small" , function(){
+			location.href = ctx+'/admin/oa/letter/getPLetterListPage';//跳转到列表页
+		},data);
+	}else{
+		pointLion.alertMsg(data.message , "success" , "small" , function(){
+			$(".btn").removeAttr("disabled");
+		},data);
+	}
+}
+
+
+//领导审批不同意送承办
+function  leaderSendCb(){
+	
+	var data = common_ajax.ajaxFunc("/admin/oa/letter/leaderSendCb", $('#editForm').serialize(), "json", null);
+	if(data.success){
+		pointLion.alertMsg("操作成功!" , "success" , "small" , function(){
+			location.href = ctx+'/admin/oa/letter/getPLetterListPage';//跳转到列表页
+		},data);
+	}else{
+		pointLion.alertMsg(data.message , "success" , "small" , function(){
+			$(".btn").removeAttr("disabled");
+		},data);
+	}
+}
+
+
+function openSlectDoDialog(){
+	pointLion.selectManyUser("orgid="+encodeURIComponent("root"),$("#cbrids").val(),function(data){
+		
+	 
+		$("#cbrids").val(data.idData);
+		$("#cbrnames").val(data.nameData);
+	});
+}
+
+function openSlectPsLeaderDialog(){
+	pointLion.selectManyUser("orgid="+encodeURIComponent("root"),$("#leadersid").val(),function(data){
+		
+	 
+		$("#leadersid").val(data.idData);
+		$("#leadersname").val(data.nameData);
+	});
+}
+
+
+function openSlectFirstOrgIdDialog(){
+	pointLion.selectManyUser("orgid="+encodeURIComponent("root"),$("#hostsid").val(),function(data){
+		$("#hostsid").val(data.idData);
+		$("#hostsname").val(data.nameData);
+	});
+}
+function openSlectSecondOrgIdDialog(){
+	pointLion.selectManyUser("orgid="+encodeURIComponent("root"),$("#customersid").val(),function(data){
+		
+	 
+		$("#customersid").val(data.idData);
+		$("#customersname").val(data.nameData);
+	});
+}
+
+
+function  SendCb(){
+	var data = common_ajax.ajaxFunc("/admin/oa/letter/SendCb", $('#editForm').serialize(), "json", null);
+	if(data.success){
+		pointLion.alertMsg("操作成功!" , "success" , "small" , function(){
+			location.href = ctx+'/admin/oa/letter/getPLetterListPage';//跳转到列表页
+		},data);
+	}else{
+		pointLion.alertMsg(data.message , "success" , "small" , function(){
+			$(".btn").removeAttr("disabled");
+		},data);
+	}
+	
+}
+
+
+
+function  leadersPs(){
+	var data = common_ajax.ajaxFunc("/admin/oa/letter/leadersPs", $('#editForm').serialize(), "json", null);
+	if(data.success){
+		pointLion.alertMsg("保存成功!" , "success" , "small" , function(){
+			location.href = ctx+'/admin/oa/letter/getPLetterListPage';//跳转到列表页
+		},data);
+	}else{
+		pointLion.alertMsg(data.message , "success" , "small" , function(){
+			$(".btn").removeAttr("disabled");
+		},data);
+	}
+	
+	
+}
+
+
+function overStep(){
+	
+	var data = common_ajax.ajaxFunc("/admin/oa/letter/overStep", $('#editForm').serialize(), "json", null);
+	if(data.success){
+		pointLion.alertMsg("操作成功!" , "success" , "small" , function(){
+			location.href = ctx+'/admin/oa/letter/getPLetterListPage';//跳转到列表页
+		},data);
+	}else{
+		pointLion.alertMsg(data.message , "success" , "small" , function(){
+			$(".btn").removeAttr("disabled");
+		},data);
+	}
+	
+}
+function  sendSon(){
+	
+	var data = common_ajax.ajaxFunc("/admin/oa/letter/sendSon", $('#editForm').serialize(), "json", null);
+	if(data.success){
+		pointLion.alertMsg("操作成功!" , "success" , "small" , function(){
+			location.href = ctx+'/admin/oa/letter/getPLetterListPage';//跳转到列表页
+		},data);
+	}else{
+		pointLion.alertMsg(data.message , "success" , "small" , function(){
+			$(".btn").removeAttr("disabled");
+		},data);
+	}
+	
+}
+
+
+
+$(function(){
+	
+	
+	$('#lettertypeSelect').selectpicker('setStyle', 'disabled', 'add');  
+	$('#fromchannelSelect').selectpicker('setStyle', 'disabled', 'add');  
+	$('#letterresultSelect').selectpicker('setStyle', 'disabled', 'add');  
+	$('#letterreasonSelect').selectpicker('setStyle', 'disabled', 'add');  
+	$('#fromersugSelect').selectpicker('setStyle', 'disabled', 'add');  
+	
+
+	var   lettertype=$('#lettertype').val();
+	if(lettertype){
+	 		$('#lettertypeSelect').selectpicker('val',lettertype.split(",")).trigger("change");
+	}
+	var   fromchannel=$('#fromchannel').val();
+	if(fromchannel){
+	 		$('#fromchannelSelect').selectpicker('val',fromchannel.split(",")).trigger("change");
+	}
+	var   letterresult=$('#letterresult').val();
+	if(letterresult){
+	 		$('#letterresultSelect').selectpicker('val',letterresult.split(",")).trigger("change");
+	}
+	var   letterreason=$('#letterreason').val();
+	if(letterreason){
+	 		$('#letterreasonSelect').selectpicker('val',letterreason.split(",")).trigger("change");
+	}
+	
+	var   fromersug=$('#fromersug').val();
+	if(fromersug){
+	 		$('#fromersugSelect').selectpicker('val',fromersug.split(",")).trigger("change");
+	}
+	
+	
+	
+	
+});
+
+</script>
+	
+	

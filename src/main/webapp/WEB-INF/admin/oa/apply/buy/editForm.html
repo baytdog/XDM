@@ -1,0 +1,196 @@
+#define installItem(item)
+	<tr>
+		  <td>
+		  	<input class="form-control itemName"  value="#(item?item.name:'')" #if(view=='detail') readonly #end>
+		  </td>
+		  <td>
+		  	<input class="form-control supply_org_name"  value="#(item?item.supply_org_name:'')" #if(view=='detail') readonly #end>
+		  </td>
+		  <td>
+		  	<input class="form-control model_num"  value="#(item?item.model_num:'')" #if(view=='detail') readonly #end>
+		  </td>
+		  <td>
+		  	<input class="form-control unit_price"  value="#(item?item.unit_price:'')" #if(view=='detail') readonly #end>
+		  </td>
+		  <td>
+		  	<input class="form-control count"  value="#(item?item.count:'')" #if(view=='detail') readonly #end>
+		  </td>
+		  <td>
+		  	<input class="form-control sum_price"  value="#(item?item.sum_price:'')" #if(view=='detail') readonly #end>
+		  </td>
+		  #if(view!='detail') 
+			  <td>
+				<a class="label label-table label-success" href="javascript:void(0);" onclick="deleteItem(this)">删除</a>&nbsp;
+			  </td>
+		  #end
+	</tr>
+#end
+<form id="editForm" class="panel-body form-horizontal form-padding">
+						<input type="hidden"  name="#(formModelName).id" class="form-control" value="#(o?o.id:'')">
+			                <div class="form-group">
+			                    <label class="col-md-2 control-label">部门单位名称名称</label>
+			                    <div class="col-md-9">
+			                        <input type="hidden"  name="#(formModelName).org_id" class="form-control"  value="#if(o)#(o.org_id)#else#(org.id)#end">
+			                        <input type="text"  name="#(formModelName).org_name" class="form-control"  value="#if(o)#(o.org_name)#else#(org.name)#end" readonly>
+			                    </div>
+			                </div>
+			                <div class="form-group">
+			                    <label class="col-md-2 control-label">工程名称</label>
+			                    <div class="col-md-4">
+			                        <input type="text"  name="#(formModelName).project_name" class="form-control"  value="#(o?o.project_name:'')" #if(view=='detail') readonly #end>
+			                        <small class="help-block">请输入工程名称</small>
+			                    </div>
+			                    <label class="col-md-1 control-label">工程地点</label>
+			                    <div class="col-md-4">
+			                        <input type="text"  name="#(formModelName).project_area" class="form-control"  value="#(o?o.project_area:'')" #if(view=='detail') readonly #end>
+			                        <small class="help-block">请输入工程地点</small>
+			                    </div>
+			                </div>
+			                <div class="form-group">
+			                    <label class="col-md-2 control-label">申请人</label>
+			                    <div class="col-md-4">
+			                    	<input type="hidden"  name="#(formModelName).userid" class="form-control"  value="#if(o)#(o.userid)#else#(user.id)#end">
+			                        <input type="text"  name="#(formModelName).applyer_name" class="form-control"  value="#if(o)#(o.applyer_name)#else#(user.name)#end" readonly>
+			                    </div>
+			                    <label class="col-md-1 control-label">金额</label>
+			                    <div class="col-md-4">
+			                        <input type="text"  name="#(formModelName).price" class="form-control"  value="#(o?o.price:'')" #if(view=='detail') readonly #end>
+			                        <small class="help-block">请输入金额</small>
+			                    </div>
+			                </div>
+			                <div class="form-group">
+			                    <label class="col-md-2 control-label">
+			                    	#if(view!='detail') 
+			                    		<a class="label label-table label-success" onclick="addItem()" href="javascript:void(0);">添加材料</a>&nbsp; 
+			                    	#end
+			                    </label>
+			                </div>
+			                <div class="form-group">
+			                	<label class="col-md-1 control-label"></label>
+			                	<div class="fixed-table-body col-md-10">
+										<table id="treetable" class="demo-add-niftycheck table table-hover table-striped">
+										        <thead>
+										         	<tr>
+											        	<th style="width: 250px;"><div class="th-inner">材料名称</div></th>
+														<th style="width: 350px;"><div class="th-inner">供货单位</div></th>
+														<th style="width: 100px;"><div class="th-inner">规格型号</div></th>
+														<th style="width: 100px;"><div class="th-inner">单价</div></th>
+														<th style="width: 100px;"><div class="th-inner">数量</div></th>
+														<th style="width: 130px;"><div class="th-inner">金额</div></th>
+														#if(view!='detail') 
+															<th style="width: 80px;"><div class="th-inner">操作</div></th>
+														#end
+											        </tr>
+										        </thead>
+										        <tbody id="itemTBody">
+										        	#if(!itemList)
+										        		#@installItem(null)
+										        		#@installItem(null)
+										        		#@installItem(null)
+										        	#end
+										        	#for(item:itemList)
+										        		#@installItem(item)
+										        	#end
+										        </tbody>
+										</table>
+								</div>
+								<table style="display:none;">
+									<tbody id="itemModel">
+										#@installItem(null)
+									</tbody>
+								</table>
+			                </div>
+			                <div class="form-group">
+			                    <label class="col-md-2 control-label">供货单位开户银行及账号</label>
+			                    <div class="col-md-4">
+			                        <input type="text"  name="#(formModelName).bank_num" class="form-control"  value="#(o?o.bank_num:'')" #if(view=='detail') readonly #end>
+			                        <small class="help-block">请输入银行账号</small>
+			                    </div>
+			                    <label class="col-md-1 control-label">联系电话</label>
+			                    <div class="col-md-4">
+			                        <input type="text"  name="#(formModelName).mobile" class="form-control"  value="#(o?o.mobile:'')" #if(view=='detail') readonly #end>
+			                        <small class="help-block">请输入联系电话</small>
+			                    </div>
+			                </div>
+			                <div class="form-group">
+			                    <label class="col-md-2 control-label">部门、项目经理意见</label>
+			                    <div class="col-md-9">
+			                        <div class="audit-sign-name-div">
+			                        </div>
+			                    </div>
+			                </div>
+			                <div class="form-group">
+			                    <label class="col-md-2 control-label">总公司材料采购人意见</label>
+			                    <div class="col-md-9">
+			                        <div class="audit-sign-name-div">
+			                        </div>
+			                    </div>
+			                </div>
+			                <div class="form-group">
+			                    <label class="col-md-2 control-label">主管领导意见</label>
+			                    <div class="col-md-9">
+			                        <div class="audit-sign-name-div">
+			                        </div>
+			                    </div>
+			                </div>
+			                #if(view=='edit')
+								<div class="panel-footer">
+									<div class="row">
+										<div class="col-sm-8 col-sm-offset-3">
+											<button class="btn btn-warning" type="reset" #if(view=='detail') disabled #end>重置</button>
+											<button class="btn btn-primary" type="submit" #if(view=='detail') disabled #end>保存</button>
+										</div>
+									</div>
+								</div>
+				            #else
+
+				            #end
+		            </form>
+		            <script>
+		            	function addItem(){
+		            		var html = $("#itemModel").html();
+		            		$("#itemTBody").append(html);
+		            	}
+		            	function deleteItem(o){
+		            		$(o).parent("td").parent("tr").remove();
+		            	}
+		            	function save(){
+		        			var dd = $('#editForm').serializeObject();
+		        			var oaApplyBuyItemList = [];
+		        			var itemArr = $("#itemTBody").children();
+		        			$.each(itemArr,function(i,d){
+		        				dd["oaApplyBuyItemList["+i+"].name"]=$(d).find(".itemName").val();
+		        				dd["oaApplyBuyItemList["+i+"].supply_org_name"] =$(d).find(".supply_org_name").val();
+		        				dd["oaApplyBuyItemList["+i+"].model_num"] =$(d).find(".model_num").val();
+		        				dd["oaApplyBuyItemList["+i+"].unit_price"] =$(d).find(".unit_price").val();
+		        				dd["oaApplyBuyItemList["+i+"].countcount"] =$(d).find(".countcount").val();
+		        				dd["oaApplyBuyItemList["+i+"].sum_price"] =$(d).find(".sum_price").val();
+		        			})
+		        			var data = common_ajax.ajaxFunc("/admin/oa/apply/buy/save",dd , "json", null);
+		        			if(data.success){
+		        				pointLion.alertMsg("保存成功!" , "success" , "small" , function(){
+		        					location.href = ctx+'/admin/oa/apply/buy/getListPage';//跳转到列表页
+		        				},data);
+		        			}else{
+		        				pointLion.alertMsg(data.message , "danger" , "small" , function(){
+		        					$(".btn").removeAttr("disabled");
+		        				},data);
+		        			}
+		        		}
+		        		$.fn.serializeObject = function()
+		            	{
+		            		var o = {};
+		            		var a = this.serializeArray();
+		            		$.each(a, function() {
+		            			if (o[this.name] !== undefined) {
+		            				if (!o[this.name].push) {
+		            					o[this.name] = [o[this.name]];
+		            				}
+		            				o[this.name].push(this.value || '');
+		            			} else {
+		            				o[this.name] = this.value || '';
+		            			}
+		            		});
+		            		return o;
+		            	};
+		            </script>

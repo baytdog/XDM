@@ -1,0 +1,357 @@
+					<form id="editForm" class="panel-body form-horizontal form-padding">
+		            	<input id="infoid" type="hidden" name="#(formModelName).id" value="#(o?o.id:'')">
+		            	<input type="hidden" name="#(formModelName).type"   value="#(o.type?o.type: type)"  >
+		        
+		                <div class="form-group">
+		                    <label class="col-md-2 control-label">信访编号</label>
+		                    <div class="col-md-9">
+		                        <input type="text"  name="#(formModelName).num" class="form-control"  value="#(o?o.num:'')" #if(view=="detail") readonly #end />
+		                <!--         <small class="help-block">请输入公文标题</small> -->
+		                    </div>
+		                </div>
+		                
+		                 <div class="form-group">
+		                		<label class="col-md-2 control-label">登记日期</label>
+					            <div class="input-group date form_datetime col-md-4" style="float:left;padding-left: 10px;">
+				                    <input type="text" id="startTime" name="#(formModelName).fromtime" class="form-control"  value="#(o?o.fromtime:'')"   readonly  >
+									<span class="input-group-addon"> <span class="glyphicon glyphicon-th"></span> 
+									</span>
+				                </div>
+			                </div>
+		                <div class="form-group">
+		                    <label class="col-md-2 control-label">来电人</label>
+		                    <div class="col-md-9">
+		                        <input type="text"  name="#(formModelName).fromer" class="form-control"  value="#(o?o.fromer:'')" #if(view=="detail") readonly #end />
+		                    </div>
+		                </div>
+		                <div class="form-group">
+		                    <label class="col-md-2 control-label">联系方式</label>
+		                    <div class="col-md-9">
+		                        <input type="text"  name="#(formModelName).contact" class="form-control"  value="#(o?o.contact:'')" #if(view=="detail") readonly #end />
+		                    </div>
+		                </div>
+		                <div class="form-group">
+		                    <label class="col-md-2 control-label">单位</label>
+		                    <div class="col-md-9">
+		                        <input type="text"  name="#(formModelName).fromunit" class="form-control"  value="#(o?o.fromunit:'')" #if(view=="detail") readonly #end />
+		                    </div>
+		                </div>
+		                <div class="form-group">
+		                    <label class="col-md-2 control-label">来文字号</label>
+		                    <div class="col-md-9">
+		                        <input type="text"  name="#(formModelName).fromnum" class="form-control"  value="#(o?o.fromnum:'')" #if(view=="detail") readonly #end />
+		                    </div>
+		                </div>
+		                
+		                
+		                
+	  <div class="form-group">
+		                    <label class="col-md-2 control-label">类型</label>
+		                    
+		                      <input type="hidden" id="hotlinetype" name="#(formModelName).hotlinetype" value="#(o?o.hotlinetype:'')">
+		                    <div class="col-md-9">
+		                     
+		                         <select id="hotlinetypeSelect" name="#(formModelName).hotlinetype"  value="#(o?o.hotlinetype:'')"  title="请选择类型"  class="selectpicker show-tick form-control" actionsBox="true"  disable  data-live-search="false">
+									    <option value="1">咨询</option>
+									    <option value="2">表扬</option>
+									    <option value="3">建议</option>
+									    <option value="4">投诉</option>
+									    <option value="5">其他</option>
+                                </select>
+		                    </div>
+	 </div>
+	  <div class="form-group">
+		                    <label class="col-md-2 control-label">来源</label>
+		                      <input type="hidden" id="fromchannel" name="#(formModelName).fromchannel" value="#(o?o.fromchannel:'')">
+		                    <div class="col-md-9">
+		                     
+		                         <select id="fromchannelSelect"    title="请选择来源"  class="selectpicker show-tick form-control" actionsBox="true"  disable  data-live-search="false">
+									    <option value="1">12345</option>
+									    <option value="3">12328</option>
+									    <option value="4">WEIXIN</option>
+									    <option value="2">其他</option>
+                                </select>
+		                    </div>
+	 </div>
+		                
+		                
+		         <div class="form-group">
+		                    <label class="col-md-2 control-label">关键字</label>
+		                    <div class="col-md-9">
+		                        <input type="text"  name="#(formModelName).keywords" class="form-control"  value="#(o?o.keywords:'')" #if(view=="detail") readonly #end />
+		                    </div>
+		                </div>         
+		             
+		             <div class="form-group">
+		                    <label class="col-md-2 control-label">首页显示</label>
+		                    <div class="col-md-9">
+		                        <input type="text"  name="#(formModelName).backup3" class="form-control"  value="#(o?o.backup3:'')" #if(view=="detail") readonly #end />
+		                    </div>
+		                </div>   
+		                
+		                
+		                <div class="form-group">
+		                    <label class="col-md-2 control-label">反应内容</label>
+		                    <div class="col-md-9">
+		                        <textarea name="#(formModelName).contents" rows="12" class="form-control" #if(view=="detail") readonly #end>#(o?o.contents:'')</textarea>
+		                       <!--  <small class="help-block">请输入公文描述内容</small> -->
+		                    </div>
+		                </div>
+		                
+		                
+		                
+		             <div class="form-group">
+	                    <label class="col-md-2 control-label">处理期限 </label>
+	                    <div class="col-md-9">
+	                        <input type="text"  name="#(formModelName).clqx" class="form-control"  value="#(o?o.clqx:'')" #if(view=="detail") readonly #end />
+	                    </div>
+		             </div>
+		                
+		       
+		   
+		                	<div class="form-group">
+			             	
+			             	 <label class="col-md-2 control-label">拟办意见 </label>
+                        
+                            <div class="col-md-2">
+                                <select id="commonsuggesion"   title="请选择常用意见"  class="selectpicker show-tick form-control" actionsBox="true"  data-live-search="false">
+									    <option value=""></option>
+									    <option value="请_________调查处理，直接答复信访人。">请_________调查处理，直接答复信访人。</option>
+									    <option value="请_________调查处理，提供书面答复意见。">请_________调查处理，提供书面答复意见。</option>
+									    <option value="供你科参考处理。">供你科参考处理。</option>
+                                </select>
+                            </div>
+			             	
+			             	
+							 
+								<div class="col-md-7">
+									<textarea  id="comment" name="#(formModelName).suggestions" rows="3"  class="form-control">#(o?o.suggestions:'')</textarea>
+				 				</div>
+							 </div>
+		                
+		                
+		                <div  class="form-group"  style="text-align: right;">
+		                
+		                   	 <label class="col-md-2 control-label">附件列表</label>
+		           
+		                	<div class="col-md-9 ">
+		                			
+									<table id="pageTable" class="demo-add-niftycheck" data-toolbar="#del,#add"
+										   data-search="false"
+										   data-show-refresh="false"
+										   data-show-toggle="false"
+										   data-show-columns="false"
+										   data-sort-name="id"
+										   data-page-list="[5, 10, 20]"
+										   data-page-size="10"
+										   data-pagination="true" data-show-pagination-switch="false" >
+									</table>
+									<a id="filePicker"  class="btn"  href="javascript:void(0);" style="text-align: right;"><!-- <i class="demo-pli-add"></i>  -->添加附件</a>  
+		                	</div>
+		                </div>
+		                
+		             
+		                
+		                <div class="form-group">
+		                    <label class="col-md-2 control-label" for="demo-textarea-input">拟办审核人</label>
+		                    <div class="col-md-4" style="line-height: 30px;">
+		                    	<div #if(view!="detail") class="input-group mar-btm" #end>
+		                    		<input type="hidden" id="nbshrids" name="#(formModelName).nbshrids" value="#(o?o.nbshrids:'')">
+			                        <input type="text"   id="nbshrnames" name="#(formModelName).nbshrnames" value="#(o?o.nbshrnames:'')" readonly class="form-control">
+			                        #if(view!="detail") 
+				                        <span class="input-group-btn">
+				                            <button class="btn btn-primary" type="button" onclick="openSlectNbShDialog()">选择</button>
+				                        </span>
+				                    #end
+			                    </div>
+		                   
+		                    </div>
+		                    
+		                 <!--    <div class="col-md-5" style="text-align:left;">
+		                       <button class="btn btn-primary" type="submit"  style=" font-size: 20px;">拟办审核</button> 
+		                    </div> -->
+		                </div>
+		                
+		                #if(o.nbshrremark!=null)
+		                <div class="form-group">
+		                    <label class="col-md-2 control-label">拟办审核人意见</label>
+		                    <div class="col-md-9">
+		                        <textarea name="#(formModelName).nbshrremark" rows="3" class="form-control" #if(view=="detail") readonly #end>#(o?o.nbshrremark:'')</textarea>
+		                    </div>
+		                </div>
+		                #end
+		                
+		                
+		                
+		          #if(o.status>="2")
+                 
+	              	<div class="form-group">
+	                   <label class="col-md-2 control-label" for="demo-textarea-input">承办人</label>
+	                   <div class="col-md-9" style="line-height: 30px;">
+	                   	<div  class="input-group mar-btm"  >
+	                   		<input type="hidden" id="cbrids" name="#(formModelName).cbrids" value="#(o?o.cbrids:'')">
+	                        <input type="text"   id="cbrnames" name="#(formModelName).cbrnames" value="#(o?o.cbrnames:'')" readonly class="form-control">
+	               
+		                        <span class="input-group-btn">
+		                            <button class="btn btn-primary" type="button" onclick="openSlectDoDialog()">选择</button>
+		                        </span>
+		              
+	                    </div>
+	                  
+	                   </div>
+	               </div>
+              
+                 #end
+                 
+                 
+                 
+                 
+                   #if(o.cbrremark!=null)
+		           <div class="form-group">
+		                 <label class="col-md-2 control-label">处理情况</label>
+		                 <div class="col-md-9">
+		                     <textarea name="#(formModelName).cbrremark" rows="8" class="form-control" #if(view=="detail") readonly #end>#(o?o.cbrremark:'')</textarea>
+		                 </div>
+		             </div>
+                 #end
+                   #if(o.status>='3')
+                 	  <div class="form-group">
+                   <label class="col-md-2 control-label">认定</label>
+		                      <input type="hidden" id="hotlinesure" name="#(formModelName).hotlinesure" value="#(o?o.hotlinesure:'')">
+		                    <div class="col-md-9">
+		                     
+		                         <select id="hotlinesureSelect"    title="请选择"  class="selectpicker show-tick form-control" actionsBox="true"  disable  data-live-search="false">
+									    <option value=""></option>
+									    
+									    #if(o.hotlinetype=="1"||o.hotlinetype=="2")
+									    	<option value="1">有政策信息</option>
+									    <option value="2">无政策信息</option>
+									    <option value="3"> 对政策解释不接受</option>
+									    #else
+									    <option value="4">属实</option>
+									    <option value="5">不属实</option>
+									    <option value="6">诉求合理合法</option>
+									    <option value="7">无政策依据</option>
+									    <option value="8">诉求过高</option>
+									    <option value="9">其他</option>
+									    #end
+									    
+									    
+									    
+                                </select>
+		                    </div>
+                 </div>
+                 
+                 
+                 
+                  <div class="form-group">
+                   <label class="col-md-2 control-label">结果</label>
+		                      <input type="hidden" id="hotlineresult" name="#(formModelName).hotlineresult" value="#(o?o.hotlineresult:'')">
+		                    <div class="col-md-9">
+		                     
+		                         <select id="hotlineresultSelect"    title="请选择"  class="selectpicker show-tick form-control" actionsBox="true"  disable  data-live-search="false">
+									    <option value=""></option>
+									    
+									    #if(o.hotlinetype=="1"||o.hotlinetype=="2")
+									    	<option value="1">实际解决</option>
+									    <option value="2">解释说明</option>
+									    <option value="3">参考备案</option>
+									    #else
+									     	<option value="1">实际解决</option>
+									    <option value="2">解释说明</option>
+									    <option value="3">参考备案</option>
+									    <option value="4">诉求过高</option>
+									    #end
+									    
+									    
+									    
+                                </select>
+		                    </div>
+                 </div>
+                 
+                 
+                  #if(o.hotlinetype=="3"||o.hotlinetype=="4"||o.hotlinetype=="5")
+		                 <div class="form-group">
+		                   <label class="col-md-2 control-label">有无责任</label>
+				                      <input type="hidden" id="ywzr" name="#(formModelName).ywzr" value="#(o?o.ywzr:'')">
+				                    <div class="col-md-9">
+				                         <select id="ywzrSelect"    title="请选择"  class="selectpicker show-tick form-control" actionsBox="true"  disable  data-live-search="false">
+											    <option value="">=====请选择</option>
+											    <option value="1">有</option>
+											    <option value="0">无</option>
+										 
+											  
+		                                </select>
+				                    </div>
+		                 </div>		
+                   #end
+                 
+                 
+                 
+                    <div class="form-group">
+		                 <label class="col-md-2 control-label">认定说明</label>
+		                 <div class="col-md-9">
+		                     <textarea name="#(formModelName).rdsm" rows="3" class="form-control">#(o?o.rdsm:'')</textarea>
+		                 </div>
+		             </div>
+                 
+                 
+                 #end
+                 
+                 
+		                
+		                
+		            	#if(o.type=="2"&& (o.status=="5"||o.status=="6"))
+		            	
+		            	     <div class="form-group">
+		                    <label class="col-md-2 control-label">拟展示标题</label>
+		                    <div class="col-md-9">
+		                        <input type="text"  name="#(formModelName).showtitle" class="form-control"  value="#(o?o.showtitle:'')" #if(view=="detail"||o.status=="6") readonly #end />
+		                    </div>
+		                </div>
+		            	
+		            	<div class="form-group">
+		                    <label class="col-md-2 control-label">拟展示信访内容</label>
+		                    <div class="col-md-9">
+		                        <textarea name="#(formModelName).showcontents" rows="12" class="form-control" #if(view=="detail" ||o.status=="6") readonly #end>#(o?o.showcontents:'')</textarea>
+		                      <!--   <small class="help-block">请输入拟办意见</small> -->
+		                    </div>
+		                </div>
+		                
+		                <div class="form-group">
+		                    <label class="col-md-2 control-label">拟展示回复内容</label>
+		                    <div class="col-md-9">
+		                        <textarea name="#(formModelName).showrecontents" rows="12" class="form-control" #if(view=="detail" ||o.status=="6") readonly #end>#(o?o.showrecontents:'')</textarea>
+		                      <!--   <small class="help-block">请输入拟办意见</small> -->
+		                    </div>
+		                </div>
+		            	
+		            	#end
+		            
+			             
+		          
+		            
+		     <div class="row">
+		     <div class="col-lg-11" align="right">
+		     
+		     	#if(view=='edit')
+		     	 #if(o.status=="0"||o.status=="5"||o.status=="2")
+		       <!-- 	 <button class="btn btn-primary" type="button" onclick="save()"  style=" font-size: 20px;">拟办审核</button>  -->
+		       	 	<button class="btn btn-primary" type="submit" style=" font-size: 20px;">拟办审核</button>
+		       	 #end
+		       	 #if(o.status>'0' && o.status<'3' )
+		       	 <button class="btn btn-primary" type="button" onclick="saveEdit()"  style=" font-size: 20px;">保存</button> 
+		       	 #end
+		       	#end 
+		       	 <button class="btn btn-primary" type="button" onclick="window.history.back();" style="font-size: 20px;">返回</button> 
+		     </div>
+		
+		   
+		     
+		     </div>
+		     </form>  
+		             <br/>
+		     <br/>     <br/>
+		     <br/>    
+		            
+		            

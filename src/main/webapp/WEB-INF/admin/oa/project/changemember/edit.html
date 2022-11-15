@@ -1,0 +1,46 @@
+	
+	<div id="page-content">
+			<div class="col-lg-12">
+		        <div class="panel">
+		            <div class="panel-heading">
+		                <h3 class="panel-title" style="text-align: right;">
+		                	#@installPJaxGoBackBtn()
+		                	#@installFlowHisBtn(defId,procInsId)
+		                	#@installAttachment(o?o.id:'')
+		                </h3>
+		            </div>
+					#@buildFormPanelContainer("项目重要人员变更申请单","/WEB-INF/admin/oa/project/changemember/editForm.html")
+		            #@buildWorkFlowHisTable(procInsId,hislist)
+		        </div>
+		    </div>
+	</div>
+	<script>
+		function save(){
+			var data = common_ajax.ajaxFunc("/admin/oa/project/changemember/save", $('#editForm').serialize(), "json", null);
+			if(data.success){
+				pointLion.alertMsg("保存成功!" , "success" , "small" , function(){
+					location.href = ctx+'/admin/oa/project/changemember/getListPage';//跳转到列表页
+				},data);
+			}else{
+				pointLion.alertMsg(data.message , "danger" , "small" , function(){
+					$(".btn").removeAttr("disabled");
+				},data);
+			}
+		}
+		$(document).ready(function() {
+			$('#editForm').bootstrapValidator({
+	            fields: {
+	            	"#(formModelName).project_id":{
+	            		validators: {
+			                notEmpty: {
+			                    message: '*所选项目不能为空'
+			                }
+			            }
+	            	}
+	            }
+	        }).on("success.form.bv", function (e) {
+	            save();
+	            return false;//阻止表单跳转
+	        });
+		});
+	</script>

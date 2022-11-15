@@ -1,0 +1,15 @@
+					<form id="editForm" class="panel-body form-horizontal form-padding">
+							#include("editFormComs.html")
+			                #if(view=='detail')
+			                	
+			                #else
+				            	<div class="panel-footer">
+				                    <div class="row">
+				                        <div class="col-sm-8 col-sm-offset-3">
+				                            <button class="btn btn-warning" type="reset" #if(view=='detail') disabled #end>重置</button>
+				                            <button class="btn btn-primary" type="submit" #if(view=='detail') disabled #end>保存</button>
+				                        </div>
+				                    </div>
+				                </div>
+			                #end
+		            </form>

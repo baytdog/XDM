@@ -1,0 +1,210 @@
+<link href="#(ctx)/common/plugins/fullcalendar/fullcalendar.css" rel="stylesheet">
+<link href="#(ctx)/common/plugins/fullcalendar/nifty-skin/fullcalendar-nifty.min.css" rel="stylesheet">
+<script src="#(ctx)/common/plugins/fullcalendar/lib/moment.min.js"></script>
+<script src="#(ctx)/common/plugins/fullcalendar/lib/jquery-ui.custom.min.js"></script>
+<script src="#(ctx)/common/plugins/fullcalendar/fullcalendar.min.js"></script>
+
+<style>
+ .paneltab{
+ background-color:#208E83;
+ 
+ border-radius: 4px;
+ text-align: center;
+ vertical-align: middle;
+ 
+ }
+ 
+ .paneltab .panel-title {
+ 	
+ 	text-align:left;	
+ 	font-size:20px; 
+ 	color:white;
+
+   	
+   	padding-bottom: 20px;
+   	
+ 
+ }
+</style>
+
+ 
+ 
+
+
+
+
+
+ 
+ 
+
+
+ 
+<!-- <div id="page-head">
+ 
+</div> -->
+ 
+<!-- <div  class="container-fluid" align="center"> -->
+
+   
+
+    <div class="row">
+       
+    
+       
+        <div class="col-lg-12">
+       <!--    <div id="demo-panel-network" class="panel paneltab" >
+                <div class="panel-heading">
+                     
+                   
+                </div>
+            </div> -->
+            <!-- 日历开始 -->
+            
+            <div class="row"  >
+				  
+				    <div class="col-md-12 col-lg-12" >
+				        <div class="panel" >
+				            <div class="panel-body" >
+							 <h3 class="panel-title" style="text-align: center;">一周安排</h3>
+				                <!-- ============================================ -->
+				                <div id='demo-calendar' ></div>
+				                <!-- ============================================ -->
+					 <h3 class="panel-title" style="text-align: center;">备注</h3>
+					 
+					 <div  >
+					  <textarea  id="comment" name="comment" rows="8"  class="form-control" readonly="readonly"> #(remarks)</textarea>
+					 
+					 </div>
+				            </div>
+				        </div>
+				    </div>
+			</div>
+         <!--    日历 结束 -->
+         
+         <br>
+         
+      
+        </div>
+
+    </div>
+
+<script>
+
+$(document).ready(function() {
+	$('#demo-external-events .fc-event').each(function() {
+		$(this).data('event', {
+			title: $.trim($(this).text()), // use the element's text as the event title
+			stick: true, // maintain when user navigates (see docs on the renderEvent method)
+			className : $(this).data('class')
+		});
+		$(this).draggable({
+			zIndex: 99999,
+			revert: true,      // will cause the event to go back to its
+			revertDuration: 0  //  original position after the drag
+		});
+	});
+	
+ 
+ 
+	
+	$('#demo-calendar').fullCalendar({
+	    height: 450,
+		header: {
+		/* 	left: 'prev,next,prevYear,nextYear today', */
+			center: 'title',
+			/* right: 'month,agendaWeek,agendaDay,basicWeek' */
+			 right: 'basicWeek'
+			
+		},
+		buttonText:{
+				prev: '‹', // ‹
+				next: '›', // ›
+				prevYear: '«', // «
+				nextYear: '»', // »
+				today: '今天',
+				month: '月',
+				week: '周',
+				day: '天',
+				basicWeek:'一周',
+			},
+	    
+		editable: false,//设置是否允许拖拽
+		droppable: true, // this allows things to be dropped onto the calendar
+		drop: function() {
+			if ($('#drop-remove').is(':checked')) {
+				$(this).remove();
+			}
+		},
+		dayClick: function(date, allDay, jsEvent, view) {
+			 
+		},
+		eventClick: function(event, jsEvent, view) {
+	 
+		 
+		        
+		},
+		eventRender: function (event, element) {//title以HTML显示（换行）
+	            element.html(event.title);   
+		
+	            element.attr('href', 'javascript:void(0);');
+                element.click(function() {
+                    bootbox.alert({
+                           message: '详情 : '+event.title,
+                           title: event.title,
+                      
+                    });
+                });
+	    },
+	    
+	    theme:false,
+		header:false,
+		weekends:true,
+		firstDay:1, //设置一周中显示的第一天是哪天，周日是0，周一是1，类推
+		isRTL:false,
+		selectable:true,
+		weekNumbers:false,
+		weekNumberTitle:'周次',
+		monthNames:['一月', '二月', '三月', '四月', '五月', '六月','七月', '八月', '九月', '十月', '十一月', '十二月'],
+		monthNamesShort:['一月', '二月', '三月', '四月', '五月', '六月','七月', '八月', '九月', '十月', '十一月', '十二月'],
+		dayNames:['周日', '周一', '周二', '周三', '周四', '周五', '周六'],
+		dayNamesShort:['周日', '周一', '周二', '周三', '周四', '周五', '周六'],
+		defaultDate: '#(today)',
+		defaultView: 'basicWeek' ,
+	
+		eventLimit: true, // allow "more" link when too many events
+		
+		
+		/* events:'#(ctx)/admin/oa/workplan/getWorkPlan', */
+		   events:  function(start, end, timezone, callback) {
+			  
+	        $.ajax({
+	            url: '#(ctx)/admin/oa/workplan/getWorkPlan',
+	            dataType: 'json',
+	            
+	            success: function(doc) {
+	                var events = [];
+	                $(doc).each(function() {
+	                    events.push({
+	                    	id:$(this).attr('id'),
+	                        title: $(this).attr('title'),
+	                        start: $(this).attr('start'),
+	                        
+	                        end:$(this).attr('end') ,// will be parsed
+	                        color:'orange',
+	                      
+	                       
+	                    });
+	                });
+	                
+	                callback(events);
+	            }
+	        });
+	    }   
+	      
+	 	
+	});
+});
+    
+ 
+
+</script>

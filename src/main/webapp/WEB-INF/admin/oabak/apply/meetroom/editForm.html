@@ -1,0 +1,210 @@
+<form id="editForm" class="panel-body form-horizontal form-padding">
+						<input type="hidden" id="applyId" name="#(formModelName).id" class="form-control" value="#(o?o.id:'')">
+			                <div class="form-group">
+			                    <label class="col-md-2 control-label">申请人</label>
+			                    <div class="col-md-4">
+			                    	<input type="hidden"  name="#(formModelName).userid" class="form-control"  value="#if(o)#(o.userid)#else#(user.id)#end">
+			                        <input type="text"  name="#(formModelName).applyer_name" class="form-control"  value="#if(o)#(o.applyer_name)#else#(user.name)#end" readonly>
+			                    </div>
+			                    <label class="col-md-1 control-label">部门</label>
+			                    <div class="col-md-4">
+			                        <input type="hidden"  name="#(formModelName).org_id" class="form-control"  value="#if(o)#(o.org_id)#else#(org.id)#end">
+			                        <input type="text"  name="#(formModelName).org_name" class="form-control"  value="#if(o)#(o.org_name)#else#(org.name)#end" readonly>
+			                    </div>
+			                </div>
+			                <div class="form-group">
+			                    <label class="col-md-2 control-label">标题</label>
+			                    <div class="col-md-9">
+				                     <input id="applyTitle" type="text"  name="#(formModelName).title" class="form-control"  value="#(o?o.title:'')" readonly>
+			                    </div>
+			                </div>
+			                <div class="form-group">
+			                    <label class="col-md-2 control-label">开始时间</label>
+					            <div class="input-group date form_datetime col-md-4" style="float:left">
+				                    <input type="text" id="startTime" name="#(formModelName).start_time" class="form-control"  value="#(o?o.start_time:'')" readonly>
+									<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+				                </div>
+			                    <label class="col-md-1 control-label">结束时间</label>
+					            <div class="input-group date form_datetime col-md-3" style="float:left">
+				                    <input type="text" id="endTime" name="#(formModelName).end_time" class="form-control"  value="#(o?o.end_time:'')" readonly>
+									<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+				                </div>
+			                </div>
+			                
+			               <div class="form-group">
+			                    <label class="col-md-1 control-label"></label>
+			                    <input type="hidden" id="meetroomId" name="#(formModelName).meet_room_id" class="form-control"  value="#(o?o.meet_room_id:'')">
+			                    <div class="col-md-10">
+			                    	<div class="col-sm-12 eq-box-sm">
+							        	<div class="panel ">
+										    <div class="panel-body">
+										        <table id="pageTable" class="demo-add-niftycheck" data-toolbar="#del,#add"
+										               data-show-refresh="true"
+										               data-show-toggle="true"
+										               data-show-columns="true"
+										               data-sort-name="sort"
+										               data-page-list="[5, 10, 20]"
+										               data-page-size="5"
+										               data-pagination="true" data-show-pagination-switch="true"></table>
+										    </div>
+										</div>
+							        </div>		                        
+			                    </div>
+			                </div>
+			                <div class="form-group">
+			                    <label class="col-md-2 control-label">申请原因以及用途</label>
+			                    <div class="col-md-9">
+			                        <textarea rows="8" name="#(formModelName).des" class="form-control" #if(view=='detail') readonly #end>#(o?o.des:'')</textarea>
+			                        <small class="help-block">请输入申请原因</small>
+			                    </div>
+			                </div>
+			                <!-- <div class="form-group">
+			                    <label class="col-md-2 control-label">上级领导批示</label>
+			                    <div class="col-md-9">
+			                        <textarea rows="8" name="#(formModelName).leader_message" class="form-control" readonly>#(o?o.leader_message:'')</textarea>
+			                        <small class="help-block">请输入领导批示</small>
+			                    </div>
+			                </div>
+			                <div class="form-group">
+			                    <label class="col-md-2 control-label">领导批示</label>
+			                    <div class="col-md-9">
+			                        <textarea rows="8" name="#(formModelName).leader2_message" class="form-control" readonly>#(o?o.leader2_message:'')</textarea>
+			                        <small class="help-block">请输入领导批示</small>
+			                    </div>
+			                </div> -->
+			            	#if(view=='edit')
+				            	<div class="panel-footer">
+				                    <div class="row">
+				                        <div class="col-sm-8 col-sm-offset-3">
+				                            <button class="btn btn-warning" type="reset">重置</button>
+				                            <button class="btn btn-primary" type="submit" >保存</button>
+				                        </div>
+				                    </div>
+				                </div>
+							#else
+
+				            #end
+		            </form>
+	<script>
+		var view = "#(view)";
+		var col = [{field: 'checkid', checkbox : true, align: 'center',
+						formatter:function(value, row, index) {
+							var meetroomId = $("#meetroomId").val();
+							if("detail"==view){//如果是详情的时候，则全都不可用
+								return {
+									disabled : true,//不可用
+									checked : false//没选中
+								}
+							}else{
+								if("1"==row.ifInUse){
+									return {
+										disabled : true,//不可用
+										checked : false//没选中
+									}
+								}
+							}
+						}
+					},
+					{field: 'id', title: '主键', align: 'center'},
+					{field: 'room_num', title: '房间号', align: 'center'},
+					{field: 'floor_num', title: '楼层信息', align: 'center'},
+					{field: 'building', title: '所属楼栋', align: 'center'},
+					{field: 'name', title: '会议室名称', align: 'center'},
+					{field: 'ifInUse', title: '空闲状态', align: 'center', width:100,
+						formatter:function(value,row,index){
+						   if(value=="1"){
+							   return "<span style='color:red;'>已被借用</span>";
+						   }else{
+							   return "<span style='color:green;'>空闲</span>";
+						   }
+						}
+					},
+			   		{field: 'des', title: '描述信息', align: 'center', width:200}];
+		var opt = {
+				method: 'get',
+				   striped: true,
+				   cache: false,  
+				   pagination: true,   
+				   sortOrder: "asc",    
+				   singleSelect: true,                     // 单选checkbox
+				   pageSize: 10,  
+				   pageList: [10, 25, 50, 100],
+				   url: ctx+"/admin/oa/apply/meetroom/selectMeetroomData",
+				   queryParams : function(params) {
+					   var startTime = $("#startTime").val();
+					   var endTime = $("#endTime").val();
+					   var applyId = $("#applyId").val();
+				       return {
+				    	     startTime :startTime,
+				    	     endTime :endTime,
+				             pageNumber: (params.offset/params.limit)+1,
+				             pageSize: params.limit
+				           };
+				   },
+				   sidePagination: "server",
+				   search: false,  
+				   strictSearch: true,
+				   idField : "id",
+				   columns: col,
+				   pagination:true,paginationShowPageGo: true,
+				   onCheck:function(row){
+					    var title = "楼栋："+row.building+"  楼层："+row.floor_num+"  房间号："+row.room_num+"  房间名称："+row.name;
+	     				$("#applyTitle").val(title);
+	     				$("#meetroomId").val(row.id);
+				   }
+				}; 
+			
+		//表格
+		function initTable(){
+			$("#pageTable").bootstrapTable(opt);
+			$('#pageTable').bootstrapTable('hideColumn', 'id');
+		}
+		function refreshTable(){
+			$("#pageTable").bootstrapTable('refresh', opt);
+			$('#pageTable').bootstrapTable('hideColumn', 'id');
+		}
+	
+		function vali(){
+			$('#editForm').bootstrapValidator({
+				fields: {
+	            	"#(formModelName).title": {
+					    validators: {
+					    	notEmpty: {
+			                    message: '*请选择会议室'
+			                }
+			            }
+	                }
+	            }
+	        }).on("success.form.bv", function (e) {
+	            save();
+	            return false;//阻止表单跳转
+	        });
+		}
+		function resetVali(){
+			if(!$("#editForm").data('bootstrapValidator').isValid()) {  
+		        $("#editForm").data('bootstrapValidator').resetForm();  
+		    }
+		}
+		function init(){
+			$('.form_datetime').datetimepicker({format: 'yyyy-mm-dd hh:ii:ss',weekStart: 1,todayBtn:  1,autoclose: 1,language:  'zh-CN',todayHighlight: 1,startView: 2,forceParse: 0,showMeridian: 1}).on('changeDate',function(){
+				var startTime = $("#startTime").val();
+				var endTime = $("#endTime").val();
+				if(startTime&&endTime){
+					if(!dateUtil.compareCalendar(startTime,endTime)){
+						pointLion.alertMsg("开始时间大于结束时间","danger",null,null);
+						$("#editForm .btn").attr("disabled","disabled");
+					}else{
+						resetVali();
+						refreshTable();
+					}
+				}
+			});
+			initTable();//初始化
+			vali();
+		}
+		$(document).ready(function() {
+			var clientH = document.body.clientHeight+446;
+			$(".lay-body").css("height",clientH+"px");
+			init();
+		});
+	</script>

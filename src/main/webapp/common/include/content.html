@@ -1,0 +1,410 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link href="#(ctx)/common/css/content.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="#(ctx)/common/js/jquery-2.2.4.min.js"></script>
+<!-- <script type="text/javascript" src="https://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script> -->
+<script type="text/javascript" src="#(ctx)/common/js/hdm01.js"></script>
+<script type="text/javascript" src="#(ctx)/common/js/hdm02.js"></script>
+<title>OA首页内容部分</title>
+
+
+<style>
+.list{width:500px;display:block;overflow:hidden;word-break:break-all;white-space:nowrap;text-overflow:ellipsis;}
+
+</style>
+</head>
+#define makeShowPic(list)
+	#if(list&&list.size()>0)
+		<div id="carousel-example-generic" class="carousel slide" data-ride="carousel" style="background-color: black; margin-left: -8px; margin-right: -8px;">
+		  	 <!-- Indicators -->
+			 <ol class="carousel-indicators">
+			    <li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>
+			    <li data-target="#carousel-example-generic" data-slide-to="1"></li>
+			    <li data-target="#carousel-example-generic" data-slide-to="2"></li>
+	  		 </ol>	
+			 <!-- Wrapper for slides -->
+  			<div class="carousel-inner" role="listbox" >
+         #for(x : list)
+       		 
+  			 <div  #if(for.first) class="item active"  	#else class="item" #end  style="padding-top: 0px; ">
+  			 
+		       		 <a   href="#(ctx)/admin/oa/picnews/showAllPic?busid=#(x.id)" >  
+					  	<img src="#(ctx)/admin/sys/attachment/showFile?id=#(x.imgurl)&view=detail" style="height: 350px; width: 100%"/>
+					 </a>  
+					      <div class="carousel-caption" style="font-size: 15px;">
+					 		 #(x.title)
+					      </div>
+			  </div>
+          #end 
+          
+
+				  <!-- Controls -->
+				  <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
+				    <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+				    <span class="sr-only">Previous</span>
+				  </a>
+				  <a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
+				    <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+				    <span class="sr-only">Next</span>
+				  </a>
+			 </div>
+	  		 
+		</div>
+     #end
+#end
+
+
+#define dbList(list)
+	#if(list&&list.size()>0)
+		   #for(x : list)
+		   	#if(for.index<5)
+<!-- 		   	<li><span>2020-11-26</span><span class="artical_span">发文</span><span class="artical_span dbj">待办结</span><a href="#" target="_blank">文章标题文章标题文章标题文章文章标题文章标题文章</a></li> -->
+		   	<li>
+		   	<span >#(x.ctime.substring(0,10))</span>
+		  
+		    #if(x.type=="1")
+		   	<span class="artical_span">收文</span>
+		 
+		 	  #if(x.buttontype=='0')
+		   	   	<span class="artical_span dbj">流转中</span>
+		   	#else
+		   	   	<span  class="artical_span dbj">待办结</span>
+		   	#end
+		 
+		 
+		   	<a href="#(ctx)/admin/oa/bumph/openReceivePage?view=edit&id=#(x.oid)&sid=#(x.id)&sstep=#(x.step)"  class="list" title="#(x.title)">#(x.title)</a>
+		     #else if(x.type=="2")
+		   		<span class="artical_span">发文</span>
+		   		  #if(x.buttontype=='0')
+		   	   			<span class="artical_span dbj">流转中</span>
+				   	#else
+				   	   	<span  class="artical_span dbj">待办结</span>
+				   	#end
+		   	<a href="#(ctx)/admin/oa/senddoc/getPersonalForm?view=detail&id=#(x.oid)&sid=#(x.id)&sstep=#(x.step)" class="list" title="#(x.title)">#(x.title)</a>
+		  	 #else if(x.type=="3")
+		  	<span  class="artical_span">热线</span>
+		  	  #if(x.buttontype=='0')
+		   	   	<span class="artical_span dbj">流转中</span>
+		   	#else
+		   	   	<span  class="artical_span dbj">待办结</span>
+		   	#end
+		   	<a href="#(ctx)/admin/oa/hotline/getPHotLineForm?id=#(x.oid)&type=#(x.type)&sid=#(x.id)&sstep=#(x.step)&view=detail"  class="list" title="#(x.title)" >#(x.title)</a>
+		   	 #else if(x.type=="4")
+		   	
+		   	<span class="artical_span">信访</span>
+		   	  #if(x.buttontype=='0')
+		   	   	<span class="artical_span dbj">流转中</span>
+		   	#else
+		   	   	<span  class="artical_span dbj">待办结</span>
+		   	#end
+		   	<a href="#(ctx)/admin/oa/letter/getPLetterForm?id=#(x.oid)&type='#(x.type)&sid=#(x.id)&sstep=#(x.step)&view=detail"  class="list" title="#(x.title)">#(x.title)</a>
+		   	  #end
+		   	</li>
+			    
+		     #end
+		   #end
+	#end
+#end 
+ 
+ #define overList(list)
+	#if(list&&list.size()>0)
+		   #for(x : list)
+		   	#if(for.index<5)
+		   	<li>
+		   	
+		   	<span>#(x.ctime)</span>
+		   	 #if(x.type=="1")
+		   	<span class="artical_span">收文</span>
+		   	#else if(x.type=="2")
+		   		<span class="artical_span">发文</span>
+		   		  #else if(x.type=="3")
+		   		  <span class="artical_span">热线</span>
+		   		     #else if(x.type=="4")
+		   		       <span class="artical_span">信访</span>
+		   		       #end
+		   	<a href="#(ctx)/admin/oa/stephistory/getEditPage?id=#(x.id)&type=#(x.type)&oid=#(x.oid)&view=detail"   class="list" title="#(x.title)">#(x.title)</a>
+		   	
+		   	</li>
+			    
+		     #end
+		   #end
+	#end
+#end 
+#define makeXxjb(list)
+	#if(list&&list.size()>0)
+		   #for(x : list)
+		   
+			   	#if(for.index<6)
+			   	<li>
+			   	<span>#(x.changetime.substring(0,10))</span>
+			   	<a href="#(ctx)/admin/oa/showinfo/homeViewNotice?id=#(x.id)" class="list" title="#(x.infotitle)" >#(x.infotitle)</a></li>
+			     #end
+		   #end
+	#end
+#end
+ 
+ 
+ #define noticeList(list)
+	#if(list&&list.size()>0)
+		   #for(x : list)
+		   
+			   	#if(for.index<6)
+			   	<li>
+			   	<span>#(x.cTime.substring(0,10))</span>
+			   	
+				   	#if(x.type=="1")
+				   	
+				   	 <a  href="javascript:void(0)" onclick="shownotice('#(x.id)')" title="#(x.tipTitle)">#(x.showTitle)</a>
+				   	#else
+				   	
+				   	 	<a href="#(ctx)/admin/oa/showinfo/homeViewNotice?id=#(x.id)" class="list" title="#(x.tipTitle)" >#(x.showTitle)</a></li>
+				   	#end 
+			     #end
+		   #end
+	#end
+#end
+ 
+  <!-- 办事指南 -->
+#define makeBszn(list)
+	#if(list&&list.size()>0)
+		   #for(x : list)
+		   
+		   	#if(for.index<5)
+		   		<li><a href="#(ctx)/admin/oa/bumph/getBsznEditPage?id=#(x.id)&view=detail" class="list" title="#(x.infotitle)"  >#(x.title)</a></li>
+		   	
+		     #end
+		   #end
+	#end
+#end
+
+
+
+<body>
+
+<!-- 左侧开始 -->
+<div class="con_left f_l">
+<!-- 7个图标开始 -->
+	<!-- <div class="con_bg1 f_l" onclick="receiveDoc()"><p>收文<span>#(receiveSize)</span>份 可办<span >#(receiveCanDo)</span>份</p></div> -->
+	<div class="con_bg1 f_l"  ><p><a href="javascript:void(0);" onclick="receiveDoc()">收文<span >#(receiveSize)</span>份</a>　<a href="javascript:void(0);" onclick="receiveDocWaido()">待办结<span >#(receiveCanDo)</span>份</a></p></div>
+	<div class="con_bg2 f_l" onclick="senddoc()"><p>发文<span>#(sendSize)</span>份</p></div>
+	<div class="con_bg3 f_l" onclick="hotline()"><p>热线<span>#(hotSize)</span>个</p></div>
+	<div class="con_bg4 f_l" onclick="letter()"><p>信访<span>#(letterSize)</span>个</p></div>
+    <div class="f_clear"></div>
+    
+    
+	<div class="con_bg5 f_l" onclick="history()"><p>历史<!-- <span>1</span>个 --></p></div>    
+	<div class="con_bg6 f_l" onclick="plan()"><p>计划<!-- <span>1</span>份 --></p></div>
+	<div class="con_bg7 f_l" onclick="email()"><p>收件<span>#(emailSize)</span>封   未读<span>#(noReademail)</span>封</p></div>
+    <div class="f_clear"></div>
+<!-- 7个图标结束 -->
+
+<!-- 待办/已办开始 -->
+	<div> 
+ <div class="tabs">
+  <div class="tabs_item">
+   <div class="list_item">待办</div>
+   <div class="list_item">已办</div>
+  </div>
+  <div class="clear"> </div>
+  <div class="tabs_block">
+   <div class="list_block">
+       <ul class="artical_title1">
+       
+        #@dbList(waitDos)
+    	<!-- <li><span>2020-11-26</span><span class="artical_span">发文</span><span class="artical_span dbj">待办结</span><a href="#" target="_blank">文章标题文章标题文章标题文章文章标题文章标题文章</a></li>
+    	<li><span>2020-11-26</span><span class="artical_span">发文</span><span class="artical_span dbj">待办结</span><a href="#" target="_blank">文章标题文章标题文章标题文章文章标题文章标题文章</a></li>
+    	<li><span>2020-11-26</span><span class="artical_span">发文</span><span class="artical_span dbj">待办结</span><a href="#" target="_blank">文章标题文章标题文章标题文章文章标题文章标题文章</a></li>
+    	<li><span>2020-11-26</span><span class="artical_span">发文</span><span class="artical_span dbj">待办结</span><a href="#" target="_blank">文章标题文章标题文章标题文章文章标题文章标题文章</a></li>
+    	<li><span>2020-11-26</span><span class="artical_span">发文</span><span class="artical_span dbj">待办结</span><a href="#" target="_blank">文章标题文章标题文章标题文章文章标题文章标题文章</a></li>
+    	<li><span>2020-11-26</span><span class="artical_span">发文</span><span class="artical_span dbj">待办结</span><a href="#" target="_blank">文章标题文章标题文章标题文章文章标题文章标题文章</a></li> -->
+    </ul>
+   </div>
+   <div class="list_block">
+     
+
+       <ul class="artical_title1">
+       
+           #@overList(over)
+    	<!-- <li><span>2020-11-26</span><span class="artical_span">发文</span><span class="artical_span dbj">待办结</span><a href="#" target="_blank">2文章标题文章标题文章标题文章文章标题文章标题文章</a></li>
+    	<li><span>2020-11-26</span><span class="artical_span">发文</span><span class="artical_span dbj">待办结</span><a href="#" target="_blank">2文章标题文章标题文章标题文章文章标题文章标题文章</a></li>
+    	<li><span>2020-11-26</span><span class="artical_span">发文</span><span class="artical_span dbj">待办结</span><a href="#" target="_blank">2文章标题文章标题文章标题文章文章标题文章标题文章</a></li>
+    	<li><span>2020-11-26</span><span class="artical_span">发文</span><span class="artical_span dbj">待办结</span><a href="#" target="_blank">2文章标题文章标题文章标题文章文章标题文章标题文章</a></li>
+    	<li><span>2020-11-26</span><span class="artical_span">发文</span><span class="artical_span dbj">待办结</span><a href="#" target="_blank">2文章标题文章标题文章标题文章文章标题文章标题文章</a></li>
+    	<li><span>2020-11-26</span><span class="artical_span">发文</span><span class="artical_span dbj">待办结</span><a href="#" target="_blank">2文章标题文章标题文章标题文章文章标题文章标题文章</a></li> -->
+    </ul>
+   
+   </div>
+  </div>
+ </div>
+    </div>
+
+
+<!-- 通知开始 -->
+	<!-- <div class="con_mk_bg1">最新发布<span class="f_r"><a href="#(ctx)/admin/oa/notices/getListFromHomePage"  >更多<t>>></t></a></span></div> -->
+  <div class="con_mk_bg1">最新发布<span class="f_r"><a href="#(ctx)/admin/oa/notices/getListFromHomePage"  >更多<t>>></t></a></span></div> 
+    <ul class="artical_title1">
+    
+    	#@noticeList(notices)
+<!--     	<li><span>2020-11-26</span><a href="#" target="_blank">文章标题文章标题文章标题文章文章标题文章标题文章</a></li>
+    	<li><span>2020-11-26</span><a href="#" target="_blank">文章标题文章标题文章标题文章文章标题文章标题文章</a></li>
+    	<li><span>2020-11-26</span><a href="#" target="_blank">文章标题文章标题文章标题文章文章标题文章标题文章</a></li>
+    	<li><span>2020-11-26</span><a href="#" target="_blank">文章标题文章标题文章标题文章文章标题文章标题文章</a></li>
+    	<li><span>2020-11-26</span><a href="#" target="_blank">文章标题文章标题文章标题文章文章标题文章标题文章</a></li>
+    	<li><span>2020-11-26</span><a href="#" target="_blank">文章标题文章标题文章标题文章文章标题文章标题文章</a></li> -->
+    </ul>
+<!-- 通知结束 -->
+</div>
+
+<!-- 左侧结束 -->
+
+
+<!-- 右侧开始 -->
+<div class="con_right f_r">
+<!-- 图片轮播用原有代码 -->
+<!-- 	<img src="../img/test2.jpg" /> -->
+<div class="row" style="background-color: orange;">
+		<div class="col-lg-12">
+		
+		
+		#@makeShowPic(picNewsList)
+		</div>
+		
+		</div>
+<!-- 信息简报开始 -->
+	<div class="con_mk_bg2">信息简报<span class="f_r"><a href="#(ctx)/admin/oa/showinfo/homeMorListPage?menuid=9b576e6581204cda90ae04722d8640c9" >更多<t>>></t></a></span></div>
+    <ul class="artical_title2">
+    
+     	#@makeXxjb(xxjb)
+    	<!-- <li><span>2020-11-26</span><a href="#" target="_blank">文章标题文章标题文章标题文章文章标题文章标题文章</a></li>
+    	<li><span>2020-11-26</span><a href="#" target="_blank">文章标题文章标题文章标题文章文章标题文章标题文章</a></li>
+    	<li><span>2020-11-26</span><a href="#" target="_blank">文章标题文章标题文章标题文章文章标题文章标题文章</a></li>
+    	<li><span>2020-11-26</span><a href="#" target="_blank">文章标题文章标题文章标题文章文章标题文章标题文章</a></li>
+    	<li><span>2020-11-26</span><a href="#" target="_blank">文章标题文章标题文章标题文章文章标题文章标题文章</a></li>
+    	<li><span>2020-11-26</span><a href="#" target="_blank">文章标题文章标题文章标题文章文章标题文章标题文章</a></li> -->
+    </ul>
+<!-- 信息简报结束 -->
+
+
+<!-- 办事指南开始 -->
+	<div class="con_mk_bg2">办事指南<span class="f_r"><a href="#(ctx)/admin/oa/bumph/getBsznListFromHomtPage" >更多<t>>></t></a></span></div>
+    <ul class="artical_title2">
+    
+          #@makeBszn(bsznList)
+    <!-- 	<li><span>2020-11-26</span><a href="#" target="_blank">文章标题文章标题文章标题文章文章标题文章标题文章</a></li>
+    	<li><span>2020-11-26</span><a href="#" target="_blank">文章标题文章标题文章标题文章文章标题文章标题文章</a></li>
+    	<li><span>2020-11-26</span><a href="#" target="_blank">文章标题文章标题文章标题文章文章标题文章标题文章</a></li>
+    	<li><span>2020-11-26</span><a href="#" target="_blank">文章标题文章标题文章标题文章文章标题文章标题文章</a></li>
+    	<li><span>2020-11-26</span><a href="#" target="_blank">文章标题文章标题文章标题文章文章标题文章标题文章</a></li>
+    	<li><span>2020-11-26</span><a href="#" target="_blank">文章标题文章标题文章标题文章文章标题文章标题文章</a></li> -->
+    </ul>
+<!-- 办事指南结束 -->
+ 
+    
+</div>
+
+<!--  -->
+<!--  -->
+<!--  -->
+<!--  -->
+<!--  -->
+<!--  -->
+<!--  -->
+<!--  -->
+<!--  -->
+<!--  -->
+<!--  -->
+
+
+
+<script type="text/javascript">
+ 	function senddoc(){
+ 		
+ 		//alert("111");
+ 		
+ 		 window.location.href="#(ctx)/admin/oa/senddoc/getListPersonal";
+ 	}
+ 	
+ 	
+ 	function  receiveDocWaido(){
+ 		 window.location.href="#(ctx)/admin/oa/bumph/getPReceivePage";
+ 		
+ 	}
+ 	function  receiveDoc(){
+ 		 window.location.href="#(ctx)/admin/oa/bumph/getPReceivesPage";
+ 		
+ 	}
+ 	
+ 	//热线
+ 	function  hotline(){
+ 		 window.location.href="#(ctx)/admin/oa/hotline/getPHotLineListPage";
+ 	}
+ 	//信访
+ 	function  letter(){
+ 		 window.location.href="#(ctx)/admin/oa/letter/getPLetterListPage";
+ 	}
+ 	
+ 	
+ 	//邮件
+ 	
+ 	function  email(){
+		 window.location.href="#(ctx)/admin/oa/email/getListPage?fromway=home";
+ 
+ 	}
+ 	//历史
+ 	
+ 	function  history(){
+		 window.location.href="#(ctx)/admin/oa/stephistory/getListPage";
+ 
+ 	}
+ 	
+ 	function  moreinfo(){
+ 		
+ 		 window.location.href="#(ctx)/admin/oa/showinfo/homeMorListPage?menuid=9b576e6581204cda90ae04722d8640c9";
+ 	}
+ 	
+ 	
+ 	function plan(){
+ 		
+ 		 //window.location.href="#(ctx)/admin/oa/workplan/getWorkPlanPage";
+ 		 window.location.href="#(ctx)/admin/oa/workplan/workPlanPage";
+ 		
+ 	}
+ 	
+ 	
+  
+ 	function  test(i){
+ 		
+ 		alert(i)
+ 	}
+ 	 
+    function  shownotice(noticeid){
+    	layer.open({
+    		  type: 2,
+    		  title: false, //不显示标题栏
+    		  area: ['1000px', '620px'],
+    		  shade: 0.2,
+    		  id: 'showonenotice', //设定一个id，防止重复弹出
+    		  resize: false,
+    		  closeBtn: true,
+    		  isOutAnim : false , 
+    		  btnAlign: 'c',
+    		  content: ctx+'/admin/oa/notices/homeViewNotice?id='+noticeid,
+    		  success: function(layero){
+    				//nowTask = o;
+    		  }
+    	});
+
+
+    } 
+ 		 
+ 
+</script>
+
+
+
+
+
+</body>
+</html>

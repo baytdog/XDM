@@ -1,0 +1,170 @@
+<nav id="mainnav-container">
+                <div id="mainnav">
+                    <div id="mainnav-menu-wrap">
+                        <div class="nano" id="pjax-nav-div">
+                            <div class="nano-content">
+                                <div id="mainnav-profile" class="mainnav-profile #if(setting.show_user_img=='0') hidden #end">
+                                    <div class="profile-wrap">
+                                        <div class="pad-btm">
+                                            <span class="label label-success pull-right">#(userName)</span>
+                                            <img class="img-circle img-sm img-border" src="#(ctx)/common/img/profile-photos/1.png" alt="Profile Picture">
+                                        </div>
+                                        <a href="#profile-nav" class="box-block" data-toggle="collapse" aria-expanded="false">
+                                            <span class="pull-right dropdown-toggle">
+                                                <i class="dropdown-caret"></i>
+                                            </span>
+                                            <p class="mnp-name">#(userName)</p>
+                                        </a>
+                                    </div>
+                                    <div id="profile-nav" class="collapse list-group bg-trans">
+                                     	
+		                                <a href="" class="list-group-item" data-toggle="modal" data-target="#myModal">
+							                 <i class="demo-pli-gear icon-lg icon-fw"></i> 修改密码
+							          	</a>  
+                                     	
+                                        <a href="#(ctx??)/admin/login/logout" class="list-group-item">
+                                            <i class="demo-pli-unlock icon-lg icon-fw"></i> 登出
+                                        </a>
+                                        
+                                    </div>
+                                </div>
+                                
+                                
+                 
+                                
+                                
+                                
+                                
+                                <ul id="mainnav-menu" class="list-group">
+						            <!--<li>
+                                        #if("tab"==setting.index_page_type)
+                                            <a class="open-menu" href="#(ctx)/admin/home/getHomePage">
+                                                <i class="demo-psi-home"></i>
+                                                <span class="menu-title">
+                                                    <strong>首页</strong>
+                                                </span>
+                                            </a>
+                                        #elseif("single"==setting.index_page_type)
+                                            <a class="open-menu" href="javascript:void(0)" onclick="openNewPage('#(ctx)/admin/home/getHomePage','首页')">
+                                                <i class="demo-psi-home"></i>
+                                                <span class="menu-title">
+                                                    <strong>首页</strong>
+                                                </span>
+                                            </a>
+                                        #end
+						            </li>-->
+									<!-- ！！！动态菜单！！！开始！！！下面受到权限控制，使用sql查询出来的 -->
+										#for(a:mlist)
+								<!-- 			<li class="list-header">#(a.name)</li> -->
+											#for(b:a.children)
+											
+												#if(b.name=='内部邮箱')
+												<a class="open-menu" href="#(ctx)/admin/oa/email/getListPage">
+                                             	<i class="demo-psi-repair"></i>
+                                                <span class="menu-title">
+                                                    <strong>#(b.name)</strong>
+                                                </span>
+                                          		  </a>
+                                          		#else if(b.name=='部门主页')  
+													<a class="open-menu" href="#(ctx)/admin/oa/departnotices/getDepartPage">
+		                                             	<i class="demo-psi-repair"></i>
+		                                                <span class="menu-title">
+		                                                    <strong>#(b.name)</strong>
+		                                                </span>
+	                                          		 </a>
+												#else
+											
+											
+												<li>
+													<a href="#">
+									                    #if(b.icon)
+												  			<i class="#(b.icon)"></i>
+												  		#else
+												  			<i class="demo-psi-repair"></i>
+												  		#end
+									                    <span class="menu-title">#(b.name)</span>
+														<i class="arrow"></i>
+									                </a>
+									                #if(b.children)
+									                	<ul class="collapse">
+										                	#for(c:b.children)
+                                                                #if("tab"==setting.index_page_type)
+											                        <li><a class="open-menu" href="#(ctx)#(c.url)">#(c.name)</a></li>
+                                                                #elseif("single"==setting.index_page_type)
+                                                                    <li><a class="open-menu" href="javascript:void(0)" onclick="openNewPage('#(ctx)#(c.url)','#(c.name)')">#(c.name)</a></li>
+                                                                #end
+										                	#end
+										                </ul>
+									                #end
+									            </li>
+									            
+									            #end
+											#end
+										#end
+											<li class="list-header" style="margin-bottom: 110px;"></li><!-- 占位 -->
+									<!-- ！！！动态菜单！！！结束！！！ -->
+						        </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+   
+  <script type="text/javascript">
+	$(document).ready(function() {
+	    $('#editFormp').bootstrapValidator({
+	    		excluded:[":hidden"],//关键配置，表示只对于隐藏域不进行验证，其他的表单元素都要验证
+	            fields: {
+	                "password": {
+					    validators: validPassword
+	                },
+	                "password2": {
+					    validators: validPassword2
+	                },
+	          
+	            }
+	        }).on("success.form.bv", function (e) {
+	        	
+	            save();
+	            return false;//阻止表单跳转
+	        });
+	});
+function pSave(){
+	
+
+	var data = common_ajax.ajaxFunc("/admin/sys/user/updatePwd", $('#editFormp').serialize(), "json", null);
+	if(data.success){
+	
+	 	pointLion.alertMsg("修改成功!" , "success" , "small" , function(){
+			//location.href = ctx+'/admin/sys/user/getListPage';//跳转到列表页
+			$('#myModal').modal('hide');
+		}); 
+	}
+}
+    </script>
+
+
+#if("tab"==setting.index_page_type)
+    <!--页签模式，加载页签菜单初始化-->
+    <script type="text/javascript">
+        //初始化a标签链接到tab
+      
+        $("#mainnav-menu a.open-menu").tab();
+    </script>
+#elseif("single"==setting.index_page_type)
+    <!--单页模式，定义打开菜单方法-->
+    <script type="text/javascript">
+        function openNewPage(url,name){
+            if(url.indexOf("?")>0){
+                url = url + "&action=openPage";
+            }else{
+                url = url + "?action=openPage";
+            }
+
+            $("#page-title .page-header").html(name);
+            $("#page-head .breadcrumb #thisPageFromMenu").html(name);
+            $("#page-head .breadcrumb #thisPageFromMenu").attr("onclick","openNewPage('"+url+"','"+name+"')");
+            $("#jfinaloa-single-page-content #singlePageIframe").attr("src",url)
+        }
+    </script>
+#end

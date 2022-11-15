@@ -1,0 +1,17 @@
+@charset "utf-8";
+/* CSS Document */
+body{ padding:0; margin:0;}
+.top_bg{ height:154px; background:url(../img/top.jpg) left top no-repeat;}
+.top_title{ float:right;padding:45px 10px 0 0; width:80%;font-size:16px; font-family:Microsoft Yahei;}
+.top_title a{ color:#ffffff; text-decoration:none;}
+
+.clear{ clear:both;}
+.div_serch{ float:right; padding:10px 160px 15px 0;}
+.input_serch{width:206px; height:36px;margin-top:9px; padding:10px; color:#333333; line-height:36px; font-size:16px; border:1px solid #0fdef0;border-top-left-radius:6px;border-top-right-radius:6px;border-bottom-right-radius:6px;
+border-bottom-left-radius:6px;outline:none;}
+.btn_serch{ height:44px; padding:8px 30px; cursor:pointer; color:#ffffff; border:none; background:url(../img/btn_serch.png) left top no-repeat;}
+
+
+
+
+

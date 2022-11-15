@@ -1,0 +1,114 @@
+	
+	<div id="page-content">
+			<div class="col-lg-12">
+		        <div class="panel">
+		            <div class="panel-heading">
+		                <h3 class="panel-title" style="text-align: right;">
+		                	#@installPJaxGoBackBtn()
+		                	添加
+		                </h3>
+		            </div>
+		            <form id="editForm" class="panel-body form-horizontal form-padding">
+						<input type="hidden"  name="#(formModelName).id" class="form-control" value="#(o?o.id:'')">
+			                <div class="form-group">
+			                    <label class="col-md-2 control-label">主键</label>
+			                    <div class="col-md-9">
+			                        <input type="text"  name="#(formModelName).id" class="form-control"  value="#(o?o.id:'')" #if(view=='detail') readonly #end>
+			                        <small class="help-block">请输入主键</small>
+			                    </div>
+			                </div>
+			                <div class="form-group">
+			                    <label class="col-md-2 control-label">链接id</label>
+			                    <div class="col-md-9">
+			                        <input type="text"  name="#(formModelName).url_id" class="form-control"  value="#(o?o.url_id:'')" #if(view=='detail') readonly #end>
+			                        <small class="help-block">请输入链接id</small>
+			                    </div>
+			                </div>
+			                <div class="form-group">
+			                    <label class="col-md-2 control-label">爬取表达式</label>
+			                    <div class="col-md-9">
+			                        <input type="text"  name="#(formModelName).pattern" class="form-control"  value="#(o?o.pattern:'')" #if(view=='detail') readonly #end>
+			                        <small class="help-block">请输入爬取表达式</small>
+			                    </div>
+			                </div>
+			                <div class="form-group">
+			                    <label class="col-md-2 control-label">数据源id</label>
+			                    <div class="col-md-9">
+			                        <input type="text"  name="#(formModelName).db_id" class="form-control"  value="#(o?o.db_id:'')" #if(view=='detail') readonly #end>
+			                        <small class="help-block">请输入数据源id</small>
+			                    </div>
+			                </div>
+			                <div class="form-group">
+			                    <label class="col-md-2 control-label">需要存入的表名</label>
+			                    <div class="col-md-9">
+			                        <input type="text"  name="#(formModelName).table_name" class="form-control"  value="#(o?o.table_name:'')" #if(view=='detail') readonly #end>
+			                        <small class="help-block">请输入需要存入的表名</small>
+			                    </div>
+			                </div>
+			                <div class="form-group">
+			                    <label class="col-md-2 control-label">需要存入的列名</label>
+			                    <div class="col-md-9">
+			                        <input type="text"  name="#(formModelName).col_name" class="form-control"  value="#(o?o.col_name:'')" #if(view=='detail') readonly #end>
+			                        <small class="help-block">请输入需要存入的列名</small>
+			                    </div>
+			                </div>
+			                <div class="form-group">
+			                    <label class="col-md-2 control-label">数据类型</label>
+			                    <div class="col-md-9">
+			                        <input type="text"  name="#(formModelName).col_data_type" class="form-control"  value="#(o?o.col_data_type:'')" #if(view=='detail') readonly #end>
+			                        <small class="help-block">请输入数据类型</small>
+			                    </div>
+			                </div>
+			                <div class="form-group">
+			                    <label class="col-md-2 control-label">日期类型的格式化字符串</label>
+			                    <div class="col-md-9">
+			                        <input type="text"  name="#(formModelName).col_date_format" class="form-control"  value="#(o?o.col_date_format:'')" #if(view=='detail') readonly #end>
+			                        <small class="help-block">请输入日期类型的格式化字符串</small>
+			                    </div>
+			                </div>
+			                <div class="form-group">
+			                    <label class="col-md-2 control-label">创建时间</label>
+			                    <div class="col-md-9">
+			                        <input type="text"  name="#(formModelName).create_time" class="form-control"  value="#(o?o.create_time:'')" #if(view=='detail') readonly #end>
+			                        <small class="help-block">请输入创建时间</small>
+			                    </div>
+			                </div>
+		                	#if(view=='detail')
+			                
+				            #else
+			            	<div class="panel-footer">
+			                    <div class="row">
+			                        <div class="col-sm-8 col-sm-offset-3">
+			                            <button class="btn btn-warning" type="reset" #if(view=='detail') disabled #end>重置</button>
+			                            <button class="btn btn-primary" type="submit" #if(view=='detail') disabled #end>保存</button>
+			                        </div>
+			                    </div>
+			                </div>
+				            #end
+		            </form>
+		        </div>
+		    </div>
+	</div>
+	<script>
+		function save(){
+			var data = common_ajax.ajaxFunc("/admin/grapurlcol/save", $('#editForm').serialize(), "json", null);
+			if(data.success){
+				pointLion.alertMsg("保存成功!" , "success" , "small" , function(){
+					location.href = ctx+'/admin/grapurlcol/getListPage';//跳转到列表页
+				},data);
+			}else{
+				pointLion.alertMsg(data.message , "danger" , "small" , function(){
+					$(".btn").removeAttr("disabled");
+				},data);
+			}
+		}
+		$(document).ready(function() {
+			$('#editForm').bootstrapValidator({
+	            fields: {
+	            }
+	        }).on("success.form.bv", function (e) {
+	            save();
+	            return false;//阻止表单跳转
+	        });
+		});
+	</script>

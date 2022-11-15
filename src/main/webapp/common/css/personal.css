@@ -1,0 +1,23 @@
+  .form-horizontal .control-label {
+ 
+    font-size: 16px;
+ 
+}
+.form-control{
+font-size: 16px;
+ 
+}  
+
+
+
+
+  .fixed-table-container thead th .th-inner, .fixed-table-container tbody td .th-inner{
+	font-size: 16px;
+	 
+} 
+
+
+  .fixed-table-container tbody td, .bootstrap-table .table>thead>tr>th {
+	font-size: 13px;
+ 
+}   

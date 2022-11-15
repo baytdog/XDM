@@ -1,0 +1,178 @@
+					<form id="editForm" class="panel-body form-horizontal form-padding">
+						<input type="hidden"  name="#(formModelName).id" class="form-control" value="#(o?o.id:'')">
+						<input type="hidden"  name="#(formModelName).type" class="form-control" value="#(type)">
+							<div class="form-group">
+			                    <label class="col-md-2 control-label">合同号</label>
+			                    <div class="col-md-4">
+			                        <input type="text" class="form-control"  value="#(o?o.contract_num:'')" disabled>
+			                    </div>
+			                </div>
+							<div class="form-group">
+			                    <label class="col-md-2 control-label">申请人</label>
+			                    <div class="col-md-4">
+			                    	<input type="hidden"  name="#(formModelName).userid" class="form-control"  value="#if(o)#(o.userid)#else#(user.id)#end">
+			                        <input type="text"  name="#(formModelName).applyer_name" class="form-control"  value="#if(o)#(o.applyer_name)#else#(user.name)#end" readonly>
+			                    </div>
+			                    <label class="col-md-1 control-label">部门</label>
+			                    <div class="col-md-4">
+			                        <input type="hidden"  name="#(formModelName).org_id" class="form-control"  value="#if(o)#(o.org_id)#else#(org.id)#end">
+			                        <input type="text"  name="#(formModelName).org_name" class="form-control"  value="#if(o)#(o.org_name)#else#(org.name)#end" readonly>
+			                    </div>
+			                </div>
+			                <div class="form-group">
+			                    <label class="col-md-2 control-label">标题</label>
+			                    <div class="col-md-9">
+			                        <input type="text"  name="#(formModelName).title" class="form-control"  value="#(o?o.title:'')" #if(view=='detail') readonly #end>
+			                        <small class="help-block">请输入标题</small>
+			                    </div>
+			                </div>
+			                <div class="form-group">
+			                    <label class="col-md-2 control-label">合同名</label>
+			                    <div class="col-md-9">
+			                        <input type="text"  name="#(formModelName).name" class="form-control"  value="#(o?o.name:'')" #if(view=='detail') readonly #end>
+			                        <small class="help-block">请输入合同名</small>
+			                    </div>
+			                </div>
+			                <div class="form-group">
+			                    <label class="col-md-2 control-label">客户名称</label>
+			                    <div class="col-md-9">
+			                        <input type="text"  name="#(formModelName).custom_name" class="form-control"  value="#(o?o.custom_name:'')" #if(view=='detail') readonly #end>
+			                        <small class="help-block">请输入客户名称</small>
+			                    </div>
+			                </div>
+			                <div class="form-group">
+			                    <label class="col-md-2 control-label">客户联系人</label>
+			                    <div class="col-md-4">
+			                        <input type="text"  name="#(formModelName).custom_contact_person" class="form-control"  value="#(o?o.custom_contact_person:'')" #if(view=='detail') readonly #end>
+			                        <small class="help-block">请输入客户联系人</small>
+			                    </div>
+			                    <label class="col-md-1 control-label">客户手机号</label>
+			                    <div class="col-md-4">
+			                        <input type="text"  name="#(formModelName).custom_contact_mobile" class="form-control"  value="#(o?o.custom_contact_mobile:'')" #if(view=='detail') readonly #end>
+			                        <small class="help-block">请输入客户手机号</small>
+			                    </div>
+			                </div>
+			                <div class="form-group">
+			                </div>
+			                <div class="form-group">
+			                    <label class="col-md-2 control-label">合同类型</label>
+			                    <div class="col-md-4 select">
+			                    
+	                                <select class="col-md-12" name="#(formModelName).type2" #if(view=='detail') readonly #end>
+	                                    <option value="1" #if(o&&o.type2=="1") selected #end>买卖</option>
+	                                    <option value="2" #if(o&&o.type2=="2") selected #end>租赁</option>
+	                                    <option value="3" #if(o&&o.type2=="3") selected #end>供用电/水/气</option>
+	                                    <option value="4" #if(o&&o.type2=="4") selected #end>融资租赁合同</option>
+	                                    <option value="5" #if(o&&o.type2=="5") selected #end>技术合同</option>
+	                                    <option value="6" #if(o&&o.type2=="6") selected #end>运输合同及建设工程合同</option>
+	                                </select>
+			                    </div>
+			                    <label class="col-md-1 control-label">合同金额</label>
+			                    <div class="col-md-4">
+			                        <input type="text"  name="#(formModelName).amount_of_money" class="form-control"  value="#(o?o.amount_of_money:'')" #if(view=='detail') readonly #end>
+			                        <small class="help-block">请输入合同金额</small>
+			                    </div>
+			                </div>
+			                <div class="form-group">
+			                    <label class="col-md-2 control-label">生效日期</label>
+					            <div class="input-group date form_datetime col-md-4" style="float:left">
+				                    <input type="text" id="startTime" name="#(formModelName).start_time" class="form-control"  value="#(o?o.start_time:'')" readonly>
+									<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+				                </div>
+			                    <label class="col-md-1 control-label">结束日期</label>
+					            <div class="input-group date form_datetime col-md-3" style="float:left">
+				                    <input type="text" id="endTime" name="#(formModelName).end_time" class="form-control"  value="#(o?o.end_time:'')" readonly>
+									<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+				                </div>
+			                </div>
+			                <div class="form-group">
+			                    <label class="col-md-2 control-label">有效期期限</label>
+					            <div class="input-group date form_datetime col-md-4" style="float:left">
+				                    <input type="text" id="can_able_date" name="#(formModelName).can_able_date" class="form-control"  value="#(o?o.can_able_date:'')" readonly>
+									<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+				                </div>
+			                </div>
+			            <!--<div class="form-group">
+			                    <label class="col-md-2 control-label">合同明细</label>
+			                    <div class="col-md-9">
+			                        <input type="text"  name="#(formModelName).detail" class="form-control"  value="#(o?o.detail:'')" #if(view=='detail') readonly #end>
+			                        <small class="help-block">请输入合同明细</small>
+			                    </div>
+			                </div>
+			                <div class="form-group">
+			                    <label class="col-md-2 control-label">合同背景说明</label>
+			                    <div class="col-md-9">
+			                        <textarea rows="8" name="#(formModelName).background" class="form-control" #if(view=='detail') readonly #end>#(o?o.background:'')</textarea>
+			                        <small class="help-block">请输入合同背景说明</small>
+			                    </div>
+			                </div>
+			                <div class="form-group">
+			                    <label class="col-md-2 control-label">合同需求说明</label>
+			                    <div class="col-md-9">
+			                        <textarea rows="8" name="#(formModelName).need" class="form-control" #if(view=='detail') readonly #end>#(o?o.need:'')</textarea>
+			                        <small class="help-block">请输入合同需求说明</small>
+			                    </div>
+			                </div>
+			                <div class="form-group">
+			                    <label class="col-md-2 control-label">合同内部合作说明</label>
+			                    <div class="col-md-9">
+			                        <textarea rows="8" name="#(formModelName).work_together" class="form-control" #if(view=='detail') readonly #end>#(o?o.work_together:'')</textarea>
+			                        <small class="help-block">请输入合同内部合作说明</small>
+			                    </div>
+			                </div>
+			                <div class="form-group">
+			                    <label class="col-md-2 control-label"> 补充说明</label>
+			                    <div class="col-md-9">
+			                        <textarea rows="8" name="#(formModelName).add_ext" class="form-control" #if(view=='detail') readonly #end>#(o?o.add_ext:'')</textarea>
+			                        <small class="help-block">请输入 补充说明</small>
+			                    </div>
+			                </div>
+			                <div class="form-group">
+			                    <label class="col-md-2 control-label"> 产品与需求的偏差风险</label>
+			                    <div class="col-md-9">
+			                        <textarea rows="8" name="#(formModelName).danger_need" class="form-control" #if(view=='detail') readonly #end>#(o?o.danger_need:'')</textarea>
+			                        <small class="help-block">请输入 产品与需求的偏差风险</small>
+			                    </div>
+			                </div>
+			                <div class="form-group">
+			                    <label class="col-md-2 control-label">需求不明确的风险</label>
+			                    <div class="col-md-9">
+			                        <textarea rows="8" name="#(formModelName).danger_need_no_ok" class="form-control" #if(view=='detail') readonly #end>#(o?o.danger_need_no_ok:'')</textarea>
+			                        <small class="help-block">请输入需求不明确的风险</small>
+			                    </div>
+			                </div>
+			                <div class="form-group">
+			                    <label class="col-md-2 control-label"> 付款条件苛刻，回款难度大的风险</label>
+			                    <div class="col-md-9">
+			                        <textarea rows="8" name="#(formModelName).danger_pay_hard" class="form-control" #if(view=='detail') readonly #end>#(o?o.danger_pay_hard:'')</textarea>
+			                        <small class="help-block">请输入 付款条件苛刻，回款难度大的风险</small>
+			                    </div>
+			                </div>
+			                <div class="form-group">
+			                    <label class="col-md-2 control-label">合同法律违约条款的风险</label>
+			                    <div class="col-md-9">
+			                        <textarea rows="8" name="#(formModelName).danger_law" class="form-control" #if(view=='detail') readonly #end>#(o?o.danger_law:'')</textarea>
+			                        <small class="help-block">请输入合同法律违约条款的风险</small>
+			                    </div>
+			                </div>
+			                <div class="form-group">
+			                    <label class="col-md-2 control-label">其他方面的风险阐述</label>
+			                    <div class="col-md-9">
+			                        <textarea rows="8" name="#(formModelName).danger_ext" class="form-control" #if(view=='detail') readonly #end>#(o?o.danger_ext:'')</textarea>
+			                        <small class="help-block">请输入其他方面的风险阐述</small>
+			                    </div>
+			                </div> -->
+			                #@installFlowCCButton()
+		                	#if(view=='edit')
+		                		<div class="panel-footer">
+				                    <div class="row">
+				                        <div class="col-sm-8 col-sm-offset-3">
+				                            <button class="btn btn-warning" type="reset" #if(view=='detail') disabled #end>重置</button>
+				                            <button class="btn btn-primary" type="submit" #if(view=='detail') disabled #end>保存</button>
+				                        </div>
+				                    </div>
+				                </div>
+				            #else
+				            	
+				            #end
+		            </form>

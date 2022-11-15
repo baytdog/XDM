@@ -1,0 +1,244 @@
+	<style>
+	.webuploader-pick{
+		padding: 0px 15px;
+		height: 32px;
+		line-height: 32px;
+	}
+	</style>
+                <div id="page-content">
+			        <div class="col-sm-12 eq-box-sm">
+						<div class="panel">
+							<div class="panel panel-search">
+								<div class="panel-body">
+									<div class="form-inline">
+										<div class="form-group">
+											<input id="type_name" placeholder="品名" class="form-control">
+										</div>
+										<div class="form-group">
+											<input id="order_code" placeholder="投单单号" class="form-control">
+										</div>
+										<div class="form-group">
+											<input id="order_num" placeholder="PO单号" class="form-control">
+										</div>
+										<div class="form-group">
+											<button class="btn btn-primary" type="button" onclick="searchTable()">搜索</button>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="panel ">
+								<div class="panel-body">
+									<a id="add" class="btn btn-primary data-toolbar" href="#(ctx)/admin/crm/order/getEditPage?view=edit"><i class="demo-pli-add"></i> 添加</a>
+									<a id="filePicker" href="javascript:void(0);" ><i class="demo-pli-add"></i> 导入</a>
+									<a id="export" class="btn btn-primary data-toolbar" onclick="exportExcel()" target="_blank"><i class="demo-pli-add"></i> 导出</a>
+									<a id="download" class="btn btn-primary data-toolbar" href="#(ctx)/admin/crm/order/download" target="_blank"><i class="demo-pli-add"></i> 模版下载</a>
+									<table id="pageTable" class="demo-add-niftycheck" data-toolbar="#filePicker,#export,#add,#download" style="width: 3000px"
+										   data-search="true"
+										   data-show-refresh="true"
+										   data-show-toggle="true"
+										   data-show-columns="true"
+										   data-sort-name="id"
+										   data-page-list="[5, 10, 20]"
+										   data-page-size="5"
+										   data-pagination="true" data-show-pagination-switch="true" ></table>
+								</div>
+							</div>
+			        	</div>
+                	</div>
+				</div>
+<script>
+	
+	var col = [{field: 'checked', checkbox : true, align: 'center'},
+	   
+		   {field: 'num', title: '项次', align: 'center'},
+		   {field: 'order_date', title: '接单日期', align: 'center'},
+		   {field: 'project_code', title: '专案代码', align: 'center'},
+		{field: 'customer_code', title: '客户PO#', align: 'center'},
+		{field: 'po_count', title: 'PO数量', align: 'center'},
+		   {field: 'customer_name', title: '客户名称', align: 'center'},
+		   {field: 'order_code', title: '投单单号', align: 'center'},
+		   {field: 'type_name', title: '品名/图号', align: 'center'},
+		   {field: 'order_count', title: '投单数量', align: 'center'},
+		{field: 'sell_count', title: '销售数量', align: 'center'},
+		{field: 'dollar', title: '美金', align: 'center'},
+		{field: 'exchange_rate', title: '汇率', align: 'center'},
+		   {field: 'price', title: '单价(RMB)', align: 'center'},
+		{field: 'money', title: '总金额(RMB)', align: 'center'},
+		{field: 'product_count', title: '出货数量', align: 'center'},
+		{field: 'out_pdt_date', title: '出货日期', align: 'center'},
+		{field: 'wait_count', title: '待出货数量', align: 'center'},
+		{field: 'lifeless_count', title: '呆滞数量', align: 'center'},
+		{field: 'receive_pdt_date', title: '验收日期', align: 'center'},
+		{field: 'order_num', title: '对账单号', align: 'center'},
+		{field: 'account_date', title: '对账日期', align: 'center'},
+		{field: 'invoice_date', title: '开票日期', align: 'center'},
+		{field: 'invoice_code', title: '发票号码', align: 'center'},
+		{field: 'invoice_money', title: '发票金额', align: 'center'},
+		{field: 'pay_date', title: '付款日期', align: 'center'},
+		{field: 'pay_money', title: '付款金额', align: 'center'},
+		{field: 'operate_user_name', title: '业务员名称', align: 'center'},
+		{field: 'create_time', title: '创建时间', align: 'center'},
+	   {field: 'control', title: '操作', align: 'left', width:'200',
+	       formatter:function(value,row,index){
+	           	//通过formatter可以自定义列显示的内容
+	           	//value：当前field的值，即id
+	           	//row：当前行的数据
+	           	var a = '<a class="label label-table label-success" href="'+ctx+'/admin/crm/order/getEditPage?id='+row.id+'&view=detail" >查看</a>&nbsp;';
+	           	a = a + '<a class="label label-table label-success" href="'+ctx+'/admin/crm/order/getEditPage?id='+row.id+'&view=edit" >编辑</a>&nbsp;';
+				a = a + '<a class="label label-table label-danger" onclick="del(\''+row.id+'\')" href="javascript:void(0);" >删除</a>';
+	           	return a;
+	       }
+	   }];
+	var opt = {
+		    //请求方法
+			   method: 'get',
+			    //是否显示行间隔色
+			   striped: true,
+			   //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）     
+			   cache: false,  
+			   //data-toolbar: "#demo-delete-row",
+			   //是否显示分页（*）  
+			   pagination: true,   
+			    //是否启用排序  
+			   sortable: false,    
+			    //排序方式 
+			   sortOrder: "asc",    
+			   //初始化加载第一页，默认第一页
+			   //我设置了这一项，但是貌似没起作用，而且我这默认是0,- -
+			   //pageNumber:1,   
+			   //每页的记录行数（*）   
+			   pageSize: 10,  
+			   //可供选择的每页的行数（*）    
+			   pageList: [10, 25, 50, 100],
+			   //这个接口需要处理bootstrap table传递的固定参数,并返回特定格式的json数据  
+			   url: ctx+"/admin/crm/order/listData",
+			   //默认值为 'limit',传给服务端的参数为：limit, offset, search, sort, order Else
+			   //queryParamsType:'',   
+			   ////查询参数,每次调用是会带上这个参数，可自定义                         
+			   queryParams : function(params) {
+			       return {
+			             pageNumber: (params.offset/params.limit)+1,
+			             pageSize: params.limit
+			           };
+			   },
+			   //分页方式：client客户端分页，server服务端分页（*）
+			   sidePagination: "server",
+			   //是否显示搜索
+			   search: false,  
+			   //Enable the strict search.    
+			   strictSearch: true,
+			   //Indicate which field is an identity field.
+			   idField : "id",
+			   columns: col,
+			   pagination:true,paginationShowPageGo: true
+			}; 
+		
+	//表格
+	function initTable(){
+		$('#pageTable').bootstrapTable(opt);
+		$('#pageTable').bootstrapTable('hideColumn', 'id');
+	}
+	function refreshTable(){
+		$("#pageTable").bootstrapTable('refresh', opt);
+		$('#pageTable').bootstrapTable('hideColumn', 'id');
+	}
+	
+	//批量删除
+	function delSel(){
+		var data = [];
+		$("#pageTable input[type='checkbox'][name!='btSelectAll']:checked").each(function(){
+			data.push($(this).val());
+		});
+		if(data.length==0){
+			pointLion.alertMsg("请选择要删除的数据!","danger",null,null);
+			return;
+		}
+		del(data.join(","));//执行删除
+	}
+	//删除
+	function del(ids){
+		pointLion.confimMsg("您是否要删除所选信息 ?<br/> 点击确认进行删除 , 点击取消取消该操作",null,function(){
+			//执行删除
+			var data = common_ajax.ajaxFunc("/admin/crm/order/delete",{"ids":ids}, "json", null);
+			//删除结果
+			if(data.success){
+				pointLion.alertMsg(data.message,"success",null,function(){
+					location.href = ctx+'/admin/crm/order/getListPage';//跳转到列表页
+				});
+			}else{
+				pointLion.alertMsg(data.message,"success",null,null);
+			}
+		});
+	};
+	//提交，启动流程
+	function startProcess(id){
+			pointLion.confimMsg("您将要提交该单据！并且启动流程<br/><span style='color:green;'>您将无法进行修改和删除！！！</span> <br/>点击确认进行提交 , 点击取消取消该操作",null,function(){
+				var data = common_ajax.ajaxFunc("/admin/crm/order/startProcess",{"id":id}, "json", null);
+				if(data.success){
+					pointLion.alertMsg(data.message,"success",null,function(){
+						location.href = ctx+'/admin/crm/order/getListPage';//跳转到列表页
+					});
+				}else{
+					pointLion.alertMsg(data.message,"danger",null,null);
+				}
+			});
+	}
+	//撤回
+	function callBack(id){
+		pointLion.confimMsg("您将要撤回该单据流程！<br/><span style='color:red;'>该操作将取回单据，您将可以对单据进行修改，并可将单据重新送交审批。</span> <br/>点击确认进行撤回单据 , 点击取消取消该操作",null,function(){
+			//执行删除
+			var data = common_ajax.ajaxFunc("/admin/crm/order/callBack",{"id":id}, "json", null);
+			//删除结果
+			if(data.success){
+				pointLion.alertMsg(data.message,"success",null,function(){
+					location.href = ctx+'/admin/crm/order/getListPage';//跳转到列表页
+				});
+			}else{
+				pointLion.alertMsg(data.message,"danger",null,null);
+			}
+		});
+	}
+
+	//查询
+	function searchTable(){
+		var type_name = $("#type_name").val();
+		var order_code = $("#order_code").val();
+		var order_num = $("#order_num").val();
+		var param = {
+			query: {
+				"type_name":type_name,
+				"order_code":order_code,
+				"order_num":order_num
+			}
+		}
+		// 刷新表格
+		$('#pageTable').bootstrapTable('refresh',param);
+	}
+
+	/***
+	 * 导出
+	 */
+	function exportExcel(){
+		var type_name = $("#type_name").val();
+		var order_code = $("#order_code").val();
+		var order_num = $("#order_num").val();
+		location.href = "#(ctx)/admin/crm/order/exportExcel?type_name="+type_name+"&order_code="+order_code+"&order_num="+order_num;
+	}
+
+
+	$(document).ready(function(){
+		$('.form_datetime').datepicker({format: 'yyyy-mm-dd',weekStart: 1,todayBtn:  1,autoclose: 1,language:  'zh-CN',todayHighlight: 1,forceParse: 0,clearBtn: true }).on('changeDate',null);
+		initTable();//初始化
+
+		//监听上传组件
+		pointLion.initUploader("/admin/crm/order/importExcel",function(data){
+			if(data.success){
+				pointLion.alertMsg("导入成功！","success",null,null);
+				searchTable();
+			}else{
+				pointLion.alertMsg(data.message,"danger",null,null);
+			}
+		});
+	});
+
+</script>

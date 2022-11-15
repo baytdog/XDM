@@ -1,0 +1,112 @@
+<form id="editForm" class="panel-body form-horizontal form-padding">
+	<input type="hidden"  name="#(formModelName).id" class="form-control" value="#(o?o.id:'')">
+	<div class="form-group">
+		<label class="col-md-2 control-label">申请人</label>
+		<div class="col-md-4">
+			<input type="hidden"  name="#(formModelName).userid" class="form-control"  value="#if(o)#(o.userid)#else#(user.id)#end">
+			<input type="text"  name="#(formModelName).applyer_name" class="form-control"  value="#if(o)#(o.applyer_name)#else#(user.name)#end" readonly>
+		</div>
+		<label class="col-md-1 control-label">部门</label>
+		<div class="col-md-4">
+			<input type="hidden"  name="#(formModelName).org_id" class="form-control"  value="#if(o)#(o.org_id)#else#(org.id)#end">
+			<input type="text"  name="#(formModelName).org_name" class="form-control"  value="#if(o)#(o.org_name)#else#(org.name)#end" readonly>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-2 control-label">申请内容</label>
+		<div class="col-md-8">
+			<input type="text"  name="#(formModelName).title" class="form-control"  value="#(o?o.title:'')" #if(view=='detail') readonly #end>
+			<small class="help-block">请输入申请内容</small>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-2 control-label">加班日期</label>
+		<div class="input-group date form_date col-md-4" style="float:left">
+			<input type="text"  name="#(formModelName).work_date" class="form-control"  value="#(o?o.work_date:'')" readonly>
+			<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-2 control-label">开始时间</label>
+		<div class="input-group date form_datetime col-md-4" style="float:left">
+			<input type="text" id="startTime" name="#(formModelName).start_time" class="form-control"  value="#(o?o.start_time:'')" readonly>
+			<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+		</div>
+		<label class="col-md-1 control-label">结束时间</label>
+		<div class="input-group date form_datetime col-md-4" style="float:left">
+			<input type="text" id="endTime" name="#(formModelName).end_time" class="form-control"  value="#(o?o.end_time:'')" readonly>
+			<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-2 control-label">加班小时数</label>
+		<div class="col-md-4">
+			<input type="text" id="apply_hour" name="#(formModelName).apply_hour" class="form-control"  value="#(o?o.apply_hour:'')" readonly >
+			<small class="help-block">请输入加班小时数</small>
+		</div>
+		<label class="col-md-1 control-label">实际完工小时数</label>
+		<div class="col-md-4">
+			<input type="text"  name="#(formModelName).work_hour" class="form-control"  value="#(o?o.work_hour:'')" #if(view=='detail') readonly #end>
+			<small class="help-block">请输入实际完工小时数</small>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-2 control-label">工作内容</label>
+		<div class="col-md-9">
+			<textarea rows="8" name="#(formModelName).work_content" class="form-control" #if(view=='detail') readonly #end>#(o?o.work_content:'')</textarea>
+			<small class="help-block">请输入工作内容</small>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-2 control-label">备注</label>
+		<div class="col-md-9">
+			<textarea rows="8" name="#(formModelName).des" class="form-control" #if(view=='detail') readonly #end>#(o?o.des:'')</textarea>
+			<small class="help-block">请输入备注</small>
+		</div>
+	</div>
+
+	#if(view=='edit')
+		<div class="panel-footer">
+			<div class="row">
+				<div class="col-sm-8 col-sm-offset-3">
+					<button class="btn btn-warning" type="reset" #if(view=='detail') disabled #end>重置</button>
+					<button class="btn btn-primary" type="submit" #if(view=='detail') disabled #end>保存</button>
+				</div>
+			</div>
+		</div>
+	#else
+
+	#end
+</form>
+<script>
+	function resetVali(){
+		if(!$("#editForm").data('bootstrapValidator').isValid()) {
+			$("#editForm").data('bootstrapValidator').resetForm();
+			$(".btn").removeAttr("disabled");
+		}
+	}
+	$(document).ready(function() {
+		$('.form_datetime').datetimepicker({weekStart: 1,todayBtn:  1,autoclose: true,language:  'zh-CN',todayHighlight: 1,startView: 2}).on('changeDate',function(){
+			var startTime = $("#startTime").val();
+			var endTime = $("#endTime").val();
+			if(startTime&&endTime){
+				if(!dateUtil.compareCalendar(startTime,endTime)){
+					pointLion.alertMsg("开始时间大于结束时间","danger",null,null);
+					$("#editForm .btn").attr("disabled","disabled");
+					return;
+				}else{
+					resetVali();
+				}
+			}
+			var total = dateUtil.timeSubtract(startTime,endTime);
+			var day = parseInt(total / (24*60*60));//计算整数天数
+			var afterDay = total - day*24*60*60;//取得算出天数后剩余的秒数
+			var hour = parseInt(afterDay/(60*60));//计算整数小时数
+			var afterHour = total - day*24*60*60 - hour*60*60;//取得算出小时数后剩余的秒数
+			var min = parseInt(afterHour/60);//计算整数分
+			var totalOverTime = (day*24+hour)+"小时"+min+"分";
+			$("#apply_hour").val(totalOverTime);
+		});
+		$('.form_date').datepicker({weekStart: 1,todayBtn:  1,autoclose: true,language:  'zh-CN',todayHighlight: 1,startView: 2}).on('changeDate',null);
+	});
+</script>

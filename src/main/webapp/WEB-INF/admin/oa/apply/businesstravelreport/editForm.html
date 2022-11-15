@@ -1,0 +1,72 @@
+<form id="editReportForm" class="panel-body form-horizontal form-padding">
+	<!--	出差单据id-->
+	<input type="hidden"  name="btid" class="form-control" value="#(bt?bt.id:'')">
+	<!--	出差报告单据id-->
+	<input type="hidden"  name="#(formModelName).id" class="form-control" value="#(o?o.id:'')">
+	<div class="form-group">
+		<label class="col-md-2 control-label">申请人</label>
+		<div class="col-md-4">
+			<input type="hidden"  name="#(formModelName).userid" class="form-control"  value="#if(o)#(o.userid)#else#(user.id)#end">
+			<input type="text"  name="#(formModelName).applyer_name" class="form-control"  value="#if(o)#(o.applyer_name)#else#(user.name)#end" readonly>
+		</div>
+		<label class="col-md-1 control-label">部门</label>
+		<div class="col-md-4">
+			<input type="hidden"  name="#(formModelName).org_id" class="form-control"  value="#if(o)#(o.org_id)#else#(org.id)#end">
+			<input type="text"  name="#(formModelName).org_name" class="form-control"  value="#if(o)#(o.org_name)#else#(org.name)#end" readonly>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-2 control-label">接待人</label>
+		<div class="col-md-8">
+			<input type="text"  name="#(formModelName).usher" class="form-control"  value="#(o?o.usher:'')" #if(view=='detail') readonly #end>
+			<small class="help-block">请输入接待人</small>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-2 control-label">接待部门</label>
+		<div class="col-md-8">
+			<input type="text"  name="#(formModelName).usher_org" class="form-control"  value="#(o?o.usher_org:'')" #if(view=='detail') readonly #end>
+			<small class="help-block">请输入接待部门</small>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-2 control-label">接待人岗位</label>
+		<div class="col-md-8">
+			<input type="text"  name="#(formModelName).usher_position" class="form-control"  value="#(o?o.usher_position:'')" #if(view=='detail') readonly #end>
+			<small class="help-block">请输入接待人岗位</small>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-2 control-label">出差目的</label>
+		<div class="col-md-9">
+			<textarea rows="8" name="#(formModelName).goal" class="form-control" #if(view=='detail') readonly #end>#(o?o.goal:'')</textarea>
+			<small class="help-block">请输入出差目的</small>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-2 control-label">行程说明</label>
+		<div class="col-md-9">
+			<textarea rows="8" name="#(formModelName).travel_note" class="form-control" #if(view=='detail') readonly #end>#(o?o.travel_note:'')</textarea>
+			<small class="help-block">请输入行程说明</small>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-2 control-label">总结报告</label>
+		<div class="col-md-9">
+			<textarea rows="8" name="#(formModelName).summary_report" class="form-control" #if(view=='detail') readonly #end>#(o?o.summary_report:'')</textarea>
+			<small class="help-block">请输入总结报告</small>
+		</div>
+	</div>
+	#if(view=='editReport')
+		<div class="panel-footer">
+			<div class="row">
+				<div class="col-sm-8 col-sm-offset-3">
+					<button class="btn btn-warning" type="reset" #if(view=='detail') disabled #end>重置</button>
+					<button class="btn btn-primary" type="submit" #if(view=='detail') disabled #end>保存</button>
+				</div>
+			</div>
+		</div>
+	#else
+
+	#end
+</form>

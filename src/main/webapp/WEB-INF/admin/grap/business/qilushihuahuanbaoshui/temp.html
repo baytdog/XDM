@@ -1,0 +1,98 @@
+
+ <form class="form-inline">
+		        <div class="form-group">
+		        	<div class="select pull-right">
+		        		<label class="control-label" style="width: 70px;">起始年月：</label>
+                        <select id="startYear">
+                            #for(year:yearList)	
+                            	<option value="#(year)">#(year)</option>
+                            #end
+                        </select>
+                        <select id="startMonth">
+                           <option value="01">01</option>
+                           <option value="02">02</option>
+                           <option value="03">03</option>
+                           <option value="04">04</option>
+                           <option value="05">05</option>
+                           <option value="06">06</option>
+                           <option value="07">07</option>
+                           <option value="08">08</option>
+                           <option value="09">09</option>
+                           <option value="10">10</option>
+                           <option value="11">11</option>
+                           <option value="12">12</option>
+                        </select>
+                        	至
+                        <select id="endYear">
+                            #for(year:yearList)	
+                            	<option value="#(year)">#(year)</option>
+                            #end
+                        </select>
+                        <select id="endMonth">
+                           <option value="01">01</option>
+                           <option value="02">02</option>
+                           <option value="03">03</option>
+                           <option value="04">04</option>
+                           <option value="05">05</option>
+                           <option value="06">06</option>
+                           <option value="07">07</option>
+                           <option value="08">08</option>
+                           <option value="09">09</option>
+                           <option value="10">10</option>
+                           <option value="11">11</option>
+                           <option value="12">12</option>
+                        </select>
+                    </div>
+		        </div>
+		        
+		        <br/>
+		        <div class="form-group">
+		        	<label class="control-label" style="width: 70px;">验证码：</label>
+		            <input type="text" placeholder="请输入验证码" id="valicode" class="form-control">
+		            <input type="hidden" value="#(id)" id="websiteid">
+		        </div>
+		        <div class="form-group">
+		        	<img alt="验证码出错啦~!" src="#(ctx)#(valicode)">
+		        </div>
+		        
+		        <br/>
+		        <div class="form-group">
+		        	<label class="control-label" style="width: 70px;"></label>
+			        <button class="btn btn-primary" onclick="getdata()" type="button">确定</button>
+		        </div>
+		    </form>
+		    
+		    <script>
+	function getvalicode(){
+		return $("#valicode").val();
+	}
+	function getdata(){
+		var startYear = $("#startYear").val(); 
+		var startMonth = $("#startMonth").val();
+		var endYear = $("#endYear").val();
+		var endMonth = $("#endMonth").val();
+		var s = startYear+startMonth;
+		var e = endYear+endMonth;
+		if(s>e){
+			alert("开始年月不能大于结束年月")
+			return;
+		}
+		var id = $("#websiteid").val();
+		var code = $("#valicode").val();
+		if(!code){
+			alert("验证码不能为空！");
+			return;
+		}
+		var start = startYear+"-"+startMonth;
+		var end = endYear+"-"+endMonth;
+		var data = common_ajax.ajaxFunc("/admin/grap/business/qilushihuaHuanbaoshuiGetData",{"valicode":code,"id":id,"start":start,"end":end}, "json", null);
+		if(data.success){
+			alert("成功");
+		}else{
+			alert("失败");
+		}
+	}
+	$(document).ready(function() {
+		
+	});
+</script>

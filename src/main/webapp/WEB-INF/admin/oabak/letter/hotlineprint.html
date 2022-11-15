@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+    <script src="#(ctx)/common/js/jquery-2.2.4.min.js"></script>
+   <script src="#(ctx)/common/js/bootstrap.min.js"></script>
+  <script src="#(ctx)/common/js/printThis.js"></script>
+<body>
+<div class="modal fade" id="myModal_qrcode" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"> 
+ <div class="modal-dialog" role="document"> 
+  <div class="modal-content"> 
+   <div class="modal-body"  > 
+ <!--    <center>  -->
+     <div id="qrcode" style="border:1px solid #000;">
+     
+     <div style="border-bottom:1px solid #000;">
+    			 <h2 class="modal-title" id="myModalLabel" align="center" style="font-size: 50">信访答复公开件审核单</h2> 
+     </div>
+     
+  
+      <div align="right" style=" border-bottom:1px solid #000; height: 30px;" >
+     	 	 <div style="display:inline-block;width: 15%; height: 30px;  line-height:30px; " >信访编号：</div>
+    		 <div style="display:inline-block;width: 20%; font-size: 16px;" align="left">#(o.num)</div>
+      </div>
+    	 
+  
+ 
+   <div style="height: 50px;border-bottom: 1px solid black;">
+   	 <div style="display:inline-block;width: 20%;  border-right: 1px solid #000; height: 50px;  line-height:50px;" align="center" > 拟展示标题 </div>
+     <div  style="display:inline-block;width: 70%; font-size: 16px;" align="left"> #(o.showtitle)</div>
+   </div>
+       
+   <div style="height: 300px; border-bottom: 1px solid black;">
+   	 <div style="display:inline-block;width: 20%; border-right: 1px solid #000; height: 300px; line-height:300px;" align="center">  拟展示信访内容 </div>
+     <div  style="display:inline-block;width: 70%; font-size: 16px;" align="left"> #(o.showcontents) </div>
+   </div>
+ 
+     <div style="border-bottom:1px solid #000;">
+    			 <h4 class="modal-title" align="center" style="color: red;" >以下为信件展示内容</h4> 
+     </div>
+   <div style="height: 300px; border-bottom: 1px solid black;">
+   	 <div style="display:inline-block;width: 20%; border-right: 1px solid #000; height: 300px; line-height:300px;" align="center">拟展示回复</div>
+     <div  style="display:inline-block;width: 70%; font-size: 16px;" align="left"> #(o.showrecontents) </div>
+   </div>
+   
+ 
+ 
+ 
+ 
+ <div style="height: 100px;">
+   	 <div style="display:inline-block;width: 50%; border-right: 1px solid #000; height: 100px; " align="left"> 备注： </div>
+     <div style="display:inline-block;width: 45%; height: 100px;" align="left"> 审核人签名： </div>
+ </div>
+     
+ 
+     
+  </div> 
+   </div> 
+   <br>
+   <br>
+   <div class="modal-footer" align="center"> 
+    <button type="button" class="btn btn-default" data-dismiss="modal" onclick="window.history.back();" > 
+     <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>关闭 
+    </button> 
+    <button type="button" id="btn_print" class="btn btn-primary" data-dismiss="modal"> 
+     <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>打印 
+    </button> 
+   </div> 
+  </div> 
+ </div> 
+</div> 
+<script type="text/javascript">
+$("#btn_print").click(function(event) { 
+	  /* Act on the event */ 
+	   $("#qrcode").printThis({ 
+	    debug: false, 
+	    importCSS: true, 
+	    importStyle: false, 
+	    printContainer: true, 
+//	    loadCSS: "/Content/Themes/Default/style.css", 
+	    pageTitle: "二维码", 
+	    removeInline: false, 
+	    printDelay: 333, 
+	    header: null, 
+	    formValues: false 
+	   }); 
+	//  alert("等待打印"); 
+	 }); 
+	 
+	 
+ 
+</script>
+	
+
+</body>
+</html>

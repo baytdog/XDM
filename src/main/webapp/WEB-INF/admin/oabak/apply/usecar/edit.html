@@ -1,0 +1,111 @@
+	
+	<div id="page-content">
+			<div class="col-lg-12">
+		        <div class="panel">
+		            <div class="panel-heading">
+		                <h3 class="panel-title" style="text-align: right;">
+		                	#@installPJaxGoBackBtn()
+		                	#@installFlowHisBtn(defId,procInsId)
+		                	#@installAttachment(o?o.id:'')
+		                </h3>
+		            </div>
+					#@buildFormPanelContainer("用车申请单","/WEB-INF/admin/oa/apply/usecar/editForm.html")
+		            #@buildWorkFlowHisTable(procInsId,hislist)
+		        </div>
+		    </div>
+	</div>
+	<script>
+		function save(){
+			var data = common_ajax.ajaxFunc("/admin/oa/apply/usecar/save", $('#editForm').serialize(), "json", null);
+			if(data.success){
+				pointLion.alertMsg("保存成功!" , "success" , "small" , function(){
+					location.href = ctx+'/admin/oa/apply/usecar/getApplyListPage';//跳转到列表页
+				},data);
+			}else{
+				pointLion.alertMsg(data.message , "success" , "small" , function(){
+					$(".btn").removeAttr("disabled");
+				},data);
+			}
+		}
+		
+		function selectCar(){
+			layer.open({
+			  type: 2,
+			  title: false, //不显示标题栏
+			  area: ['1000px', '700px'],
+			  shade: 0.2,
+			  id: 'selectOneOrg', //设定一个id，防止重复弹出
+			  resize: false,
+			  closeBtn: false,
+			  isOutAnim : false , 
+			  btn: ['确定', '取消'], 
+			  btnAlign: 'c',
+			  content: ctx+'/admin/oa/apply/usecar/getSelectCarPage',
+			  success: function(layero){
+				  
+			  },
+			  yes: function(index,layero){
+				  var iframeWin = window[layero.find('iframe')[0]['name']]; //得到iframe页的窗口对象，执行iframe页的方法：iframeWin.method();
+     			  var selects = iframeWin.getSelections();
+     			  if(selects&&selects.length>0){
+     				  //[{"buy_time":"2018-06-01 10:35","des":"黑色朗逸","color":"黑色","num":"鲁A123456","id":"11","brand":"大众","version":"朗逸","checked":true}]
+     				  if("1"==selects[0].ifInBorrow){
+     					 iframeWin.pointLion.alertMsg("该车辆已被借用，请选择其他车辆！","danger",null,null);
+     				  }else{
+     					  var title = selects[0].color+"  "+selects[0].brand+"  "+selects[0].version+"  车牌号码："+selects[0].num;
+        				  $("#applyTitle").val(title);
+        				  $("#carId").val(selects[0].id);
+        				  $("#editForm").data('bootstrapValidator').destroy();
+        		          $('#editForm').data('bootstrapValidator', null);
+        		          layer.closeAll();
+        		          vali();  
+     				  }
+     			  }else{
+     				 $("#applyTitle").val("");
+    				 $("#carId").val("");
+				  	 layer.closeAll();
+    				 vali();
+     			  }
+			  }
+			});
+		};
+		
+		function vali(){
+			$('#editForm').bootstrapValidator({
+	            fields: {
+	            	"#(formModelName).title": {
+					    validators: {
+					    	notEmpty: {
+			                    message: '*请选择车辆'
+			                }
+			            }
+	                }
+	            }
+	        }).on("success.form.bv", function (e) {
+	            save();
+	            return false;//阻止表单跳转
+	        });
+		}
+		function resetVali(){
+			if(!$("#editForm").data('bootstrapValidator').isValid()) {  
+		        $("#editForm").data('bootstrapValidator').resetForm();
+		        $(".btn").removeAttr("disabled");
+		    }
+		}
+		$(document).ready(function() {
+			$('.form_datetime').datepicker({format: 'yyyy-mm-dd',weekStart: 1,todayBtn:  1,autoclose: 1,language:  'zh-CN',todayHighlight: 1,forceParse: 0,showMeridian: 1}).on('changeDate',function(){
+					var startTime = $("#startTime").val();
+					var endTime = $("#endTime").val();
+					if(startTime&&endTime){
+						if(!dateUtil.compareCalendar(startTime,endTime)){
+							pointLion.alertMsg("开始时间大于结束时间","danger",null,null);
+							$("#editForm .btn").attr("disabled","disabled");
+						}else{
+							resetVali();
+						}
+					}
+			});
+			vali();
+		});
+		
+	</script>

@@ -1,0 +1,40 @@
+#include("/common/include/include.html")
+<style>
+	.lay-body{
+		margin-top: 52px;
+		overflow-y: auto;
+		overflow-x: unset;
+	}
+	.lay-header{
+		position: absolute;
+		top: 0px;
+		width: 100%;
+	}
+</style>
+<div class="modal-dialog" style="width:100%">
+    <div class="modal-content" style="height: 100%;">
+        <div class="modal-header lay-header">
+            <button type="button" class="close" data-dismiss="modal" onclick="{parent.layer.closeAll();}"><i class="pci-cross pci-circle"></i></button>
+            <h4 class="modal-title">使用验证码登录</h4>
+        </div>
+        <div class="modal-body lay-body panel" style="height: 243px;margin-bottom: 0px;padding-top: 75px;margin-top: 50px;">
+	        <form class="form-inline">
+		        <div class="form-group">
+		            <input type="text" placeholder="请输入验证码" id="valicode" class="form-control">
+		        </div>
+		        <div class="form-group">
+		        	<img alt="验证码出错啦~!" src="#(ctx)#(valicode)">
+		        </div>
+		    </form>
+        </div>
+    </div>
+</div>
+
+<script>
+	function getvalicode(){
+		return $("#valicode").val();
+	}
+	$(document).ready(function() {
+		
+	});
+</script>

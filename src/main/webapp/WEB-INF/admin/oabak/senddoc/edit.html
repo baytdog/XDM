@@ -1,0 +1,141 @@
+	<div id="page-content">
+			<div class="col-lg-12">
+		        <div class="panel">
+		            <div class="panel-heading">
+		                <h3 class="panel-title" style="text-align: center;">
+		        
+							上海市交通委员会行政服务中心发文
+		                </h3>
+		            </div>
+				 
+			         #include("editForm.html")
+		        </div>
+		    </div>
+	</div>
+	 <style>
+	/*   .form-horizontal .control-label {
+ 
+    font-size: 20px;
+ 
+}
+.form-control{
+font-size: 20px;
+background-color: red;
+}  
+  */
+	 </style>
+<script type="text/javascript">
+<!-- 按钮 start-->
+//送分管领导
+function save(){
+	var data = common_ajax.ajaxFunc("/admin/oa/senddoc/save", $('#editForm').serialize(), "json", null);
+	if(data.success){
+		pointLion.alertMsg("操作成功!" , "success" , "small" , function(){
+			location.href = ctx+'/admin/oa/senddoc/getListPage';//跳转到列表页
+		},data);
+	}else{
+		pointLion.alertMsg(data.message , "danger" , "small" , function(){
+			$(".btn").removeAttr("disabled");
+		},data);
+	}
+}
+<!-- 按钮 end-->
+</script>
+	 
+	 
+	 
+	<script>
+		
+		$(document).ready(function() {
+			$('#editForm').bootstrapValidator({
+	            fields: {
+	            }
+	        }).on("success.form.bv", function (e) {
+	            save();
+	            return false;//阻止表单跳转
+	        });
+		});
+		
+		$('#depart').on('changed.bs.select', function (e) {
+			
+			
+			$('#secondOrgId').val($('#depart').val())
+			
+			if($('#depart').val()){
+				
+				$('#sendhgks').show();
+				$('#sendoffice').hide();
+			}else{
+				$('#sendhgks').hide();
+				$('#sendoffice').show();
+				
+			}
+		}); 
+		
+		
+		
+		$('#dfgld').on('changed.bs.select', function (e) {
+			
+			
+			$('#dfgldids').val($('#dfgld').val())
+			
+			 
+		}); 
+		
+		
+		
+		
+		var  busid=$("#infoid").val();
+		var view = "#(view?view:'')";
+		function doUploadAttachment(){
+			
+			if(busid){
+				pointLion.openBusinessAttachmentPage(busid,view,function(){
+					
+					setAttachmentCount();//关闭之后回调
+				});
+			}else{
+				pointLion.alertMsg("请先保存再上传附件！" , "danger" , "small" , null);
+			}
+		}
+		//设置附件数量
+		function setAttachmentCount(){
+			var data = common_ajax.ajaxFunc("/admin/sys/attachment/getBusinessAttachmentCount", {"busid":busid}, "json", null);
+			if(data.success){
+				$("#businessAttachmentCount").html(data.data);
+			}
+		}
+		
+		$(document).ready(function() {
+			
+			$('.form_datetime').datepicker({format: 'yyyy-mm-dd',weekStart: 1,todayBtn:  1,autoclose: 1,language:  'zh-CN',todayHighlight: 1,forceParse: 0,showMeridian: 1}).on('changeDate',function(){
+			/* 	var startTime = $("#startTime").val();
+				var endTime = $("#endTime").val();
+				if(startTime&&endTime){
+					if(!dateUtil.compareCalendar(startTime,endTime)){
+						pointLion.alertMsg("开始时间大于结束时间","danger",null,null);
+						$("#editForm .btn").attr("disabled","disabled");
+					}else{
+						resetVali();
+					}
+				} */
+			});
+			
+			setAttachmentCount();
+	     	 $('#dtype').selectpicker('val',#(o.dtype)).trigger("change");
+	     	 $('#depart').selectpicker('val','#(o.dhgksids)').trigger("change");
+			
+		}); 
+		
+		
+		
+		function openSlectFgLeaderDialog(){
+    		pointLion.selectManyUser("orgid="+encodeURIComponent("root"),$("#dfgldids").val(),function(data){
+    			
+    		 
+				$("#dfgldids").val(data.idData);
+				$("#dfgldnames").val(data.nameData);
+			});
+    	}
+		
+	</script>

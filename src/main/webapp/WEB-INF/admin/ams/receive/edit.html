@@ -1,0 +1,39 @@
+	
+	<div id="page-content">
+			<div class="col-lg-12">
+		        <div class="panel">
+		            <div class="panel-heading">
+		                <h3 class="panel-title" style="text-align: right;">
+		                	#@installPJaxGoBackBtn()
+		                	#@installFlowHisBtn(defId,procInsId)
+		                	#@installAttachment(o?o.id:'')
+		                </h3>
+		            </div>
+					#@buildFormPanelContainer("资产领用","/WEB-INF/admin/ams/receive/editForm.html")
+		            #@buildWorkFlowHisTable(procInsId,hislist)
+		        </div>
+		    </div>
+	</div>
+	<script>
+		function save(){
+			var data = common_ajax.ajaxFunc("/admin/ams/receive/save", $('#editForm').serialize(), "json", null);
+			if(data.success){
+				pointLion.alertMsg("保存成功!" , "success" , "small" , function(){
+					location.href = ctx+'/admin/ams/receive/getListPage';//跳转到列表页
+				});
+			}else{
+				pointLion.alertMsg(data.message , "success" , "small" , function(){
+					$(".btn").removeAttr("disabled");
+				});
+			}
+		}
+		$(document).ready(function() {
+			$('#editForm').bootstrapValidator({
+	            fields: {
+	            }
+	        }).on("success.form.bv", function (e) {
+	            save();
+	            return false;//阻止表单跳转
+	        });
+		});
+	</script>

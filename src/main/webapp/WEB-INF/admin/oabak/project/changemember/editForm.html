@@ -1,0 +1,74 @@
+					<form id="editForm" class="panel-body form-horizontal form-padding">
+							<input type="hidden"  name="#(formModelName).id" class="form-control" value="#(o?o.id:'')">
+			                <div class="form-group">
+			                    <label class="col-md-2 control-label">申请人</label>
+			                    <div class="col-md-4">
+			                    	<input type="hidden"  name="#(formModelName).userid" class="form-control"  value="#if(o)#(o.userid)#else#(user.id)#end">
+			                        <input type="text"  name="#(formModelName).applyer_name" class="form-control"  value="#if(o)#(o.applyer_name)#else#(user.name)#end" readonly>
+			                    </div>
+			                    <label class="col-md-1 control-label">部门</label>
+			                    <div class="col-md-4">
+			                        <input type="hidden"  name="#(formModelName).org_id" class="form-control"  value="#if(o)#(o.org_id)#else#(org.id)#end">
+			                        <input type="text"  name="#(formModelName).org_name" class="form-control"  value="#if(o)#(o.org_name)#else#(org.name)#end" readonly>
+			                    </div>
+			                </div>
+			                #@installSelectProjectButton(formModelName)
+			                <div class="form-group">
+			                    <label class="col-md-2 control-label">项目经理</label>
+			                    <div class="col-md-4">
+			                    	<div class="input-group mar-btm">
+				                        <input type="text" id="leaderName" class="form-control" disabled value = "#(leadersNameStr?leadersNameStr:'')">
+				                        <input type="hidden" id="leaderId" name="#(formModelName).leader" class="form-control" value="#(o?o.leader:'')">
+				                        <span class="input-group-btn">
+				                            <button class="btn btn-primary" type="button" onclick="selectLeader()">选择</button>
+				                        </span>
+			                    	</div>
+			                        <small class="help-block">请选择项目经理</small>
+			                    </div>
+			                </div>
+			               <div class="form-group">
+			                    <label class="col-md-2 control-label">项目成员</label>
+			                    <div class="col-md-4">
+			                    	<div class="input-group mar-btm">
+				                        <input type="text" id="memberName" class="form-control" disabled value="#(membersNameStr?membersNameStr:'')">
+				                        <input type="hidden" id="memberId" name="#(formModelName).member" class="form-control" value="#(o?o.member:'')">
+				                        <span class="input-group-btn">
+				                            <button class="btn btn-primary" type="button" onclick="selectMember()">选择</button>
+				                        </span>
+			                    	</div>
+			                        <small class="help-block">请选择项目成员</small>
+			                    </div>
+			                </div>
+			                <script>
+				                $('.form_datetime').datetimepicker({format: 'yyyy-mm-dd hh:ii:ss',weekStart: 1,todayBtn:  1,autoclose: 1,language:  'zh-CN',todayHighlight: 1,startView: 2,forceParse: 0,showMeridian: 1});
+				                function selectLeader(){
+				        			pointLion.selectManyUser("","",function(data){
+				        				$("#leaderId").val(data.idData);
+				        				$("#leaderName").val(data.nameData);
+				        			});
+				                }
+				                function selectMember(){
+				        			pointLion.selectManyUser("","",function(data){
+				        				$("#memberId").val(data.idData);
+				        				$("#memberName").val(data.nameData);
+				        			});
+				                }
+			                </script>
+			                <div class="form-group">
+			                    <label class="col-md-2 control-label">调整原因</label>
+			                    <div class="col-md-9">
+			                        <textarea rows="8" name="#(formModelName).reason" class="form-control" #if(view=='detail') readonly #end>#(o?o.reason:'')</textarea>
+			                        <small class="help-block">请输入调整原因</small>
+			                    </div>
+			                </div>
+			            	#if(view=='edit')
+				            	<div class="panel-footer">
+				                    <div class="row">
+				                        <div class="col-sm-8 col-sm-offset-3">
+				                            <button class="btn btn-warning" type="reset" #if(view=='detail') disabled #end>重置</button>
+			                            <button class="btn btn-primary" type="submit" #if(view=='detail') disabled #end>保存</button>
+				                        </div>
+				                    </div>
+				                </div>
+				            #end
+		            </form>

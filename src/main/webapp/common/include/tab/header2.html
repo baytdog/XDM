@@ -1,0 +1,71 @@
+<header id="navbar" style="height:154px;">
+            <div id="navbar-container" class="boxed">
+                <div class="navbar-header"style="background:none;">
+                    <a href="#" class="navbar-brand">
+                        <div class="brand-title"style="background:none;">
+                            <i class="psi-lion" style="position: absolute;left: 17px;top: 11px;background:none"></i>
+                            <span class="brand-text" style="margin-left: 15px;background:none">头部文件左侧</span>
+                        </div>
+                    </a>
+                </div>
+                <div class="navbar-content clearfix" style="background:none;">
+                
+                 <ul class="nav navbar-top-links pull-left" style="background:none;">
+                        <li class="tgl-menu-btn">
+                            <a class="mainnav-toggle" href="#">
+                                <i class="demo-pli-view-list"></i>
+                            </a>
+                        </li>
+                        <li class="tgl-menu-btn" >
+                           <a class="mainnav-toggle" href="#">
+                                <i class=""> 上海市交通委员会行政服务中心OA系统</i>
+                            </a>  
+                        </li>
+                        <!-- 跑马灯内容 -->
+                        <li >
+                       
+                	    #if(oanotices!=null)
+                      	<div class="cyz_header_marquee"style="background:none;">
+						 	<marquee id="affiche" align="left"  color="red" bgcolor="" behavior="scroll" align="absmiddle"  direction="left"  hspace="-15" vspace="5" loop="-1" scrollamount="10" scrolldelay="100" onMouseOut="this.start()" onMouseOver="this.stop()">
+								 <a  href="javascript:void(0)" onclick="shownotice('#(oanotices.id)')" style="font-size: 20px; color: black;">#(oanotices.showhomepageinfo)</a>
+							 </marquee>
+					
+						</div>
+						#end
+                        
+                        </li>
+                   </ul>
+                
+                
+                 <!--    <ul class="nav navbar-top-links pull-left">
+                       
+                    </ul> -->
+                </div>
+            </div>
+        </header>
+        
+        
+        
+        
+        <script type="text/javascript">
+        function  shownotice(noticeid){
+        	layer.open({
+        		  type: 2,
+        		  title: false, //不显示标题栏
+        		  area: ['1000px', '620px'],
+        		  shade: 0.2,
+        		  id: 'showonenotice', //设定一个id，防止重复弹出
+        		  resize: false,
+        		  closeBtn: true,
+        		  isOutAnim : false , 
+        		  btnAlign: 'c',
+        		  content: ctx+'/admin/oa/notices/homeViewNotice?id='+noticeid,
+        		  success: function(layero){
+        				//nowTask = o;
+        		  }
+        	});
+
+
+        }
+
+</script>

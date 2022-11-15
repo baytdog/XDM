@@ -1,0 +1,413 @@
+	<div id="page-content">
+			<div class="col-lg-12">
+		        <div class="panel">
+		            <div class="panel-heading">
+		                <h3 class="panel-title" style="text-align: center;">
+		                 
+							上海市交通委员会行政服务中心发文
+		                </h3>
+		            </div>
+				 
+			         #include("editForm.html")
+		        </div>
+		    </div>
+	</div>
+	 <style>
+	/*   .form-horizontal .control-label {
+ 
+    font-size: 20px;
+ 
+}
+.form-control{
+font-size: 20px;
+background-color: red;
+}  
+  */
+	 </style>
+	 
+  <script src="#(ctx)/common/plugins/sparkline/jquery.sparkline.min.js"></script>	 	 
+	 
+<script type="text/javascript">
+<!-- 按钮 start-->
+//送分管领导
+function save(){
+	var data = common_ajax.ajaxFunc("/admin/oa/senddoc/save", $('#editForm').serialize(), "json", null);
+	if(data.success){
+		pointLion.alertMsg("操作成功!" , "success" , "small" , function(){
+			location.href = ctx+'/admin/oa/senddoc/getListPage';//跳转到列表页
+		},data);
+	}else{
+		pointLion.alertMsg(data.message , "danger" , "small" , function(){
+			$(".btn").removeAttr("disabled");
+		},data);
+	}
+}
+
+//保存修改
+function  savedit(){
+	var data = common_ajax.ajaxFunc("/admin/oa/senddoc/savedit", $('#editForm').serialize(), "json", null);
+	if(data.success){
+		pointLion.alertMsg("操作成功!" , "success" , "small" , function(){
+			location.href = ctx+'/admin/oa/senddoc/getListPage';//跳转到列表页
+		},data);
+	}else{
+		pointLion.alertMsg(data.message , "danger" , "small" , function(){
+			$(".btn").removeAttr("disabled");
+		},data);
+	}
+	
+}
+
+
+
+
+<!-- 按钮 end-->
+</script>
+	 
+	 
+	 
+	<script>
+		
+		$(document).ready(function() {
+			$('#editForm').bootstrapValidator({
+	            fields: {
+	            }
+	        }).on("success.form.bv", function (e) {
+	            save();
+	            return false;//阻止表单跳转
+	        });
+		});
+		
+		$('#depart').on('changed.bs.select', function (e) {
+			
+			
+			$('#secondOrgId').val($('#depart').val())
+			
+			if($('#depart').val()){
+				
+				$('#sendhgks').show();
+				$('#sendoffice').hide();
+			}else{
+				$('#sendhgks').hide();
+				$('#sendoffice').show();
+				
+			}
+		}); 
+		
+		
+		
+		$('#dfgld').on('changed.bs.select', function (e) {
+			
+			
+			$('#dfgldids').val($('#dfgld').val())
+			
+			 
+		}); 
+		
+		
+		
+		
+		var  busid=$("#infoid").val();
+		var view = "#(view?view:'')";
+		function doUploadAttachment(){
+			
+			if(busid){
+				pointLion.openBusinessAttachmentPage(busid,view,function(){
+					
+					setAttachmentCount();//关闭之后回调
+				});
+			}else{
+				pointLion.alertMsg("请先保存再上传附件！" , "danger" , "small" , null);
+			}
+		}
+		//设置附件数量
+		function setAttachmentCount(){
+			var data = common_ajax.ajaxFunc("/admin/sys/attachment/getBusinessAttachmentCount", {"busid":busid}, "json", null);
+			if(data.success){
+				$("#businessAttachmentCount").html(data.data);
+			}
+		}
+		
+		$(document).ready(function() {
+			
+			$('.form_datetime').datepicker({format: 'yyyy-mm-dd',weekStart: 1,todayBtn:  1,autoclose: 1,language:  'zh-CN',todayHighlight: 1,forceParse: 0,showMeridian: 1}).on('changeDate',function(){
+			/* 	var startTime = $("#startTime").val();
+				var endTime = $("#endTime").val();
+				if(startTime&&endTime){
+					if(!dateUtil.compareCalendar(startTime,endTime)){
+						pointLion.alertMsg("开始时间大于结束时间","danger",null,null);
+						$("#editForm .btn").attr("disabled","disabled");
+					}else{
+						resetVali();
+					}
+				} */
+			});
+			
+			///setAttachmentCount();
+			
+			var dtype="#(o.dtype)";
+			
+			if(dtype){
+				
+	     	 $('#dtype').selectpicker('val',dtype).trigger("change");
+			}
+	     	 $('#depart').selectpicker('val','#(o.dhgksids)').trigger("change");
+	     	 
+	   
+	      	 
+	 			var dqfldids="#(o.dqfldids)";
+	 			
+				 if(dqfldids){
+		        	 $('#dqfld').selectpicker('val', dqfldids.split(",")).trigger("change");
+				 }
+	     	 
+	     	var dfgldids="#(o.dfgldids)";
+			if(dfgldids){
+				 $('#dfgld').selectpicker('val',dfgldids.split(",")).trigger("change");
+			}
+		}); 
+		
+		
+		
+	$('#dtype').on('changed.bs.select', function (e) {
+			$('#secondOrgId').val($('#depart').val())
+			
+		  	if($('#dtype').val()=="1"||$('#dtype').val()=="2"){
+		  		
+				$('#startwh').show();
+				$('#endwh').show();
+			/* 	$('#12').show();
+				$('#34').hide(); */
+			}else{
+				
+		  		
+				$('#startwh').hide();
+				$('#endwh').hide();
+			/* 	$('#12').hide();
+				$('#34').show(); */
+			} 
+	 
+		}); 
+		
+		
+		function openSlectFgLeaderDialog(){
+    		pointLion.selectManyUser("orgid="+encodeURIComponent("root"),$("#dfgldids").val(),function(data){
+    			
+    		 
+				$("#dfgldids").val(data.idData);
+				$("#dfgldnames").val(data.nameData);
+			});
+    	}
+		
+		
+		
+		$(document).ready(function() {
+			//var clientH = document.body.clientHeight-131;
+			var clientH = 440;
+			$(".lay-body").css("height",clientH+"px");
+			//initTable();//初始化
+			//初始化上传组件
+			pointLion.initUploader("/admin/sys/attachment/attachmentUpload1?busid="+busid,function(data){
+				pointLion.alertMsg(data.message,"success",null,null);
+				
+			/* 	alert(data.data.file_name)
+				alert(data.data.id) */
+				
+				
+			    $("#uploadperson").text(data.data.create_user_name);
+			    $("#uploadName").text(data.data.file_name);
+			   $("#uploadName").attr("href","#(ctx)/admin/sys/attachment/downloadFile?id="+data.data.id+"&view=detail");
+				//refreshTable();
+			});
+		});	
+		
+
+		function openSlectRdoc(){
+			 selectRdoc(function(data){
+				
+				 
+	
+			 
+				 
+			   $("#receiveid").val(data.idData);
+			   $("#receivename").val(data.titleData);
+			   $("#receivenum").val(data.docNumData);
+			   
+			   
+			   
+	  	   $("#receivenumShow").text(data.docNumData);
+	  	   
+			   $("#receivenumShow").attr("href"," #(ctx)/admin/oa/stephistory/getEditPage?oid="+data.idData+"&view=detail&type=1");
+			    $("#receivenameShow").text(data.titleData);
+			   $("#receivenameShow").attr("href","#(ctx)/admin/oa/stephistory/getEditPage?oid="+data.idData+"&view=detail&type=1");  
+		 
+			});
+		}
+		
+	 
+		
+		/***
+		 * 选择单个人的方法
+		 */
+		var selectRdocIframe;
+		var selectRdoc = function(callback){
+		 
+			var index = layer.open({
+			  type: 2,
+			  title: false, //不显示标题栏
+			  area: ['1100px', '550px'],
+			  shade: 0.2,
+			  id: 'selectRdoc', //设定一个id，防止重复弹出
+			  resize: false,
+			  closeBtn: false,
+			  isOutAnim : false , 
+			  btn: ['确定', '取消'], 
+			  btnAlign: 'c',
+			  content: ctx+'/admin/oa/senddoc/openSelectRdoc',
+			  success: function(layero){
+				  selectRdocIframe = window[layero.find('iframe')[0]['name']];
+			  },
+			  yes: function(){
+				  var data = selectRdocIframe.selectMankUserOK();
+				  if( callback != null ){
+					  callback(data);
+				  }
+				  if(data){
+					 layer.close(index);
+				  }
+			  }
+			});
+		};
+		
+		 
+		
+		function openSlectDialog(type){
+			
+			var oldvalue="";
+			
+			if(type=="1"){
+				oldvalue=$("#dhqrids").val()==""?"":$("#dhqrids").val();
+			}else if(type=="2"){
+				oldvalue=$("#dhgrids").val()==""?"":$("#dhgrids").val();
+			}else if(type=="3"){
+				oldvalue=$("#dqfldids").val();
+			}else if(type=="4"){
+				oldvalue=$("#dfwids").val();
+			}else if(type=="5"){
+				oldvalue=$("#dwyids").val();
+			}
+			
+		 
+			
+			
+			
+    		pointLion.selectManyUser1("orgid="+encodeURIComponent("root"),oldvalue,function(data){
+    			
+    		 if(type=="1"){
+				$("#dhqrids").val(data.idData);
+				$("#dhqrnames").val(data.nameData);
+				if(data.idData!=""&&data.idData!=null){
+				 	#if(o.status=="2")
+						$("#hg").hide();
+						$("#sendHg").hide();
+						$("#qf").hide();
+						$("#sendQf").hide();
+				 	
+				 	#end
+				}else{
+					#if(o.status=="2")
+					$("#hg").show();
+					$("#sendHg").show();
+					$("#qf").show();
+					$("#sendQf").show();
+					#end
+				}
+				
+    		 }else if(type=="2"){
+    				$("#dhgrids").val(data.idData);
+    				$("#dhgrnames").val(data.nameData);
+    				if(data.idData!=""&&data.idData!=null){
+    				 	#if(o.status=="2")
+    						$("#hq").hide();
+    						$("#sendHq").hide();
+    						$("#qf").hide();
+    						$("#sendQf").hide();
+    				 	
+    				 	#end
+    				}else{
+    					#if(o.status=="2")
+    					$("#hq").show();
+    					$("#sendHq").show();
+    					$("#qf").show();
+    					$("#sendQf").show();
+    					#end
+    				}
+    				
+    				
+    				
+    				
+    		 }else if(type=="3"){
+    				$("#dqfldids").val(data.idData);
+    				$("#dqfldnames").val(data.nameData);
+    		 }else if(type=="4"){
+    				$("#dfwids").val(data.idData);
+    				$("#dfwnames").val(data.nameData);
+    		 }else if(type=="5"){
+    				$("#dwyids").val(data.idData);
+    				$("#dwynames").val(data.nameData);
+    		 }else if(type=="6"){
+    				$("#dnbcyids").val(data.idData);
+    				$("#dnbcynames").val(data.nameData);
+    			 
+    			 
+    			 
+    		 }
+			});
+    	}
+		
+		
+		function openSlectFGLDDialog(){
+    		pointLion.selectManyUser1("orgid="+encodeURIComponent("root"),$("#dfgldids").val(),function(data){
+				$("#dfgldids").val(data.idData);
+				$("#dfgldnames").val(data.nameData);
+			});
+    	}
+		
+		
+		//归档
+
+		function  osOver(){
+			var data = common_ajax.ajaxFunc("/admin/oa/senddoc/osOver", $('#editForm').serialize(), "json", null);
+			if(data.success){
+				pointLion.alertMsg("归档成功!" , "success" , "small" , function(){
+					location.href = ctx+'/admin/oa/senddoc/getListPage';//跳转到列表页
+				},data);
+			}else{
+				pointLion.alertMsg(data.message , "danger" , "small" , function(){
+					$(".btn").removeAttr("disabled");
+				},data);
+			}
+			
+		}
+		
+		
+		//内部发送
+		function  osSendInPerson(){
+			var data = common_ajax.ajaxFunc("/admin/oa/senddoc/osSendInPerson", $('#editForm').serialize(), "json", null);
+			if(data.success){
+				pointLion.alertMsg("操作成功!" , "success" , "small" , function(){
+					location.href = ctx+'/admin/oa/senddoc/getListPage';//跳转到列表页
+				},data);
+			}else{
+				pointLion.alertMsg(data.message , "danger" , "small" , function(){
+					$(".btn").removeAttr("disabled");
+				},data);
+			}
+			
+		}
+
+		
+		
+	</script>
+	
+	  

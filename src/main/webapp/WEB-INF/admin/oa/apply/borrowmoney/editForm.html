@@ -1,0 +1,85 @@
+<form id="editForm" class="panel-body form-horizontal form-padding">
+	<input type="hidden"  name="#(formModelName).id" class="form-control" value="#(o?o.id:'')">
+	<div class="form-group">
+		<label class="col-md-2 control-label">申请人</label>
+		<div class="col-md-4">
+			<input type="hidden"  name="#(formModelName).userid" class="form-control"  value="#(o?o.user_id:'')">
+			<input type="text"  name="#(formModelName).applyer_name" class="form-control"  value="#(o?o.applyer_name:'')" readonly>
+		</div>
+		<label class="col-md-1 control-label">部门</label>
+		<div class="col-md-4">
+			<input type="hidden"  name="#(formModelName).org_id" class="form-control"  value="#(o?o.org_id:'')">
+			<input type="text"  name="#(formModelName).org_name" class="form-control"  value="#(o?o.org_name:'')" readonly>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-2 control-label">借款单号</label>
+		<div class="col-md-4">
+			<input type="text" class="form-control" value="#(o.code)#(o.num)" readonly>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-2 control-label">付款方式</label>
+		<div class="col-md-4">
+			<input type="text"  name="#(formModelName).pay_type" class="form-control"  value="#(o?o.pay_type:'')" #if(view=='detail') readonly #end>
+			<small class="help-block">请输入付款方式</small>
+		</div>
+
+		<label class="col-md-1 control-label">还款方式</label>
+		<div class="col-md-4">
+			<input type="text"  name="#(formModelName).repay_type" class="form-control"  value="#(o?o.repay_type:'')" #if(view=='detail') readonly #end>
+			<small class="help-block">请输入还款方式</small>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-2 control-label">金额</label>
+		<div class="col-md-4">
+			<input type="text"  name="#(formModelName).money" class="form-control"  value="#(o?o.money:'')" #if(view=='detail') readonly #end>
+			<small class="help-block">请输入金额</small>
+		</div>
+
+		<label class="col-md-1 control-label">还款日期</label>
+		<div class="input-group date form_datetime col-md-4" style="float:left">
+			<input type="text" id="startTime" name="#(formModelName).repay_date" class="form-control"  value="#(o?o.repay_date:'')" readonly>
+			<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-2 control-label">备注</label>
+		<div class="col-md-9">
+			<textarea rows="8" name="#(formModelName).des" class="form-control" #if(view=='detail') readonly #end></textarea>
+			<small class="help-block">请输入备注</small>
+		</div>
+	</div>
+	#if(view=='edit')
+	<div class="panel-footer">
+		<div class="row">
+			<div class="col-sm-8 col-sm-offset-3">
+				<button class="btn btn-warning" type="reset" #if(view=='detail') disabled #end>重置</button>
+				<button class="btn btn-primary" type="submit" #if(view=='detail') disabled #end>保存</button>
+			</div>
+		</div>
+	</div>
+	#else
+
+	#end
+</form>
+<script>
+	$(document).ready(function() {
+		$('.form_datetime').datepicker({format: 'yyyy-mm-dd',weekStart: 1,todayBtn:  1,autoclose: 1,language:  'zh-CN',todayHighlight: 1,forceParse: 0,showMeridian: 1});
+		$('#editForm').bootstrapValidator({
+			fields: {
+				"#(formModelName).money":{
+					validators: {
+						digits: {
+							message: '该值只能包含数字。'
+						}
+					}
+				}
+			}
+		}).on("success.form.bv", function (e) {
+			save();
+			return false;//阻止表单跳转
+		});
+	});
+</script>

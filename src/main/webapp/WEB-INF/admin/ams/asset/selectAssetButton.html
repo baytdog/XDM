@@ -1,0 +1,41 @@
+#define installSelectAssetButton(orgid)
+	<div class="form-group">
+	    <label class="col-md-2 control-label">资产名称</label>
+	    <div class="col-md-4">
+	    	<div class="input-group mar-btm">
+	    		<input type="hidden" id="assetid" name="#(formModelName).asset_id" class="form-control"  value="#(o?o.asset_id:'')">
+		        <input type="text" id="assetname" name="#(formModelName).asset_name" class="form-control"  value="#(o?o.asset_name:'')" readonly>
+		        <span class="input-group-btn">
+		        #if(view=='detail')
+		        #else
+		            <button class="btn btn-primary" type="button" onclick="openSlectAssetDialog()">选择</button>
+		        #end
+		        </span>
+		    </div>
+	        <small class="help-block">请输入资产名称</small>
+	    </div>
+	    <script>
+	    	function openSlectAssetDialog(){
+	    		layer.open({
+					  type: 2,
+					  title: false, //不显示标题栏
+					  area: ['1000px', '550px'],
+					  shade: 0.2,
+					  id: 'selectAssetDialog', //设定一个id，防止重复弹出
+					  resize: false,
+					  closeBtn: false,
+					  isOutAnim : false , 
+					  btnAlign: 'c',
+					  content: ctx+'/admin/ams/asset/openSlectAssetDialog?orgid=#(orgid)',
+					  success: function(layero){
+						  
+					  }
+				});
+	    	}
+	    	function callBackSelect(id,name){
+	    		$("#assetid").val(id);
+	    		$("#assetname").val(name);
+	    	}
+	    </script>
+	</div>
+#end

@@ -1,0 +1,345 @@
+<form id="editForm" class="panel-body form-horizontal form-padding">
+	<input type="hidden"  name="#(formModelName).id" class="form-control" value="#(o?o.id:'')">
+	<div class="form-group">
+		<label class="col-md-2 control-label">申请人</label>
+		<div class="col-md-4">
+			<input type="hidden"  name="#(formModelName).userid" class="form-control"  value="#if(o)#(o.userid)#else#(user.id)#end">
+			<input type="text"  name="#(formModelName).create_user_name" class="form-control"  value="#if(o)#(o.create_user_name)#else#(user.name)#end" readonly>
+		</div>
+		<label class="col-md-1 control-label">部门</label>
+		<div class="col-md-4">
+			<input type="hidden"  name="#(formModelName).org_id" class="form-control"  value="#if(o)#(o.org_id)#else#(org.id)#end">
+			<input type="text"  name="#(formModelName).org_name" class="form-control"  value="#if(o)#(o.org_name)#else#(org.name)#end" readonly>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-2 control-label">项次</label>
+		<div class="col-md-4">
+			<input type="text" name="#(formModelName).num" class="form-control"  value="#(o?o.num:'')"  readonly >
+		</div>
+	</div>
+		<div class="form-group">
+			<label class="col-md-2 control-label">接单日期</label>
+			<div class="input-group date form_datetime col-md-4" style="float:left">
+				<input type="text" name="#(formModelName).order_date" class="form-control"  value="#(o?o.order_date:'')" readonly>
+				<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-md-2 control-label">专案代码</label>
+			<div class="col-md-4">
+				<input type="text"  name="#(formModelName).project_code" class="form-control"  value="#(o?o.project_code:'')" #if(view=='detail') readonly #end>
+				<small class="help-block">请输入专案代码</small>
+			</div>
+			<label class="col-md-1 control-label">客户PO#</label>
+			<div class="col-md-4">
+				<input type="text"  name="#(formModelName).customer_code" class="form-control"  value="#(o?o.customer_code:'')" #if(view=='detail') readonly #end>
+				<small class="help-block">请输入客户PO#</small>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-md-2 control-label">品名/图号</label>
+			<div class="col-md-4">
+				<input type="text" name="#(formModelName).type_name" class="form-control"  value="#(o?o.type_name:'')" #if(view=='detail') readonly #end>
+				<small class="help-block">请输入品名/图号</small>
+			</div>
+			<label class="col-md-1 control-label">PO数量</label>
+			<div class="col-md-4">
+				<input type="text"  name="#(formModelName).po_count" class="form-control"  value="#(o?o.po_count:'')" #if(view=='detail') readonly #end>
+				<small class="help-block">请输入PO数量</small>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-md-2 control-label">投单单号</label>
+			<div class="col-md-4">
+				<input type="text" name="#(formModelName).order_code" class="form-control"  value="#(o?o.order_code:'')" #if(view=='detail') readonly #end>
+				<small class="help-block">请输入投单单号</small>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-md-2 control-label">投单数量</label>
+			<div class="col-md-4">
+				<input type="text" id="orderCount" name="#(formModelName).order_count" onchange="countWait()" class="form-control"  value="#(o?o.order_count:'')" #if(view=='detail') readonly #end>
+				<small class="help-block">请输入投单数量</small>
+			</div>
+			<label class="col-md-1 control-label">销售数量</label>
+			<div class="col-md-4">
+				<input type="text" id="sellCount" name="#(formModelName).sell_count" onchange="countMoney()" class="form-control"  value="#(o?o.sell_count:'')" #if(view=='detail') readonly #end>
+				<small class="help-block">请输入销售数量</small>
+			</div>
+		</div>
+
+		<div class="form-group">
+			<label class="col-md-2 control-label">美金</label>
+			<div class="col-md-4">
+				<input type="text" id="dollar" name="#(formModelName).dollar" class="form-control" onchange="countPrice()"  value="#(o?o.dollar:'')" #if(view=='detail') readonly #end>
+				<small class="help-block">请输入美金</small>
+			</div>
+			<label class="col-md-1 control-label">汇率</label>
+			<div class="col-md-4">
+				<input type="text" id="exchangeRate" name="#(formModelName).exchange_rate" class="form-control" onchange="countPrice()"  value="#(o?o.exchange_rate:'')" #if(view=='detail') readonly #end>
+				<small class="help-block">请输入汇率</small>
+			</div>
+		</div>
+
+		<div class="form-group">
+			<label class="col-md-2 control-label">单价(RMB)</label>
+			<div class="col-md-4">
+				<input type="text" id="price" name="#(formModelName).price" class="form-control"  value="#(o?o.price:'')" #if(view=='detail') readonly #end >
+				<small class="help-block">请输入单价(RMB)</small>
+			</div>
+			<label class="col-md-1 control-label">总金额(RMB)</label>
+			<div class="col-md-4">
+				<input type="text" id="money" name="#(formModelName).money" class="form-control"  value="#(o?o.money:'')" #if(view=='detail') readonly #end >
+				<small class="help-block">请输入总金额(RMB)</small>
+			</div>
+		</div>
+
+		<div class="form-group">
+			<label class="col-md-2 control-label">出货数量</label>
+			<div class="col-md-4">
+				<input type="text" id="productCount" name="#(formModelName).product_count" onchange="countWait()" class="form-control" value="#(o?o.product_count:'')" #if(view=='detail') readonly #end>
+				<small class="help-block">请输入出货数量</small>
+			</div>
+			<label class="col-md-1 control-label">出货日期</label>
+			<div class="input-group date form_datetime col-md-4" style="float:left">
+				<input type="text" name="#(formModelName).out_pdt_date" class="form-control"  value="#(o?o.out_pdt_date:'')" readonly>
+				<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+			</div>
+		</div>
+
+		<div class="form-group">
+			<label class="col-md-2 control-label">待出货数量</label>
+			<div class="col-md-4">
+				<input type="text" id="waitCount" name="#(formModelName).wait_count" class="form-control"  value="#(o?o.wait_count:'')" readonly >
+				<small class="help-block">请输入待出货数量</small>
+			</div>
+			<label class="col-md-2 control-label">呆滞数量</label>
+			<div class="col-md-4">
+				<input type="text"  name="#(formModelName).lifeless_count" class="form-control"  value="#(o?o.lifeless_count:'')" #if(view=='detail') readonly #end>
+				<small class="help-block">请输入呆滞数量</small>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-md-2 control-label">对账单号</label>
+			<div class="col-md-4">
+				<input type="text"  name="#(formModelName).order_num" class="form-control"  value="#(o?o.order_num:'')" #if(view=='detail') readonly #end>
+				<small class="help-block">请输入对账单号</small>
+			</div>
+		</div>
+
+		<div class="form-group">
+			<label class="col-md-2 control-label">付款金额</label>
+			<div class="col-md-4">
+				<input type="text"  name="#(formModelName).pay_money" class="form-control"  value="#(o?o.pay_money:'')" #if(view=='detail') readonly #end>
+				<small class="help-block">请输入付款金额</small>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-md-2 control-label">出货日期</label>
+			<div class="input-group date form_datetime col-md-4" style="float:left">
+				<input type="text" name="#(formModelName).out_pdt_date" class="form-control"  value="#(o?o.out_pdt_date:'')" readonly>
+				<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+			</div>
+			<label class="col-md-1 control-label">验收日期</label>
+			<div class="input-group date form_datetime col-md-4" style="float:left">
+				<input type="text" name="#(formModelName).receive_pdt_date" class="form-control"  value="#(o?o.receive_pdt_date:'')" readonly>
+				<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-md-2 control-label">对账日期</label>
+			<div class="input-group date form_datetime col-md-4" style="float:left">
+				<input type="text" name="#(formModelName).account_date" class="form-control"  value="#(o?o.account_date:'')" readonly>
+				<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+			</div>
+			<label class="col-md-1 control-label">开票日期</label>
+			<div class="input-group date form_datetime col-md-4" style="float:left">
+				<input type="text" name="#(formModelName).invoice_date" class="form-control"  value="#(o?o.invoice_date:'')" readonly>
+				<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+			</div>
+		</div>
+
+
+	<div class="form-group">
+		<label class="col-md-2 control-label">发票号码</label>
+		<div class="col-md-4">
+			<input type="text"  name="#(formModelName).invoice_code" class="form-control"  value="#(o?o.invoice_code:'')" #if(view=='detail') readonly #end>
+			<small class="help-block">请输入发票号码</small>
+		</div>
+		<label class="col-md-1 control-label">发票金额</label>
+		<div class="col-md-4">
+			<input type="text"  name="#(formModelName).invoice_code" class="form-control"  value="#(o?o.invoice_code:'')" #if(view=='detail') readonly #end>
+			<small class="help-block">请输入发票金额</small>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-2 control-label">付款日期</label>
+		<div class="input-group date form_datetime col-md-4" style="float:left">
+			<input type="text" name="#(formModelName).pay_date" class="form-control"  value="#(o?o.pay_date:'')" readonly>
+			<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+		</div>
+	</div>
+
+
+
+		<div class="form-group">
+			<label class="col-md-2 control-label">业务员名称</label>
+			<div class="col-md-9">
+				<input type="text"  name="#(formModelName).operate_user_name" class="form-control"  value="#(o?o.operate_user_name:'')" #if(view=='detail') readonly #end>
+				<small class="help-block">请输入业务员名称</small>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-md-2 control-label">备注</label>
+			<div class="col-md-9">
+				<textarea rows="8" name="#(formModelName).des" class="form-control" #if(view=='detail') readonly #end></textarea>
+				<small class="help-block">请输入备注</small>
+			</div>
+		</div>
+		#if(view=='detail')
+
+		#else
+			<div class="panel-footer">
+				<div class="row">
+					<div class="col-sm-8 col-sm-offset-3">
+						<button class="btn btn-warning" type="reset" #if(view=='detail') disabled #end>重置</button>
+						<button class="btn btn-primary" type="submit" #if(view=='detail') disabled #end>保存</button>
+					</div>
+				</div>
+			</div>
+		#end
+</form>
+
+<script>
+	/***
+	 * 计算单价
+	 */
+	function countPrice(){
+		var dollar = $("#dollar").val();
+		var exchangeRate = $("#exchangeRate").val();
+		if(dollar&&exchangeRate){
+			// alert(dollar);
+			// alert(exchangeRate);
+			var price = dollar*exchangeRate;
+			// alert(price);
+			$("#price").val(price);
+			countMoney();
+		}
+	}
+
+	/***
+	 * 计算总价
+	 */
+	function countMoney(){
+		var price = $("#price").val();
+		var sellCount = $("#sellCount").val();
+		if(price&&sellCount){
+			// alert(price);
+			// alert(sellCount);
+			var money = price*sellCount;
+			$("#money").val(money);
+			// alert(money)
+		}
+
+	}
+
+	/***
+	 * 计算待出货数量
+	 */
+	function countWait(){
+		var orderCount = $("#orderCount").val();
+		var productCount = $("#productCount").val();
+		if(orderCount&&productCount){
+			// alert(price);
+			// alert(sellCount);
+			var waitCount = orderCount-productCount;
+			$("#waitCount").val(waitCount);
+			// alert(money)
+		}
+	}
+	$(document).ready(function() {
+		$('.form_datetime').datepicker({format: 'yyyy-mm-dd',weekStart: 1,todayBtn:  1,autoclose: 1,language:  'zh-CN',todayHighlight: 1,forceParse: 0,showMeridian: 1}).on('changeDate',null);
+		$('#editForm').bootstrapValidator({
+			fields: {
+				"#(formModelName).order_count":{
+					validators: {
+						digits: {
+							message: '订单数量只能包含数字。'
+						}
+					}
+				},
+				"#(formModelName).po_count":{
+					validators: {
+						digits: {
+							message: 'PO数量只能包含数字。'
+						}
+					}
+				},
+
+
+				"#(formModelName).sell_count":{
+					validators: {
+						digits: {
+							message: '销售数量只能包含数字。'
+						}
+					}
+				},
+				"#(formModelName).dollar":{
+					validators: {
+						digits: {
+							message: '美金只能包含数字。'
+						}
+					}
+				},
+				"#(formModelName).exchange_rate":{
+					validators: {
+						regexp: {
+							regexp: /^[0-9]+([.]{1}[0-9]+){0,1}$/,
+							message: '请填写汇率为数字或小数。'
+						}
+					}
+				},
+				"#(formModelName).wait_count":{
+					validators: {
+						digits: {
+							message: '待出货数量只能包含数字。'
+						}
+					}
+				},
+				"#(formModelName).lifeless_count":{
+					validators: {
+						digits: {
+							message: '呆滞数量只能包含数字。'
+						}
+					}
+				},
+
+				"#(formModelName).product_count":{
+					validators: {
+						digits: {
+							message: '出货数量只能包含数字。'
+						}
+					}
+				},
+				"#(formModelName).pay_money":{
+					validators: {
+						digits: {
+							message: '付款金额只能包含数字。'
+						}
+					}
+				},
+				"#(formModelName).invoice_code":{
+					validators: {
+						digits: {
+							message: '发票金额金额只能包含数字。'
+						}
+					}
+				}
+			}
+		}).on("success.form.bv", function (e) {
+			save();
+			return false;//阻止表单跳转
+		});
+	});
+</script>

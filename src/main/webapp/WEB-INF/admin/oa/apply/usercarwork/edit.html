@@ -1,0 +1,40 @@
+	
+	<div id="page-content">
+			<div class="col-lg-12">
+		        <div class="panel">
+		            <div class="panel-heading">
+		                <h3 class="panel-title" style="text-align: right;">
+		                	#@installPJaxGoBackBtn()
+		                	#@installFlowHisBtn(defId,procInsId)
+							#@installAttachment(o?o.id:'')
+		                </h3>
+		            </div>
+					#@buildFormPanelContainer("私车公用补贴申请单","/WEB-INF/admin/oa/apply/usercarwork/editForm.html")
+		            #@buildWorkFlowHisTable(procInsId,hislist)
+		        </div>
+		    </div>
+	</div>
+	<script>
+		function save(){
+			var data = common_ajax.ajaxFunc("/admin/oa/apply/usercarwork/save", $('#editForm').serialize(), "json", null);
+			if(data.success){
+				pointLion.alertMsg("保存成功!" , "success" , "small" , function(){
+					location.href = ctx+'/admin/oa/apply/usercarwork/getApplyListPage';//跳转到列表页
+				},data);
+			}else{
+				pointLion.alertMsg(data.message , "success" , "small" , function(){
+					$(".btn").removeAttr("disabled");
+				},data);
+			}
+		}
+		$(document).ready(function() {
+			$('.form_datetime').datetimepicker({format: 'yyyy-mm-dd hh:ii:ss',weekStart: 1,todayBtn:  1,autoclose: 1,language:  'zh-CN',todayHighlight: 1,startView: 2,forceParse: 0,showMeridian: 1});
+			$('#editForm').bootstrapValidator({
+	            fields: {
+	            }
+	        }).on("success.form.bv", function (e) {
+	            save();
+	            return false;//阻止表单跳转
+	        });
+		});
+	</script>

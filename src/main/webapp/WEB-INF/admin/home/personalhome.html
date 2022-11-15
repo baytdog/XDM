@@ -1,0 +1,389 @@
+<link href="#(ctx)/common/plugins/fullcalendar/fullcalendar.css" rel="stylesheet">
+<link href="#(ctx)/common/plugins/fullcalendar/nifty-skin/fullcalendar-nifty.min.css" rel="stylesheet">
+<script src="#(ctx)/common/plugins/fullcalendar/lib/moment.min.js"></script>
+<script src="#(ctx)/common/plugins/fullcalendar/lib/jquery-ui.custom.min.js"></script>
+<script src="#(ctx)/common/plugins/fullcalendar/fullcalendar.min.js"></script>
+
+<style>
+.list{width:350px;display:block;overflow:hidden;word-break:break-all;white-space:nowrap;text-overflow:ellipsis;}
+</style>
+<!-- 信息简报 -->
+#define makeXxjb(list)
+	#if(list&&list.size()>0)
+		   #for(x : list)
+		   
+		   	#if(for.index<3)
+			   <div class="row" >
+				   	<div class="col-lg-9" style="text-align:left;">
+					   	<a   href="#(ctx)/admin/oa/showinfo/homeViewNotice?id=#(x.id)" title="#(x.infotitle)">
+					   		 <h4 class="list" style="color:white;" >#(x.infotitle) </h4> 
+					   	</a>
+					</div>
+					 <div class="col-lg-3">
+		   				<h6 class="text-right" style="color: white;" >#(x.changetime.substring(0,10))</h6>	
+		   			 </div>
+			    </div>
+		     #end
+		   #end
+	#end
+#end
+
+#define makeShowPic(list)
+	#if(list&&list.size()>0)
+		<div id="carousel-example-generic" class="carousel slide" data-ride="carousel" style="background-color: black; margin-left: -8px; margin-right: -8px;">
+		  	 <!-- Indicators -->
+			 <ol class="carousel-indicators">
+			    <li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>
+			    <li data-target="#carousel-example-generic" data-slide-to="1"></li>
+			    <li data-target="#carousel-example-generic" data-slide-to="2"></li>
+	  		 </ol>	
+			 <!-- Wrapper for slides -->
+  			<div class="carousel-inner" role="listbox" >
+         #for(x : list)
+       		 
+  			 <div  #if(for.first) class="item active"  	#else class="item" #end  style="padding-top: 0px; ">
+  			 
+		       		 <a   href="#(ctx)/admin/oa/picnews/showAllPic?busid=#(x.id)" >  
+					  	<img src="#(ctx)/admin/sys/attachment/showFile?id=#(x.imgurl)&view=detail" style="height: 250px; width: 100%;"/>
+					 </a>  
+					      <div class="carousel-caption">
+					 		 #(x.title)
+					      </div>
+			  </div>
+          #end 
+          
+
+				  <!-- Controls -->
+				  <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
+				    <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+				    <span class="sr-only">Previous</span>
+				  </a>
+				  <a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
+				    <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+				    <span class="sr-only">Next</span>
+				  </a>
+			 </div>
+	  		 
+		</div>
+     #end
+#end
+ 
+
+
+<div class="row" align="center" style="padding: 10px;">
+
+
+	    <div class="col-lg-4"  >
+				#@makeShowPic(picNewsList)
+	    </div>
+       
+
+ <div class="col-lg-4"  >
+		 <button class="btn " style="height: 210px;  width: 420px;background-color: red;" onclick="receiveDoc()">
+		<!--  <div style=" height: 200px;">
+		   	<div style="font-size: 80px;">
+	  			  <i class="demo-pli-file-add icon-lg"></i> 
+	      	</div>
+		   	
+		   	<div style="height: 30px;  font-size: 18px;  ">
+		   		 收文 
+		   	</div>
+	   	
+      	  	<div style="height: 30px;  font-size: 20px; padding-top: 10px; color: orange;" >
+   	 			#(receiveSize)
+   	  	 	</div>
+		   	   	
+		  </div> -->
+		  
+		   <div class="row"  style="color: white;">
+		   	<div class="col-lg-6"  >
+		   	<div style="font-size: 100px;">
+	  			  <i class="demo-pli-file-add icon-lg"></i> 
+	      	</div>
+		   	
+		   	<div style="height: 30px;  font-size: 20px;  ">
+		   		 收文 
+		   	</div>
+	   		</div>
+      	  	<div class="col-lg-6"  style=" height: 187px; line-height: 187px;font-size: 50px;" align="center">
+   	 			<span>#(receiveSize)</span>
+   	  	 	</div>
+		   	   	
+		  </div>
+		  
+		  
+		 </button>
+ 	</div>
+ 
+ 
+ 
+ 	<div class="col-lg-2"  >
+		 <button class="btn btn-primary btn-icon" style="height: 210px;  width: 210px;" onclick="hotline()">
+		 <div style=" height: 200px;">
+		   	<div style="height: 30px;  font-size: 18px;  ">
+		   		热线
+		   	</div>
+	   	  	<div style="font-size: 80px;">
+	  			  <i class="demo-pli-old-telephone icon-lg"></i> 
+	      	</div>
+      	  	<div style="height: 30px;  font-size: 20px; padding-top: 10px; color: orange;">
+   	 		#(hotSize)
+   	  	 	</div>
+		   	   	
+		  </div>
+		 </button>
+ 	</div>
+ 
+	<div class="col-lg-2"  >
+		 <button class="btn  btn-icon" style="height: 210px;  width: 210px; background-color: #079449;color: white;" onclick="letter()">
+		 <div style=" height: 200px;">
+		   	<div style="height: 30px;  font-size: 18px;  ">
+		   		 信访 
+		   	</div>
+	   	  	<div style="font-size: 80px;">
+	  			  <i class="demo-psi-speech-bubble-4 icon-lg"></i> 
+	      	</div>
+      	  	<div style="height: 30px;  font-size: 20px; padding-top: 10px; color: orange;">
+   	 			#(letterSize)
+   	  	 	</div>
+		   	   	
+		  </div>
+		 </button>
+ 	</div>
+ 	 
+ 	 
+</div>
+
+ 
+<div class="row"  align="center" style="padding: 10px;"> 
+
+
+	   <div class="col-lg-4" style="background-color: #409513;color: white;padding-top: 10px;">
+	   
+		   		<div class="row">
+		   			<div class="col-lg-5" style="text-align: left;"><i class="demo-pli-file-txt icon-lg" style=" font-size: 40px;text-align: left;"><span style="font-size: 20px;">信息简报</span></i> </div>
+		   			<div class="col-lg-7" style="text-align: right;padding-top: 5px;">	<button  class="btn btn-default" onclick="moreinfo()" style="background-color: #409513;color: white;">更多</button></div>
+		   		</div>
+		   		 
+		 #@makeXxjb(xxjb)
+		   	 
+       </div>
+
+
+
+	<div class="col-lg-4"  >
+		 <button class="btn btn-icon" style="height: 210px;  width: 420px; background-color: blue;" onclick="senddoc()">
+		 <!-- <div style=" height: 200px;">
+		   	<div style="height: 30px;  font-size: 18px;  ">
+		   		 发文 
+		   	</div>
+	   	  	<div style="font-size: 80px;">
+	  			  <i class="demo-pli-file-edit icon-lg"></i> 
+	      	</div>
+      	  	<div style="height: 30px;  font-size: 20px; padding-top: 10px; color: orange;">
+   	 			#(sendSize)
+   	  	 	</div>
+		   	   	
+		  </div> -->
+		  
+		  
+		  <div class="row" style="color: white;" >
+		   	<div class="col-lg-6"  >
+		   	<div style="font-size: 100px;">
+	  			  <i class="demo-pli-file-edit icon-lg"></i> 
+	      	</div>
+		   	
+		   	<div style="height: 30px;  font-size: 20px;  ">
+		   		发文 
+		   	</div>
+	   		</div>
+      	  	<div class="col-lg-6"  style=" height: 187px; line-height: 187px;font-size: 50px;" align="center">
+   	 			<span>#(sendSize)</span>
+   	  	 	</div>
+		   	   	
+		  </div>
+		  
+		 </button>
+ 	</div> 
+
+	 <div class="col-lg-2"  >
+		 <button class="btn  btn-icon" style="height: 210px;  width: 210px; background-color: orange; color: white;" onclick="email()">
+		 <div style=" height: 200px;">
+		   	<div style="height: 30px;  font-size: 18px;  ">
+		   		 邮件
+		   	</div>
+	   	  	<div style="font-size: 80px;">
+	  			  <i class="demo-psi-mail icon-lg"></i> 
+	      	</div>
+      	  	<div style="height: 30px;  font-size: 20px; padding-top: 10px;">
+   	 				#(emailSize)
+   	  	 	</div>
+		   	   	
+		  </div>
+		 </button>
+ 	</div>
+ 	<div class="col-lg-2"  >
+		 <button class="btn btn-icon" style="height: 210px;  width: 210px; background-color: #6F7879;color: white;" onclick="history()">
+		 <div style=" height: 200px;">
+		   	<div style="height: 30px;  font-size: 18px;  ">
+		   		 历史 
+		   	</div>
+	   	  	<div style="font-size: 80px;">
+	  			  <i class="demo-psi-recycling icon-lg"></i> 
+	      	</div>
+      	 <!--  	<div style="height: 30px;  font-size: 20px; padding-top: 10px;">
+   	 			123 
+   	  	 	</div> -->
+		   	   	
+		  </div>
+		 </button>
+ 	</div>
+
+</div>
+
+<script type="text/javascript">
+ 	function senddoc(){
+ 		
+ 		//alert("111");
+ 		
+ 		 window.location.href="#(ctx)/admin/oa/senddoc/getListPersonal";
+ 	}
+ 	
+ 	
+ 	function  receiveDoc(){
+ 		 window.location.href="#(ctx)/admin/oa/bumph/getPReceivePage";
+ 		
+ 	}
+ 	
+ 	//热线
+ 	function  hotline(){
+ 		 window.location.href="#(ctx)/admin/oa/hotline/getPHotLineListPage";
+ 	}
+ 	//信访
+ 	function  letter(){
+ 		 window.location.href="#(ctx)/admin/oa/letter/getPLetterListPage";
+ 	}
+ 	
+ 	
+ 	//邮件
+ 	
+ 	function  email(){
+		 window.location.href="#(ctx)/admin/oa/email/getListPage";
+ 
+ 	}
+ 	//历史
+ 	
+ 	function  history(){
+		 window.location.href="#(ctx)/admin/oa/stephistory/getListPage";
+ 
+ 	}
+ 	
+ 	function  moreinfo(){
+ 		
+ 		 window.location.href="#(ctx)/admin/oa/showinfo/homeMorListPage?menuid=9b576e6581204cda90ae04722d8640c9";
+ 	}
+ 	
+ 	
+ 	
+ 	$(document).ready(function() {
+ 		$('#demo-external-events .fc-event').each(function() {
+ 			$(this).data('event', {
+ 				title: $.trim($(this).text()), // use the element's text as the event title
+ 				stick: true, // maintain when user navigates (see docs on the renderEvent method)
+ 				className : $(this).data('class')
+ 			});
+ 			$(this).draggable({
+ 				zIndex: 99999,
+ 				revert: true,      // will cause the event to go back to its
+ 				revertDuration: 0  //  original position after the drag
+ 			});
+ 		});
+ 		
+ 	 
+ 	 
+ 		
+ 		$('#demo-calendar').fullCalendar({
+ 		    height: 250,
+ 			header: {
+ 			/* 	left: 'prev,next,prevYear,nextYear today', */
+ 				center: 'title',
+ 				/* right: 'month,agendaWeek,agendaDay,basicWeek' */
+ 				 right: 'basicWeek'
+ 				
+ 			},
+ 			buttonText:{
+ 					prev: '‹', // ‹
+ 					next: '›', // ›
+ 					prevYear: '«', // «
+ 					nextYear: '»', // »
+ 					today: '今天',
+ 					month: '月',
+ 					week: '周',
+ 					day: '天',
+ 					basicWeek:'一周',
+ 				},
+ 		    
+ 			editable: false,//设置是否允许拖拽
+ 			droppable: true, // this allows things to be dropped onto the calendar
+ 			drop: function() {
+ 				if ($('#drop-remove').is(':checked')) {
+ 					$(this).remove();
+ 				}
+ 			},
+ 			dayClick: function(date, allDay, jsEvent, view) {
+ 				 
+ 			},
+ 			eventClick: function(event, jsEvent, view) {
+ 		 
+ 			 
+ 			        
+ 			},
+ 			eventRender: function (event, element) {//title以HTML显示（换行）
+ 		            element.html(event.title);           
+ 		    },
+ 			header:false,
+ 			weekends:false,
+ 			isRTL:false,
+ 			selectable:true,
+ 			weekNumbers:false,
+ 			weekNumberTitle:'周次',
+ 			monthNames:['一月', '二月', '三月', '四月', '五月', '六月','七月', '八月', '九月', '十月', '十一月', '十二月'],
+ 			monthNamesShort:['一月', '二月', '三月', '四月', '五月', '六月','七月', '八月', '九月', '十月', '十一月', '十二月'],
+ 			dayNames:['周日', '周一', '周二', '周三', '周四', '周五', '周六'],
+ 			dayNamesShort:['周日', '周一', '周二', '周三', '周四', '周五', '周六'],
+ 			defaultDate: '#(today)',
+ 			defaultView: 'basicWeek' ,
+ 		
+ 			eventLimit: true, // allow "more" link when too many events
+ 			
+ 			
+ 			/* events:'#(ctx)/admin/oa/workplan/getWorkPlan', */
+ 			   events:  function(start, end, timezone, callback) {
+ 				  
+ 		        $.ajax({
+ 		            url: '#(ctx)/admin/oa/workplan/getWorkPlan',
+ 		            dataType: 'json',
+ 		            
+ 		            success: function(doc) {
+ 		                var events = [];
+ 		                $(doc).each(function() {
+ 		                    events.push({
+ 		                    	id:$(this).attr('id'),
+ 		                        title: $(this).attr('title'),
+ 		                        start: $(this).attr('start'),
+ 		                        end:$(this).attr('end')// will be parsed
+ 		                    });
+ 		                });
+ 		                
+ 		                callback(events);
+ 		            }
+ 		        });
+ 		    }   
+ 		      
+ 		 	
+ 		});
+ 	});
+ 	    
+    
+ 
+</script>

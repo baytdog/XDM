@@ -1,0 +1,118 @@
+<form id="editForm" class="panel-body form-horizontal form-padding">
+		<input type="hidden"  name="#(formModelName).id" class="form-control" value="#(o?o.id:'')">
+		<div class="form-group">
+			<label class="col-md-2 control-label">申请人</label>
+			<div class="col-md-4">
+				<input type="hidden"  name="#(formModelName).userid" class="form-control"  value="#if(o)#(o.userid)#else#(user.id)#end">
+				<input type="text"  name="#(formModelName).create_user_name" class="form-control"  value="#if(o)#(o.create_user_name)#else#(user.name)#end" readonly>
+			</div>
+			<label class="col-md-1 control-label">部门</label>
+			<div class="col-md-4">
+				<input type="hidden"  name="#(formModelName).org_id" class="form-control"  value="#if(o)#(o.org_id)#else#(org.id)#end">
+				<input type="text"  name="#(formModelName).org_name" class="form-control"  value="#if(o)#(o.org_name)#else#(org.name)#end" readonly>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-md-2 control-label">来访时间</label>
+			<div class="input-group date form_datetime col-md-4" style="float:left">
+				<input type="text" id="startTime" name="#(formModelName).visit_time" class="form-control"  value="#(o?o.visit_time:'')" readonly>
+				<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+			</div>
+			<label class="col-md-1 control-label">接待员姓名</label>
+			<div class="col-md-4">
+				<input type="text"  name="#(formModelName).server_user_name" class="form-control"  value="#(o?o.server_user_name:'')" #if(view=='detail') readonly #end>
+				<small class="help-block">请输入接待员姓名</small>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-md-2 control-label">客户姓名</label>
+			<div class="col-md-9">
+				<input type="text"  name="#(formModelName).customer_name" class="form-control"  value="#(o?o.customer_name:'')" #if(view=='detail') readonly #end>
+				<small class="help-block">请输入客户姓名</small>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-md-2 control-label">客户公司</label>
+			<div class="col-md-9">
+				<input type="text"  name="#(formModelName).customer_company_name" class="form-control"  value="#(o?o.customer_company_name:'')" #if(view=='detail') readonly #end>
+				<small class="help-block">请输入客户公司</small>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-md-2 control-label">访问地点</label>
+			<div class="col-md-9">
+				<input type="text"  name="#(formModelName).visit_address" class="form-control"  value="#(o?o.visit_address:'')" #if(view=='detail') readonly #end>
+				<small class="help-block">请输入访问地点</small>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-md-2 control-label">访问内容</label>
+			<div class="col-md-9">
+				<textarea rows="8" name="#(formModelName).visit_info" class="form-control" #if(view=='detail') readonly #end></textarea>
+				<small class="help-block">请输入访问内容</small>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-md-2 control-label">接待方式</label>
+			<div class="col-md-9">
+				<input type="text"  name="#(formModelName).server_type" class="form-control"  value="#(o?o.server_type:'')" #if(view=='detail') readonly #end>
+				<small class="help-block">请输入接待方式</small>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-md-2 control-label">会谈纪要</label>
+			<div class="col-md-9">
+				<textarea rows="8" name="#(formModelName).des" class="form-control" #if(view=='detail') readonly #end></textarea>
+				<small class="help-block">请输入会谈纪要</small>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-md-2 control-label">备注1</label>
+			<div class="col-md-9">
+				<textarea rows="8" name="#(formModelName).note1" class="form-control" #if(view=='detail') readonly #end></textarea>
+				<small class="help-block">请输入备注1</small>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-md-2 control-label">备注2</label>
+			<div class="col-md-9">
+				<textarea rows="8" name="#(formModelName).note2" class="form-control" #if(view=='detail') readonly #end></textarea>
+				<small class="help-block">请输入备注2</small>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-md-2 control-label">备注3</label>
+			<div class="col-md-9">
+				<textarea rows="8" name="#(formModelName).note3" class="form-control" #if(view=='detail') readonly #end></textarea>
+				<small class="help-block">请输入备注3</small>
+			</div>
+		</div>
+	#if(view=='detail')
+
+	#else
+	<div class="panel-footer">
+		<div class="row">
+			<div class="col-sm-8 col-sm-offset-3">
+				<button class="btn btn-warning" type="reset" #if(view=='detail') disabled #end>重置</button>
+				<button class="btn btn-primary" type="submit" #if(view=='detail') disabled #end>保存</button>
+			</div>
+		</div>
+	</div>
+	#end
+</form>
+<script>
+	$(document).ready(function() {
+		$('.form_datetime').datepicker({format: 'yyyy-mm-dd',weekStart: 1,todayBtn:  1,autoclose: 1,language:  'zh-CN',todayHighlight: 1,forceParse: 0,showMeridian: 1}).on('changeDate',function(){
+			var startTime = $("#startTime").val();
+			var endTime = $("#endTime").val();
+			if(startTime&&endTime){
+				if(!dateUtil.compareCalendar(startTime,endTime)){
+					pointLion.alertMsg("开始时间大于结束时间","danger",null,null);
+					$("#editForm .btn").attr("disabled","disabled");
+				}else{
+					resetVali();
+				}
+			}
+		});
+	});
+</script>

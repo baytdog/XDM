@@ -1,0 +1,390 @@
+<form id="editForm" class="panel-body form-horizontal form-padding">
+	<input  id="infoid" type="hidden"  name="#(formModelName).id" class="form-control" value="#(o?o.id:'')">
+ 
+	
+	  <div class="form-group">
+		                    <label class="col-md-2 control-label">类型</label>
+		                    <div class="col-md-9">
+		                        <!-- <input type="text"  name="#(formModelName).dtype" class="form-control"  value="#(o?o.dtype:'')" #if(view=="detail") readonly #end /> -->
+		                     <!--    <small class="help-block">请输入公文标题</small> -->
+		                     
+		                         <select id="dtype" name="#(formModelName).dtype"  value="#(o?o.dtype:'')"  title="请选择类型"  class="selectpicker show-tick form-control" actionsBox="true"   data-live-search="false">
+                                        
+                                     <!--    #for(u:userList)
+
+											 <option value="#(u.id)">#(u.name)</option>
+							 
+									    #end -->
+									    <option value="1">一般文件</option>
+									    <option value="2">信函</option>
+									    <option value="3">工作专报</option>
+									    <option value="4">会议纪要</option>
+                                </select>
+		                    </div>
+	 </div>
+	  <div class="form-group">
+		                    <label class="col-md-2 control-label">编号</label>
+		                    <div class="col-md-9">
+		                        <input type="text"  name="#(formModelName).dnum" class="form-control"  value="#(o?o.dnum:'')" #if(view=="detail") readonly #end />
+		                    <!--     <small class="help-block">请输入公文标题</small> -->
+		                    </div>
+	 </div>
+	  <div class="form-group">
+		                    <label class="col-md-2 control-label">标题</label>
+		                    <div class="col-md-9">
+		                        <input type="text"  name="#(formModelName).dtitle" class="form-control"  value="#(o?o.dtitle:'')" #if(view=="detail") readonly #end />
+		                     <!--    <small class="help-block">请输入公文标题</small> -->
+		                    </div>
+	 </div>
+	  <div class="form-group">
+		                    <label class="col-md-2 control-label">主送</label>
+		                    <div class="col-md-9">
+		                        <input type="text"  name="#(formModelName).dmaindelivery" class="form-control"  value="#(o?o.dmaindelivery:'')" #if(view=="detail") readonly #end />
+		                     <!--    <small class="help-block">请输入公文标题</small> -->
+		                    </div>
+	 </div>
+	  <div class="form-group">
+		                    <label class="col-md-2 control-label">抄送</label>
+		                    <div class="col-md-9">
+		                        <input type="text"  name="#(formModelName).dcopydelivery" class="form-control"  value="#(o?o.dcopydelivery:'')" #if(view=="detail") readonly #end />
+		                     <!--    <small class="help-block">请输入公文标题</small> -->
+		                    </div>
+	 </div>
+	
+	 <!--      <div class="form-group">
+		                    <label class="col-md-2 control-label" for="demo-textarea-input">分管领导</label>
+		                    <div class="col-md-9" style="line-height: 30px;">
+		                    	<div #if(view!="detail") class="input-group mar-btm" #end>
+		                    		<input type="hidden" id="dfgldids" name="#(formModelName).dfgldids" value="#(o?o.dfgldids:'')">
+			                        <input type="text"   id="dfgldnames" name="#(formModelName).dfgldnames" value="#(o?o.dfgldnames:'')" readonly class="form-control">
+			                        #if(view!="detail") 
+				                        <span class="input-group-btn">
+				                            <button class="btn btn-primary" type="button" onclick="openSlectFgLeaderDialog()">选择</button>
+				                        </span>
+				                    #end
+			                    </div>
+		                   
+		                    </div>
+		                </div> -->
+	
+	
+	   <div class="form-group">
+                           <label class="col-md-2 control-label">分管领导</label>
+                           <input  id="dfgldids" type="hidden"  name="#(formModelName).dfgldids" value="#(o?o.dfgldids:'')">
+                            <div class="col-md-9">
+                                <select id="dfgld" name="#(formModelName).dfgldnames"    title="请选择领导"  class="selectpicker show-tick form-control" actionsBox="true"  multiple data-live-search="false">
+                                     <option value="ddcf56dd5d9946c29ca7cc67beb81a99">演示</option>   
+                                        #for(u:userList)
+
+											 <option value="#(u.id)">#(u.name)</option>
+							 
+									    #end
+                                </select>
+                            </div>
+         </div>
+	
+	
+	
+     #if(o.dfgldyj!=null && o.dfgldyj!='')
+ 	 <div class="form-group">
+		                    <label class="col-md-2 control-label">分管领导意见</label>
+		                    <div class="col-md-9">
+		                        <textarea name="#(formModelName).dfgldyj" rows="4" class="form-control" #if(view=="detail") readonly #end>#(o?o.dfgldyj:'')</textarea>
+		                     <!--    <small class="help-block">请输入拟办意见</small> -->
+		                    </div>
+	 </div>
+	 #end
+	 
+	 
+	 
+	  #if(o.status>='2')
+
+	 
+     <div class="form-group">
+         <label class="col-md-2 control-label" for="demo-textarea-input">会签</label>
+         <div class="col-md-9" style="line-height: 30px;">
+         	<div  class="input-group mar-btm"  >
+         		<input type="hidden" id="dhqrids" name="#(formModelName).dhqrids" value="#(o?o.dhqrids:'')">
+              <input type="text"   id="dhqrnames" name="#(formModelName).dhqrnames" value="#(o?o.dhqrnames:'')" readonly class="form-control">
+               <span class="input-group-btn">
+                   <button class="btn btn-primary" type="button" onclick="openSlectDialog(1)">选择</button>
+               </span>
+           </div>
+        
+         </div>
+ 	</div>
+	
+	#end
+	
+	
+		#if(o.dhqryj!=null && o.dhqryj!='')
+	
+		  <div class="form-group">
+          <label class="col-md-2 control-label">会签意见</label>
+          <div class="col-md-9">
+              <textarea name="#(formModelName).dhqryj" rows="4" class="form-control" #if(view=="detail") readonly #end>#(o?o.dhqryj:'')</textarea>
+           <!--    <small class="help-block">请输入拟办意见</small> -->
+          </div>
+	 </div>
+	 #end	
+	  
+	 #if(o.status>='4')
+	     <div class="form-group">
+         <label class="col-md-2 control-label" for="demo-textarea-input">核稿</label>
+         <div class="col-md-9" style="line-height: 30px;">
+         	<div  class="input-group mar-btm"  >
+         		<input type="hidden" id="dhgrids" name="#(formModelName).dhgrids" value="#(o?o.dhgrids:'')">
+              <input type="text"   id="dhgrnames" name="#(formModelName).dhgrnames" value="#(o?o.dhgrnames:'')" readonly class="form-control">
+               <span class="input-group-btn">
+                   <button class="btn btn-primary" type="button" onclick="openSlectDialog(2)">选择</button>
+               </span>
+           </div>
+        
+         </div>
+ 	</div>
+	 #end
+	 
+	 
+	 #if(o.dhgremarks!=null&&o.dhgremarks!='')
+	 
+	 	 <div class="form-group">
+          <label class="col-md-2 control-label">核稿意见</label>
+          <div class="col-md-9">
+              <textarea name="#(formModelName).dhgremarks" rows="4" class="form-control" #if(view=="detail") readonly #end>#(o?o.dhgremarks:'')</textarea>
+           <!--    <small class="help-block">请输入拟办意见</small> -->
+          </div>
+	 </div>
+	 
+	 #end
+	  #if(o.status>='6')
+	 <div class="form-group">
+         <label class="col-md-2 control-label" for="demo-textarea-input">签发领导</label>
+         <div class="col-md-9" style="line-height: 30px;">
+         	<div  class="input-group mar-btm"  >
+         		<input type="hidden" id="dqfldids" name="#(formModelName).dqfldids" value="#(o?o.dqfldids:'')">
+              <input type="text"   id="dqfldnames" name="#(formModelName).dqfldnames" value="#(o?o.dqfldnames:'')" readonly class="form-control">
+               <span class="input-group-btn">
+                   <button class="btn btn-primary" type="button" onclick="openSlectDialog(3)">选择</button>
+               </span>
+           </div>
+        
+         </div>
+ 	</div>
+	 #end
+	 
+   #if(o.dqfldremarks!=null && o.dqfldremarks!='')
+	 	 <div class="form-group">
+          <label class="col-md-2 control-label">签发领导意见</label>
+          <div class="col-md-9">
+              <textarea name="#(formModelName).dqfldremarks" rows="4" class="form-control" #if(view=="detail") readonly #end>#(o?o.dqfldremarks:'')</textarea>
+          </div>
+	 </div>
+   #end
+	 
+	 
+ #if(o.status>='8')
+	 <div class="form-group">
+         <label class="col-md-2 control-label" for="demo-textarea-input">发文</label>
+         <div class="col-md-9" style="line-height: 30px;">
+         	<div  class="input-group mar-btm"  >
+         		<input type="hidden" id="dfwids" name="#(formModelName).dfwids" value="#(o?o.dfwids:'')">
+              <input type="text"   id="dfwnames" name="#(formModelName).dfwnames" value="#(o?o.dfwnames:'')" readonly class="form-control">
+               <span class="input-group-btn">
+                   <button class="btn btn-primary" type="button" onclick="openSlectDialog(4)">选择</button>
+               </span>
+           </div>
+        
+         </div>
+ 	</div>
+	 #end	 
+	 
+ 	<!--  <div class="form-group">
+		                    <label class="col-md-2 control-label">签发</label>
+		                    <div class="col-md-9">
+		                        <textarea name="#(formModelName).dsign" rows="12" class="form-control" #if(view=="detail") readonly #end>#(o?o.dsign:'')</textarea>
+		                        <small class="help-block">请输入拟办意见</small>
+		                    </div>
+	 </div>
+		                
+     <div class="form-group">
+		                		<label class="col-md-2 control-label">签发日期</label>
+					            <div class="input-group date form_datetime col-md-4" style="float:left;padding-left: 10px;">
+				                    <input type="text" id="startTime" name="#(formModelName).dsigntime" class="form-control"  value="#(o?o.dsigntime:'')"   readonly  >
+									<span class="input-group-addon"> <span class="glyphicon glyphicon-th"></span> 
+									</span>
+				                </div>
+	 </div> -->
+			                
+	<!-- 		                
+	 <div class="form-group">
+		                    <label class="col-md-2 control-label">办公室核稿</label>
+		                    <div class="col-md-9">
+		                        <input type="text"  name="#(formModelName).dofficesure" class="form-control"  value="#(o?o.dofficesure:'')" #if(view=="detail") readonly #end />
+		                    </div>
+	 </div>
+	 
+	 <div class="form-group">
+		                		<label class="col-md-2 control-label">核稿日期</label>
+					            <div class="input-group date form_datetime col-md-4" style="float:left;padding-left: 10px;">
+				                    <input type="text" id="startTime" name="#(formModelName).dofficesuretime" class="form-control"  value="#(o?o.dofficesuretime:'')"   readonly  >
+									<span class="input-group-addon"> <span class="glyphicon glyphicon-th"></span> 
+									</span>
+				                </div>
+	 </div> -->
+	 	
+	 		 <!--   <div class="form-group">
+                    <label class="col-md-2 control-label">会搞科室</label>
+                    <div class="col-md-9">
+                        <input type="text"  name="#(formModelName).dhgkscbr" class="form-control"  value="#(o?o.dhgkscbr:'')" #if(view=="detail") readonly #end />
+                   
+                   		 <input type="hidden" id="secondOrgId" name="#(formModelName).dhgksids" value="#(secondOrgId)">
+		                     <select id="depart" name="secondOrgName"  value="#(secondOrgName)" title="请选择部门"  class="selectpicker show-tick form-control" actionsBox="true"   data-live-search="false">
+                                        
+                                        #for(org:orgLists)
+
+											 <option value="#(org.id)">#(org.name)</option>
+							 
+									    #end
+                                </select>
+                   
+                    </div>
+	        </div> -->
+	 
+	 
+	 
+	 
+	<!--    <div class="form-group">
+		                    <label class="col-md-2 control-label">会搞科室承办人</label>
+		                    <div class="col-md-9">
+		                        <input type="text"  name="#(formModelName).dhgkscbr" class="form-control"  value="#(o?o.dhgkscbr:'')" #if(view=="detail") readonly #end />
+		                    </div>
+	 </div>
+	 
+	 
+	 	 <div class="form-group">
+		                		<label class="col-md-2 control-label">会搞科室承办人日期</label>
+					            <div class="input-group date form_datetime col-md-4" style="float:left;padding-left: 10px;">
+				                    <input type="text" id="startTime" name="#(formModelName).dhgkscbtime" class="form-control"  value="#(o?o.dhgkscbtime:'')"   readonly  >
+									<span class="input-group-addon"> <span class="glyphicon glyphicon-th"></span> 
+									</span>
+				                </div>
+	 </div>
+	 
+	    <div class="form-group">
+		                    <label class="col-md-2 control-label">会搞科室负责人</label>
+		                    <div class="col-md-9">
+		                        <input type="text"  name="#(formModelName).dhgksfzr" class="form-control"  value="#(o?o.dhgksfzr:'')" #if(view=="detail") readonly #end />
+		                    </div>
+	 </div>
+	 
+	 
+	 	 <div class="form-group">
+		                		<label class="col-md-2 control-label">会搞科室负责人日期</label>
+					            <div class="input-group date form_datetime col-md-4" style="float:left;padding-left: 10px;">
+				                    <input type="text" id="startTime" name="#(formModelName).dhgksfztime" class="form-control"  value="#(o?o.dhgksfztime:'')"   readonly  >
+									<span class="input-group-addon"> <span class="glyphicon glyphicon-th"></span> 
+									</span>
+				                </div>
+	 </div>
+	  -->
+	 
+	 
+	 <!-- <div class="form-group">
+		                    <label class="col-md-2 control-label">主办科室承办人</label>
+		                    <div class="col-md-9">
+		                        <input type="text"  name="#(formModelName).dzbkscbr" class="form-control"  value="#(o?o.dzbkscbr:'')" #if(view=="detail") readonly #end />
+		                    </div>
+	 </div>
+	 
+	 
+	 	 <div class="form-group">
+		                		<label class="col-md-2 control-label">主办科室承办人日期</label>
+					            <div class="input-group date form_datetime col-md-4" style="float:left;padding-left: 10px;">
+				                    <input type="text" id="startTime" name="#(formModelName).dzbkscbtime" class="form-control"  value="#(o?o.dzbkscbtime:'')"   readonly  >
+									<span class="input-group-addon"> <span class="glyphicon glyphicon-th"></span> 
+									</span>
+				                </div>
+	 </div>
+	 
+	 
+	  <div class="form-group">
+		                    <label class="col-md-2 control-label">主办科室负责人</label>
+		                    <div class="col-md-9">
+		                        <input type="text"  name="#(formModelName).dzbksfzr" class="form-control"  value="#(o?o.dzbksfzr:'')" #if(view=="detail") readonly #end />
+		                    </div>
+	 </div>
+	 
+	 
+	 	 <div class="form-group">
+		                		<label class="col-md-2 control-label">主办科室负责人日期</label>
+					            <div class="input-group date form_datetime col-md-4" style="float:left;padding-left: 10px;">
+				                    <input type="text" id="startTime" name="#(formModelName).dzbksfztime" class="form-control"  value="#(o?o.dzbksfztime:'')"   readonly  >
+									<span class="input-group-addon"> <span class="glyphicon glyphicon-th"></span> 
+									</span>
+				                </div>
+	 </div> -->
+	 
+	   <div class="form-group">
+		                    <label class="col-md-2 control-label">主题词</label>
+		                    <div class="col-md-9">
+		                        <input type="text"  name="#(formModelName).dztz" class="form-control"  value="#(o?o.dztz:'')" #if(view=="detail") readonly #end />
+		                    </div>
+	 </div>
+	 
+	    <div class="form-group">
+		                    <label class="col-md-2 control-label">份数</label>
+		                    <div class="col-md-9">
+		                        <input type="text"  name="#(formModelName).dfs" class="form-control"  value="#(o?o.dfs:'')" #if(view=="detail") readonly #end />
+		                    </div>
+	 </div>
+	 
+	  <div class="form-group">
+		                    <label class="col-md-2 control-label">打字</label>
+		                    <div class="col-md-9">
+		                        <input type="text"  name="#(formModelName).dprinter" class="form-control"  value="#(o?o.dprinter:'')" #if(view=="detail") readonly #end />
+		                    </div>
+	 </div>
+	 	  <div class="form-group">
+		                    <label class="col-md-2 control-label">校对</label>
+		                    <div class="col-md-9">
+		                        <input type="text"  name="#(formModelName).dchecker" class="form-control"  value="#(o?o.dchecker:'')" #if(view=="detail") readonly #end />
+		                    </div>
+	 </div>
+	 
+	 
+	   <div class="form-group">
+		                    <label class="col-md-2 control-label">签印</label>
+		                    <div class="col-md-9">
+		                        <input type="text"  name="#(formModelName).dsprint" class="form-control"  value="#(o?o.dsprint:'')" #if(view=="detail") readonly #end />
+		                     <!--    <small class="help-block">请输入公文标题</small> -->
+		                    </div>
+	 </div>
+	<div class="panel-footer">
+		<div class="row" align="center">
+		
+		
+			<div class="col-sm-11 ">
+			 	<button class="btn btn-primary" type="button" onclick="window.history.back();" >返回</button>
+			  
+		 
+			 	
+			 	
+			 		#if(view=='edit')
+				<button class="btn btn-warning" type="reset" #if(view=='detail') disabled #end>重置</button>
+				
+					 	 <button   class="btn btn-primary" type="submit" #if(view=='detail') disabled #end>送分管领导</button>
+			<!-- 	<button  id="sendoffice" class="btn btn-primary" type="submit" #if(view=='detail') disabled #end>送办公室</button> -->
+				<button  id="sendhgks" style="display: none;" class="btn btn-primary" type="submit" #if(view=='detail') disabled #end>送会搞科室</button>
+					#end
+					
+					
+					<a href="javascript:void(0);" onclick="doUploadAttachment()" style="position: relative;">
+											<button class="btn btn-warning" type="button">附件</button>
+								<span class="pull-right badge badge-success" style="position: absolute;right: -8px;top: -14px;" id="businessAttachmentCount">0</span>
+				    </a>
+			</div>
+		</div>
+	</div>
+ 
+
+</form>

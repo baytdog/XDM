@@ -1,0 +1,112 @@
+	
+	<div id="page-content">
+			<div class="col-lg-12">
+		        <div class="panel">
+		            <div class="panel-heading">
+		                <h3 class="panel-title" style="text-align: right;">
+		                	#@installPJaxGoBackBtn()
+		                	添加地址
+		                </h3>
+		            </div>
+		            <form id="editForm" class="panel-body form-horizontal form-padding">
+						<input type="hidden"  name="#(formModelName).id" class="form-control" value="#(o?o.id:'')">
+			                <div class="form-group">
+			                    <label class="col-md-2 control-label">数据源名称</label>
+			                    <div class="col-md-9">
+			                        <input type="text"  name="#(formModelName).name" class="form-control"  value="#(o?o.name:'')" #if(view=='detail') readonly #end>
+			                        <small class="help-block">请输入数据源名称</small>
+			                    </div>
+			                </div>
+			                <div class="form-group">
+			                    <label class="col-md-2 control-label">数据库类型</label>
+			                    <div class="col-md-4">
+			                    	<div class="select pull-left">
+				                        <select name="#(formModelName).db_type" #if(view=='detail') readonly #end>
+				                        	<option value="mysql" #if(o&&o.db_type=="mysql") selected #end>MySql</option>
+				                        	<option value="oracle" #if(o&&o.db_type=="oracle") selected #end>Oracle</option>
+											<option value="sqlserver" #if(o&&o.db_type=="sqlserver") selected #end>SqlServer</option>
+				                        </select>
+				                    </div>
+			                    </div>
+			                </div>
+			                <div class="form-group">
+			                    <label class="col-md-2 control-label">ip地址</label>
+			                    <div class="col-md-9">
+			                        <input type="text"  name="#(formModelName).db_ip" class="form-control"  value="#(o?o.db_ip:'')" #if(view=='detail') readonly #end>
+			                        <small class="help-block">请输入ip地址</small>
+			                    </div>
+			                </div>
+			                <div class="form-group">
+			                    <label class="col-md-2 control-label">端口</label>
+			                    <div class="col-md-9">
+			                        <input type="text"  name="#(formModelName).port" class="form-control"  value="#(o?o.port:'')" #if(view=='detail') readonly #end>
+			                        <small class="help-block">请输入端口（如果为Oracle数据库，端口通常为1521。如果为MySql数据库，端口通常为3306。）</small>
+			                    </div>
+			                </div>
+			                <div class="form-group">
+			                    <label class="col-md-2 control-label">数据库名称</label>
+			                    <div class="col-md-9">
+			                        <input type="text"  name="#(formModelName).db_name" class="form-control"  value="#(o?o.db_name:'')" #if(view=='detail') readonly #end>
+			                        <small class="help-block">请输入数据库名称（如果为Oracle数据库，请输入Oracle服务名，通常为orcl）</small>
+			                    </div>
+			                </div>
+			                <div class="form-group">
+			                    <label class="col-md-2 control-label">用户名</label>
+			                    <div class="col-md-9">
+			                        <input type="text"  name="#(formModelName).db_user_name" class="form-control"  value="#(o?o.db_user_name:'')" #if(view=='detail') readonly #end>
+			                        <small class="help-block">请输入用户名</small>
+			                    </div>
+			                </div>
+			                <div class="form-group">
+			                    <label class="col-md-2 control-label">密码</label>
+			                    <div class="col-md-9">
+			                        <input type="password"  name="#(formModelName).db_password" class="form-control"  value="#(o?o.db_password:'')" #if(view=='detail') readonly #end>
+			                        <small class="help-block">请输入密码</small>
+			                    </div>
+			                </div>
+			                <div class="form-group">
+			                    <label class="col-md-2 control-label">连接池别名</label>
+			                    <div class="col-md-9">
+			                        <input type="text"  name="#(formModelName).db_config_name" class="form-control"  value="#(o?o.db_config_name:'')" #if(view=='detail') readonly #end>
+			                        <small class="help-block">请输入连接池别名</small>
+			                    </div>
+			                </div>
+		                	#if(view=='detail')
+			                
+				            #else
+			            	<div class="panel-footer">
+			                    <div class="row">
+			                        <div class="col-sm-8 col-sm-offset-3">
+			                            <button class="btn btn-warning" type="reset" #if(view=='detail') disabled #end>重置</button>
+			                            <button class="btn btn-primary" type="submit" #if(view=='detail') disabled #end>保存</button>
+			                        </div>
+			                    </div>
+			                </div>
+				            #end
+		            </form>
+		        </div>
+		    </div>
+	</div>
+	<script>
+		function save(){
+			var data = common_ajax.ajaxFunc("/admin/grap/dbsource/save", $('#editForm').serialize(), "json", null);
+			if(data.success){
+				pointLion.alertMsg("保存成功!" , "success" , "small" , function(){
+					location.href = ctx+'/admin/grap/dbsource/getListPage';//跳转到列表页
+				},data);
+			}else{
+				pointLion.alertMsg(data.message , "danger" , "small" , function(){
+					$(".btn").removeAttr("disabled");
+				},data);
+			}
+		}
+		$(document).ready(function() {
+			$('#editForm').bootstrapValidator({
+	            fields: {
+	            }
+	        }).on("success.form.bv", function (e) {
+	            save();
+	            return false;//阻止表单跳转
+	        });
+		});
+	</script>

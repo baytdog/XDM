@@ -1,0 +1,176 @@
+<!-- pjax页面返回按钮 -->
+#define installPJaxGoBackBtn()
+	<a href="javascript:void(0);" onclick="window.history.back();" style="position: absolute;left: 10px;">
+		<button class="btn btn-primary" type="button">返回</button>
+	</a>
+<!-- 	<a href="javascript:void(0);" onclick="clickback()" style="position: absolute;left: 10px;">
+		<button class="btn btn-primary" type="button">返回</button>
+	</a>
+	
+	<script type="text/javascript">
+function  clickback(){
+	window.location.href="#(ctx)/admin/home/getPersonalHomePage?action=openPage"
+}
+
+</script> -->
+#end
+<!-- 通用业务-附件按钮 -->
+#define installAttachment(businessId)
+		<a href="javascript:void(0);" onclick="doUploadAttachment_#(businessId)('#(businessId)')" style="position: relative;">
+			<button class="btn btn-warning" type="button">附件</button>
+			<span class="pull-right badge badge-success" style="position: absolute;right: -8px;top: -14px;" id="businessAttachmentCount_#(businessId)">0</span>
+		</a>
+		<script>
+			var view = "#(view?view:'')";
+			//打开附件列表
+			function doUploadAttachment_#(businessId)(busid){
+				if(busid){
+					pointLion.openBusinessAttachmentPage(busid,view,function(){
+						setAttachmentCount_#(businessId)();//关闭之后回调
+					});
+				}else{
+					pointLion.alertMsg("请先保存再上传附件！" , "danger" , "small" , null);
+				}
+			}
+			//设置附件数量
+			function setAttachmentCount_#(businessId)(){
+				var data = common_ajax.ajaxFunc("/admin/sys/attachment/getBusinessAttachmentCount", {"busid":"#(businessId)"}, "json", null);
+				if(data.success){
+					$("#businessAttachmentCount_#(businessId)").html(data.data);
+				}
+			}
+			$(document).ready(function() {
+				setAttachmentCount_#(businessId)();
+			});
+			
+			
+		</script>
+#end
+
+<!-- 选择字典按钮
+	name：表单中label
+	groupKey：字典的groupKey
+-->
+#define installDctSelectBtn(name,groupKey,idCol,nameCol,idValue,nameValue)
+	<div class="form-group">
+	    <label class="col-md-2 control-label">#(name)</label>
+	    <div class="col-md-4">
+	    	<div class="input-group mar-btm col-md-12">
+<!--				表单存储表，用来存储字典属性的字段-->
+	    		<input type="hidden"  name="#(formModelName).#(idCol)" id="dctId" class="form-control"  value="#(idValue)">
+			    <input type="text"  name="#(formModelName).#(nameCol)" id="dctName" class="form-control"  value="#(nameValue)" readonly>
+		        
+			    #if(view!="detail")
+			    	<span class="input-group-btn">
+		            	<button class="btn btn-primary" type="button" onclick="openSlectDctDialog()">选择</button>
+		            </span>
+		        #end
+		    </div>
+	    </div>
+	    <script>
+	    	function openSlectDctDialog(){
+	    		layer.open({
+					  type: 2,
+					  title: false, //不显示标题栏
+					  area: ['1000px', '550px'],
+					  shade: 0.2,
+					  id: 'openSlectDctDialog', //设定一个id，防止重复弹出
+					  resize: false,
+					  closeBtn: false,
+					  isOutAnim : false , 
+					  btnAlign: 'c',
+					  content: ctx+'/admin/sys/dct/openSelectDctDialog?groupKey=#(groupKey)',
+					  success: function(layero){
+					  }
+				});
+	    	}
+	    	
+	    	function getSelected(data){
+	    		if(data){
+					if(data.id){
+			    		$("#dctId").val(data.id);
+		    		}else{
+		    			$("#dctId").val("");
+		    		}
+					if(data.name){
+						$("#dctName").val(data.name);
+		    		}else{
+		    			$("#dctName").val("");
+		    		}
+	    		}
+	    		layer.closeAll();
+	    	}
+	    </script>
+	</div>
+#end
+
+
+<!--通用的选择业务表主键组件-->
+<!--
+	可以选择任何表的id和code。
+	index：序号--同一个页面引用多个的时候不能重复
+	thisFormLabel：当前表单页面显示的名称
+	thisValueCol：当前表单的，存值的字段
+	thisLabelCol：当前表单的，存名称的字段
+	value：当前表的，存的值，用来回显
+	label：当前表的，存的名称，用来回显
+	table：选择表名
+	otherValueCol：选择表的值的字段。    id:主键
+	otherLabelCol：选择表的名称字段      name:名称
+	extCol：选择页面的扩展字段    col:名称,col:名称,col:名称,col:名称,col:名称,col:名称,col:名称
+-->
+#define installSelectBusinessButton(formModelName,index,thisFormLabel,thisValueCol,thisLabelCol,value,label,table,otherValueCol,otherLabelCol,extCol)
+#set(uuid=UuidUtil.getUUID())
+<div class="form-group">
+	<label class="col-md-2 control-label">#(thisFormLabel)</label>
+	<div class="col-md-4">
+		<div class="input-group mar-btm col-md-12">
+			<input type="hidden"  name="#(formModelName).#(thisValueCol)" id="value_#(index)" class="form-control"  value="#(value)">
+			<input type="text"  name="#(formModelName).#(thisLabelCol)" id="name_#(index)" class="form-control"  value="#(label)" readonly>
+
+			#if(view!="detail")
+			<span class="input-group-btn">
+		            	<button class="btn btn-primary" type="button" onclick="openDialog_#(uuid)()">选择</button>
+		            </span>
+			#end
+		</div>
+	</div>
+	<script>
+		/****
+		 * 打开弹层
+		 * @private
+		 */
+		function openDialog_#(uuid)(){
+			layer.open({
+				type: 2,
+				title: false, //不显示标题栏
+				area: ['1000px', '550px'],
+				shade: 0.2,
+				id: 'dialog_#(index)', //设定一个id，防止重复弹出
+				resize: false,
+				closeBtn: false,
+				isOutAnim : false ,
+				btnAlign: 'c',
+				content: ctx+'/admin/oa/common/business/openSelectBusinessDialog?table=#(table)&otherValueCol=#(otherValueCol)&otherLabelCol=#(otherLabelCol)&uuid=#(uuid)&extCol='+encodeURI('#(extCol)'),
+				success: function(layero){
+
+				}
+			});
+		}
+
+		/***
+		 * 选择完回调函数
+		 * @private
+		 */
+		function callBackSelect_#(uuid)(data){
+			$("#value_#(index)").val(data.#(otherValueCol.split(":")[0]));
+			$("#name_#(index)").val(data.#(otherLabelCol.split(":")[0]));
+		}
+	</script>
+</div>
+#end
+
+
+
+
+
