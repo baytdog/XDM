@@ -144,7 +144,11 @@ public class _MappingKit {
 		arp.addMapping("oa_tab_file", "id",OaTabFile.class);
 		arp.addMapping("oa_bumph_rz", "id",OaBumphRz.class);
 		arp.addMapping("oa_steps_rz", "id",OaStepsRz.class);
-		
+		//欣迪
+		arp.addMapping("xd_employee","id",XdEmployee.class);
+		arp.addMapping("xd_edutrain","id",XdEdutrain.class);
+		arp.addMapping("xd_schoolinfo","id",XdSchoolinfo.class);
+		arp.addMapping("xd_work_exper","id",XdWorkExper.class);
 	}
 }
 

@@ -14,12 +14,7 @@ import com.jfinal.plugin.activerecord.ActiveRecordPlugin;
 import com.jfinal.plugin.activerecord.dialect.MysqlDialect;
 import com.jfinal.plugin.druid.DruidPlugin;
 import com.jfinal.template.Engine;
-import com.pointlion.config.routes.AMSRoutes;
-import com.pointlion.config.routes.CRMRoutes;
-import com.pointlion.config.routes.GrapRoutes;
-import com.pointlion.config.routes.MobileRoutes;
-import com.pointlion.config.routes.OARoutes;
-import com.pointlion.config.routes.SysRoutes;
+import com.pointlion.config.routes.*;
 import com.pointlion.handler.GlobalHandler;
 import com.pointlion.interceptor.ExceptionInterceptor;
 import com.pointlion.interceptor.IfLoginInterceptor;
@@ -95,20 +90,20 @@ public class MainConfig extends JFinalConfig {
 //		arp.setContainerFactory(new CaseInsensitiveContainerFactory(true));//jfinal将sql全部转为小写配置。activiti相关的表字段为大写。如要开启该配置，需要修改，模型管理，流程管理list等页面的列表信息。
 		arp.setDialect(new MysqlDialect());
 		_MappingKit.mapping(arp);
-		FlowablePlugin acitivitiPlugin = new FlowablePlugin();
+		//FlowablePlugin acitivitiPlugin = new FlowablePlugin();
 		ShiroPlugin shiroPlugin = new ShiroPlugin(MainConfig.routes);
 		shiroPlugin.setLoginUrl("/admin/login");//登录url：未验证成功跳转
 		shiroPlugin.setSuccessUrl("/admin/index");//登录成功url：验证成功自动跳转
 		shiroPlugin.setUnauthorizedUrl("/admin/login/needPermission");//授权url：未授权成功自动跳转
-		QuartzPlugin quatrZPlugin = new QuartzPlugin();
-		MailPlugin mailPlugin = new MailPlugin(PropKit.use("mail.properties").getProperties());
+		//QuartzPlugin quatrZPlugin = new QuartzPlugin();
+		//MailPlugin mailPlugin = new MailPlugin(PropKit.use("mail.properties").getProperties());
 		//添加到插件列表中
 		me.add(druidPlugin);//数据库连接池插件
 		me.add(arp);//ARP插件
-		me.add(acitivitiPlugin);//流程插件
+		//me.add(acitivitiPlugin);//流程插件
 		me.add(shiroPlugin);//权限插件
-		me.add(mailPlugin);//邮件发送插件
- 		me.add(quatrZPlugin);//定时任务插件
+		//me.add(mailPlugin);//邮件发送插件
+ 		//me.add(quatrZPlugin);//定时任务插件
 		LOG.info("插件启动成功");
 	}
 	
@@ -153,6 +148,7 @@ public class MainConfig extends JFinalConfig {
 		me.add(new SysRoutes());//系统管理路由
 		me.add(new GrapRoutes());//爬取网站数据路由
 		me.add(new MobileRoutes());//手机端管理路由
+		me.add(new XDRoutes());
 		//me.setBaseViewPath("/WEB-INF/admin/home");
 	}
 	
