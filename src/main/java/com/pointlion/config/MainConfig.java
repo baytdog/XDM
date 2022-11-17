@@ -90,7 +90,7 @@ public class MainConfig extends JFinalConfig {
 //		arp.setContainerFactory(new CaseInsensitiveContainerFactory(true));//jfinal将sql全部转为小写配置。activiti相关的表字段为大写。如要开启该配置，需要修改，模型管理，流程管理list等页面的列表信息。
 		arp.setDialect(new MysqlDialect());
 		_MappingKit.mapping(arp);
-		//FlowablePlugin acitivitiPlugin = new FlowablePlugin();
+		FlowablePlugin acitivitiPlugin = new FlowablePlugin();
 		ShiroPlugin shiroPlugin = new ShiroPlugin(MainConfig.routes);
 		shiroPlugin.setLoginUrl("/admin/login");//登录url：未验证成功跳转
 		shiroPlugin.setSuccessUrl("/admin/index");//登录成功url：验证成功自动跳转
@@ -100,7 +100,7 @@ public class MainConfig extends JFinalConfig {
 		//添加到插件列表中
 		me.add(druidPlugin);//数据库连接池插件
 		me.add(arp);//ARP插件
-		//me.add(acitivitiPlugin);//流程插件
+		me.add(acitivitiPlugin);//流程插件
 		me.add(shiroPlugin);//权限插件
 		//me.add(mailPlugin);//邮件发送插件
  		//me.add(quatrZPlugin);//定时任务插件
