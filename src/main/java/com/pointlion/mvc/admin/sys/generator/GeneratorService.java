@@ -29,6 +29,8 @@ public class GeneratorService {
 	 * @return
 	 */
 	public List<Record> getAllCols(String tableName){
+		System.out.println(tableName);
+		System.out.println(PropKit.get("dbname"));
 		return Db.find("select data_type,character_maximum_length,column_name,column_comment,table_name from INFORMATION_SCHEMA.Columns where table_name=? and table_schema=?",tableName,PropKit.get("dbname"));
 	}
 }

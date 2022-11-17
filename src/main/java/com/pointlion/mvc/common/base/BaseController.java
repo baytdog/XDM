@@ -453,7 +453,6 @@ public abstract class BaseController extends Controller {
 	}
 
 	public void renderIframe(String view){
-		//String action = getPara("action","");
 		SysCustomSetting setting = getAttr("setting");
 		if(setting==null){
 			setting = (SysCustomSetting)this.getSession().getAttribute("setting");
@@ -462,134 +461,122 @@ public abstract class BaseController extends Controller {
 		SysUser user = SysUser.dao.getById(userId);//用户对象
 		setAttr("username",user.getUsername());
 		setAttr("name",user.getName());
- 
+
 		//收文
-    /*	String receiveSql = " select * from oa_bumph o  left join  (select * from ( select * from oa_steps    order by ctime desc) bb  group by oid, userid) s on o.id=s.oid  WHERE  o.status<>'5' ";
-    	receiveSql = receiveSql + " and s.userid='"+ShiroKit.getUserId()+"'";
-        int receiveSize = Db.find(receiveSql).size();
-    	setAttr("receiveSize",receiveSize);*/
-    	String receiveSql = " select * from oa_bumph o  left join  oa_steps s on o.id=s.oid  WHERE  s.ifcomplete='0' ";
-    	receiveSql = receiveSql + " and s.userid='"+ShiroKit.getUserId()+"'";
-    	int receiveSize = Db.find(receiveSql).size();
-    	setAttr("receiveSize",receiveSize);
-    	
-    	
-     	String receiveCanDoSql = " select * from oa_bumph o  left join  oa_steps s on o.id=s.oid  WHERE  s.ifcomplete='0' and buttontype='1'";
-     	receiveCanDoSql = receiveCanDoSql + " and s.userid='"+ShiroKit.getUserId()+"'";
-        int receiveCanDo = Db.find(receiveCanDoSql).size();
-    	setAttr("receiveCanDo",receiveCanDo);
+		String receiveSql = " select * from oa_bumph o  left join  oa_steps s on o.id=s.oid  WHERE  s.ifcomplete='0' ";
+		receiveSql = receiveSql + " and s.userid='"+ShiroKit.getUserId()+"'";
+		int receiveSize = Db.find(receiveSql).size();
+		setAttr("receiveSize",receiveSize);
+
+
+		String receiveCanDoSql = " select * from oa_bumph o  left join  oa_steps s on o.id=s.oid  WHERE  s.ifcomplete='0' and buttontype='1'";
+		receiveCanDoSql = receiveCanDoSql + " and s.userid='"+ShiroKit.getUserId()+"'";
+		int receiveCanDo = Db.find(receiveCanDoSql).size();
+		setAttr("receiveCanDo",receiveCanDo);
 		//发文
-      	String sendSql = " select * from oa_senddoc o  left join oa_steps s on o.id=s.oid where  s.userid ='"+ShiroKit.getUserId()+"' and  s.ifcomplete='0'";
-        int sendSize = Db.find(sendSql).size();
-    	setAttr("sendSize",sendSize);
-    	//邮件
-    	//String emailSql = "select  * from oa_email  where  suserid like '%"+ShiroKit.getUserId()+"%'  and opstatis='0'";
-    	
-    	
-    	
-    	String emailSql = "select o.*,s.isreaded as  isreaded from  v_email o left join   oa_email_son s on s.oid =o.id  where 1=1  and s.suserid = '"+ShiroKit.getUserId()+"'  and s.status='1'";
-    	int emailSize = Db.find(emailSql).size();
-    	setAttr("emailSize",emailSize);
-     
-    	
-    	String noReademailSql = "select * from  oa_email_son s   where 1=1  and s.suserid = '"+ShiroKit.getUserId()+"' and s.isreaded='0' and status='1'";
-    	int noReademail  = Db.find(noReademailSql).size();
-    	setAttr("noReademail",noReademail);
-    	
-    	
-    	
-    	
-    	//热线
-    	String hotSql = "select  * from oa_hotline  o  left join  oa_steps s on o.id=s.oid   where  s.userid='"+ShiroKit.getUserId()+"' and s.ifcomplete='0'";
-    	int hotSize = Db.find(hotSql).size();
-    	setAttr("hotSize",hotSize);
-    	//信访
-    	String letterSql = "select  * from oa_letter o left join  oa_steps s on o.id=s.oid   where  s.userid='"+ShiroKit.getUserId()+"' and s.ifcomplete='0'";
-    	int letterSize = Db.find(letterSql).size();
-    	setAttr("letterSize",letterSize);
-    	
-    	
-    	
-    	//待办
-    	String  waitDoSql="select  * from  oa_steps   where  userid='"+ShiroKit.getUserId()+"' and ifcomplete='0'";
-    	
-    	  List<OaSteps> find2 = OaSteps.dao.find(waitDoSql);
-    	  
-    	  setAttr("waitDos", find2);
-    	  
-    	  //已办理
-    	   String overSql="select  * from  oa_step_history  where actorid='"+ShiroKit.getUserId()+"' order by  ctime desc";
-    	   List<OaStepHistory> over = OaStepHistory.dao.find(overSql);
-    	   setAttr("over", over);
-    	  
-    	   //办事指南
-    	   String bsznListSql="select  * from  oa_bumph where backup2='2'";
-    	   List<OaBumph> bsznList  = OaBumph.dao.find(bsznListSql);
-    	   setAttr("bsznList", bsznList);
-    	   
-    	 //通知
-    	 /*  String tzListSql="select  * from oa_notices  where sfpublish ='1' ORDER BY 	publishdatetime DESC";
-    	   
-    	   List<OaNotices> findNotices = OaNotices.dao.find(tzListSql);
-    	   setAttr("notices", findNotices);*/
-    	   String tzListSql="select  * from oa_notices  where sfpublish ='1' ORDER BY 	publishdatetime DESC  limit 6";
-    	   
-    	   List<OaNotices> findNotices = OaNotices.dao.find(tzListSql);
-    	   
-    	   
-    	   List <OaShowHome> homeLists=  new ArrayList<>();
-    	   
-    	   
-    	   for (OaNotices oaNotices : findNotices) {
-    		   
-    		  OaShowHome showHome =new OaShowHome();
-    		  
-    		  showHome.setId(oaNotices.getId());
-    		  showHome.setcTime(oaNotices.getChangetime());
-    		  showHome.setType("1");
-    		  showHome.setShowTitle(oaNotices.getShowhomepageinfo());
-    		  showHome.setTipTitle(oaNotices.getNoticename());
-    		  homeLists.add(showHome);
+		String sendSql = " select * from oa_senddoc o  left join oa_steps s on o.id=s.oid where  s.userid ='"+ShiroKit.getUserId()+"' and  s.ifcomplete='0'";
+		int sendSize = Db.find(sendSql).size();
+		setAttr("sendSize",sendSize);
+		//邮件
+		String emailSql = "select o.*,s.isreaded as  isreaded from  v_email o left join   oa_email_son s on s.oid =o.id  where 1=1  and s.suserid = '"+ShiroKit.getUserId()+"'  and s.status='1'";
+		int emailSize = Db.find(emailSql).size();
+		setAttr("emailSize",emailSize);
+
+
+		String noReademailSql = "select * from  oa_email_son s   where 1=1  and s.suserid = '"+ShiroKit.getUserId()+"' and s.isreaded='0' and status='1'";
+		int noReademail  = Db.find(noReademailSql).size();
+		setAttr("noReademail",noReademail);
+
+
+
+
+		//热线
+		String hotSql = "select  * from oa_hotline  o  left join  oa_steps s on o.id=s.oid   where  s.userid='"+ShiroKit.getUserId()+"' and s.ifcomplete='0'";
+		int hotSize = Db.find(hotSql).size();
+		setAttr("hotSize",hotSize);
+		//信访
+		String letterSql = "select  * from oa_letter o left join  oa_steps s on o.id=s.oid   where  s.userid='"+ShiroKit.getUserId()+"' and s.ifcomplete='0'";
+		int letterSize = Db.find(letterSql).size();
+		setAttr("letterSize",letterSize);
+
+
+
+		//待办
+		String  waitDoSql="select  * from  oa_steps   where  userid='"+ShiroKit.getUserId()+"' and ifcomplete='0'";
+
+		List<OaSteps> find2 = OaSteps.dao.find(waitDoSql);
+
+		setAttr("waitDos", find2);
+
+		//已办理
+		String overSql="select  * from  oa_step_history  where actorid='"+ShiroKit.getUserId()+"' order by  ctime desc";
+		List<OaStepHistory> over = OaStepHistory.dao.find(overSql);
+		setAttr("over", over);
+
+		//办事指南
+		String bsznListSql="select  * from  oa_bumph where backup2='2'";
+		List<OaBumph> bsznList  = OaBumph.dao.find(bsznListSql);
+		setAttr("bsznList", bsznList);
+
+		//通知
+		String tzListSql="select  * from oa_notices  where sfpublish ='1' ORDER BY 	publishdatetime DESC  limit 6";
+
+		List<OaNotices> findNotices = OaNotices.dao.find(tzListSql);
+
+
+		List <OaShowHome> homeLists=  new ArrayList<>();
+
+
+		for (OaNotices oaNotices : findNotices) {
+
+			OaShowHome showHome =new OaShowHome();
+
+			showHome.setId(oaNotices.getId());
+			showHome.setcTime(oaNotices.getChangetime());
+			showHome.setType("1");
+			showHome.setShowTitle(oaNotices.getShowhomepageinfo());
+			showHome.setTipTitle(oaNotices.getNoticename());
+			homeLists.add(showHome);
 		}
-    	   
-    	   List<OaShowinfo> showinfos = OaShowinfo.dao.find("select * from oa_showinfo  where menuid !='9b576e6581204cda90ae04722d8640c9' and sfpublish='1' and zc='2' order by changetime desc  limit 6");   
-    	   
-    	   for (OaShowinfo oaShowinfo : showinfos) {
-			
-    		   OaShowHome showHome =new OaShowHome();
-     		  
-     		  showHome.setId(oaShowinfo.getId());
-     		  showHome.setcTime(oaShowinfo.getChangetime());
-     		  showHome.setType("2");
-     		  showHome.setShowTitle(oaShowinfo.getInfotitle());
-     		  showHome.setTipTitle(oaShowinfo.getInfotitle());
-     		  homeLists.add(showHome);
-    	   }
-    	    
-    	   Collections.sort(homeLists);  
-    	   
-    	   setAttr("notices", homeLists);
-    	
-    	
-    	
-    	
-    	
-    	
-		if(view.indexOf("selectManyUser.html")==-1&& view.indexOf("selectManyUser1.html")==-1 && view.indexOf("selectManyOrg.html")==-1 && 
+
+		List<OaShowinfo> showinfos = OaShowinfo.dao.find("select * from oa_showinfo  where menuid !='9b576e6581204cda90ae04722d8640c9' and sfpublish='1' and zc='2' order by changetime desc  limit 6");
+
+		for (OaShowinfo oaShowinfo : showinfos) {
+
+			OaShowHome showHome =new OaShowHome();
+
+			showHome.setId(oaShowinfo.getId());
+			showHome.setcTime(oaShowinfo.getChangetime());
+			showHome.setType("2");
+			showHome.setShowTitle(oaShowinfo.getInfotitle());
+			showHome.setTipTitle(oaShowinfo.getInfotitle());
+			homeLists.add(showHome);
+		}
+
+		Collections.sort(homeLists);
+
+		setAttr("notices", homeLists);
+
+
+
+
+
+
+		if(view.indexOf("selectManyUser.html")==-1&& view.indexOf("selectManyUser1.html")==-1 && view.indexOf("selectManyOrg.html")==-1 &&
 				view.indexOf("homeShowNotices.html")==-1&&view.indexOf("businessUploadList.html")==-1
 				&& view.indexOf("selectOneUser.html")==-1&&view.indexOf("selectOneDctGroup.html")==-1
 				&&view.indexOf("giveAuth.html")==-1
-				) {
+		) {
 			setAttr("mlist",this.getSession().getAttribute("mlist"));
 			setAttr("oanotices", this.getSession().getAttribute("oanotices"));
 		}else {
 			setAttr("mlist","");
 			setAttr("oanotices", "");
 		}
-		
-		
-	 
-		
+
+
+
+
 		setAttr("setting",setting);
 		String s = this.getViewPath();
 		if(view.indexOf("/")==0){
@@ -597,51 +584,51 @@ public abstract class BaseController extends Controller {
 		}else{
 			setAttr("iframeRenderUrl", s+view);
 		}
-		
-		
+
+
 		OaTypes findFirst = OaTypes.dao.findFirst("select  * from oa_types where  status='1'");
 		String oatypes=findFirst.getType();
-		
+
 		if(oatypes.equals("3")||view.indexOf("roleUser.html")!=-1||view.indexOf("selectOneUser.html")!=-1||view.indexOf("giveAuth.html")!=-1) {
-		 super.render("/common/include/iframe.html");
+			super.render("/common/include/iframe.html");
 		} else {
-			
-			
+
+
 			List<OaBumphUser> find = OaBumphUser.dao.find("select  * from  oa_bumph_user where  lookornot ='1' and looked='0' and  username='"+ShiroKit.getUsername()+"'");
-			
-	    	setAttr("bumpcount",find==null?0: find.size());
-	    	
-	     
-	    	  List<Record> hotlineList = Db.find("SELECT * FROM oa_hotline o LEFT JOIN oa_hotline_user hu ON o.id = hu.hotlinid"
-	    			+ " WHERE 1 = 1 AND hu.userid = '"+ShiroKit.getUserId()+"' AND hu.ifshow = '1' And hu.ifcomplete='0'");
-	    	
-	    	setAttr("hotlineCount", hotlineList==null?0:hotlineList.size());
-	    	
-	    	List<Record> sendDocList = Db.find("SELECT * FROM oa_senddoc o  WHERE 	1 = 1  and  o.cuserid != '"+ShiroKit.getUserId()+"' "
-	    			+ " and (  o.dofficesure ='"+ShiroKit.getUserOrgId()+"' or o.dhgksids = '"+ShiroKit.getUserOrgId()+"' )");
-	    	
-	    	setAttr("senddocCount", sendDocList==null?0:sendDocList.size());
-	    	
-	    	
-	    	int todonum=(find==null?0: find.size())/*+(emailList==null?0:emailList.size())*/
-	    			+(hotlineList==null?0:hotlineList.size())+(sendDocList==null?0:sendDocList.size());
-	    	setAttr("todonum", todonum);
-	    	
-	    	
-	    	
-	    	if(oatypes.equals("2")) {
-	    		
-	    		if(view.endsWith("personalhome.html")) {
-	    			setAttr("ifHome", true);
-	    		}else {
-	    			setAttr("ifHome", false);
-	    		}
-	    		super.render("/common/include/syshomeV2.html");
-	    		//super.render("/common/include/syshomeV3.html");
-	    	}else {
-	    		super.render("/common/include/syshome.html");
-	    	}
-			
+
+			setAttr("bumpcount",find==null?0: find.size());
+
+
+			List<Record> hotlineList = Db.find("SELECT * FROM oa_hotline o LEFT JOIN oa_hotline_user hu ON o.id = hu.hotlinid"
+					+ " WHERE 1 = 1 AND hu.userid = '"+ShiroKit.getUserId()+"' AND hu.ifshow = '1' And hu.ifcomplete='0'");
+
+			setAttr("hotlineCount", hotlineList==null?0:hotlineList.size());
+
+			List<Record> sendDocList = Db.find("SELECT * FROM oa_senddoc o  WHERE 	1 = 1  and  o.cuserid != '"+ShiroKit.getUserId()+"' "
+					+ " and (  o.dofficesure ='"+ShiroKit.getUserOrgId()+"' or o.dhgksids = '"+ShiroKit.getUserOrgId()+"' )");
+
+			setAttr("senddocCount", sendDocList==null?0:sendDocList.size());
+
+
+			int todonum=(find==null?0: find.size())/*+(emailList==null?0:emailList.size())*/
+					+(hotlineList==null?0:hotlineList.size())+(sendDocList==null?0:sendDocList.size());
+			setAttr("todonum", todonum);
+
+
+
+			if(oatypes.equals("2")) {
+
+				if(view.endsWith("personalhome.html")) {
+					setAttr("ifHome", true);
+				}else {
+					setAttr("ifHome", false);
+				}
+				super.render("/common/include/syshomeV2.html");
+				//super.render("/common/include/syshomeV3.html");
+			}else {
+				super.render("/common/include/syshome.html");
+			}
+
 		}
 		// super.render("/common/include/iframe.html");
 	}

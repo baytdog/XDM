@@ -122,6 +122,7 @@
 			$(document).on('pjax:end', function () {
 				history.replaceState({},"",ctx+"/admin/home");
         	});
+
 			$.pjax({'url': url, container: container,timeout:999999,cache: false});
 		}
 		// //获取主页面panel高度
