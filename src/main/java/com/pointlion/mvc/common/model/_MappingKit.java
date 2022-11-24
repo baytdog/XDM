@@ -36,7 +36,7 @@ public class _MappingKit {
 		arp.addMapping("act_re_procdef", "ID_", ActReProcdef.class);
 		arp.addMapping("v_tasklist", "TASKID", VTasklist.class);//任务--视图
 		arp.addMapping("v_email", "id", VEmail.class);//任务--视图
-		arp.addMapping("v_hotline_letter", "id", VHotlineLetter.class);//任务--视图
+		//arp.addMapping("v_hotline_letter", "id", VHotlineLetter.class);//任务--视图
 		
 		arp.addMapping("oa_notice", "id", OaNotice.class);//通知公告
 		arp.addMapping("oa_notice_user", "id", OaNoticeUser.class);//通知公告收

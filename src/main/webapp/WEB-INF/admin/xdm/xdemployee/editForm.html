@@ -1,41 +1,158 @@
 <form id="editForm" class="panel-body form-horizontal form-padding">
 	<input type="hidden"  name="#(formModelName).id" class="form-control" value="#(o?o.id:'')">
-	<div class="form-group">
-		<label class="col-md-2 control-label">申请人</label>
-		<div class="col-md-4">
-			<input type="hidden"  name="#(formModelName).userid" class="form-control"  value="#(o?o.user_id:'')">
-			<input type="text"  name="#(formModelName).applyer_name" class="form-control"  value="#(o?o.applyer_name:'')" readonly>
-		</div>
-		<label class="col-md-1 control-label">部门</label>
-		<div class="col-md-4">
-			<input type="hidden"  name="#(formModelName).org_id" class="form-control"  value="#(o?o.org_id:'')">
-			<input type="text"  name="#(formModelName).org_name" class="form-control"  value="#(o?o.org_name:'')" readonly>
-		</div>
-	</div>
-		<div class="form-group">
-			<label class="col-md-2 control-label"></label>
-			<div class="col-md-9">
-				<input type="text"  name="#(formModelName)." class="form-control"  value="#(o?o.:'')" #if(view=='detail') readonly #end>
-				<small class="help-block">请输入</small>
-			</div>
-		</div>
-	<div class="form-group">
-		<label class="col-md-2 control-label">备注</label>
-		<div class="col-md-9">
-			<textarea rows="8" name="#(formModelName).des" class="form-control" #if(view=='detail') readonly #end></textarea>
-			<small class="help-block">请输入备注</small>
-		</div>
-	</div>
-	#if(view=='edit')
-	<div class="panel-footer">
-		<div class="row">
-			<div class="col-sm-8 col-sm-offset-3">
-				<button class="btn btn-warning" type="reset" #if(view=='detail') disabled #end>重置</button>
-				<button class="btn btn-primary" type="submit" #if(view=='detail') disabled #end>保存</button>
-			</div>
-		</div>
-	</div>
-	#else
 
-	#end
+
+	<div class="col-md-12 col-lg-12">
+
+		<div class="panel-group accordion" id="accordion">
+			<div class="panel">
+
+				<!--Accordion title-->
+				<div class="panel-heading">
+					<h4 class="panel-title">
+						<a data-parent="#accordion" data-toggle="collapse" href="#collapseOne" style="text-align: center;background: #0ab1fc">个人基本资料</a>
+					</h4>
+				</div>
+
+				<!--Accordion content-->
+				<div class="panel-collapse collapse in" id="collapseOne">
+					<div class="panel-body">
+						<div class="form-group">
+							<label class="col-md-2 control-label">申请人</label>
+							<div class="col-md-4">
+								<input type="hidden"  name="#(formModelName).userid" class="form-control"  value="#(o?o.user_id:'')">
+								<input type="text"  name="#(formModelName).applyer_name" class="form-control"  value="#(o?o.applyer_name:'')" readonly>
+							</div>
+							<label class="col-md-1 control-label">部门</label>
+							<div class="col-md-4">
+								<input type="hidden"  name="#(formModelName).org_id" class="form-control"  value="#(o?o.org_id:'')">
+								<input type="text"  name="#(formModelName).org_name" class="form-control"  value="#(o?o.org_name:'')" readonly>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-md-2 control-label"></label>
+							<div class="col-md-9">
+								<small class="help-block">请输入</small>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-md-2 control-label">备注</label>
+							<div class="col-md-9">
+								<textarea rows="8" name="#(formModelName).des" class="form-control" #if(view=='detail') readonly #end></textarea>
+								<small class="help-block">请输入备注</small>
+							</div>
+						</div>
+						#if(view=='edit')
+						<div class="panel-footer">
+							<div class="row">
+								<div class="col-sm-8 col-sm-offset-3">
+									<button class="btn btn-warning" type="reset" #if(view=='detail') disabled #end>重置</button>
+									<button class="btn btn-primary" type="submit" #if(view=='detail') disabled #end>保存</button>
+								</div>
+							</div>
+						</div>
+						#else
+
+						#end
+					</div>
+				</div>
+			</div>
+			<div class="panel">
+
+				<!--Accordion title-->
+				<div class="panel-heading">
+					<h4 class="panel-title">
+						<a data-parent="#accordion" data-toggle="collapse" href="#collapseTwo"  style="text-align: center;background: #0ab1fc">教育/培训经历</a>
+					</h4>
+				</div>
+
+				<!--Accordion content-->
+				<div class="panel-collapse collapse" id="collapseTwo">
+					<div class="panel-body">
+						<mini-toolbar style="width:800px;border-bottom:0;padding:0px;">
+							<table style="width:100%;">
+								<tr>
+									<td style="width:100%;">
+										<a class="mini-button" iconCls="icon-add" onclick="addRow()" plain="true" tooltip="增加...">增加</a>
+										<a class="mini-button" iconCls="icon-remove" onclick="removeRow()" plain="true">删除</a>
+										<span class="separator"></span>
+										<a class="mini-button" iconCls="icon-save" onclick="saveData()" plain="true">保存</a>
+									</td>
+									<td style="white-space:nowrap;">
+										<input id="key" class="mini-textbox" emptyText="请输入姓名" style="width:150px;" onenter="onKeyEnter"/>
+										<a class="mini-button" onclick="search()">查询</a>
+									</td>
+								</tr>
+							</table>
+						</mini-toolbar>
+						<mini-datagrid id="datagrid1" class="mini-datagrid" style="width:800px;height:280px;"
+									   url="../data/AjaxService.aspx?method=SearchEmployees" idField="id"
+									   allowResize="true" pageSize="15"
+									   allowCellEdit="true" allowCellSelect="true" multiSelect="true"
+									   editNextOnEnterKey="true"  editNextRowCell="true"
+									   showSortIcon="true"  _dataField="data111"
+						>
+							<columns>
+								<column type="indexcolumn"></column>
+								<column type="checkcolumn"></column>
+								<column name="LoginName"  field="loginname" headerAlign="center" allowSort="true" width="150" >
+									员工帐号
+									<editor>
+										<input property="editor" class="mini-textbox" style="width:100%;" _minWidth="200" />
+									</editor>
+								</column>
+								<column field="age" width="100" allowSort="true">年龄
+									<editor>
+										<mini-spinner minValue="0" maxValue="200" value="25" style="width:100%;"></mini-spinner>
+									</editor>
+								</column>
+								<column name="birthday" field="birthday" width="100" allowSort="true" dateFormat="yyyy-MM-dd">出生日期
+									<editor>
+										<mini-datepicker style="width:100%;"></mini-datepicker>
+									</editor>
+								</column>
+								<column field="remarks" width="120" headerAlign="center" allowSort="true">备注
+									<mini-textarea property="editor" style="width:200px;" minWidth="200" minHeight="50"></mini-textarea>
+								</column>
+								<!--ComboBox：本地数据-->
+								<column type="comboboxcolumn" autoShowPopup="true" name="gender" field="gender" width="100" allowSort="true"  align="center" headerAlign="center">性别
+									<editor>
+										<input class="mini-combobox" style="width:100%;" data="Genders" />
+									</editor>
+								</column>
+								<!--ComboBox：远程数据-->
+								<column type="comboboxcolumn" field="country" width="100" headerAlign="center" >国家
+									<editor>
+										<mini-combobox style="width:100%;" url="../data/countrys.txt"></mini-combobox>
+									</editor>
+								</column>
+								<column type="checkboxcolumn" field="married" trueValue="1" falseValue="0" width="60" headerAlign="center">婚否</column>
+								<column type="radiobuttoncolumn" field="married" trueValue="1" falseValue="0" width="60" headerAlign="center">婚否</column>
+							</columns>
+						</mini-datagrid>
+					</div>
+				</div>
+			</div>
+			<div class="panel">
+
+				<!--Accordion title-->
+				<div class="panel-heading">
+					<h4 class="panel-title">
+						<a data-parent="#accordion" data-toggle="collapse" href="#collapseThree">Collapsible Group Item #3</a>
+					</h4>
+				</div>
+
+				<!--Accordion content-->
+				<div class="panel-collapse collapse" id="collapseThree">
+					<div class="panel-body">
+						Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven\'t heard of them accusamus labore sustainable VHS.
+					</div>
+				</div>
+			</div>
+		</div>
+		<!--===================================================-->
+		<!--End Default Accordion-->
+
+	</div>
+
 </form>

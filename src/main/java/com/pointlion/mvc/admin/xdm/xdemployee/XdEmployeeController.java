@@ -93,35 +93,6 @@ public class XdEmployeeController extends BaseController {
 		service.deleteByIds(ids);
     	renderSuccess("删除成功!");
     }
-    /***
-     * submit
-     */
-    public void startProcess(){
-    	String id = getPara("id");
-    	XdEmployee o = XdEmployee.dao.getById(id);
-//    	o.setIfSubmit(Constants.IF_SUBMIT_YES);
-//		String insId = wfservice.startProcess(id, o,null,null);
-//    	o.setProcInsId(insId);
-    	o.update();
-    	renderSuccess("submit success");
-    }
-    /***
-     * callBack
-     */
-    public void callBack(){
-    	String id = getPara("id");
-    	try{
-    		XdEmployee o = XdEmployee.dao.getById(id);
-//        	wfservice.callBack(o.getProcInsId());
-//        	o.setIfSubmit(Constants.IF_SUBMIT_NO);
-//        	o.setProcInsId("");
-        	o.update();
-    		renderSuccess("callback success");
-    	}catch(Exception e){
-    		e.printStackTrace();
-    		renderError("callback fail");
-    	}
-    }
 
 	
 }

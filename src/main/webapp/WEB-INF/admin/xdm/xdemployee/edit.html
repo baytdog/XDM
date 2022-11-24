@@ -4,12 +4,13 @@
 		            <div class="panel-heading">
 		                <h3 class="panel-title" style="text-align: right;">
 		                	#@installPJaxGoBackBtn()
-							#@installFlowHisBtn(defId,procInsId)
 							#@installAttachment(o?o.id:'')
 		                </h3>
 		            </div>
-					#@buildFormPanelContainer("名片印刷申请单","/WEB-INF/admin/oa/apply/businesscard/editForm.html")
+					#@buildFormPanelContainer("名片印刷申请单","/WEB-INF/admin/xdm/xdemployee/editForm.html")
 					#@buildWorkFlowHisTable(procInsId,hislist)
+
+
 		        </div>
 		    </div>
 	</div>
@@ -35,4 +36,93 @@
 	            return false;//阻止表单跳转
 	        });
 		});
+	</script>
+	<script>
+
+
+		var Genders = [{ id: 1, text: '男' }, { id: 2, text: '女'}];
+
+		mini.parse();
+
+		var grid = mini.get("datagrid1");
+		grid.load();
+
+
+		var menu = new ColumnsMenu(grid);
+
+		//////////////////////////////////////////////////////
+
+		function search() {
+			var key = mini.get("key").getValue();
+
+			grid.load({ key: key });
+		}
+
+		function onKeyEnter(e) {
+			search();
+		}
+
+		function addRow() {
+			var newRow = { name: "New Row" };
+			grid.addRow(newRow, 0);
+
+			grid.beginEditCell(newRow, "LoginName");
+		}
+		function removeRow() {
+			var rows = grid.getSelecteds();
+			if (rows.length > 0) {
+
+				grid.removeRows(rows, true);
+			}
+		}
+		function saveData() {
+
+			saveGrid(grid, {
+				url: "../data/AjaxService.aspx?method=SaveEmployees"
+			});
+
+//            saveGrid(grid, {
+//                url: "../data/AjaxService.aspx?method=SaveEmployees",
+//                callback: function (success, result) {
+//
+//                }
+//            });
+		}
+
+
+		grid.on("celleditenter", function (e) {
+			var index = grid.indexOf(e.record);
+			if (index == grid.getData().length - 1) {
+				var row = {};
+				grid.addRow(row);
+			}
+		});
+
+		grid.on("beforeload", function (e) {
+			if (grid.getChanges().length > 0) {
+				if (confirm("有增删改的数据未保存，是否取消本次操作？")) {
+					e.cancel = true;
+				}
+			}
+		});
+
+
+		//        grid.on("cellcommitedit", function (e) {
+		//            if (e.field == "loginname") {
+		//                if (e.value == "111") {
+		//                    alert("不允许为111");
+		//                    e.cancel = true;
+		//                }
+		//            }
+		//        });
+
+		//        grid.on('beforeload', function (e) {
+		//            if (grid.getChanges().length > 0) {
+		//                e.cancel = true;
+		//                alert('有未保存的数据');
+		//            }
+		//        });
+
+	</script>
+
 	</script>
