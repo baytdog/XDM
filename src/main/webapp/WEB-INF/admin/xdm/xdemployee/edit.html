@@ -4,16 +4,15 @@
 		            <div class="panel-heading">
 		                <h3 class="panel-title" style="text-align: right;">
 		                	#@installPJaxGoBackBtn()
-							#@installAttachment(o?o.id:'')
 		                </h3>
 		            </div>
-					#@buildFormPanelContainer("名片印刷申请单","/WEB-INF/admin/xdm/xdemployee/editForm.html")
-					#@buildWorkFlowHisTable(procInsId,hislist)
-
+					#include("editForm.html")
 
 		        </div>
 		    </div>
 	</div>
+
+
 	<script>
 		function save(){
 			var data = common_ajax.ajaxFunc("/admin/xdemployee/save", $('#editForm').serialize(), "json", null);
@@ -37,57 +36,75 @@
 	        });
 		});
 	</script>
-	<script>
 
+	<link href="#(ctx)/common/plugins/jquery-ui/scripts/miniui/themes/default/miniui.css" rel="stylesheet" type="text/css" />
 
-		var Genders = [{ id: 1, text: '男' }, { id: 2, text: '女'}];
+	<script type="text/javascript">
+
+		// var Genders = [{ id: 1, text: '男' }, { id: 2, text: '女'}];
 
 		mini.parse();
 
 		var grid = mini.get("datagrid1");
-		grid.load();
+		var grid2 = mini.get("datagrid2");
+		//grid.load();
+
+		var test=[{ "id":"1",
+			"indate":"2007-09-01",
+			"outdate":"2007-09-01",
+			"jg":"3m Co",
+			"zy":"large",
+			"xl":"1"}]
+		grid.setData(test);
+
+		var test2=[{ "id":"1",
+			"entrydate":"2007-09-01",
+			"departdate":"2007-09-01",
+			"serviceunit":"3m Co",
+			"job":"large",
+			"addr":"1"}]
+		grid2.setData(test2);
 
 
-		var menu = new ColumnsMenu(grid);
 
-		//////////////////////////////////////////////////////
+		/*function  ttt(){
+			console.log("1111")
+			console.log(grid.getData())
+		}*/
 
-		function search() {
-			var key = mini.get("key").getValue();
+		//var menu = new ColumnsMenu(grid);
 
-			grid.load({ key: key });
-		}
-
-		function onKeyEnter(e) {
-			search();
-		}
-
-		function addRow() {
+		function addRow1() {
 			var newRow = { name: "New Row" };
 			grid.addRow(newRow, 0);
 
-			grid.beginEditCell(newRow, "LoginName");
+			grid.beginEditCell(newRow, "indate");
 		}
-		function removeRow() {
+		function addRow2() {
+			var newRow = { name: "New Row" };
+			grid2.addRow(newRow, 0);
+
+			grid2.beginEditCell(newRow, "entrydate");
+		}
+		function removeRow1() {
 			var rows = grid.getSelecteds();
 			if (rows.length > 0) {
-
 				grid.removeRows(rows, true);
 			}
 		}
-		function saveData() {
-
-			saveGrid(grid, {
-				url: "../data/AjaxService.aspx?method=SaveEmployees"
-			});
-
-//            saveGrid(grid, {
-//                url: "../data/AjaxService.aspx?method=SaveEmployees",
-//                callback: function (success, result) {
-//
-//                }
-//            });
+		function removeRow2() {
+			var rows = grid2.getSelecteds();
+			if (rows.length > 0) {
+				grid2.removeRows(rows, true);
+			}
 		}
+		// function saveData() {
+		//
+		// 	saveGrid(grid, {
+		// 		url: "../data/AjaxService.aspx?method=SaveEmployees"
+		// 	});
+		//
+		// }
 
 
 		grid.on("celleditenter", function (e) {
@@ -95,6 +112,13 @@
 			if (index == grid.getData().length - 1) {
 				var row = {};
 				grid.addRow(row);
+			}
+		});
+		grid2.on("celleditenter", function (e) {
+			var index = grid2.indexOf(e.record);
+			if (index == grid2.getData().length - 1) {
+				var row = {};
+				grid2.addRow(row);
 			}
 		});
 
@@ -105,24 +129,12 @@
 				}
 			}
 		});
-
-
-		//        grid.on("cellcommitedit", function (e) {
-		//            if (e.field == "loginname") {
-		//                if (e.value == "111") {
-		//                    alert("不允许为111");
-		//                    e.cancel = true;
-		//                }
-		//            }
-		//        });
-
-		//        grid.on('beforeload', function (e) {
-		//            if (grid.getChanges().length > 0) {
-		//                e.cancel = true;
-		//                alert('有未保存的数据');
-		//            }
-		//        });
-
+		grid2.on("beforeload", function (e) {
+			if (grid2.getChanges().length > 0) {
+				if (confirm("有增删改的数据未保存，是否取消本次操作？")) {
+					e.cancel = true;
+				}
+			}
+		});
 	</script>
 
-	</script>

@@ -9,12 +9,12 @@ import com.jfinal.plugin.activerecord.IBean;
 @SuppressWarnings("serial")
 public abstract class BaseXdEmployee<M extends BaseXdEmployee<M>> extends Model<M> implements IBean {
 
-	public void setId(Integer id) {
+	public void setId(String id) {
 		set("id", id);
 	}
 	
-	public Integer getId() {
-		return getInt("id");
+	public String getId() {
+		return getStr("id");
 	}
 
 	public void setName(String name) {
@@ -274,11 +274,11 @@ public abstract class BaseXdEmployee<M extends BaseXdEmployee<M>> extends Model<
 	}
 
 	public void setCertificates(String certificates) {
-		set("certificates ", certificates);
+		set("certificates", certificates);
 	}
 	
 	public String getCertificates() {
-		return getStr("certificates ");
+		return getStr("certificates");
 	}
 
 	public void setContractstartdate(String contractstartdate) {
@@ -346,7 +346,7 @@ public abstract class BaseXdEmployee<M extends BaseXdEmployee<M>> extends Model<
 	}
 
 	public void setHardstaff(Integer hardstaff) {
-		set("hardstaff ", hardstaff);
+		set("hardstaff", hardstaff);
 	}
 	
 	public Integer getHardstaff() {
@@ -399,6 +399,70 @@ public abstract class BaseXdEmployee<M extends BaseXdEmployee<M>> extends Model<
 	
 	public String getBackup3() {
 		return getStr("backup3");
+	}
+
+	public void setEdubg1(String edubg1) {
+		set("edubg1", edubg1);
+	}
+	
+	public String getEdubg1() {
+		return getStr("edubg1");
+	}
+
+	public void setSchool1(String school1) {
+		set("school1", school1);
+	}
+	
+	public String getSchool1() {
+		return getStr("school1");
+	}
+
+	public void setMajor1(String major1) {
+		set("major1", major1);
+	}
+	
+	public String getMajor1() {
+		return getStr("major1");
+	}
+
+	public void setEdubg2(String edubg2) {
+		set("edubg2", edubg2);
+	}
+	
+	public String getEdubg2() {
+		return getStr("edubg2");
+	}
+
+	public void setSchool2(String school2) {
+		set("school2", school2);
+	}
+	
+	public String getSchool2() {
+		return getStr("school2");
+	}
+
+	public void setMajor2(String major2) {
+		set("major2", major2);
+	}
+	
+	public String getMajor2() {
+		return getStr("major2");
+	}
+
+	public void setSaladjrecord(String saladjrecord) {
+		set("saladjrecord", saladjrecord);
+	}
+	
+	public String getSaladjrecord() {
+		return getStr("saladjrecord");
+	}
+
+	public void setChrecord(String chrecord) {
+		set("chrecord", chrecord);
+	}
+	
+	public String getChrecord() {
+		return getStr("chrecord");
 	}
 
 }

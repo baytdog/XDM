@@ -9,7 +9,7 @@
 									<div class="bars pull-left form-group">
 										表名：<select id="selectTable" class="selectpicker" onchange="changeTable()">
 											#for(t:tableList)
-												<option value="#(t.TABLE_NAME)">#(t.TABLE_NAME)</option>
+												<option value="#(t.table_name)">#(t.table_name)</option>
 											#end
 										</select>
 										<a class="btn btn-primary data-toolbar" onclick="doGenerate()" href="javascript:void(0);"><i class="demo-pli-add"></i>代码生成</a>
