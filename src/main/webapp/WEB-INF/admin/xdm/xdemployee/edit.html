@@ -137,4 +137,28 @@
 			}
 		});
 	</script>
+	<script>
+
+		$(function(){
+			//alert("123")
+			var employeeId=$("#employeeId").val();
+			console.log(employeeId);
+			console.log(grid.getData())
+
+			// String busid = getPara("busid");
+			// Integer c = service.getBusinessAttachmentCount(busid);
+			// renderSuccess(c, "查询成功");
+			//
+			var data = common_ajax.ajaxFunc("/admin/xd/xdedutrain/getEduTrainList", {"employeeId":employeeId}, "json", null);
+
+			grid.setData(data);
+			data = common_ajax.ajaxFunc("/admin/xd/xdworkexper/getWorkExperList", {"employeeId":employeeId}, "json", null);
+
+			grid2.setData(data);
+			// if(data.success){
+			// 	$("#businessAttachmentCount").html(data.data);
+			// }
+		});
+
+	</script>
 

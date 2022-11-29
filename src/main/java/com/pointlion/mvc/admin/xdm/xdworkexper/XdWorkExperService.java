@@ -7,9 +7,12 @@ import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.plugin.activerecord.Record;
 import com.jfinal.plugin.activerecord.tx.Tx;
 import com.pointlion.mvc.common.model.SysRoleOrg;
+import com.pointlion.mvc.common.model.XdEdutrain;
 import com.pointlion.mvc.common.model.XdWorkExper;
 import com.pointlion.mvc.common.utils.DateUtil;
 import com.pointlion.plugin.shiro.ShiroKit;
+
+import java.util.List;
 
 public class XdWorkExperService{
 	public static final XdWorkExperService me = new XdWorkExperService();
@@ -54,5 +57,11 @@ public class XdWorkExperService{
     		o.delete();
     	}
 	}
-	
+
+    public List<XdWorkExper> getWorkExperList(String employeeId) {
+		String sql="select * from "+TABLE_NAME;
+//		String sql="select * from "+TABLE_NAME+"where eid='"+employeeId+"'";
+		List<XdWorkExper> list = XdWorkExper.dao.find(sql);
+		return  list;
+    }
 }

@@ -27,7 +27,7 @@ public class XdEmployeeService{
 	 */
 	public Page<Record> getPage(int pnum,int psize,String startTime,String endTime,String applyUser){
 		String userId = ShiroKit.getUserId();
-		String sql  = " from "+TABLE_NAME+" o LEFT JOIN act_hi_procinst p ON o.proc_ins_id=p.ID_  where 1=1";
+		String sql  = " from "+TABLE_NAME+" o where 1=1";
 		sql = sql + SysRoleOrg.dao.getRoleOrgSql(userId) ;
 		if(StrKit.notBlank(startTime)){
 			sql = sql + " and o.create_time>='"+ DateUtil.formatSearchTime(startTime,"0")+"'";
@@ -35,10 +35,10 @@ public class XdEmployeeService{
 		if(StrKit.notBlank(endTime)){
 			sql = sql + " and o.create_time<='"+DateUtil.formatSearchTime(endTime,"1")+"'";
 		}
-		if(StrKit.notBlank(applyUser)){
-			sql = sql + " and o.applyer_name like '%"+applyUser+"%'";
-		}
-		sql = sql + " order by o.create_time desc";
+//		if(StrKit.notBlank(applyUser)){
+//			sql = sql + " and o.applyer_name like '%"+applyUser+"%'";
+//		}
+		sql = sql + " order by o.ctime desc";
 		return Db.paginate(pnum, psize, " select * ", sql);
 	}
 	

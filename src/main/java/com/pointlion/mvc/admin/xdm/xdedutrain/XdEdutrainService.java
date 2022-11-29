@@ -11,6 +11,8 @@ import com.pointlion.plugin.shiro.ShiroKit;
 import com.pointlion.mvc.common.model.SysRoleOrg;
 import com.pointlion.mvc.common.utils.DateUtil;
 
+import java.util.List;
+
 public class XdEdutrainService{
 	public static final XdEdutrainService me = new XdEdutrainService();
 	public static final String TABLE_NAME = XdEdutrain.tableName;
@@ -27,7 +29,7 @@ public class XdEdutrainService{
 	 */
 	public Page<Record> getPage(int pnum,int psize,String startTime,String endTime,String applyUser){
 		String userId = ShiroKit.getUserId();
-		String sql  = " from "+TABLE_NAME+" o LEFT JOIN act_hi_procinst p ON o.proc_ins_id=p.ID_  where 1=1";
+		String sql  = " from "+TABLE_NAME+" o  where 1=1";
 		sql = sql + SysRoleOrg.dao.getRoleOrgSql(userId) ;
 		if(StrKit.notBlank(startTime)){
 			sql = sql + " and o.create_time>='"+ DateUtil.formatSearchTime(startTime,"0")+"'";
@@ -54,5 +56,12 @@ public class XdEdutrainService{
     		o.delete();
     	}
 	}
-	
+
+	public List<XdEdutrain> getEduTrainList(String  employeeId){
+		String sql="select * from "+TABLE_NAME;
+//		String sql="select * from "+TABLE_NAME+"where eid='"+employeeId+"'";
+		//List<XdEdutrain> query = Db.query(sql);
+		List<XdEdutrain> list = XdEdutrain.dao.find(sql);
+		return  list;
+	}
 }

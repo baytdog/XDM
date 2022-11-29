@@ -1,6 +1,7 @@
 package com.pointlion.mvc.admin.xdm.xdedutrain;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.jfinal.aop.Before;
@@ -18,12 +19,13 @@ import com.pointlion.mvc.common.utils.Constants;
 import com.pointlion.mvc.admin.oa.common.OAConstants;
 import com.pointlion.mvc.common.utils.DateUtil;
 import com.pointlion.plugin.shiro.ShiroKit;
-
+import net.sf.json.JSON;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 
 
 public class XdEdutrainController extends BaseController {
 	public static final XdEdutrainService service = XdEdutrainService.me;
-	public static WorkFlowService wfservice = WorkFlowService.me;
 	/***
 	 * get list page
 	 */
@@ -93,35 +95,16 @@ public class XdEdutrainController extends BaseController {
 		service.deleteByIds(ids);
     	renderSuccess("删除成功!");
     }
-    /***
-     * submit
-     */
-    public void startProcess(){
-    	String id = getPara("id");
-    	XdEdutrain o = XdEdutrain.dao.getById(id);
-//    	o.setIfSubmit(Constants.IF_SUBMIT_YES);
-//		String insId = wfservice.startProcess(id, o,null,null);
-//    	o.setProcInsId(insId);
-    	o.update();
-    	renderSuccess("submit success");
-    }
-    /***
-     * callBack
-     */
-    public void callBack(){
-    	String id = getPara("id");
-    	try{
-    		XdEdutrain o = XdEdutrain.dao.getById(id);
-//        	wfservice.callBack(o.getProcInsId());
-//        	o.setIfSubmit(Constants.IF_SUBMIT_NO);
-//        	o.setProcInsId("");
-//        	o.update();
-    		renderSuccess("callback success");
-    	}catch(Exception e){
-    		e.printStackTrace();
-    		renderError("callback fail");
-    	}
-    }
 
-	
+	/**
+	 * 查询员工对应的教育培训信息
+	 * 2022年11月29日16:25:42
+	 */
+	public void getEduTrainList(){
+		String employeeId = getPara("employeeId");
+		List<XdEdutrain> list = service.getEduTrainList(employeeId);
+		renderJson(list);
+	}
+
+
 }

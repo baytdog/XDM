@@ -7,10 +7,12 @@ import com.pointlion.mvc.admin.oa.workflow.WorkFlowService;
 import com.pointlion.mvc.common.base.BaseController;
 import com.pointlion.mvc.common.model.SysOrg;
 import com.pointlion.mvc.common.model.SysUser;
+import com.pointlion.mvc.common.model.XdEdutrain;
 import com.pointlion.mvc.common.model.XdWorkExper;
 import com.pointlion.mvc.common.utils.StringUtil;
 import com.pointlion.plugin.shiro.ShiroKit;
 
+import java.util.List;
 
 
 public class XdWorkExperController extends BaseController {
@@ -85,35 +87,13 @@ public class XdWorkExperController extends BaseController {
 		service.deleteByIds(ids);
     	renderSuccess("删除成功!");
     }
-    /***
-     * submit
-     */
-    public void startProcess(){
-    	String id = getPara("id");
-    	XdWorkExper o = XdWorkExper.dao.getById(id);
-//    	o.setIfSubmit(Constants.IF_SUBMIT_YES);
-//		String insId = wfservice.startProcess(id, o,null,null);
-//    	o.setProcInsId(insId);
-    	o.update();
-    	renderSuccess("submit success");
-    }
-    /***
-     * callBack
-     */
-    public void callBack(){
-    	String id = getPara("id");
-    	try{
-    		XdWorkExper o = XdWorkExper.dao.getById(id);
-//        	wfservice.callBack(o.getProcInsId());
-//        	o.setIfSubmit(Constants.IF_SUBMIT_NO);
-//        	o.setProcInsId("");
-        	o.update();
-    		renderSuccess("callback success");
-    	}catch(Exception e){
-    		e.printStackTrace();
-    		renderError("callback fail");
-    	}
-    }
+	public void getWorkExperList(){
+		System.out.println("2222222222222");
+		String employeeId = getPara("employeeId");
+		List<XdWorkExper> list = service.getWorkExperList(employeeId);
+		renderJson(list);
+	}
 
-	
+
+
 }

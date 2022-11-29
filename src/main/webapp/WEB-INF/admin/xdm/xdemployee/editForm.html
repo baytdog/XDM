@@ -1,5 +1,5 @@
 <form id="editForm" class="panel-body form-horizontal form-padding">
-	<input type="hidden"  name="#(formModelName).id" class="form-control" value="#(o?o.id:'')">
+	<input  id="employeeId" type="hidden"  name="#(formModelName).id" class="form-control" value="#(o?o.id:'')">
 
 
 	<div class="col-md-12 col-lg-12">
@@ -195,31 +195,31 @@
 							<columns>
 								<column type="indexcolumn"></column>
 								<column type="checkcolumn"></column>
-								<column name="birthday" field="indate" width="100"   dateFormat="yyyy-MM-dd">入学日期
+								<column name="enrolldate" field="enrolldate" width="100"   dateFormat="yyyy-MM-dd">入学日期
 									<editor>
 										<mini-datepicker style="width:100%;"></mini-datepicker>
 									</editor>
 								</column>
-								<column name="birthday" field="outdate" width="100"   dateFormat="yyyy-MM-dd">毕业日期
+								<column name="graduatdate" field="graduatdate" width="100"   dateFormat="yyyy-MM-dd">毕业日期
 									<editor>
 										<mini-datepicker style="width:100%;"></mini-datepicker>
 									</editor>
 								</column>
 
 
-								<column name="LoginName"  field="jg" headerAlign="center"   width="150" >
+								<column name="trainOrgname"  field="trainOrgname" headerAlign="center"   width="150" >
 									学校/培训机构名称
 									<editor>
 										<input property="editor" class="mini-textbox" style="width:100%;" _minWidth="200" />
 									</editor>
 								</column>
-								<column name="LoginName"  field="zy" headerAlign="center"   width="150" >
+								<column name="major"  field="major" headerAlign="center"   width="150" >
 									专业
 									<editor>
 										<input property="editor" class="mini-textbox" style="width:100%;" _minWidth="200" />
 									</editor>
 								</column>
-								<column name="LoginName"  field="xl" headerAlign="center"  width="150" >
+								<column name="edubg"  field="edubg" headerAlign="center"  width="150" >
 									学历
 									<editor>
 										<input property="editor" class="mini-textbox" style="width:100%;" _minWidth="200" />
@@ -258,31 +258,31 @@
 							<columns>
 								<column type="indexcolumn"></column>
 								<column type="checkcolumn"></column>
-								<column name="birthday" field="entrydate" width="100"   dateFormat="yyyy-MM-dd">入职日期
+								<column name="entrydate" field="entrydate" width="100"   dateFormat="yyyy-MM-dd">入职日期
 									<editor>
 										<mini-datepicker style="width:100%;"></mini-datepicker>
 									</editor>
 								</column>
-								<column name="birthday" field="departdate" width="100"   dateFormat="yyyy-MM-dd">离职日期
+								<column name="departdate" field="departdate" width="100"   dateFormat="yyyy-MM-dd">离职日期
 									<editor>
 										<mini-datepicker style="width:100%;"></mini-datepicker>
 									</editor>
 								</column>
 
 
-								<column name="LoginName"  field="serviceunit" headerAlign="center"   width="150" >
+								<column name="serviceunit"  field="serviceunit" headerAlign="center"   width="150" >
 									服务单位名称
 									<editor>
 										<input property="editor" class="mini-textbox" style="width:100%;" _minWidth="200" />
 									</editor>
 								</column>
-								<column name="LoginName"  field="job" headerAlign="center"   width="150" >
+								<column name="job"  field="job" headerAlign="center"   width="150" >
 									职务
 									<editor>
 										<input property="editor" class="mini-textbox" style="width:100%;" _minWidth="200" />
 									</editor>
 								</column>
-								<column name="LoginName"  field="addr" headerAlign="center"  width="150" >
+								<column name="addr"  field="addr" headerAlign="center"  width="150" >
 									地点
 									<editor>
 										<input property="editor" class="mini-textbox" style="width:100%;" _minWidth="200" />

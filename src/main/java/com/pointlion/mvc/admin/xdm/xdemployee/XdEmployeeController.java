@@ -2,7 +2,9 @@ package com.pointlion.mvc.admin.xdm.xdemployee;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
+import com.fasterxml.uuid.impl.UUIDUtil;
 import com.jfinal.aop.Before;
 import com.jfinal.kit.StrKit;
 import com.jfinal.plugin.activerecord.Page;
@@ -73,13 +75,17 @@ public class XdEmployeeController extends BaseController {
 //    			}
     		}
     	}else{
-    		SysUser user = SysUser.dao.findById(ShiroKit.getUserId());
-    		SysOrg org = SysOrg.dao.findById(user.getOrgid());
+//    		SysUser user = SysUser.dao.findById(ShiroKit.getUserId());
+//    		SysOrg org = SysOrg.dao.findById(user.getOrgid());
 //			o.setOrgId(org.getId());
 //			o.setOrgName(org.getName());
 //			o.setUserid(user.getId());
 //			o.setApplyerName(user.getName());
-    	}
+//			 UUIDUtil.uuid().toString();
+			String uuid = UuidUtil.getUUID();
+			System.out.println(uuid);
+			o.setId(uuid);
+		}
 		setAttr("o", o);
     	setAttr("formModelName",StringUtil.toLowerCaseFirstOne(XdEmployee.class.getSimpleName()));
 		renderIframe("edit.html");
