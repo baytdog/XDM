@@ -58,9 +58,8 @@ public class XdEdutrainService{
 	}
 
 	public List<XdEdutrain> getEduTrainList(String  employeeId){
-		String sql="select * from "+TABLE_NAME;
-//		String sql="select * from "+TABLE_NAME+"where eid='"+employeeId+"'";
-		//List<XdEdutrain> query = Db.query(sql);
+		//String sql="select * from "+TABLE_NAME;
+		String sql="select * from "+TABLE_NAME+" where eid='"+employeeId+"'";
 		List<XdEdutrain> list = XdEdutrain.dao.find(sql);
 		return  list;
 	}

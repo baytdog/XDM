@@ -1,13 +1,7 @@
 	<div id="page-content">
 			<div class="col-lg-12">
 		        <div class="panel">
-		            <div class="panel-heading">
-		                <h3 class="panel-title" style="text-align: right;">
-		                	#@installPJaxGoBackBtn()
-		                </h3>
-		            </div>
 					#include("editForm.html")
-
 		        </div>
 		    </div>
 	</div>
@@ -15,10 +9,16 @@
 
 	<script>
 		function save(){
-			var data = common_ajax.ajaxFunc("/admin/xdemployee/save", $('#editForm').serialize(), "json", null);
+			let gridData1 = grid.getData();
+			let gridData2 = grid2.getData();
+			console.log(gridData1);
+			console.log(gridData2);
+			console.log(mini.decode(gridData1));
+
+			var data = common_ajax.ajaxFunc("/admin/xd/xdemployee/save",$('#editForm').serialize()+"&gridData1="+mini.encode(gridData1)+"&gridData2="+mini.encode(gridData2), "json", null);
 			if(data.success){
 				pointLion.alertMsg("保存成功!" , "success" , "small" , function(){
-					location.href = ctx+'/admin/xdemployee/getListPage';//跳转到列表页
+					location.href = ctx+'/admin/xd/xdemployee/getListPage';//跳转到列表页
 				},data);
 			}else{
 				pointLion.alertMsg(data.message , "danger" , "small" , function(){
@@ -47,24 +47,6 @@
 
 		var grid = mini.get("datagrid1");
 		var grid2 = mini.get("datagrid2");
-		//grid.load();
-
-		var test=[{ "id":"1",
-			"indate":"2007-09-01",
-			"outdate":"2007-09-01",
-			"jg":"3m Co",
-			"zy":"large",
-			"xl":"1"}]
-		grid.setData(test);
-
-		var test2=[{ "id":"1",
-			"entrydate":"2007-09-01",
-			"departdate":"2007-09-01",
-			"serviceunit":"3m Co",
-			"job":"large",
-			"addr":"1"}]
-		grid2.setData(test2);
-
 
 
 		/*function  ttt(){
@@ -75,13 +57,13 @@
 		//var menu = new ColumnsMenu(grid);
 
 		function addRow1() {
-			var newRow = { name: "New Row" };
+			var newRow = { name: "New Row",id:"",enrolldate:"" ,graduatdate:"",trainOrgname:"",major:"",edubg:""};
 			grid.addRow(newRow, 0);
 
-			grid.beginEditCell(newRow, "indate");
+			grid.beginEditCell(newRow, "enrolldate");
 		}
 		function addRow2() {
-			var newRow = { name: "New Row" };
+			var newRow = { name: "New Row",id:"",entrydate:"" ,departdate:"",serviceunit:"",job:"",addr:""};
 			grid2.addRow(newRow, 0);
 
 			grid2.beginEditCell(newRow, "entrydate");
@@ -144,11 +126,6 @@
 			var employeeId=$("#employeeId").val();
 			console.log(employeeId);
 			console.log(grid.getData())
-
-			// String busid = getPara("busid");
-			// Integer c = service.getBusinessAttachmentCount(busid);
-			// renderSuccess(c, "查询成功");
-			//
 			var data = common_ajax.ajaxFunc("/admin/xd/xdedutrain/getEduTrainList", {"employeeId":employeeId}, "json", null);
 
 			grid.setData(data);

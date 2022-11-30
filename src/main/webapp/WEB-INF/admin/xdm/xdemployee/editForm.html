@@ -1,20 +1,13 @@
 <form id="editForm" class="panel-body form-horizontal form-padding">
 	<input  id="employeeId" type="hidden"  name="#(formModelName).id" class="form-control" value="#(o?o.id:'')">
-
-
-	<div class="col-md-12 col-lg-12">
-
+	<div class="col-md-12 col-lg-12"  >
 		<div class="panel-group accordion" id="accordion">
 			<div class="panel">
-
-				<!--Accordion title-->
 				<div class="panel-heading">
 					<h4 class="panel-title">
 						<a data-parent="#accordion" data-toggle="collapse" href="#collapseOne" style="text-align: center;background: #0ab1fc">个人基本资料</a>
 					</h4>
 				</div>
-
-				<!--Accordion content-->
 				<div class="panel-collapse collapse in" id="collapseOne">
 					<div class="panel-body">
 						<div class="form-group">
@@ -141,42 +134,15 @@
 								<input type="text"  name="#(formModelName).issoldier" class="form-control"  value="#(o?o.issoldier:'')"  >
 							</div>
 						</div>
-						<!--<div class="form-group">
-							<label class="col-md-2 control-label"></label>
-							<div class="col-md-9">
-								<small class="help-block">请输入</small>
-							</div>
-						</div>
-						<div class="form-group">
-							<label class="col-md-2 control-label">备注</label>
-							<div class="col-md-9">
-								<textarea rows="8" name="#(formModelName).des" class="form-control" #if(view=='detail') readonly #end></textarea>
-								<small class="help-block">请输入备注</small>
-							</div>
-						</div>-->
-						#if(view=='edit')
-					<!--	<div class="panel-footer">
-							<div class="row">
-								<div class="col-sm-8 col-sm-offset-3">
-									<button class="btn btn-warning" type="reset" #if(view=='detail') disabled #end>重置</button>
-									<button class="btn btn-primary" type="submit" #if(view=='detail') disabled #end>保存</button>
-								</div>
-							</div>
-						</div>-->
-						#else
-
-						#end
 					</div>
 				</div>
 			</div>
 			<div class="panel">
-
 				<div class="panel-heading">
 					<h4 class="panel-title">
 						<a data-parent="#accordion" data-toggle="collapse" href="#collapseTwo"  style="text-align: center;background: #0ab1fc">教育/培训经历</a>
 					</h4>
 				</div>
-
 				<div class="panel-collapse collapse" id="collapseTwo">
 					<div class="panel-body">
 						<div class="row">
@@ -190,7 +156,7 @@
 									   url="" idField="id"  allowResize="true" pageSize="15"
 									   allowCellEdit="true" allowCellSelect="true" multiSelect="false"
 									   editNextOnEnterKey="true"  editNextRowCell="true"
-									   showSortIcon="true"  _dataField="data111"  showPager="false" allowSortColumn="false"
+									   showSortIcon="true"  _dataField="data"  showPager="false" allowSortColumn="false"
 						>
 							<columns>
 								<column type="indexcolumn"></column>
@@ -231,7 +197,6 @@
 				</div>
 			</div>
 			<div class="panel">
-
 				<div class="panel-heading">
 					<h4 class="panel-title">
 						<a data-parent="#accordion" data-toggle="collapse" href="#collapseThree" style="text-align: center;background: #0ab1fc">工作经历</a>
@@ -252,7 +217,7 @@
 									   allowResize="true" pageSize="15"
 									   allowCellEdit="true" allowCellSelect="true" multiSelect="false"
 									   editNextOnEnterKey="true"  editNextRowCell="true"
-									   showSortIcon="true"  _dataField="data111"
+									   showSortIcon="true"  _dataField="data"
 									   showPager="false" allowSortColumn="false"
 						>
 							<columns>
@@ -439,5 +404,14 @@
 		</div>
 
 	</div>
+	#if(view=='edit')
+		<div class="col-sm-12" style="text-align: center;">
+			<!--<button class="btn btn-warning" type="reset" #if(view=='detail') disabled #end>重置</button>-->
+			<button class="btn btn-primary" type="submit" #if(view=='detail') disabled #end>保存</button>
+			<button class="btn btn-primary" type="button" onclick="window.history.back();" >返回</button>
+		</div>
 
+	#else
+
+	#end
 </form>

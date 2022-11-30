@@ -1,26 +1,21 @@
 package com.pointlion.mvc.admin.xdm.xdemployee;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-
-import com.fasterxml.uuid.impl.UUIDUtil;
-import com.jfinal.aop.Before;
+import com.google.gson.JsonArray;
 import com.jfinal.kit.StrKit;
 import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.plugin.activerecord.Record;
-import com.pointlion.mvc.common.base.BaseController;
 import com.pointlion.mvc.admin.oa.workflow.WorkFlowService;
-import com.pointlion.mvc.common.utils.StringUtil;
+import com.pointlion.mvc.common.base.BaseController;
+import com.pointlion.mvc.common.model.XdEdutrain;
 import com.pointlion.mvc.common.model.XdEmployee;
-import com.pointlion.mvc.common.model.SysUser;
-import com.pointlion.mvc.common.model.SysOrg;
-import com.pointlion.mvc.common.utils.UuidUtil;
-import com.pointlion.mvc.common.utils.Constants;
-import com.pointlion.mvc.admin.oa.common.OAConstants;
+import com.pointlion.mvc.common.model.XdWorkExper;
 import com.pointlion.mvc.common.utils.DateUtil;
+import com.pointlion.mvc.common.utils.JSONUtil;
+import com.pointlion.mvc.common.utils.StringUtil;
+import com.pointlion.mvc.common.utils.UuidUtil;
 import com.pointlion.plugin.shiro.ShiroKit;
 
+import java.util.List;
 
 
 public class XdEmployeeController extends BaseController {
@@ -48,7 +43,55 @@ public class XdEmployeeController extends BaseController {
      * save data
      */
     public void save(){
-    	XdEmployee o = getModel(XdEmployee.class);
+
+		String gridData1 = getPara("gridData1");
+		String gridData2 = getPara("gridData2");
+		System.out.println(gridData1);
+		System.out.println("=============");
+		System.out.println(gridData2);
+		XdEmployee o = getModel(XdEmployee.class);
+		System.out.println(o);
+
+		String id = o.getId();
+		XdEmployee employee = XdEmployee.dao.findById(id);
+		if(employee != null){
+
+		}else{
+			o.setId(UuidUtil.getUUID());
+    		o.setCtime(DateUtil.getCurrentTime());
+    		o.setCuser(ShiroKit.getUserId());
+    		//o.save();
+    		if(!"".equals(gridData1)){
+
+				/* JSONArray jsonArray=new  JSONArray(gridData1);
+				for (int i = 0; i < jsonArray.size(); i++) {
+					XdEdutrain xdEdutrain = jsonArray.get(i, XdEdutrain.class);
+					XdWorkExper workExper = jsonArray.get(i, XdWorkExper.class,true);
+					System.out.println(xdEdutrain);
+				}*/
+
+				/*JSONObject json =new JSONObject();
+				JSONArray jsonArray = json.getJSONArray(gridData1);*/
+				List<XdEdutrain> list = JSONUtil.jsonToBeanList(gridData1, XdEdutrain.class);
+				for (int i = 0; i < list.size(); i++) {
+
+					System.out.println(list.get(i));
+				}
+
+
+			}
+    		/*if(!"".equals(gridData2)){
+
+			}*/
+
+
+		}
+
+
+
+
+
+
 //    	if(StrKit.notBlank(o.getId())){
 //    		o.update();
 //    	}else{
@@ -56,8 +99,8 @@ public class XdEmployeeController extends BaseController {
 //    		o.setCreateTime(DateUtil.getCurrentTime());
 //    		o.save();
 //    	}
-    	renderSuccess();
-    }
+			renderSuccess();
+		}
     /***
      * edit page
      */

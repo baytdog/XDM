@@ -88,7 +88,6 @@ public class XdWorkExperController extends BaseController {
     	renderSuccess("删除成功!");
     }
 	public void getWorkExperList(){
-		System.out.println("2222222222222");
 		String employeeId = getPara("employeeId");
 		List<XdWorkExper> list = service.getWorkExperList(employeeId);
 		renderJson(list);

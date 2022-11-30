@@ -65,8 +65,8 @@
 			   pointLion.alertMsg("请选择拟办人！" , "danger" , "small" , null);
 			   return;
 		 	} */
-			
-			
+
+			//var data = common_ajax.ajaxFunc("/admin/sys/attachment/delete",{"ids":ids}, "json", null);
 			var data = common_ajax.ajaxFunc("/admin/oa/bumph/eidtSave", $('#editForm').serialize(), "json", null);
 			if(data.success){
 				pointLion.alertMsg("操作成功!" , "success" , "small" , function(){
