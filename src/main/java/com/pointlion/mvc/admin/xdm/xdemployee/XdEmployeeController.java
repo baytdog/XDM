@@ -1,7 +1,7 @@
 package com.pointlion.mvc.admin.xdm.xdemployee;
 
-import com.google.gson.JsonArray;
 import com.jfinal.kit.StrKit;
+import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.plugin.activerecord.Record;
 import com.pointlion.mvc.admin.oa.workflow.WorkFlowService;
@@ -15,6 +15,7 @@ import com.pointlion.mvc.common.utils.StringUtil;
 import com.pointlion.mvc.common.utils.UuidUtil;
 import com.pointlion.plugin.shiro.ShiroKit;
 
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 
@@ -43,46 +44,84 @@ public class XdEmployeeController extends BaseController {
      * save data
      */
     public void save(){
-
+		DateTimeFormatter dtf =  DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		String gridData1 = getPara("gridData1");
 		String gridData2 = getPara("gridData2");
-		System.out.println(gridData1);
-		System.out.println("=============");
-		System.out.println(gridData2);
 		XdEmployee o = getModel(XdEmployee.class);
-		System.out.println(o);
-
+		List<XdEdutrain> gridList1 = JSONUtil.jsonToBeanList(gridData1, XdEdutrain.class);
+		List<XdWorkExper> gridList2 = JSONUtil.jsonToBeanList(gridData2, XdWorkExper.class);
 		String id = o.getId();
 		XdEmployee employee = XdEmployee.dao.findById(id);
 		if(employee != null){
+
+			o.update();
+			if(gridList1.size() == 0) {
+				Db.delete("delete from  xd_edutrain where eid='"+o.getId()+"'");
+			}else{
+				for (XdEdutrain xdEdutrain : gridList1) {
+					if("".equals(xdEdutrain.getId())){
+						xdEdutrain.setId(UuidUtil.getUUID());
+						xdEdutrain.setEid(o.getId());
+						xdEdutrain.setEnrolldate(xdEdutrain.getEnrolldate().length()>9?xdEdutrain.getEnrolldate().substring(0,10):"");
+						xdEdutrain.setGraduatdate(xdEdutrain.getGraduatdate().length()>9?xdEdutrain.getGraduatdate().substring(0,10):"");
+						xdEdutrain.setCuser(ShiroKit.getUserId());
+						xdEdutrain.setCtime(DateUtil.getCurrentTime());
+						xdEdutrain.save();
+					}else{
+						XdEdutrain.dao.deleteByIds(xdEdutrain.getId());
+						xdEdutrain.setEnrolldate(xdEdutrain.getEnrolldate().length()>9?xdEdutrain.getEnrolldate().substring(0,10):"");
+						xdEdutrain.setGraduatdate(xdEdutrain.getGraduatdate().length()>9?xdEdutrain.getGraduatdate().substring(0,10):"");
+						xdEdutrain.save();
+					}
+				}
+			}
+			if(gridList2.size() == 0) {
+				Db.delete("delete from  xd_work_exper where eid='"+o.getId()+"'");
+			}else{
+				for (XdWorkExper workExper : gridList2) {
+					if("".equals(workExper.getId())){
+						workExper.setId(UuidUtil.getUUID());
+						workExper.setEid(o.getId());
+						workExper.setEntrydate(workExper.getEntrydate().length()>9?workExper.getEntrydate().substring(0,10):"");
+						workExper.setDepartdate(workExper.getDepartdate().length()>9?workExper.getDepartdate().substring(0,10):"");
+						workExper.setCtime(DateUtil.getCurrentTime());
+						workExper.setCuser(ShiroKit.getUserId());
+						workExper.save();
+					}else{
+						XdWorkExper.dao.deleteByIds(workExper.getId());
+						workExper.save();
+					}
+				}
+			}
 
 		}else{
 			o.setId(UuidUtil.getUUID());
     		o.setCtime(DateUtil.getCurrentTime());
     		o.setCuser(ShiroKit.getUserId());
-    		//o.save();
-    		if(!"".equals(gridData1)){
-
-				/* JSONArray jsonArray=new  JSONArray(gridData1);
-				for (int i = 0; i < jsonArray.size(); i++) {
-					XdEdutrain xdEdutrain = jsonArray.get(i, XdEdutrain.class);
-					XdWorkExper workExper = jsonArray.get(i, XdWorkExper.class,true);
-					System.out.println(xdEdutrain);
-				}*/
-
-				/*JSONObject json =new JSONObject();
-				JSONArray jsonArray = json.getJSONArray(gridData1);*/
-				List<XdEdutrain> list = JSONUtil.jsonToBeanList(gridData1, XdEdutrain.class);
-				for (int i = 0; i < list.size(); i++) {
-
-					System.out.println(list.get(i));
+    		o.save();
+    		if(gridList1.size()!=0){
+				for (int i = 0; i < gridList1.size(); i++) {
+					XdEdutrain xdEdutrain = gridList1.get(i);
+					xdEdutrain.setId(UuidUtil.getUUID());
+					xdEdutrain.setEid(o.getId());
+					xdEdutrain.setEnrolldate(xdEdutrain.getEnrolldate().length()>9?xdEdutrain.getEnrolldate().substring(0,10):"");
+					xdEdutrain.setGraduatdate(xdEdutrain.getGraduatdate().length()>9?xdEdutrain.getGraduatdate().substring(0,10):"");
+					xdEdutrain.setCuser(ShiroKit.getUserId());
+					xdEdutrain.setCtime(DateUtil.getCurrentTime());
+					xdEdutrain.save();
 				}
-
-
 			}
-    		/*if(!"".equals(gridData2)){
-
-			}*/
+    		if(gridList2.size()!=0){
+				for (XdWorkExper workExper : gridList2) {
+					workExper.setId(UuidUtil.getUUID());
+					workExper.setEid(o.getId());
+					workExper.setEntrydate(workExper.getEntrydate().length()>9?workExper.getEntrydate().substring(0,10):"");
+					workExper.setDepartdate(workExper.getDepartdate().length()>9?workExper.getDepartdate().substring(0,10):"");
+					workExper.setCtime(DateUtil.getCurrentTime());
+					workExper.setCuser(ShiroKit.getUserId());
+					workExper.save();
+				}
+			}
 
 
 		}
@@ -112,10 +151,6 @@ public class XdEmployeeController extends BaseController {
 		if(StrKit.notBlank(id)){
     		o = service.getById(id);
     		if("detail".equals(view)){
-//    			if(StrKit.notBlank(o.getProcInsId())){
-//    				setAttr("procInsId", o.getProcInsId());
-//    				setAttr("defId", wfservice.getDefIdByInsId(o.getProcInsId()));
-//    			}
     		}
     	}else{
 //    		SysUser user = SysUser.dao.findById(ShiroKit.getUserId());
@@ -143,5 +178,5 @@ public class XdEmployeeController extends BaseController {
     	renderSuccess("删除成功!");
     }
 
-	
+
 }

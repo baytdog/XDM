@@ -1,4 +1,4 @@
-<form id="editForm" class="panel-body form-horizontal form-padding">
+<form id="editForm" class="panel-body form-horizontal form-padding" onkeydown="if(event.keyCode==13){return false;}">
 	<input  id="employeeId" type="hidden"  name="#(formModelName).id" class="form-control" value="#(o?o.id:'')">
 	<div class="col-md-12 col-lg-12"  >
 		<div class="panel-group accordion" id="accordion">
@@ -13,29 +13,29 @@
 						<div class="form-group">
 							<label class="col-md-1 control-label">姓      名</label>
 							<div class="col-md-3">
-								<input type="text"  name="#(formModelName).name" class="form-control"  value="#(o?o.applyer_name:'')"  >
+								<input type="text"  name="#(formModelName).name" class="form-control"  value="#(o?o.name:'')"  >
 							</div>
 							<label class="col-md-1 control-label">员工编号</label>
 							<div class="col-md-3">
-								<input type="text"  name="#(formModelName).empnum" class="form-control"  value="#(o?o.org_name:'')"  >
+								<input type="text"  name="#(formModelName).empnum" class="form-control"  value="#(o?o.empnum:'')"  >
 							</div>
 							<label class="col-md-1 control-label">员工关系</label>
 							<div class="col-md-3">
-								<input type="text"  name="#(formModelName).emprelation" class="form-control"  value="#(o?o.org_name:'')"  >
+								<input type="text"  name="#(formModelName).emprelation" class="form-control"  value="#(o?o.emprelation:'')"  >
 							</div>
 						</div>
 						<div class="form-group">
 							<label class="col-md-1 control-label">性      别</label>
 							<div class="col-md-3">
-								<input type="text"  name="#(formModelName).gender" class="form-control"  value="#(o?o.applyer_name:'')"  >
+								<input type="text"  name="#(formModelName).gender" class="form-control"  value="#(o?o.gender:'')"  >
 							</div>
 							<label class="col-md-1 control-label">婚姻状况</label>
 							<div class="col-md-3">
-								<input type="text"  name="#(formModelName).married" class="form-control"  value="#(o?o.org_name:'')"  >
+								<input type="text"  name="#(formModelName).married" class="form-control"  value="#(o?o.married:'')"  >
 							</div>
 							<label class="col-md-1 control-label">年龄</label>
 							<div class="col-md-3">
-								<input type="text"  name="#(formModelName).age" class="form-control"  value="#(o?o.org_name:'')"  >
+								<input type="text"  name="#(formModelName).age" class="form-control"  value="#(o?o.age:'')"  >
 							</div>
 						</div>
 						<div class="form-group">
@@ -404,14 +404,16 @@
 		</div>
 
 	</div>
-	#if(view=='edit')
 		<div class="col-sm-12" style="text-align: center;">
+			#if(view=='edit')
+
 			<!--<button class="btn btn-warning" type="reset" #if(view=='detail') disabled #end>重置</button>-->
 			<button class="btn btn-primary" type="submit" #if(view=='detail') disabled #end>保存</button>
 			<button class="btn btn-primary" type="button" onclick="window.history.back();" >返回</button>
+			#else
+			<button class="btn btn-primary" type="button" onclick="window.history.back();" >返回</button>
+			#end
 		</div>
 
-	#else
 
-	#end
 </form>

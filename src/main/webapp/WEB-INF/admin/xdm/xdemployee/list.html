@@ -47,16 +47,20 @@
 	
 	var col = [{field: 'checked', checkbox : true, align: 'center'},
 	   
-		   {field: '', title: '', align: 'center'},
-	   
+		   {field: 'name', title: '姓名', align: 'center'},
+		   {field: 'empnum', title: '员工编号', align: 'center'},
+		   {field: 'emprelation', title: '员工关系', align: 'center'},
+		   {field: 'gender', title: '性别', align: 'center'},
+		   {field: 'married', title: '婚姻状况', align: 'center'},
+
 	   
 	   {field: 'control', title: '操作', align: 'left', width:'200',
 	       formatter:function(value,row,index){
 	           	//通过formatter可以自定义列显示的内容
 	           	//value：当前field的值，即id
 	           	//row：当前行的数据
-	           	var a = '<a class="label label-table label-success" href="'+ctx+'/admin/xdemployee/getEditPage?id='+row.id+'&view=detail" >查看</a>&nbsp;';
-	           	a = a + '<a class="label label-table label-success" href="'+ctx+'/admin/xdemployee/getEditPage?id='+row.id+'&view=edit" >编辑</a>&nbsp;';
+	           	var a = '<a class="label label-table label-success" href="'+ctx+'/admin/xd/xdemployee/getEditPage?id='+row.id+'&view=detail" >查看</a>&nbsp;';
+	           	a = a + '<a class="label label-table label-success" href="'+ctx+'/admin/xd/xdemployee/getEditPage?id='+row.id+'&view=edit" >编辑</a>&nbsp;';
 				a = a + '<a class="label label-table label-danger" onclick="del(\''+row.id+'\')" href="javascript:void(0);" >删除</a>';
 	           	return a;
 	       }

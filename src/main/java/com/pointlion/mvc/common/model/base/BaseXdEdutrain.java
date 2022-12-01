@@ -9,20 +9,20 @@ import com.jfinal.plugin.activerecord.IBean;
 @SuppressWarnings("serial")
 public abstract class BaseXdEdutrain<M extends BaseXdEdutrain<M>> extends Model<M> implements IBean {
 
-	public void setId(Integer id) {
+	public void setId(String id) {
 		set("id", id);
 	}
 	
-	public Integer getId() {
-		return getInt("id");
+	public String getId() {
+		return getStr("id");
 	}
 
-	public void setEid(Integer eid) {
+	public void setEid(String eid) {
 		set("eid", eid);
 	}
 	
-	public Integer getEid() {
-		return getInt("eid");
+	public String getEid() {
+		return getStr("eid");
 	}
 
 	public void setEnrolldate(String enrolldate) {

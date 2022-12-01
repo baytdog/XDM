@@ -9,26 +9,26 @@ import com.jfinal.plugin.activerecord.IBean;
 @SuppressWarnings("serial")
 public abstract class BaseXdWorkExper<M extends BaseXdWorkExper<M>> extends Model<M> implements IBean {
 
-	public void setId(Integer id) {
+	public void setId(String id) {
 		set("id", id);
 	}
-
-	public Integer getId() {
-		return getInt("id");
+	
+	public String getId() {
+		return getStr("id");
 	}
 
-	public void setEid(Integer eid) {
+	public void setEid(String eid) {
 		set("eid", eid);
 	}
-
-	public Integer getEid() {
-		return getInt("eid");
+	
+	public String getEid() {
+		return getStr("eid");
 	}
 
 	public void setEntrydate(String entrydate) {
 		set("entrydate", entrydate);
 	}
-
+	
 	public String getEntrydate() {
 		return getStr("entrydate");
 	}
@@ -36,7 +36,7 @@ public abstract class BaseXdWorkExper<M extends BaseXdWorkExper<M>> extends Mode
 	public void setDepartdate(String departdate) {
 		set("departdate", departdate);
 	}
-
+	
 	public String getDepartdate() {
 		return getStr("departdate");
 	}
@@ -44,7 +44,7 @@ public abstract class BaseXdWorkExper<M extends BaseXdWorkExper<M>> extends Mode
 	public void setServiceunit(String serviceunit) {
 		set("serviceunit", serviceunit);
 	}
-
+	
 	public String getServiceunit() {
 		return getStr("serviceunit");
 	}
@@ -52,7 +52,7 @@ public abstract class BaseXdWorkExper<M extends BaseXdWorkExper<M>> extends Mode
 	public void setJob(String job) {
 		set("job", job);
 	}
-
+	
 	public String getJob() {
 		return getStr("job");
 	}
@@ -60,7 +60,7 @@ public abstract class BaseXdWorkExper<M extends BaseXdWorkExper<M>> extends Mode
 	public void setAddr(String addr) {
 		set("addr", addr);
 	}
-
+	
 	public String getAddr() {
 		return getStr("addr");
 	}
@@ -68,7 +68,7 @@ public abstract class BaseXdWorkExper<M extends BaseXdWorkExper<M>> extends Mode
 	public void setCtime(String ctime) {
 		set("ctime", ctime);
 	}
-
+	
 	public String getCtime() {
 		return getStr("ctime");
 	}
@@ -76,7 +76,7 @@ public abstract class BaseXdWorkExper<M extends BaseXdWorkExper<M>> extends Mode
 	public void setCuser(String cuser) {
 		set("cuser", cuser);
 	}
-
+	
 	public String getCuser() {
 		return getStr("cuser");
 	}
