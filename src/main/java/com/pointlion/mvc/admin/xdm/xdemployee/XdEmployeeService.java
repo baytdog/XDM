@@ -6,7 +6,11 @@ import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.plugin.activerecord.Record;
 import com.jfinal.plugin.activerecord.tx.Tx;
+import com.pointlion.enums.LogsEnum;
 import com.pointlion.mvc.common.model.XdEmployee;
+import com.pointlion.mvc.common.model.XdOplogSummary;
+import com.pointlion.mvc.common.utils.JSONUtil;
+import com.pointlion.mvc.common.utils.UuidUtil;
 import com.pointlion.plugin.shiro.ShiroKit;
 import com.pointlion.mvc.common.model.SysRoleOrg;
 import com.pointlion.mvc.common.utils.DateUtil;
@@ -51,7 +55,21 @@ public class XdEmployeeService{
     	String idarr[] = ids.split(",");
     	for(String id : idarr){
     		XdEmployee o = me.getById(id);
-    		o.delete();
+			String objStr = JSONUtil.beanToJsonString(o);
+			XdOplogSummary logSum=new XdOplogSummary();
+			logSum.setId(UuidUtil.getUUID());
+			logSum.setOid(id);
+			logSum.setTid(id);
+			logSum.setTname(o.getClass().getSimpleName());
+			logSum.setChangeb(objStr);
+			logSum.setChangea("");
+			logSum.setStatus(LogsEnum.WAITAPPRO.name());
+			logSum.setOtype(LogsEnum.D.name());
+			logSum.setCtime(DateUtil.getCurrentTime());
+			logSum.setCuser(ShiroKit.getUserId());
+			logSum.save();
+
+			o.delete();
     	}
 	}
 	

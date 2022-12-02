@@ -7,7 +7,6 @@ import com.pointlion.mvc.common.model.base.BaseXdEmployee;
 public class XdEmployee extends BaseXdEmployee<XdEmployee> {
 	public static final XdEmployee dao = new XdEmployee();
 	public static final String tableName = "xd_employee";
-	
 	/***
 	 * query by id
 	 */

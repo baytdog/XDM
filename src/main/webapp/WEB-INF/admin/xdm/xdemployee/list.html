@@ -135,11 +135,11 @@
 	function del(ids){
 		pointLion.confimMsg("您是否要删除所选信息 ?<br/> 点击确认进行删除 , 点击取消取消该操作",null,function(){
 			//执行删除
-			var data = common_ajax.ajaxFunc("/admin/xdemployee/delete",{"ids":ids}, "json", null);
+			var data = common_ajax.ajaxFunc("/admin/xd/xdemployee/delete",{"ids":ids}, "json", null);
 			//删除结果
 			if(data.success){
 				pointLion.alertMsg(data.message,"success",null,function(){
-					location.href = ctx+'/admin/xdemployee/getListPage';//跳转到列表页
+					location.href = ctx+'/admin/xd/xdemployee/getListPage';//跳转到列表页
 				});
 			}else{
 				pointLion.alertMsg(data.message,"success",null,null);

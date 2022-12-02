@@ -4,7 +4,6 @@ import com.jfinal.kit.StrKit;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.plugin.activerecord.Record;
-import com.pointlion.mvc.admin.oa.workflow.WorkFlowService;
 import com.pointlion.mvc.common.base.BaseController;
 import com.pointlion.mvc.common.model.XdEdutrain;
 import com.pointlion.mvc.common.model.XdEmployee;
@@ -21,7 +20,6 @@ import java.util.List;
 
 public class XdEmployeeController extends BaseController {
 	public static final XdEmployeeService service = XdEmployeeService.me;
-	public static WorkFlowService wfservice = WorkFlowService.me;
 	/***
 	 * get list page
 	 */
@@ -173,10 +171,12 @@ public class XdEmployeeController extends BaseController {
      * @throws Exception
      */
     public void delete() throws Exception{
+
 		String ids = getPara("ids");
 		service.deleteByIds(ids);
     	renderSuccess("删除成功!");
     }
+
 
 
 }

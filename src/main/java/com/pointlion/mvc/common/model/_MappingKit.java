@@ -149,6 +149,8 @@ public class _MappingKit {
 		arp.addMapping("xd_edutrain","id",XdEdutrain.class);
 		arp.addMapping("xd_schoolinfo","id",XdSchoolinfo.class);
 		arp.addMapping("xd_work_exper","id",XdWorkExper.class);
+		arp.addMapping("xd_oplog_summary","id",XdOplogSummary.class);
+		arp.addMapping("xd_oplog_detail","id",XdOplogDetail.class);
 	}
 }
 
