@@ -6,14 +6,17 @@ import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.plugin.activerecord.Record;
 import com.jfinal.plugin.activerecord.tx.Tx;
-import com.pointlion.enums.LogsEnum;
+import com.pointlion.enums.XdOperEnum;
+import com.pointlion.mvc.common.model.XdEdutrain;
 import com.pointlion.mvc.common.model.XdEmployee;
-import com.pointlion.mvc.common.model.XdOplogSummary;
-import com.pointlion.mvc.common.utils.JSONUtil;
+import com.pointlion.mvc.common.model.XdWorkExper;
 import com.pointlion.mvc.common.utils.UuidUtil;
+import com.pointlion.mvc.common.utils.XdOperUtil;
 import com.pointlion.plugin.shiro.ShiroKit;
 import com.pointlion.mvc.common.model.SysRoleOrg;
 import com.pointlion.mvc.common.utils.DateUtil;
+
+import java.util.List;
 
 public class XdEmployeeService{
 	public static final XdEmployeeService me = new XdEmployeeService();
@@ -55,22 +58,21 @@ public class XdEmployeeService{
     	String idarr[] = ids.split(",");
     	for(String id : idarr){
     		XdEmployee o = me.getById(id);
-			String objStr = JSONUtil.beanToJsonString(o);
-			XdOplogSummary logSum=new XdOplogSummary();
-			logSum.setId(UuidUtil.getUUID());
-			logSum.setOid(id);
-			logSum.setTid(id);
-			logSum.setTname(o.getClass().getSimpleName());
-			logSum.setChangeb(objStr);
-			logSum.setChangea("");
-			logSum.setStatus(LogsEnum.WAITAPPRO.name());
-			logSum.setOtype(LogsEnum.D.name());
-			logSum.setCtime(DateUtil.getCurrentTime());
-			logSum.setCuser(ShiroKit.getUserId());
-			logSum.save();
 
 			o.delete();
-    	}
+			XdOperUtil.logSummary(id,o,XdOperEnum.D.name(),XdOperEnum.WAITAPPRO.name());
+
+			List<XdWorkExper> workExperList = XdWorkExper.dao.find("select * from xd_work_exper where eid='" + id + "'");
+			for (XdWorkExper workExper : workExperList) {
+				workExper.delete();
+				XdOperUtil.logSummary(id,workExper,XdOperEnum.D.name(),XdOperEnum.WAITAPPRO.name());
+			}
+			List<XdEdutrain> edutrainList = XdEdutrain.dao.find("select * from xd_edutrain where eid='" + id + "'");
+			for (XdEdutrain xdEdutrain : edutrainList) {
+				xdEdutrain.delete();
+				XdOperUtil.logSummary(id,xdEdutrain,XdOperEnum.D.name(),XdOperEnum.WAITAPPRO.name());
+			}
+		}
 	}
 	
 }
