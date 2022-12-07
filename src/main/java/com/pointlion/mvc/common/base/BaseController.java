@@ -465,26 +465,27 @@ public abstract class BaseController extends Controller {
 		//收文
 		String receiveSql = " select * from oa_bumph o  left join  oa_steps s on o.id=s.oid  WHERE  s.ifcomplete='0' ";
 		receiveSql = receiveSql + " and s.userid='"+ShiroKit.getUserId()+"'";
-		int receiveSize = Db.find(receiveSql).size();
+		//int receiveSize = Db.find(receiveSql).size();
+		int receiveSize =0;
 		setAttr("receiveSize",receiveSize);
 
 
 		String receiveCanDoSql = " select * from oa_bumph o  left join  oa_steps s on o.id=s.oid  WHERE  s.ifcomplete='0' and buttontype='1'";
 		receiveCanDoSql = receiveCanDoSql + " and s.userid='"+ShiroKit.getUserId()+"'";
-		int receiveCanDo = Db.find(receiveCanDoSql).size();
+		//int receiveCanDo = Db.find(receiveCanDoSql).size();
+		int receiveCanDo = 0;
 		setAttr("receiveCanDo",receiveCanDo);
-		//发文
-		String sendSql = " select * from oa_senddoc o  left join oa_steps s on o.id=s.oid where  s.userid ='"+ShiroKit.getUserId()+"' and  s.ifcomplete='0'";
-		int sendSize = Db.find(sendSql).size();
-		setAttr("sendSize",sendSize);
+
 		//邮件
 		String emailSql = "select o.*,s.isreaded as  isreaded from  v_email o left join   oa_email_son s on s.oid =o.id  where 1=1  and s.suserid = '"+ShiroKit.getUserId()+"'  and s.status='1'";
-		int emailSize = Db.find(emailSql).size();
+		//int emailSize = Db.find(emailSql).size();
+		int emailSize = 0;
 		setAttr("emailSize",emailSize);
 
 
 		String noReademailSql = "select * from  oa_email_son s   where 1=1  and s.suserid = '"+ShiroKit.getUserId()+"' and s.isreaded='0' and status='1'";
-		int noReademail  = Db.find(noReademailSql).size();
+		//int noReademail  = Db.find(noReademailSql).size();
+		int noReademail  = 0;
 		setAttr("noReademail",noReademail);
 
 
@@ -492,11 +493,13 @@ public abstract class BaseController extends Controller {
 
 		//热线
 		String hotSql = "select  * from oa_hotline  o  left join  oa_steps s on o.id=s.oid   where  s.userid='"+ShiroKit.getUserId()+"' and s.ifcomplete='0'";
-		int hotSize = Db.find(hotSql).size();
+		//int hotSize = Db.find(hotSql).size();
+		int hotSize = 0;
 		setAttr("hotSize",hotSize);
 		//信访
 		String letterSql = "select  * from oa_letter o left join  oa_steps s on o.id=s.oid   where  s.userid='"+ShiroKit.getUserId()+"' and s.ifcomplete='0'";
-		int letterSize = Db.find(letterSql).size();
+		//int letterSize = Db.find(letterSql).size();
+		int letterSize = 0;
 		setAttr("letterSize",letterSize);
 
 
@@ -504,30 +507,33 @@ public abstract class BaseController extends Controller {
 		//待办
 		String  waitDoSql="select  * from  oa_steps   where  userid='"+ShiroKit.getUserId()+"' and ifcomplete='0'";
 
-		List<OaSteps> find2 = OaSteps.dao.find(waitDoSql);
+		//List<OaSteps> find2 = OaSteps.dao.find(waitDoSql);
+		List<OaSteps> find2 = null;
 
 		setAttr("waitDos", find2);
 
 		//已办理
 		String overSql="select  * from  oa_step_history  where actorid='"+ShiroKit.getUserId()+"' order by  ctime desc";
-		List<OaStepHistory> over = OaStepHistory.dao.find(overSql);
+		//List<OaStepHistory> over = OaStepHistory.dao.find(overSql);
+		List<OaStepHistory> over = null;
 		setAttr("over", over);
 
 		//办事指南
 		String bsznListSql="select  * from  oa_bumph where backup2='2'";
-		List<OaBumph> bsznList  = OaBumph.dao.find(bsznListSql);
+		//List<OaBumph> bsznList  = OaBumph.dao.find(bsznListSql);
+		List<OaBumph> bsznList  = null;
 		setAttr("bsznList", bsznList);
 
 		//通知
 		String tzListSql="select  * from oa_notices  where sfpublish ='1' ORDER BY 	publishdatetime DESC  limit 6";
 
-		List<OaNotices> findNotices = OaNotices.dao.find(tzListSql);
+	//	List<OaNotices> findNotices = OaNotices.dao.find(tzListSql);
 
 
 		List <OaShowHome> homeLists=  new ArrayList<>();
 
 
-		for (OaNotices oaNotices : findNotices) {
+		/*for (OaNotices oaNotices : findNotices) {
 
 			OaShowHome showHome =new OaShowHome();
 
@@ -553,7 +559,7 @@ public abstract class BaseController extends Controller {
 			homeLists.add(showHome);
 		}
 
-		Collections.sort(homeLists);
+		Collections.sort(homeLists);*/
 
 		setAttr("notices", homeLists);
 
@@ -594,25 +600,25 @@ public abstract class BaseController extends Controller {
 		} else {
 
 
-			List<OaBumphUser> find = OaBumphUser.dao.find("select  * from  oa_bumph_user where  lookornot ='1' and looked='0' and  username='"+ShiroKit.getUsername()+"'");
+//			List<OaBumphUser> find = OaBumphUser.dao.find("select  * from  oa_bumph_user where  lookornot ='1' and looked='0' and  username='"+ShiroKit.getUsername()+"'");
 
-			setAttr("bumpcount",find==null?0: find.size());
+//			setAttr("bumpcount",find==null?0: find.size());
+//
+//
+//			List<Record> hotlineList = Db.find("SELECT * FROM oa_hotline o LEFT JOIN oa_hotline_user hu ON o.id = hu.hotlinid"
+//					+ " WHERE 1 = 1 AND hu.userid = '"+ShiroKit.getUserId()+"' AND hu.ifshow = '1' And hu.ifcomplete='0'");
+//
+//			setAttr("hotlineCount", hotlineList==null?0:hotlineList.size());
 
+//			List<Record> sendDocList = Db.find("SELECT * FROM oa_senddoc o  WHERE 	1 = 1  and  o.cuserid != '"+ShiroKit.getUserId()+"' "
+//					+ " and (  o.dofficesure ='"+ShiroKit.getUserOrgId()+"' or o.dhgksids = '"+ShiroKit.getUserOrgId()+"' )");
+//
+//			setAttr("senddocCount", sendDocList==null?0:sendDocList.size());
 
-			List<Record> hotlineList = Db.find("SELECT * FROM oa_hotline o LEFT JOIN oa_hotline_user hu ON o.id = hu.hotlinid"
-					+ " WHERE 1 = 1 AND hu.userid = '"+ShiroKit.getUserId()+"' AND hu.ifshow = '1' And hu.ifcomplete='0'");
-
-			setAttr("hotlineCount", hotlineList==null?0:hotlineList.size());
-
-			List<Record> sendDocList = Db.find("SELECT * FROM oa_senddoc o  WHERE 	1 = 1  and  o.cuserid != '"+ShiroKit.getUserId()+"' "
-					+ " and (  o.dofficesure ='"+ShiroKit.getUserOrgId()+"' or o.dhgksids = '"+ShiroKit.getUserOrgId()+"' )");
-
-			setAttr("senddocCount", sendDocList==null?0:sendDocList.size());
-
-
-			int todonum=(find==null?0: find.size())/*+(emailList==null?0:emailList.size())*/
-					+(hotlineList==null?0:hotlineList.size())+(sendDocList==null?0:sendDocList.size());
-			setAttr("todonum", todonum);
+//
+//			int todonum=(find==null?0: find.size())
+//					+(hotlineList==null?0:hotlineList.size())+(sendDocList==null?0:sendDocList.size());
+//			setAttr("todonum", todonum);
 
 
 

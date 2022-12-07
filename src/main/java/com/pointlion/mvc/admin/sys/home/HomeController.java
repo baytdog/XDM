@@ -6,6 +6,19 @@
  */
 package com.pointlion.mvc.admin.sys.home;
 
+import com.jfinal.plugin.activerecord.Db;
+import com.jfinal.plugin.activerecord.Page;
+import com.jfinal.plugin.activerecord.Record;
+import com.pointlion.mvc.admin.oa.workflow.flowtask.FlowTaskService;
+import com.pointlion.mvc.admin.sys.login.SessionUtil;
+import com.pointlion.mvc.common.base.BaseController;
+import com.pointlion.mvc.common.model.*;
+import com.pointlion.mvc.common.utils.Constants;
+import com.pointlion.mvc.common.utils.RzUtils;
+import com.pointlion.mvc.common.utils.UuidUtil;
+import com.pointlion.plugin.shiro.ShiroKit;
+import com.pointlion.plugin.shiro.ext.SimpleUser;
+
 import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -13,36 +26,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.jfinal.plugin.activerecord.Db;
-import com.jfinal.plugin.activerecord.Page;
-import com.jfinal.plugin.activerecord.Record;
-import com.pointlion.mvc.admin.oa.workflow.flowtask.FlowTaskService;
-import com.pointlion.mvc.admin.sys.login.SessionUtil;
-import com.pointlion.mvc.common.base.BaseController;
-import com.pointlion.mvc.common.model.OaNotice;
-import com.pointlion.mvc.common.model.OaNotices;
-import com.pointlion.mvc.common.model.OaPicNews;
-import com.pointlion.mvc.common.model.OaSearch;
-import com.pointlion.mvc.common.model.OaShowinfo;
-import com.pointlion.mvc.common.model.OaStepHistory;
-import com.pointlion.mvc.common.model.OaSteps;
-import com.pointlion.mvc.common.model.OaTypes;
-import com.pointlion.mvc.common.model.SysCustomSetting;
-import com.pointlion.mvc.common.model.SysFriend;
-import com.pointlion.mvc.common.model.SysMenu;
-import com.pointlion.mvc.common.model.SysRole;
-import com.pointlion.mvc.common.model.SysUser;
-import com.pointlion.mvc.common.utils.Constants;
-import com.pointlion.mvc.common.utils.RzUtils;
-import com.pointlion.mvc.common.utils.UuidUtil;
-import com.pointlion.plugin.shiro.ShiroKit;
-import com.pointlion.plugin.shiro.ext.SimpleUser;
-
-//import com.pointlion.mvc.admin.apply.resget.OaResGetConstants;
-//import com.pointlion.mvc.admin.bumph.BumphConstants;
-//import com.pointlion.mvc.admin.login.SessionUtil;
-//import com.pointlion.mvc.admin.notice.NoticeService;
-//import com.pointlion.mvc.admin.workflow.WorkFlowService;
 
 /***
  * 首页控制器
@@ -82,22 +65,13 @@ public class HomeController extends BaseController {
     	setAttrToHomePage(username);
     	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
     	setAttr("today", sdf.format(new Date()));
-    	
-    	
-    	//renderIframe("/WEB-INF/admin/home/homePage.html");
-    /*	if(ShiroKit.getUsername().equals("tdog")) {
-    		//renderIframe("/WEB-INF/admin/home/personalhome.html");
-    		renderIframe("/WEB-INF/admin/home/personalhomev1.html");
-    	}else {
-    	renderIframe("/WEB-INF/admin/home/personalhome.html");
-    		//renderIframe("/WEB-INF/admin/home/personalhomev1.html");
-    	}*/
-    	
     	OaTypes findFirst = OaTypes.dao.findFirst("select  * from oa_types where  status='1'");
 		if(findFirst.getType().equals("1")||findFirst.getType().equals("2")) {
 			renderIframe("/WEB-INF/admin/home/personalhome.html");
 		}else {
-//			renderIframe("/WEB-INF/admin/home/personalhomev1.html");
+			String empSql = " select * from   xd_steps s where  s.orgid ='"+ShiroKit.getUserOrgId()+"' and  s.finished='N'";
+			int empSize = Db.find(empSql).size();
+			setAttr("empSize",empSize);
 			 renderIframe("/common/include/content.html");
 		}
     }
@@ -111,10 +85,10 @@ public class HomeController extends BaseController {
 		
 
     	Map<String,List<Record>> todoMap = new HashMap<String,List<Record>>();
-    	List<OaPicNews> picNewsList = OaPicNews.dao.find("select   * from oa_pic_news where ifshow='1' order by  cdate desc");
-    	//List<OaNotice> xxjbList = OaNotice.dao.find("select  * from  oa_notice  where  if_publish='1' order by create_time desc  limit 6");
-    	List<OaNotice> xxjbList = OaNotice.dao.find("select * from oa_showinfo  where menuid='9b576e6581204cda90ae04722d8640c9' and sfpublish='1' order by changetime desc  limit 6");
-   
+    	//List<OaPicNews> picNewsList = OaPicNews.dao.find("select   * from oa_pic_news where ifshow='1' order by  cdate desc");
+    	List<OaPicNews> picNewsList =null;
+//    	List<OaNotice> xxjbList = OaNotice.dao.find("select * from oa_showinfo  where menuid='9b576e6581204cda90ae04722d8640c9' and sfpublish='1' order by changetime desc  limit 6");
+    	List<OaNotice> xxjbList =null;
     	setAttr("picNewsList", picNewsList);
     	setAttr("xxjb", xxjbList);
     	
@@ -127,18 +101,18 @@ public class HomeController extends BaseController {
     	int todonum=(find==null?0: find.size())+(emailList==null?0:emailList.size());
     	setAttr("todonum", todonum);*/
     	//事务公开查询
-    	List<OaShowinfo> swgkList = OaShowinfo.dao.find("select  * from  oa_showinfo  where  menuid='4af75c3436574f86a123f6f31afb557a' and sfpublish='1' order by changetime desc  limit 6");
-    	
+    	//List<OaShowinfo> swgkList = OaShowinfo.dao.find("select  * from  oa_showinfo  where  menuid='4af75c3436574f86a123f6f31afb557a' and sfpublish='1' order by changetime desc  limit 6");
+    	List<OaShowinfo> swgkList = null;
     	setAttr("swgk", swgkList);
     	
      	
     	//学习交流
-    	List<OaShowinfo> xxjlList = OaShowinfo.dao.find("select  * from  oa_showinfo  where  menuid='cff2723852f5445c90dbec2bc826e5e1'  and sfpublish='1' order by changetime desc  limit 6");
-    	
+//    	List<OaShowinfo> xxjlList = OaShowinfo.dao.find("select  * from  oa_showinfo  where  menuid='cff2723852f5445c90dbec2bc826e5e1'  and sfpublish='1' order by changetime desc  limit 6");
+    	List<OaShowinfo> xxjlList = null;
     	setAttr("xxjl", xxjlList);
     	//党务公开
-    	List<OaShowinfo> dwgk = OaShowinfo.dao.find("select  * from  oa_showinfo  where  menuid in('9b36bb2a18e54b86be3176e0433335c4' ) and sfpublish='1' order by changetime desc  limit 6");
-    	
+//    	List<OaShowinfo> dwgk = OaShowinfo.dao.find("select  * from  oa_showinfo  where  menuid in('9b36bb2a18e54b86be3176e0433335c4' ) and sfpublish='1' order by changetime desc  limit 6");
+    	List<OaShowinfo> dwgk =null;
     	setAttr("dwgk", dwgk);
     	
     	
@@ -146,13 +120,15 @@ public class HomeController extends BaseController {
     	//待办
     	String  waitDoSql="select  * from  oa_steps   where  userid='"+ShiroKit.getUserId()+"' and ifcomplete='0'";
     	
-    	  List<OaSteps> find2 = OaSteps.dao.find(waitDoSql);
-    	  
+//    	  List<OaSteps> find2 = OaSteps.dao.find(waitDoSql);
+    	  List<OaSteps> find2 = null;
+
     	  setAttr("waitDoSql", waitDoSql);
     	  
     	  //已办理
     	   String overSql="select  * from  oa_step_history  where actorid='"+ShiroKit.getUserId()+"'";
-    	   List<OaStepHistory> over = OaStepHistory.dao.find(overSql);
+//    	   List<OaStepHistory> over = OaStepHistory.dao.find(overSql);
+    	   List<OaStepHistory> over = null;
     	   setAttr("over", over);
     	  
     	

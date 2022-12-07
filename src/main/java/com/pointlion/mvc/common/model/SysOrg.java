@@ -204,9 +204,9 @@ public class SysOrg extends BaseSysOrg<SysOrg> {
 	 * @return
 	 */
 	public Page<Record> getChildrenPageByPid(int pnum,int psize, String pid){
-		String sql = " from sys_org o1 LEFT JOIN sys_org o2 on o1.parent_id=o2.id ";
+		String sql = " from sys_org o1 LEFT JOIN sys_org o2 on o1.parent_id=o2.id where o1.parent_id is not null ";
 		if(StrKit.notBlank(pid)){
-			sql = sql + " where o1.parent_id='"+pid+"' ";
+			sql = sql + " and o1.parent_id='"+pid+"' ";
 		}
 		sql = sql + " order by o1.sort ";
 		Page<Record> page =  Db.paginate(pnum, psize, "select o1.* , o2.name parent_name ", sql);

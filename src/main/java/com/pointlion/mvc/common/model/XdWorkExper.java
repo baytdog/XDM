@@ -42,4 +42,13 @@ public class XdWorkExper extends BaseXdWorkExper<XdWorkExper> {
 		workExper.save();
 	}
 
+	public void loadObj(XdWorkExper workExper){
+		workExper.setId(UuidUtil.getUUID());
+		//workExper.setEid(o.getId());
+		workExper.setEntrydate(workExper.getEntrydate().length()>9?workExper.getEntrydate().substring(0,10):"");
+		workExper.setDepartdate(workExper.getDepartdate().length()>9?workExper.getDepartdate().substring(0,10):"");
+		workExper.setCtime(DateUtil.getCurrentTime());
+		workExper.setCuser(ShiroKit.getUserId());
+	}
+
 }

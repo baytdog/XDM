@@ -41,5 +41,14 @@ public class XdEdutrain extends BaseXdEdutrain<XdEdutrain> {
 		xdEdutrain.setCtime(DateUtil.getCurrentTime());
 		xdEdutrain.save();
 	}
+
+	public void loadObj(XdEdutrain xdEdutrain){
+		xdEdutrain.setId(UuidUtil.getUUID());
+		//xdEdutrain.setEid(o.getId());
+		xdEdutrain.setEnrolldate(xdEdutrain.getEnrolldate().length()>9?xdEdutrain.getEnrolldate().substring(0,10):"");
+		xdEdutrain.setGraduatdate(xdEdutrain.getGraduatdate().length()>9?xdEdutrain.getGraduatdate().substring(0,10):"");
+		xdEdutrain.setCuser(ShiroKit.getUserId());
+		xdEdutrain.setCtime(DateUtil.getCurrentTime());
+	}
 	
 }

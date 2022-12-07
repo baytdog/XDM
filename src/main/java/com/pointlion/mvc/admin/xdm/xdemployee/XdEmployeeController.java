@@ -27,7 +27,7 @@ public class XdEmployeeController extends BaseController {
      * list page data
      **/
     public void listData(){
-    	String curr = getPara("pageNumber");
+		String curr = getPara("pageNumber");
     	String pageSize = getPara("pageSize");
 		String endTime = getPara("endTime","");
 		String startTime = getPara("startTime","");
@@ -60,13 +60,7 @@ public class XdEmployeeController extends BaseController {
 			}else{
 				for (XdEdutrain xdEdutrain : gridList1) {
 					if("".equals(xdEdutrain.getId())){
-//						xdEdutrain.setId(UuidUtil.getUUID());
 						xdEdutrain.setEid(o.getId());
-//						xdEdutrain.setEnrolldate(xdEdutrain.getEnrolldate().length()>9?xdEdutrain.getEnrolldate().substring(0,10):"");
-//						xdEdutrain.setGraduatdate(xdEdutrain.getGraduatdate().length()>9?xdEdutrain.getGraduatdate().substring(0,10):"");
-//						xdEdutrain.setCuser(ShiroKit.getUserId());
-//						xdEdutrain.setCtime(DateUtil.getCurrentTime());
-//						xdEdutrain.save();
 						xdEdutrain.save(xdEdutrain);
 						XdOperUtil.logSummary(UuidUtil.getUUID(),o.getId(),null,xdEdutrain,XdOperEnum.C.name(),XdOperEnum.WAITAPPRO.name());
 
@@ -83,13 +77,15 @@ public class XdEmployeeController extends BaseController {
 			}else{
 				for (XdWorkExper workExper : gridList2) {
 					if("".equals(workExper.getId())){
-						workExper.setId(UuidUtil.getUUID());
+//						workExper.setId(UuidUtil.getUUID());
+//						workExper.setEid(o.getId());
+//						workExper.setEntrydate(workExper.getEntrydate().length()>9?workExper.getEntrydate().substring(0,10):"");
+//						workExper.setDepartdate(workExper.getDepartdate().length()>9?workExper.getDepartdate().substring(0,10):"");
+//						workExper.setCtime(DateUtil.getCurrentTime());
+//						workExper.setCuser(ShiroKit.getUserId());
+//						workExper.save();
 						workExper.setEid(o.getId());
-						workExper.setEntrydate(workExper.getEntrydate().length()>9?workExper.getEntrydate().substring(0,10):"");
-						workExper.setDepartdate(workExper.getDepartdate().length()>9?workExper.getDepartdate().substring(0,10):"");
-						workExper.setCtime(DateUtil.getCurrentTime());
-						workExper.setCuser(ShiroKit.getUserId());
-						workExper.save();
+						workExper.save(workExper);
 					}else{
 						XdWorkExper.dao.deleteByIds(workExper.getId());
 						workExper.save();
@@ -104,31 +100,49 @@ public class XdEmployeeController extends BaseController {
 			o.setId(oid);
     		o.setCtime(DateUtil.getCurrentTime());
     		o.setCuser(ShiroKit.getUserId());
-    		o.save();
-			XdOperUtil.logSummary(oid,o,operName,operStatus);
+			ShiroKit.getUserOrgId();
+			if(!"1".equals(ShiroKit.getUserOrgId())){
+				o.setBackup1("C");
+				XdOperUtil.insertEmpoloyeeSteps(o,"","1","","");
+				XdOperUtil.logSummary(oid,o,operName,operStatus);
+			}else{
+				o.save();
+				XdOperUtil.logSummary(oid,o,operName,XdOperEnum.UNAPPRO.name());
+			}
+
+
     		if(gridList1.size()!=0){
 				for (int i = 0; i < gridList1.size(); i++) {
 					XdEdutrain xdEdutrain = gridList1.get(i);
 					xdEdutrain.setEid(o.getId());
-					xdEdutrain.save(xdEdutrain);
-					XdOperUtil.logSummary(oid,xdEdutrain,operName,operStatus);
+					if("1".equals(ShiroKit.getUserOrgId())){
+						xdEdutrain.save(xdEdutrain);
+						XdOperUtil.logSummary(oid,xdEdutrain,operName,XdOperEnum.UNAPPRO.name());
+					}else{
+						xdEdutrain.loadObj(xdEdutrain);
+						XdOperUtil.logSummary(oid,xdEdutrain,operName,operStatus);
+					}
 				}
 			}
     		if(gridList2.size()!=0){
 				for (XdWorkExper workExper : gridList2) {
 					workExper.setEid(o.getId());
-					workExper.save(workExper);
-					XdOperUtil.logSummary(oid,workExper,operName,operStatus);
+					if("1".equals(ShiroKit.getUserOrgId())){
+						workExper.save(workExper);
+						XdOperUtil.logSummary(oid,workExper,operName,XdOperEnum.UNAPPRO.name());
+					}else{
+						workExper.loadObj(workExper);
+						XdOperUtil.logSummary(oid,workExper,operName,operStatus);
+					}
+
 				}
 			}
-
-
 		}
 		renderSuccess();
 		}
     /***
      * edit page
-     */
+	 */
     public void getEditPage(){
     	String id = getPara("id");
     	String view = getPara("view");
@@ -149,6 +163,11 @@ public class XdEmployeeController extends BaseController {
 			String uuid = UuidUtil.getUUID();
 			System.out.println(uuid);
 			o.setId(uuid);
+			if("1".equals(ShiroKit.getUserOrgId())){
+				setAttr("oper","1");
+			}else{
+				setAttr("oper","0");
+			}
 		}
 		setAttr("o", o);
     	setAttr("formModelName",StringUtil.toLowerCaseFirstOne(XdEmployee.class.getSimpleName()));
@@ -164,6 +183,11 @@ public class XdEmployeeController extends BaseController {
 		service.deleteByIds(ids);
     	renderSuccess("删除成功!");
     }
+
+
+	public void getListEmployee(){
+			renderIframe("pEmployeeList.html");
+	}
 
 
 

@@ -28,7 +28,7 @@
   			<div class="carousel-inner" role="listbox" >
          #for(x : list)
        		 
-  			 <div  #if(for.first) class="item active"  	#else class="item" #end  style="padding-top: 0px; ">
+  		<!--	 <div  #if(for.first) class="item active"  	#else class="item" #end  style="padding-top: 0px; ">
   			 
 		       		 <a   href="#(ctx)/admin/oa/picnews/showAllPic?busid=#(x.id)" >  
 					  	<img src="#(ctx)/admin/sys/attachment/showFile?id=#(x.imgurl)&view=detail" style="height: 350px; width: 100%"/>
@@ -36,7 +36,7 @@
 					      <div class="carousel-caption" style="font-size: 15px;">
 					 		 #(x.title)
 					      </div>
-			  </div>
+			  </div>-->
           #end 
           
 
@@ -60,7 +60,6 @@
 	#if(list&&list.size()>0)
 		   #for(x : list)
 		   	#if(for.index<5)
-<!-- 		   	<li><span>2020-11-26</span><span class="artical_span">发文</span><span class="artical_span dbj">待办结</span><a href="#" target="_blank">文章标题文章标题文章标题文章文章标题文章标题文章</a></li> -->
 		   	<li>
 		   	<span >#(x.ctime.substring(0,10))</span>
 		  
@@ -188,7 +187,7 @@
 <!-- 7个图标开始 -->
 	<!-- <div class="con_bg1 f_l" onclick="receiveDoc()"><p>收文<span>#(receiveSize)</span>份 可办<span >#(receiveCanDo)</span>份</p></div> -->
 	<div class="con_bg1 f_l"  ><p><a href="javascript:void(0);" onclick="receiveDoc()">收文<span >#(receiveSize)</span>份</a>　<a href="javascript:void(0);" onclick="receiveDocWaido()">待办结<span >#(receiveCanDo)</span>份</a></p></div>
-	<div class="con_bg2 f_l" onclick="senddoc()"><p>发文<span>#(sendSize)</span>份</p></div>
+	<div class="con_bg2 f_l" onclick="employee()"><p>员工<span>#(empSize)</span>份</p></div>
 	<div class="con_bg3 f_l" onclick="hotline()"><p>热线<span>#(hotSize)</span>个</p></div>
 	<div class="con_bg4 f_l" onclick="letter()"><p>信访<span>#(letterSize)</span>个</p></div>
     <div class="f_clear"></div>
@@ -213,12 +212,6 @@
        <ul class="artical_title1">
        
         #@dbList(waitDos)
-    	<!-- <li><span>2020-11-26</span><span class="artical_span">发文</span><span class="artical_span dbj">待办结</span><a href="#" target="_blank">文章标题文章标题文章标题文章文章标题文章标题文章</a></li>
-    	<li><span>2020-11-26</span><span class="artical_span">发文</span><span class="artical_span dbj">待办结</span><a href="#" target="_blank">文章标题文章标题文章标题文章文章标题文章标题文章</a></li>
-    	<li><span>2020-11-26</span><span class="artical_span">发文</span><span class="artical_span dbj">待办结</span><a href="#" target="_blank">文章标题文章标题文章标题文章文章标题文章标题文章</a></li>
-    	<li><span>2020-11-26</span><span class="artical_span">发文</span><span class="artical_span dbj">待办结</span><a href="#" target="_blank">文章标题文章标题文章标题文章文章标题文章标题文章</a></li>
-    	<li><span>2020-11-26</span><span class="artical_span">发文</span><span class="artical_span dbj">待办结</span><a href="#" target="_blank">文章标题文章标题文章标题文章文章标题文章标题文章</a></li>
-    	<li><span>2020-11-26</span><span class="artical_span">发文</span><span class="artical_span dbj">待办结</span><a href="#" target="_blank">文章标题文章标题文章标题文章文章标题文章标题文章</a></li> -->
     </ul>
    </div>
    <div class="list_block">
@@ -227,12 +220,6 @@
        <ul class="artical_title1">
        
            #@overList(over)
-    	<!-- <li><span>2020-11-26</span><span class="artical_span">发文</span><span class="artical_span dbj">待办结</span><a href="#" target="_blank">2文章标题文章标题文章标题文章文章标题文章标题文章</a></li>
-    	<li><span>2020-11-26</span><span class="artical_span">发文</span><span class="artical_span dbj">待办结</span><a href="#" target="_blank">2文章标题文章标题文章标题文章文章标题文章标题文章</a></li>
-    	<li><span>2020-11-26</span><span class="artical_span">发文</span><span class="artical_span dbj">待办结</span><a href="#" target="_blank">2文章标题文章标题文章标题文章文章标题文章标题文章</a></li>
-    	<li><span>2020-11-26</span><span class="artical_span">发文</span><span class="artical_span dbj">待办结</span><a href="#" target="_blank">2文章标题文章标题文章标题文章文章标题文章标题文章</a></li>
-    	<li><span>2020-11-26</span><span class="artical_span">发文</span><span class="artical_span dbj">待办结</span><a href="#" target="_blank">2文章标题文章标题文章标题文章文章标题文章标题文章</a></li>
-    	<li><span>2020-11-26</span><span class="artical_span">发文</span><span class="artical_span dbj">待办结</span><a href="#" target="_blank">2文章标题文章标题文章标题文章文章标题文章标题文章</a></li> -->
     </ul>
    
    </div>
@@ -242,17 +229,9 @@
 
 
 <!-- 通知开始 -->
-	<!-- <div class="con_mk_bg1">最新发布<span class="f_r"><a href="#(ctx)/admin/oa/notices/getListFromHomePage"  >更多<t>>></t></a></span></div> -->
-  <div class="con_mk_bg1">最新发布<span class="f_r"><a href="#(ctx)/admin/oa/notices/getListFromHomePage"  >更多<t>>></t></a></span></div> 
+  <div class="con_mk_bg1">最新发布<span class="f_r"><a href="#(ctx)/admin/oa/notices/getListFromHomePage"  >更多<t>>></t></a></span></div>
     <ul class="artical_title1">
-    
     	#@noticeList(notices)
-<!--     	<li><span>2020-11-26</span><a href="#" target="_blank">文章标题文章标题文章标题文章文章标题文章标题文章</a></li>
-    	<li><span>2020-11-26</span><a href="#" target="_blank">文章标题文章标题文章标题文章文章标题文章标题文章</a></li>
-    	<li><span>2020-11-26</span><a href="#" target="_blank">文章标题文章标题文章标题文章文章标题文章标题文章</a></li>
-    	<li><span>2020-11-26</span><a href="#" target="_blank">文章标题文章标题文章标题文章文章标题文章标题文章</a></li>
-    	<li><span>2020-11-26</span><a href="#" target="_blank">文章标题文章标题文章标题文章文章标题文章标题文章</a></li>
-    	<li><span>2020-11-26</span><a href="#" target="_blank">文章标题文章标题文章标题文章文章标题文章标题文章</a></li> -->
     </ul>
 <!-- 通知结束 -->
 </div>
@@ -277,12 +256,6 @@
     <ul class="artical_title2">
     
      	#@makeXxjb(xxjb)
-    	<!-- <li><span>2020-11-26</span><a href="#" target="_blank">文章标题文章标题文章标题文章文章标题文章标题文章</a></li>
-    	<li><span>2020-11-26</span><a href="#" target="_blank">文章标题文章标题文章标题文章文章标题文章标题文章</a></li>
-    	<li><span>2020-11-26</span><a href="#" target="_blank">文章标题文章标题文章标题文章文章标题文章标题文章</a></li>
-    	<li><span>2020-11-26</span><a href="#" target="_blank">文章标题文章标题文章标题文章文章标题文章标题文章</a></li>
-    	<li><span>2020-11-26</span><a href="#" target="_blank">文章标题文章标题文章标题文章文章标题文章标题文章</a></li>
-    	<li><span>2020-11-26</span><a href="#" target="_blank">文章标题文章标题文章标题文章文章标题文章标题文章</a></li> -->
     </ul>
 <!-- 信息简报结束 -->
 
@@ -292,38 +265,18 @@
     <ul class="artical_title2">
     
           #@makeBszn(bsznList)
-    <!-- 	<li><span>2020-11-26</span><a href="#" target="_blank">文章标题文章标题文章标题文章文章标题文章标题文章</a></li>
-    	<li><span>2020-11-26</span><a href="#" target="_blank">文章标题文章标题文章标题文章文章标题文章标题文章</a></li>
-    	<li><span>2020-11-26</span><a href="#" target="_blank">文章标题文章标题文章标题文章文章标题文章标题文章</a></li>
-    	<li><span>2020-11-26</span><a href="#" target="_blank">文章标题文章标题文章标题文章文章标题文章标题文章</a></li>
-    	<li><span>2020-11-26</span><a href="#" target="_blank">文章标题文章标题文章标题文章文章标题文章标题文章</a></li>
-    	<li><span>2020-11-26</span><a href="#" target="_blank">文章标题文章标题文章标题文章文章标题文章标题文章</a></li> -->
     </ul>
 <!-- 办事指南结束 -->
  
     
 </div>
 
-<!--  -->
-<!--  -->
-<!--  -->
-<!--  -->
-<!--  -->
-<!--  -->
-<!--  -->
-<!--  -->
-<!--  -->
-<!--  -->
-<!--  -->
 
 
 
 <script type="text/javascript">
- 	function senddoc(){
- 		
- 		//alert("111");
- 		
- 		 window.location.href="#(ctx)/admin/oa/senddoc/getListPersonal";
+ 	function employee(){
+ 		 window.location.href="#(ctx)/admin/xd/xdemployee/getListEmployee";
  	}
  	
  	

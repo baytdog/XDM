@@ -184,8 +184,7 @@ public class OrgController extends BaseController {
     public void listData(){
     	String curr = getPara("pageNumber");
     	String pageSize = getPara("pageSize");
-    	//String pid = getPara("pid");
-    	String pid = "";
+    	String pid = getPara("pid");
     	Page<Record> page = SysOrg.dao.getChildrenPageByPid(Integer.valueOf(curr),Integer.valueOf(pageSize),pid);
     	renderPage(page.getList(),"" ,page.getTotalRow());
     }

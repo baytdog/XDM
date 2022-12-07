@@ -120,8 +120,6 @@ public class _MappingKit {
 		arp.addMapping("oa_dict", "id",OaDict.class);
 		arp.addMapping("oa_dict_group","id", OaDictGroup.class);
 		arp.addMapping("oa_test","id", OaTest.class);
-		arp.addMapping("oa_questions","id", OaQuestions.class);
-		arp.addMapping("oa_qchoice","id", OaQchoice.class);
 		arp.addMapping("oa_answers","id", OaAnswers.class);
 		arp.addMapping("oa_testresult","id", OaTestresult.class);
 		arp.addMapping("oa_hotline","id", OaHotline.class);
@@ -151,6 +149,7 @@ public class _MappingKit {
 		arp.addMapping("xd_work_exper","id",XdWorkExper.class);
 		arp.addMapping("xd_oplog_summary","id",XdOplogSummary.class);
 		arp.addMapping("xd_oplog_detail","id",XdOplogDetail.class);
+		arp.addMapping("xd_steps","id",XdSteps.class);
 	}
 }
 

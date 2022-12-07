@@ -105,6 +105,4 @@ public class XdEdutrainController extends BaseController {
 		List<XdEdutrain> list = service.getEduTrainList(employeeId);
 		renderJson(list);
 	}
-
-
 }

@@ -3,6 +3,7 @@ package com.pointlion.mvc.common.utils;
 import com.pointlion.annotation.ChangeFields;
 import com.pointlion.mvc.common.model.XdEmployee;
 import com.pointlion.mvc.common.model.XdOplogSummary;
+import com.pointlion.mvc.common.model.XdSteps;
 import com.pointlion.plugin.shiro.ShiroKit;
 
 import java.lang.reflect.InvocationTargetException;
@@ -16,7 +17,7 @@ import java.util.Objects;
  */
 public class XdOperUtil {
 
-    /* *
+    /**
      * @Method getChangedMetheds
      * @param newBean:	 新数据
      * @param oldBean:	 旧数据
@@ -115,7 +116,52 @@ public class XdOperUtil {
         logSum.save();
     }
 
-
+    /**
+     * @Method insertSteps
+     * @param oid:	主体id
+     * @param stype:	类型1.员工
+     * @param parentId:	 步骤父类id
+     * @param orgid:	 所属部门id
+     * @param userId:	 步骤操作人id
+     * @param userName:	 步骤操作人姓名
+     * @Date 2022/12/7 14:29
+     * @Exception
+     * @Description 步骤插入
+     * @Author king
+     * @Version  1.0
+     * @Return void
+     */
+    public static void insertSteps(String oid,String stype,String parentId,String orgid,String userId,String userName){
+        XdSteps steps=new XdSteps();
+        steps.setId(UuidUtil.getUUID());
+        steps.setOid(oid);
+        steps.setStype(stype);
+        steps.setParentid(parentId);
+        steps.setOrgid(orgid);
+        steps.setUserid(userId);
+        steps.setUsername(userName);
+        steps.setCuserid(ShiroKit.getUserId());
+        steps.setCusername(ShiroKit.getUserName());
+        steps.setCtime(DateUtil.getCurrentTime());
+        steps.save();
+    }
+    public static void insertEmpoloyeeSteps(XdEmployee employee,String parentId,String orgid,String userId,String userName){
+        XdSteps steps=new XdSteps();
+        steps.setId(UuidUtil.getUUID());
+        steps.setOid(employee.getId());
+        steps.setStype("1");
+        steps.setParentid(parentId);
+        steps.setStep(employee.getName());
+        steps.setStepdesc(employee.getEmpnum());
+        steps.setOrgid(orgid);
+        steps.setUserid(userId);
+        steps.setUsername(userName);
+        steps.setBackup1("C");
+        steps.setCuserid(ShiroKit.getUserId());
+        steps.setCusername(ShiroKit.getUserName());
+        steps.setCtime(DateUtil.getCurrentTime());
+        steps.save();
+    }
 
 
     public static void main(String[] args) throws Exception {

@@ -34,8 +34,8 @@ public class XdEmployeeService{
 	 */
 	public Page<Record> getPage(int pnum,int psize,String startTime,String endTime,String applyUser){
 		String userId = ShiroKit.getUserId();
-		String sql  = " from "+TABLE_NAME+" o where 1=1";
-		sql = sql + SysRoleOrg.dao.getRoleOrgSql(userId) ;
+		String sql  = " from "+TABLE_NAME+" o where cuser='"+ShiroKit.getUserId()+"'";
+		//sql = sql + SysRoleOrg.dao.getRoleOrgSql(userId) ;
 		if(StrKit.notBlank(startTime)){
 			sql = sql + " and o.create_time>='"+ DateUtil.formatSearchTime(startTime,"0")+"'";
 		}

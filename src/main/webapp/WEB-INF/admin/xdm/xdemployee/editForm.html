@@ -163,12 +163,12 @@
 								<column type="checkcolumn"></column>
 								<column name="enrolldate" field="enrolldate" width="100"   dateFormat="yyyy-MM-dd">入学日期
 									<editor>
-										<mini-datepicker style="width:100%;"></mini-datepicker>
+										<mini-datepicker style="width:100%;" format="yyyy-MM-dd"></mini-datepicker>
 									</editor>
 								</column>
 								<column name="graduatdate" field="graduatdate" width="100"   dateFormat="yyyy-MM-dd">毕业日期
 									<editor>
-										<mini-datepicker style="width:100%;"></mini-datepicker>
+										<mini-datepicker style="width:100%;" format="yyyy-MM-dd"></mini-datepicker>
 									</editor>
 								</column>
 
@@ -225,12 +225,12 @@
 								<column type="checkcolumn"></column>
 								<column name="entrydate" field="entrydate" width="100"   dateFormat="yyyy-MM-dd">入职日期
 									<editor>
-										<mini-datepicker style="width:100%;"></mini-datepicker>
+										<mini-datepicker style="width:100%;" format="yyyy-MM-dd"></mini-datepicker>
 									</editor>
 								</column>
 								<column name="departdate" field="departdate" width="100"   dateFormat="yyyy-MM-dd">离职日期
 									<editor>
-										<mini-datepicker style="width:100%;"></mini-datepicker>
+										<mini-datepicker style="width:100%;" format="yyyy-MM-dd"></mini-datepicker>
 									</editor>
 								</column>
 
@@ -408,7 +408,7 @@
 			#if(view=='edit')
 
 			<!--<button class="btn btn-warning" type="reset" #if(view=='detail') disabled #end>重置</button>-->
-			<button class="btn btn-primary" type="submit" #if(view=='detail') disabled #end>保存</button>
+			<button class="btn btn-primary" type="submit" #if(view=='detail') disabled #end>#if(oper=='1')保存 #else 提交审批 #end</button>
 			<button class="btn btn-primary" type="button" onclick="window.history.back();" >返回</button>
 			#else
 			<button class="btn btn-primary" type="button" onclick="window.history.back();" >返回</button>

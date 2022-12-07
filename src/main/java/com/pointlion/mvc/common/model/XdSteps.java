@@ -2,17 +2,17 @@ package com.pointlion.mvc.common.model;
 
 import com.jfinal.aop.Before;
 import com.jfinal.plugin.activerecord.tx.Tx;
-import com.pointlion.mvc.common.model.base.BaseOaQchoice;
+import com.pointlion.mvc.common.model.base.BaseXdSteps;
 @SuppressWarnings("serial")
-public class OaQchoice extends BaseOaQchoice<OaQchoice> {
-	public static final OaQchoice dao = new OaQchoice();
-	public static final String tableName = "oa_qchoice";
+public class XdSteps extends BaseXdSteps<XdSteps> {
+	public static final XdSteps dao = new XdSteps();
+	public static final String tableName = "xd_steps";
 	
 	/***
 	 * query by id
 	 */
-	public OaQchoice getById(String id){
-		return OaQchoice.dao.findById(id);
+	public XdSteps getById(String id){
+		return XdSteps.dao.findById(id);
 	}
 	
 	/***
@@ -23,7 +23,7 @@ public class OaQchoice extends BaseOaQchoice<OaQchoice> {
 	public void deleteByIds(String ids){
     	String idarr[] = ids.split(",");
     	for(String id : idarr){
-    		OaQchoice o = OaQchoice.dao.getById(id);
+    		XdSteps o = XdSteps.dao.getById(id);
     		o.delete();
     	}
 	}
