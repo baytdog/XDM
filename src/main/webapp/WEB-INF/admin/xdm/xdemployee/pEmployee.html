@@ -1,0 +1,113 @@
+<link href="#(ctx)/common/plugins/jquery-ui/scripts/miniui/themes/default/miniui.css" rel="stylesheet"/>
+
+<div id="page-content">
+    <div class="col-lg-12">
+        <div class="panel">
+            #include("pEmployeeForm.html")
+        </div>
+    </div>
+</div>
+
+
+<script>
+    function save(){
+        let gridData1 = grid.getData();
+        let gridData2 = grid2.getData();
+        console.log(gridData1);
+        console.log(gridData2);
+        console.log(mini.decode(gridData1));
+
+        var data = common_ajax.ajaxFunc("/admin/xd/xdemployee/save",$('#editForm').serialize()+"&gridData1="+mini.encode(gridData1)+"&gridData2="+mini.encode(gridData2), "json", null);
+        if(data.success){
+            pointLion.alertMsg("保存成功!" , "success" , "small" , function(){
+                location.href = ctx+'/admin/xd/xdemployee/getListPage';//跳转到列表页
+            },data);
+        }else{
+            pointLion.alertMsg(data.message , "danger" , "small" , function(){
+                $(".btn").removeAttr("disabled");
+            },data);
+        }
+    }
+    $(document).ready(function() {
+        $('#editForm').bootstrapValidator({
+            fields: {
+            }
+        }).on("success.form.bv", function (e) {
+            save();
+            return false;//阻止表单跳转
+        });
+    });
+</script>
+
+
+
+<script type="text/javascript">
+
+    mini.parse();
+
+    var grid = mini.get("datagrid1");
+    var grid2 = mini.get("datagrid2");
+    var data1='#(listEdu)'
+    grid.setData(mini.decode(data1))
+    var data2='#(listWExper)'
+    grid2.setData(mini.decode(data2));
+
+
+    function addRow1() {
+        var newRow = { name: "New Row",id:"",enrolldate:"" ,graduatdate:"",trainOrgname:"",major:"",edubg:""};
+        grid.addRow(newRow, 0);
+
+        grid.beginEditCell(newRow, "enrolldate");
+    }
+    function addRow2() {
+        var newRow = { name: "New Row",id:"",entrydate:"" ,departdate:"",serviceunit:"",job:"",addr:""};
+        grid2.addRow(newRow, 0);
+
+        grid2.beginEditCell(newRow, "entrydate");
+    }
+    function removeRow1() {
+        var rows = grid.getSelecteds();
+        if (rows.length > 0) {
+            grid.removeRows(rows, true);
+        }
+    }
+    function removeRow2() {
+        var rows = grid2.getSelecteds();
+        if (rows.length > 0) {
+            grid2.removeRows(rows, true);
+        }
+    }
+
+
+    grid.on("celleditenter", function (e) {
+        var index = grid.indexOf(e.record);
+        if (index == grid.getData().length - 1) {
+            var row = {};
+            grid.addRow(row);
+        }
+    });
+    grid2.on("celleditenter", function (e) {
+        var index = grid2.indexOf(e.record);
+        if (index == grid2.getData().length - 1) {
+            var row = {};
+            grid2.addRow(row);
+        }
+    });
+
+    grid.on("beforeload", function (e) {
+        if (grid.getChanges().length > 0) {
+            if (confirm("有增删改的数据未保存，是否取消本次操作？")) {
+                e.cancel = true;
+            }
+        }
+    });
+    grid2.on("beforeload", function (e) {
+        if (grid2.getChanges().length > 0) {
+            if (confirm("有增删改的数据未保存，是否取消本次操作？")) {
+                e.cancel = true;
+            }
+        }
+    });
+</script>
+
+

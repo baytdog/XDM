@@ -6,12 +6,11 @@ import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.plugin.activerecord.Record;
 import com.pointlion.enums.XdOperEnum;
 import com.pointlion.mvc.common.base.BaseController;
-import com.pointlion.mvc.common.model.XdEdutrain;
-import com.pointlion.mvc.common.model.XdEmployee;
-import com.pointlion.mvc.common.model.XdWorkExper;
+import com.pointlion.mvc.common.model.*;
 import com.pointlion.mvc.common.utils.*;
 import com.pointlion.plugin.shiro.ShiroKit;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -189,6 +188,41 @@ public class XdEmployeeController extends BaseController {
 			renderIframe("pEmployeeList.html");
 	}
 
+	public void openEmployeePage(){
+		String sid = getPara("id");
+		XdSteps step = XdSteps.dao.findById(sid);
+		String oid = step.getOid();
+		List<XdOplogSummary> summaries =
+				XdOplogSummary.dao.find("select * from xd_oplog_summary where oid='" + oid + "' and status='WAITAPPRO'");
+		List<String> listEdu=new ArrayList<>();
+		List<String> listWExper=new ArrayList<>();
+		XdEmployee xdEmployee=null;
+		for (XdOplogSummary summary : summaries) {
+			if("C".equals(summary.getOtype())){
+				if("XdEmployee".equals(summary.getTname())){
+					String changea = summary.getChangea();
+					xdEmployee = JSONUtil.jsonToBean(changea, XdEmployee.class);
 
+				}else if("XdEdutrain".equals(summary.getTname())){
+					//XdEdutrain xdEdutrain = JSONUtil.jsonToBean(summary.getChangea(), XdEdutrain.class);
+					listEdu.add(summary.getChangea());
+				}else{
+					//XdWorkExper workExper = JSONUtil.jsonToBean(summary.getChangea(), XdWorkExper.class);
+					listWExper.add(summary.getChangea());
+				}
+			}else if("D".equals(summary.getOtype())){
+
+			}else{
+
+			}
+		}
+		setAttr("o",xdEmployee);
+		setAttr("listEdu",listEdu);
+		setAttr("listWExper",listWExper);
+
+		setAttr("formModelName",StringUtil.toLowerCaseFirstOne(XdEmployee.class.getSimpleName()));//模型名称
+		renderIframe("pEmployee.html");
+
+	}
 
 }
