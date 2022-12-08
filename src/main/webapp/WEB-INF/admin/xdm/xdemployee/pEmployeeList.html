@@ -31,8 +31,15 @@
             formatter:function(value,row,index){
                 if(value=="C"){
                     return '员工新增';
+                }else if(value=="U"){
+                    return '员工修改'
+                }else if(value=="D"){
+                    return '员工删除';
+                }else if(value=="P"){
+                    return '审批通过';
+                }else{
+                    return '审批不通过';
                 }
-
             }},
 
       /*  {field: 'doc_num', title: '公文编号', align: 'center' ,

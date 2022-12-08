@@ -20,6 +20,13 @@ public class XdEmployeeController extends BaseController {
 	 * get list page
 	 */
 	public void getListPage(){
+		String userOrgId = ShiroKit.getUserOrgId();
+		if("1".equals(userOrgId)){
+			setAttr("personnel","Y");
+		}else{
+			setAttr("personnel","N");
+
+		}
 		renderIframe("list.html");
     }
 	/***
@@ -102,11 +109,11 @@ public class XdEmployeeController extends BaseController {
 			ShiroKit.getUserOrgId();
 			if(!"1".equals(ShiroKit.getUserOrgId())){
 				o.setBackup1("C");
-				XdOperUtil.insertEmpoloyeeSteps(o,"","1","","");
-				XdOperUtil.logSummary(oid,o,operName,operStatus);
+				XdOperUtil.insertEmpoloyeeSteps(o,"","1","","","C");
+				XdOperUtil.logSummary(oid,o,operName,operStatus,0);
 			}else{
 				o.save();
-				XdOperUtil.logSummary(oid,o,operName,XdOperEnum.UNAPPRO.name());
+				XdOperUtil.logSummary(oid,o,operName,XdOperEnum.UNAPPRO.name(),0);
 			}
 
 
@@ -116,10 +123,10 @@ public class XdEmployeeController extends BaseController {
 					xdEdutrain.setEid(o.getId());
 					if("1".equals(ShiroKit.getUserOrgId())){
 						xdEdutrain.save(xdEdutrain);
-						XdOperUtil.logSummary(oid,xdEdutrain,operName,XdOperEnum.UNAPPRO.name());
+						XdOperUtil.logSummary(oid,xdEdutrain,operName,XdOperEnum.UNAPPRO.name(),0);
 					}else{
 						xdEdutrain.loadObj(xdEdutrain);
-						XdOperUtil.logSummary(oid,xdEdutrain,operName,operStatus);
+						XdOperUtil.logSummary(oid,xdEdutrain,operName,operStatus,0);
 					}
 				}
 			}
@@ -128,10 +135,10 @@ public class XdEmployeeController extends BaseController {
 					workExper.setEid(o.getId());
 					if("1".equals(ShiroKit.getUserOrgId())){
 						workExper.save(workExper);
-						XdOperUtil.logSummary(oid,workExper,operName,XdOperEnum.UNAPPRO.name());
+						XdOperUtil.logSummary(oid,workExper,operName,XdOperEnum.UNAPPRO.name(),0);
 					}else{
 						workExper.loadObj(workExper);
-						XdOperUtil.logSummary(oid,workExper,operName,operStatus);
+						XdOperUtil.logSummary(oid,workExper,operName,operStatus,0);
 					}
 
 				}
@@ -180,20 +187,37 @@ public class XdEmployeeController extends BaseController {
 
 		String ids = getPara("ids");
 		service.deleteByIds(ids);
-    	renderSuccess("删除成功!");
+		renderSuccess("操作成功!");
     }
 
 
 	public void getListEmployee(){
 			renderIframe("pEmployeeList.html");
 	}
-
+	 /**
+	  * @Method openEmployeePage
+	  * @Date 2022/12/8 14:18
+	  * @Description  打开人员审批表单界面
+	  * @Author king
+	  * @Version  1.0
+	  * @Return void
+	  */
 	public void openEmployeePage(){
 		String sid = getPara("id");
+		keepPara("id");
 		XdSteps step = XdSteps.dao.findById(sid);
+
+		step.getRemarks();
+		if(step.getBackup1().equals("P")||step.getBackup1().equals("UP")){
+			step.setFinished("Y");
+			step.setFinishtime(DateUtil.getCurrentTime());
+			step.update();
+		}
+		String s = (step.getRemarks() == null ? "" : step.getRemarks());
+		setAttr("comments",s);
 		String oid = step.getOid();
 		List<XdOplogSummary> summaries =
-				XdOplogSummary.dao.find("select * from xd_oplog_summary where oid='" + oid + "' and status='WAITAPPRO'");
+				XdOplogSummary.dao.find("select * from xd_oplog_summary where oid='" + oid + "' and lastversion='0'");
 		List<String> listEdu=new ArrayList<>();
 		List<String> listWExper=new ArrayList<>();
 		XdEmployee xdEmployee=null;
@@ -219,9 +243,59 @@ public class XdEmployeeController extends BaseController {
 		setAttr("o",xdEmployee);
 		setAttr("listEdu",listEdu);
 		setAttr("listWExper",listWExper);
-
+		if(ShiroKit.getUserOrgId().equals("1")){
+			setAttr("oper","approver");
+		}
 		setAttr("formModelName",StringUtil.toLowerCaseFirstOne(XdEmployee.class.getSimpleName()));//模型名称
 		renderIframe("pEmployee.html");
+
+	}
+	/**
+	 * @Method pass
+	 * @Date 2022/12/8 15:04
+	 * @Description 人员审批通过
+	 * @Author king
+	 * @Version  1.0
+	 * @Return void
+	 */
+	public void pass(){
+		String stepsId = getPara("stepsId");
+		XdSteps steps = XdSteps.dao.findById(stepsId);
+		String oid = steps.getOid();
+
+		List<XdOplogSummary> summaries = XdOplogSummary.dao.find("select * from xd_oplog_summary where oid='" + oid + "' and status='WAITAPPRO'");
+		for (XdOplogSummary summary : summaries) {
+			if("C".equals(summary.getOtype())){
+				String tname = summary.getTname();
+				String values = summary.getChangea();
+				if("XdEmployee".equals(tname)){
+					XdEmployee xdEmployee = JSONUtil.jsonToBean(values, XdEmployee.class);
+					xdEmployee.save();
+				}else if("XdEdutrain".equals(tname)){
+					XdEdutrain xdEdutrain = JSONUtil.jsonToBean(values, XdEdutrain.class);
+					xdEdutrain.save();
+				}else{
+					XdWorkExper workExper = JSONUtil.jsonToBean(values, XdWorkExper.class);
+					workExper.save();
+				}
+				summary.setOtype(XdOperEnum.PASS.name());
+				summary.update();
+			}
+		}
+		steps.setFinished("Y");
+		steps.setUserid(ShiroKit.getUserId());
+		steps.setUsername(ShiroKit.getUsername());
+		steps.setFinishtime(DateUtil.getCurrentTime());
+		steps.setRemarks(getPara("comment"));
+		steps.update();
+		XdEmployee employee = XdEmployee.dao.findById(oid);
+		SysUser user = SysUser.dao.findById(steps.getCuserid());
+		XdOperUtil.insertEmpoloyeeSteps(employee,stepsId,user.getOrgid(),user.getId(),user.getName(),"P");
+
+		renderSuccess("操作成功!");
+	}
+
+	public void noPass(){
 
 	}
 

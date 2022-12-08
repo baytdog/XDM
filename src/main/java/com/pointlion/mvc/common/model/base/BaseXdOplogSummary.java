@@ -89,4 +89,12 @@ public abstract class BaseXdOplogSummary<M extends BaseXdOplogSummary<M>> extend
 		return getStr("ctime");
 	}
 
+	public void setLastversion(Integer lastversion) {
+		set("lastversion", lastversion);
+	}
+	
+	public Integer getLastversion() {
+		return getInt("lastversion");
+	}
+
 }

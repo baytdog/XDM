@@ -13,9 +13,6 @@
     function save(){
         let gridData1 = grid.getData();
         let gridData2 = grid2.getData();
-        console.log(gridData1);
-        console.log(gridData2);
-        console.log(mini.decode(gridData1));
 
         var data = common_ajax.ajaxFunc("/admin/xd/xdemployee/save",$('#editForm').serialize()+"&gridData1="+mini.encode(gridData1)+"&gridData2="+mini.encode(gridData2), "json", null);
         if(data.success){
@@ -28,6 +25,24 @@
             },data);
         }
     }
+
+    function pass(){
+        var data = common_ajax.ajaxFunc("/admin/xd/xdemployee/pass",$('#editForm').serialize(), "json", null);
+        if(data.success){
+            pointLion.alertMsg("操作成功!" , "success" , "small" , function(){
+                location.href = ctx+'/admin/xd/xdemployee/getListEmployee';//跳转到列表页
+            },data);
+        }else{
+            pointLion.alertMsg(data.message , "danger" , "small" , function(){
+                $(".btn").removeAttr("disabled");
+            },data);
+        }
+    }
+    function noPass(){
+
+
+    }
+
     $(document).ready(function() {
         $('#editForm').bootstrapValidator({
             fields: {

@@ -27,15 +27,11 @@ public class XdStepsService{
 	 */
 	public Page<Record> getPage(int pnum,int psize,String startTime,String endTime,String applyUser){
 		String userId = ShiroKit.getUserId();
-		String sql  = " from "+TABLE_NAME+" o   where 1=1";
-		if(StrKit.notBlank(startTime)){
-			sql = sql + " and o.create_time>='"+ DateUtil.formatSearchTime(startTime,"0")+"'";
-		}
-		if(StrKit.notBlank(endTime)){
-			sql = sql + " and o.create_time<='"+DateUtil.formatSearchTime(endTime,"1")+"'";
-		}
-		if(StrKit.notBlank(applyUser)){
-			sql = sql + " and o.applyer_name like '%"+applyUser+"%'";
+		String sql  = " from "+TABLE_NAME+" o   where finished='N'";
+		if("1".equals(ShiroKit.getUserOrgId())){
+			sql=sql+" and o.orgid=1";
+		}else{
+			sql=sql+" and  userid='"+userId+"'";
 		}
 		sql = sql + " order by o.ctime desc";
 		return Db.paginate(pnum, psize, " select * ", sql);

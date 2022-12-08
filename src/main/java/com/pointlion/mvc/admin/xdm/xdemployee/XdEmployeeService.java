@@ -7,13 +7,10 @@ import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.plugin.activerecord.Record;
 import com.jfinal.plugin.activerecord.tx.Tx;
 import com.pointlion.enums.XdOperEnum;
-import com.pointlion.mvc.common.model.XdEdutrain;
-import com.pointlion.mvc.common.model.XdEmployee;
-import com.pointlion.mvc.common.model.XdWorkExper;
+import com.pointlion.mvc.common.model.*;
 import com.pointlion.mvc.common.utils.UuidUtil;
 import com.pointlion.mvc.common.utils.XdOperUtil;
 import com.pointlion.plugin.shiro.ShiroKit;
-import com.pointlion.mvc.common.model.SysRoleOrg;
 import com.pointlion.mvc.common.utils.DateUtil;
 
 import java.util.List;
@@ -35,16 +32,12 @@ public class XdEmployeeService{
 	public Page<Record> getPage(int pnum,int psize,String startTime,String endTime,String applyUser){
 		String userId = ShiroKit.getUserId();
 		String sql  = " from "+TABLE_NAME+" o where cuser='"+ShiroKit.getUserId()+"'";
-		//sql = sql + SysRoleOrg.dao.getRoleOrgSql(userId) ;
 		if(StrKit.notBlank(startTime)){
 			sql = sql + " and o.create_time>='"+ DateUtil.formatSearchTime(startTime,"0")+"'";
 		}
 		if(StrKit.notBlank(endTime)){
 			sql = sql + " and o.create_time<='"+DateUtil.formatSearchTime(endTime,"1")+"'";
 		}
-//		if(StrKit.notBlank(applyUser)){
-//			sql = sql + " and o.applyer_name like '%"+applyUser+"%'";
-//		}
 		sql = sql + " order by o.ctime desc";
 		return Db.paginate(pnum, psize, " select * ", sql);
 	}
@@ -55,22 +48,33 @@ public class XdEmployeeService{
 	 */
 	@Before(Tx.class)
 	public void deleteByIds(String ids){
-    	String idarr[] = ids.split(",");
-    	for(String id : idarr){
-    		XdEmployee o = me.getById(id);
+    	String idArr[] = ids.split(",");
+		String userOrgId = ShiroKit.getUserOrgId();
 
-			o.delete();
-			XdOperUtil.logSummary(id,o,XdOperEnum.D.name(),XdOperEnum.WAITAPPRO.name());
+		for(String id : idArr){
+			XdOperUtil.queryLastVersion(id);
+			XdEmployee o = me.getById(id);
+			if("1".equals(userOrgId)){
+				o.delete();
+			}else{
+				XdOperUtil.insertEmpoloyeeSteps(o,"","1","","","D");
+			}
+
+			XdOperUtil.logSummary(id,o,XdOperEnum.D.name(),XdOperEnum.WAITAPPRO.name(),0);
 
 			List<XdWorkExper> workExperList = XdWorkExper.dao.find("select * from xd_work_exper where eid='" + id + "'");
 			for (XdWorkExper workExper : workExperList) {
-				workExper.delete();
-				XdOperUtil.logSummary(id,workExper,XdOperEnum.D.name(),XdOperEnum.WAITAPPRO.name());
+				if("1".equals(userOrgId)){
+					workExper.delete();
+				}
+				XdOperUtil.logSummary(id,workExper,XdOperEnum.D.name(),XdOperEnum.WAITAPPRO.name(),0);
 			}
 			List<XdEdutrain> edutrainList = XdEdutrain.dao.find("select * from xd_edutrain where eid='" + id + "'");
 			for (XdEdutrain xdEdutrain : edutrainList) {
-				xdEdutrain.delete();
-				XdOperUtil.logSummary(id,xdEdutrain,XdOperEnum.D.name(),XdOperEnum.WAITAPPRO.name());
+				if("1".equals(userOrgId)){
+					xdEdutrain.delete();
+				}
+				XdOperUtil.logSummary(id,xdEdutrain,XdOperEnum.D.name(),XdOperEnum.WAITAPPRO.name(),0);
 			}
 		}
 	}

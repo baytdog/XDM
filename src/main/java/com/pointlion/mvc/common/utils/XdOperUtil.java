@@ -1,5 +1,6 @@
 package com.pointlion.mvc.common.utils;
 
+import com.jfinal.plugin.activerecord.Db;
 import com.pointlion.annotation.ChangeFields;
 import com.pointlion.mvc.common.model.XdEmployee;
 import com.pointlion.mvc.common.model.XdOplogSummary;
@@ -85,7 +86,7 @@ public class XdOperUtil {
         logSum.save();
     }
 
-    public static <T> void logSummary(String oid,T bean,String otype,String status){
+    public static <T> void logSummary(String oid,T bean,String otype,String status,int lastVersion){
         String id = "";
         try {
             id = bean.getClass().getSuperclass().getDeclaredMethod("getId").invoke(bean).toString();
@@ -109,6 +110,7 @@ public class XdOperUtil {
             logSum.setChangeb(beanStr);
             logSum.setChangea("");
         }
+        logSum.setLastversion(lastVersion);
         logSum.setStatus(status);
         logSum.setOtype(otype);
         logSum.setCtime(DateUtil.getCurrentTime());
@@ -145,7 +147,7 @@ public class XdOperUtil {
         steps.setCtime(DateUtil.getCurrentTime());
         steps.save();
     }
-    public static void insertEmpoloyeeSteps(XdEmployee employee,String parentId,String orgid,String userId,String userName){
+    public static void insertEmpoloyeeSteps(XdEmployee employee,String parentId,String orgid,String userId,String userName,String otype){
         XdSteps steps=new XdSteps();
         steps.setId(UuidUtil.getUUID());
         steps.setOid(employee.getId());
@@ -156,13 +158,16 @@ public class XdOperUtil {
         steps.setOrgid(orgid);
         steps.setUserid(userId);
         steps.setUsername(userName);
-        steps.setBackup1("C");
+        steps.setBackup1(otype);
         steps.setCuserid(ShiroKit.getUserId());
         steps.setCusername(ShiroKit.getUserName());
         steps.setCtime(DateUtil.getCurrentTime());
         steps.save();
     }
-
+    public static void queryLastVersion(String id){
+        Integer integer = Db.queryInt("select max(lastversion) from xd_oplog_summary where oid='" + id + "'");
+        Db.update("update xd_oplog_summary set lastversion='"+(integer+1)+"' where oid='"+id+"' and lastversion='"+integer+"'" );
+    }
 
     public static void main(String[] args) throws Exception {
 

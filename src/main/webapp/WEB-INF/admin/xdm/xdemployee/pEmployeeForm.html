@@ -1,5 +1,6 @@
 <form id="editForm" class="panel-body form-horizontal form-padding" onkeydown="if(event.keyCode==13){return false;}">
     <input  id="employeeId" type="hidden"  name="#(formModelName).id" class="form-control" value="#(o?o.id:'')">
+    <input  id="stepsId" type="hidden"  name="stepsId" class="form-control" value="#(id)">
     <div class="col-md-12 col-lg-12"  >
         <div class="panel-group accordion" id="accordion">
             <div class="panel">
@@ -369,7 +370,6 @@
                         <a data-parent="#accordion" data-toggle="collapse" href="#collapseFive" style="text-align: center;background: #0ab1fc">其它信息</a>
                     </h4>
                 </div>
-
                 <div class="panel-collapse collapse" id="collapseFive">
                     <div class="panel-body">
                         <div class="form-group">
@@ -404,12 +404,21 @@
         </div>
 
     </div>
-    <div class="col-sm-12" style="text-align: center;">
-        #if(view=='edit')
 
-        <!--<button class="btn btn-warning" type="reset" #if(view=='detail') disabled #end>重置</button>-->
-        <button class="btn btn-primary" type="submit" #if(view=='detail') disabled #end>#if(oper=='1')保存 #else 提交审批 #end</button>
-        <button class="btn btn-primary" type="button" onclick="window.history.back();" >返回</button>
+    <div class="form-group">
+
+        <label class="col-md-1 control-label">审批意见</label>
+
+        <div class="col-md-10">
+            <textarea  id="comment" name="comment" rows="3"  class="form-control">#(comments)</textarea>
+        </div>
+    </div>
+
+    <div class="col-sm-12" style="text-align: center;">
+        #if(oper=='approver')
+            <button class="btn btn-primary" type="button" onclick="pass()">通过</button>
+            <button class="btn btn-danger" type="button"  onclick="noPass()" >不通过</button>
+            <button class="btn btn-primary" type="button" onclick="window.history.back();" >返回</button>
         #else
         <button class="btn btn-primary" type="button" onclick="window.history.back();" >返回</button>
         #end
