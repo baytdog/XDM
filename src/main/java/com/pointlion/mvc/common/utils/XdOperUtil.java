@@ -166,7 +166,7 @@ public class XdOperUtil {
     }
     public static void queryLastVersion(String id){
         Integer integer = Db.queryInt("select max(lastversion) from xd_oplog_summary where oid='" + id + "'");
-        Db.update("update xd_oplog_summary set lastversion='"+(integer+1)+"' where oid='"+id+"' and lastversion='"+integer+"'" );
+        Db.update("update xd_oplog_summary set lastversion='"+(integer+1)+"' where oid='"+id+"' and lastversion='0'" );
     }
 
     public static void main(String[] args) throws Exception {

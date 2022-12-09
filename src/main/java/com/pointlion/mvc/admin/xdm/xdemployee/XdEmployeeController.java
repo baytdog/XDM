@@ -10,6 +10,8 @@ import com.pointlion.mvc.common.model.*;
 import com.pointlion.mvc.common.utils.*;
 import com.pointlion.plugin.shiro.ShiroKit;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,7 +59,6 @@ public class XdEmployeeController extends BaseController {
 			XdOperUtil.logSummary(UuidUtil.getUUID(),o.getId(),o,employee,XdOperEnum.U.name(),XdOperEnum.WAITAPPRO.name());
 
 			if(gridList1.size() == 0) {
-//				Db.delete("delete from  xd_edutrain where eid='"+o.getId()+"'");
 				List<XdEdutrain> edutrainList = XdEdutrain.dao.find("select * from xd_edutrain where eid='" + id + "'");
 				for (XdEdutrain xdEdutrain : edutrainList) {
 					xdEdutrain.delete();
@@ -69,9 +70,7 @@ public class XdEmployeeController extends BaseController {
 						xdEdutrain.setEid(o.getId());
 						xdEdutrain.save(xdEdutrain);
 						XdOperUtil.logSummary(UuidUtil.getUUID(),o.getId(),null,xdEdutrain,XdOperEnum.C.name(),XdOperEnum.WAITAPPRO.name());
-
 					}else{
-						//XdEdutrain.dao.deleteByIds(xdEdutrain.getId());
 						xdEdutrain.setEnrolldate(xdEdutrain.getEnrolldate().length()>9?xdEdutrain.getEnrolldate().substring(0,10):"");
 						xdEdutrain.setGraduatdate(xdEdutrain.getGraduatdate().length()>9?xdEdutrain.getGraduatdate().substring(0,10):"");
 						xdEdutrain.update();
@@ -83,13 +82,6 @@ public class XdEmployeeController extends BaseController {
 			}else{
 				for (XdWorkExper workExper : gridList2) {
 					if("".equals(workExper.getId())){
-//						workExper.setId(UuidUtil.getUUID());
-//						workExper.setEid(o.getId());
-//						workExper.setEntrydate(workExper.getEntrydate().length()>9?workExper.getEntrydate().substring(0,10):"");
-//						workExper.setDepartdate(workExper.getDepartdate().length()>9?workExper.getDepartdate().substring(0,10):"");
-//						workExper.setCtime(DateUtil.getCurrentTime());
-//						workExper.setCuser(ShiroKit.getUserId());
-//						workExper.save();
 						workExper.setEid(o.getId());
 						workExper.save(workExper);
 					}else{
@@ -206,8 +198,6 @@ public class XdEmployeeController extends BaseController {
 		String sid = getPara("id");
 		keepPara("id");
 		XdSteps step = XdSteps.dao.findById(sid);
-
-		step.getRemarks();
 		if(step.getBackup1().equals("P")||step.getBackup1().equals("UP")){
 			step.setFinished("Y");
 			step.setFinishtime(DateUtil.getCurrentTime());
@@ -236,6 +226,19 @@ public class XdEmployeeController extends BaseController {
 				}
 			}else if("D".equals(summary.getOtype())){
 
+				if("XdEmployee".equals(summary.getTname())){
+					String changeb = summary.getChangeb();
+					xdEmployee = JSONUtil.jsonToBean(changeb, XdEmployee.class);
+
+				}else if("XdEdutrain".equals(summary.getTname())){
+					//XdEdutrain xdEdutrain = JSONUtil.jsonToBean(summary.getChangea(), XdEdutrain.class);
+					listEdu.add(summary.getChangeb());
+				}else{
+					//XdWorkExper workExper = JSONUtil.jsonToBean(summary.getChangea(), XdWorkExper.class);
+					listWExper.add(summary.getChangeb());
+				}
+
+
 			}else{
 
 			}
@@ -263,12 +266,15 @@ public class XdEmployeeController extends BaseController {
 		XdSteps steps = XdSteps.dao.findById(stepsId);
 		String oid = steps.getOid();
 
-		List<XdOplogSummary> summaries = XdOplogSummary.dao.find("select * from xd_oplog_summary where oid='" + oid + "' and status='WAITAPPRO'");
+		List<XdOplogSummary> summaries = XdOplogSummary.dao.find("select * from xd_oplog_summary where oid='" + oid + "' and lastversion='0'");
 		for (XdOplogSummary summary : summaries) {
-			if("C".equals(summary.getOtype())){
-				String tname = summary.getTname();
-				String values = summary.getChangea();
-				if("XdEmployee".equals(tname)){
+			String tName = summary.getTname();
+			String oType = summary.getOtype();
+			String values="";
+			//if("C".equals(summary.getOtype())){
+
+			//String values = summary.getChangea();
+				/*	if("XdEmployee".equals(tname)){
 					XdEmployee xdEmployee = JSONUtil.jsonToBean(values, XdEmployee.class);
 					xdEmployee.save();
 				}else if("XdEdutrain".equals(tname)){
@@ -277,10 +283,51 @@ public class XdEmployeeController extends BaseController {
 				}else{
 					XdWorkExper workExper = JSONUtil.jsonToBean(values, XdWorkExper.class);
 					workExper.save();
+				}*/
+
+				try {
+					Class clazz = Class.forName("com.pointlion.mvc.common.model." + tName);
+					Method method =null;
+					if("C".equals(oType)){
+						values = summary.getChangea();
+						method= clazz.getMethod("save");
+					}else if("D".equals(oType)){
+						values = summary.getChangeb();
+						method = clazz.getMethod("delete");
+					}
+					method.setAccessible(true);
+					method.invoke(JSONUtil.jsonToBean(values,clazz));
+				} catch (ClassNotFoundException e) {
+					e.printStackTrace();
+				} catch (NoSuchMethodException e) {
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					e.printStackTrace();
+				} catch (InvocationTargetException e) {
+					e.printStackTrace();
 				}
-				summary.setOtype(XdOperEnum.PASS.name());
+				summary.setStatus(XdOperEnum.PASS.name());
 				summary.update();
-			}
+			//}else if("D".equals(summary.getOtype())){
+//				try {
+//					Class clazz = Class.forName("com.pointlion.mvc.common.model." + tName);
+//					//Method delete = clazz.getDeclaredMethod("delete");
+//					Method delete = clazz.getMethod("delete");
+//					delete.setAccessible(true);
+//					delete.invoke(JSONUtil.jsonToBean(values,clazz));
+//				} catch (ClassNotFoundException e) {
+//					e.printStackTrace();
+//				} catch (NoSuchMethodException e) {
+//					e.printStackTrace();
+//				} catch (IllegalAccessException e) {
+//					e.printStackTrace();
+//				} catch (InvocationTargetException e) {
+//					e.printStackTrace();
+//				}
+//
+//				summary.setStatus(XdOperEnum.PASS.name());
+//				summary.update();
+//			}
 		}
 		steps.setFinished("Y");
 		steps.setUserid(ShiroKit.getUserId());
@@ -288,7 +335,10 @@ public class XdEmployeeController extends BaseController {
 		steps.setFinishtime(DateUtil.getCurrentTime());
 		steps.setRemarks(getPara("comment"));
 		steps.update();
-		XdEmployee employee = XdEmployee.dao.findById(oid);
+		 XdEmployee employee = new XdEmployee();
+		 employee.setId(steps.getOid());
+		 employee.setName(steps.getStep());
+		 employee.setEmpnum(steps.getStepdesc());
 		SysUser user = SysUser.dao.findById(steps.getCuserid());
 		XdOperUtil.insertEmpoloyeeSteps(employee,stepsId,user.getOrgid(),user.getId(),user.getName(),"P");
 

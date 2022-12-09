@@ -54,6 +54,8 @@ public class XdEmployeeService{
 		for(String id : idArr){
 			XdOperUtil.queryLastVersion(id);
 			XdEmployee o = me.getById(id);
+			o.setBackup1("D");
+			o.update();
 			if("1".equals(userOrgId)){
 				o.delete();
 			}else{
