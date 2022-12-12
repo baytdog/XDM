@@ -9,7 +9,7 @@
                         <a data-parent="#accordion" data-toggle="collapse" href="#collapseOne" style="text-align: center;background: #0ab1fc">个人基本资料</a>
                     </h4>
                 </div>
-                <div class="panel-collapse collapse in" id="collapseOne">
+                <div class="panel-collapse collapse " id="collapseOne">
                     <div class="panel-body">
                         <div class="form-group">
                             <label class="col-md-1 control-label">姓      名</label>
@@ -144,15 +144,8 @@
                         <a data-parent="#accordion" data-toggle="collapse" href="#collapseTwo"  style="text-align: center;background: #0ab1fc">教育/培训经历</a>
                     </h4>
                 </div>
-                <div class="panel-collapse collapse" id="collapseTwo">
+                <div class="panel-collapse collapse in" id="collapseTwo">
                     <div class="panel-body">
-                      <!--  <div class="row">
-                            <div class="col-sm-8">
-                                <button class="btn btn-primary" type="button"  onclick="addRow1()" #if(view=='detail') disabled #end>新增</button>
-                                <button class="btn btn-warning" type="button" onclick="removeRow1()"  #if(view=='detail') disabled #end>删除</button>
-                                &lt;!&ndash;								<button class="btn btn-warning" type="button" onclick="ttt()"   >测试</button>&ndash;&gt;
-                            </div>
-                        </div>-->
                         <mini-datagrid id="datagrid1" class="mini-datagrid" style="width:100%;height:280px;"
                                        url="" idField="id"  allowResize="true" pageSize="15"
                                        allowCellEdit="false" allowCellSelect="false" multiSelect="false"
@@ -206,13 +199,6 @@
 
                 <div class="panel-collapse collapse" id="collapseThree">
                     <div class="panel-body">
-
-                       <!-- <div class="row">
-                            <div class="col-sm-8">
-                                <button class="btn btn-primary" type="button"  onclick="addRow2()" #if(view=='detail') disabled #end>新增</button>
-                                <button class="btn btn-warning" type="button" onclick="removeRow2()"  #if(view=='detail') disabled #end>删除</button>
-                            </div>
-                        </div>-->
                         <mini-datagrid id="datagrid2" class="mini-datagrid" style="width:100%;height:280px;"
                                        url="" idField="id"
                                        allowResize="true" pageSize="15"
@@ -398,6 +384,99 @@
                                 <textarea rows="5" name="#(formModelName).chrecord" class="form-control" #if(view=='detail') readonly #end></textarea>
                             </div>
                         </div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel">
+
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a data-parent="#accordion" data-toggle="collapse" href="#collapseSix" style="text-align: center;background:red">异动信息</a>
+                    </h4>
+                </div>
+                <div class="panel-collapse collapse" id="collapseSix">
+                    <div class="panel-body">
+
+
+                        #if(oplogEmployee&&oplogEmployee.size()>0)
+                            #for(x : oplogEmployee)
+
+                                <div class="form-group">
+                                    <label class="col-md-1 control-label">修改项</label>
+                                    <div class="col-md-1">
+                                        <input type="text"    class="form-control"  value="#(x.fieldDesc)"  >
+                                    </div>
+                                    <label class="col-md-2 control-label">修改前</label>
+                                    <div class="col-md-2">
+                                        <input type="text"  class="form-control"  value="#( x.oldValue)"  >
+                                    </div>
+                                    <label class="col-md-2 control-label">修改后</label>
+                                    <div class="col-md-2">
+                                        <input type="text"    class="form-control"  value="#(x.newValue)"  >
+                                    </div>
+                                </div>
+                            #end
+
+                        #end
+
+
+                        <mini-datagrid id="datagrid3" class="mini-datagrid" style="width:100%;height:280px;"
+                                       url="" idField="id"
+                                       allowResize="true" pageSize="15"
+                                       allowCellEdit="false" allowCellSelect="true" multiSelect="false"
+                                       editNextOnEnterKey="true"  editNextRowCell="true"
+                                       showSortIcon="true"  _dataField="data"
+                                       showPager="false" allowSortColumn="false"
+                        >
+                            <columns>
+                                <column type="indexcolumn"></column>
+                                <!--   <column type="checkcolumn"></column>-->
+                                <column name="entrydate" field="entrydate" width="100"   dateFormat="yyyy-MM-dd">入职日期
+                                    <editor>
+                                        <mini-datepicker style="width:100%;" format="yyyy-MM-dd"></mini-datepicker>
+                                    </editor>
+                                </column>
+                                <column name="departdate" field="departdate" width="100"   dateFormat="yyyy-MM-dd">离职日期
+                                    <editor>
+                                        <mini-datepicker style="width:100%;" format="yyyy-MM-dd"></mini-datepicker>
+                                    </editor>
+                                </column>
+
+
+                                <column name="serviceunit"  field="serviceunit" headerAlign="center"   width="150" >
+                                    服务单位名称
+                                    <editor>
+                                        <input property="editor" class="mini-textbox" style="width:100%;" _minWidth="200" />
+                                    </editor>
+                                </column>
+                                <column name="job"  field="job" headerAlign="center"   width="150" >
+                                    职务
+                                    <editor>
+                                        <input property="editor" class="mini-textbox" style="width:100%;" _minWidth="200" />
+                                    </editor>
+                                </column>
+                                <column name="addr"  field="addr" headerAlign="center"  width="150" >
+                                    地点
+                                    <editor>
+                                        <input property="editor" class="mini-textbox" style="width:100%;" _minWidth="200" />
+                                    </editor>
+                                </column>
+
+                                <column name="addr"  field="backup2" headerAlign="center"  width="150" >
+                                    类型
+                                    <editor>
+                                        <input property="editor" class="mini-textbox" style="width:100%;" _minWidth="200" />
+                                    </editor>
+                                </column>
+                                <column name="addr"  field="backup3" headerAlign="center"  width="150" >
+                                    修改信息
+                                    <editor>
+                                        <input property="editor" class="mini-textbox" style="width:100%;" _minWidth="200" />
+                                    </editor>
+                                </column>
+                            </columns>
+                        </mini-datagrid>
+
                     </div>
                 </div>
             </div>

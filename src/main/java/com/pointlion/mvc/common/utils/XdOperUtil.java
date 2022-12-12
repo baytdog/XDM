@@ -38,17 +38,17 @@ public class XdOperUtil {
             method.setAccessible(true);
             if (method.isAnnotationPresent(ChangeFields.class)) {
                 try {
-                    Object newValue = method.invoke(newBean);
+                    Object newValue = method.invoke(newBean)==null?"":method.invoke(newBean);
                     Object oldValue = method.invoke(oldBean);
 //                    Object newValue = field.get(newBean);
 //                    Object oldValue = field.get(oldBean);
                     if(!Objects.equals(newValue, oldValue)) {
-                        builder.append("tablename:"+newBean.getClass().getSimpleName()+",")
-                        .append("fieldName:"+method.getAnnotation(ChangeFields.class).value()+",") //获取字段名称
-                                .append("fieldDesc:"+method.getAnnotation(ChangeFields.class).desc()+",")
-                                    .append("oldValue:"+oldValue+",")
-                                        .append("newValue:"+newValue)
-                                            .append("-");
+                        builder.append("\"tablename\":\""+newBean.getClass().getSimpleName()+"\",")
+                        .append("\"fieldName\":\""+method.getAnnotation(ChangeFields.class).value()+"\",") //获取字段名称
+                                .append("\"fieldDesc\":\""+method.getAnnotation(ChangeFields.class).desc()+"\",")
+                                    .append("\"oldValue\":\""+oldValue+"\",")
+                                        .append("\"newValue\":\""+newValue)
+                                            .append("\"-");
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -69,6 +69,7 @@ public class XdOperUtil {
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
         }
+        queryLastVersion(id);
         System.out.println(id);
         String newObjStr = newObj==null?"":JSONUtil.beanToJsonString(newObj);
         String oldObjStr=oldObj==null?"":JSONUtil.beanToJsonString(oldObj);
@@ -83,6 +84,7 @@ public class XdOperUtil {
         logSum.setOtype(otype);
         logSum.setCtime(DateUtil.getCurrentTime());
         logSum.setCuser(ShiroKit.getUserId());
+        logSum.setLastversion(0);
         logSum.save();
     }
 
@@ -165,8 +167,12 @@ public class XdOperUtil {
         steps.save();
     }
     public static void queryLastVersion(String id){
-        Integer integer = Db.queryInt("select max(lastversion) from xd_oplog_summary where oid='" + id + "'");
-        Db.update("update xd_oplog_summary set lastversion='"+(integer+1)+"' where oid='"+id+"' and lastversion='0'" );
+
+        Integer count = Db.queryInt("select count(*) from xd_oplog_summary where oid='" + id + "'");
+        if(count>0){
+            Integer integer = Db.queryInt("select max(lastversion) from xd_oplog_summary where oid='" + id + "'");
+            Db.update("update xd_oplog_summary set lastversion='"+(integer+1)+"' where oid='"+id+"' and lastversion='0'" );
+        }
     }
 
     public static void main(String[] args) throws Exception {
