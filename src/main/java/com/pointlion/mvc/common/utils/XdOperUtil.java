@@ -38,8 +38,8 @@ public class XdOperUtil {
             method.setAccessible(true);
             if (method.isAnnotationPresent(ChangeFields.class)) {
                 try {
-                    Object newValue = method.invoke(newBean)==null?"":method.invoke(newBean);
-                    Object oldValue = method.invoke(oldBean);
+                    Object newValue = (method.invoke(newBean)==null?"":method.invoke(newBean));
+                    Object oldValue = (method.invoke(oldBean)==null?"":method.invoke(oldBean));
 //                    Object newValue = field.get(newBean);
 //                    Object oldValue = field.get(oldBean);
                     if(!Objects.equals(newValue, oldValue)) {
@@ -58,10 +58,11 @@ public class XdOperUtil {
         return builder.toString();
     }
 
-    public static <T> void logSummary(String lid,String oid,T newObj,T oldObj,String otype,String status){
+    public static <T> XdOplogSummary logSummary(String lid,String oid,T newObj,T oldObj,String otype,String status){
         String id = null;
+        T obj=(oldObj==null?newObj:oldObj);
         try {
-             id = oldObj.getClass().getSuperclass().getDeclaredMethod("getId").invoke(oldObj).toString();
+             id = obj.getClass().getSuperclass().getDeclaredMethod("getId").invoke(obj).toString();
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         } catch (InvocationTargetException e) {
@@ -69,15 +70,13 @@ public class XdOperUtil {
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
         }
-        queryLastVersion(id);
-        System.out.println(id);
         String newObjStr = newObj==null?"":JSONUtil.beanToJsonString(newObj);
         String oldObjStr=oldObj==null?"":JSONUtil.beanToJsonString(oldObj);
         XdOplogSummary logSum=new XdOplogSummary();
         logSum.setId(lid);
         logSum.setOid(oid);
         logSum.setTid(id);
-        logSum.setTname(oldObj.getClass().getSimpleName());
+        logSum.setTname(obj.getClass().getSimpleName());
         logSum.setChangeb(oldObjStr);
         logSum.setChangea(newObjStr);
         logSum.setStatus(status);
@@ -85,7 +84,8 @@ public class XdOperUtil {
         logSum.setCtime(DateUtil.getCurrentTime());
         logSum.setCuser(ShiroKit.getUserId());
         logSum.setLastversion(0);
-        logSum.save();
+        //logSum.save();
+        return logSum;
     }
 
     public static <T> void logSummary(String oid,T bean,String otype,String status,int lastVersion){

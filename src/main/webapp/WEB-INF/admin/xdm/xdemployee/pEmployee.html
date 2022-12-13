@@ -39,7 +39,16 @@
         }
     }
     function noPass(){
-
+        var data = common_ajax.ajaxFunc("/admin/xd/xdemployee/noPass",$('#editForm').serialize(), "json", null);
+        if(data.success){
+            pointLion.alertMsg("操作成功!" , "success" , "small" , function(){
+                location.href = ctx+'/admin/xd/xdemployee/getListEmployee';//跳转到列表页
+            },data);
+        }else{
+            pointLion.alertMsg(data.message , "danger" , "small" , function(){
+                $(".btn").removeAttr("disabled");
+            },data);
+        }
 
     }
 
@@ -63,13 +72,21 @@
     var grid = mini.get("datagrid1");
     var grid2 = mini.get("datagrid2");
     var grid3 = mini.get("datagrid3");
+    var grid4 = mini.get("datagrid4");
     var data1='#(listEdu)'
     grid.setData(mini.decode(data1))
     var data2='#(listWExper)'
     grid2.setData(mini.decode(data2));
-    var data3='#(oplogEdu)'
-    grid3.setData(mini.decode(data3));
 
+    var otype ='#(otype)'
+    if(otype=="U"){
+        var data3='#(oplogEdu)'
+        grid3.setData(mini.decode(data3));
+        var data4='#(oplogWork)'
+        grid4.setData(mini.decode(data4));
+    }else{
+        $("#collapseOne").addClass("in");
+    }
 
     function addRow1() {
         var newRow = { name: "New Row",id:"",enrolldate:"" ,graduatdate:"",trainOrgname:"",major:"",edubg:""};

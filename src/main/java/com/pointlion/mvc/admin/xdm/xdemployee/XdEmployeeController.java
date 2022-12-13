@@ -56,6 +56,8 @@ public class XdEmployeeController extends BaseController {
 		String id = o.getId();
 		XdEmployee employee = XdEmployee.dao.findById(id);
 		if(employee != null){
+			o.setCtime(employee.getCtime());
+			o.setCuser(employee.getCuser());
 			service.modifyObj(o,employee,gridList1,gridList2);
 		}else{
 			String operName = XdOperEnum.C.name();
@@ -64,7 +66,6 @@ public class XdEmployeeController extends BaseController {
 			o.setId(oid);
     		o.setCtime(DateUtil.getCurrentTime());
     		o.setCuser(ShiroKit.getUserId());
-			ShiroKit.getUserOrgId();
 			if(!"1".equals(ShiroKit.getUserOrgId())){
 				o.setBackup1("C");
 				XdOperUtil.insertEmpoloyeeSteps(o,"","1","","","C");
@@ -73,8 +74,6 @@ public class XdEmployeeController extends BaseController {
 				o.save();
 				XdOperUtil.logSummary(oid,o,operName,XdOperEnum.UNAPPRO.name(),0);
 			}
-
-
     		if(gridList1.size()!=0){
 				for (int i = 0; i < gridList1.size(); i++) {
 					XdEdutrain xdEdutrain = gridList1.get(i);
@@ -114,8 +113,13 @@ public class XdEmployeeController extends BaseController {
 		XdEmployee o = new XdEmployee();
 		if(StrKit.notBlank(id)){
     		o = service.getById(id);
-    		if("detail".equals(view)){
-    		}
+    		/*if("detail".equals(view)){
+    		}*/
+			if("1".equals(ShiroKit.getUserOrgId())){
+				setAttr("oper","1");
+			}else{
+				setAttr("oper","0");
+			}
     	}else{
 			String uuid = UuidUtil.getUUID();
 			System.out.println(uuid);
@@ -163,6 +167,10 @@ public class XdEmployeeController extends BaseController {
 			step.update();
 		}
 		String s = (step.getRemarks() == null ? "" : step.getRemarks());
+		if(step.getBackup1().equals("UP")){
+			XdSteps pStep = XdSteps.dao.findById(step.getParentid());
+			s=pStep.getRemarks();
+		}
 		setAttr("comments",s);
 		String oid = step.getOid();
 		List<XdOplogSummary> summaries =
@@ -214,38 +222,62 @@ public class XdEmployeeController extends BaseController {
 					if(summary.getOtype().equals("C")){
 						XdEdutrain xdEdutrain = JSONUtil.jsonToBean(summary.getChangea(), XdEdutrain.class);
 						xdEdutrain.setBakcup2("新增");
-						oplogEdu.add(xdEdutrain.toString());
+						oplogEdu.add(JSONUtil.beanToJsonString(xdEdutrain));
 					}else if(summary.getOtype().equals("D")){
 						XdEdutrain xdEdutrain = JSONUtil.jsonToBean(summary.getChangeb(), XdEdutrain.class);
 						xdEdutrain.setBakcup2("删除");
-						oplogEdu.add(xdEdutrain.toString());
+						oplogEdu.add(JSONUtil.beanToJsonString(xdEdutrain));
 					}else {
 
 						XdEdutrain xdEdutrain = JSONUtil.jsonToBean(summary.getChangeb(), XdEdutrain.class);
 						List<XdOplogDetail> xdOplogDetails = XdOplogDetail.dao.find("select * from xd_oplog_detail where rsid='" + summary.getId() + "'");
-						StringBuilder  sb = new StringBuilder("[");
+						StringBuilder  sb = new StringBuilder("[ ");
 						for (XdOplogDetail xdOplogDetail : xdOplogDetails) {
-							sb.append(xdOplogDetail.getFieldDesc()).append("原值:")
-									.append(xdOplogDetail.getOldValue())
-									.append("现值:").append(xdOplogDetail.getNewValue())
-									.append("--");
+							sb.append(xdOplogDetail.getFieldDesc()+" ").append("原值 ： ")
+									.append((xdOplogDetail.getOldValue()==null|| "".equals(xdOplogDetail.getOldValue()))?"空":xdOplogDetail.getOldValue())
+									.append(", 现值 ： ").append((xdOplogDetail.getNewValue()==null||"".equals(xdOplogDetail.getNewValue()))?"空":xdOplogDetail.getNewValue())
+									.append("  --  ");
 						}
-						String s1 = sb.toString().replaceAll("--$", "")+"]";
+						String s1 = sb.toString().replaceAll("--  $", "")+" ]";
 						xdEdutrain.setBakcup2("修改");
 						xdEdutrain.setBackup3(s1);
 						oplogEdu.add(JSONUtil.beanToJsonString(xdEdutrain));
 					}
 
 				}
-				/*if(summary.getTname().equals("XdWorkExper")){
+				if(summary.getTname().equals("XdWorkExper")){
+					if(summary.getOtype().equals("C")){
+						XdWorkExper workExper = JSONUtil.jsonToBean(summary.getChangea(), XdWorkExper.class);
+						workExper.setBackup2("新增");
+						oplogWork.add(JSONUtil.beanToJsonString(workExper));
+					}else if(summary.getOtype().equals("D")){
+						XdWorkExper workExper = JSONUtil.jsonToBean(summary.getChangeb(), XdWorkExper.class);
+						workExper.setBackup2("删除");
+						oplogWork.add(JSONUtil.beanToJsonString(workExper));
+					}else {
 
+						XdWorkExper workExper = JSONUtil.jsonToBean(summary.getChangeb(), XdWorkExper.class);
+						List<XdOplogDetail> xdOplogDetails = XdOplogDetail.dao.find("select * from xd_oplog_detail where rsid='" + summary.getId() + "'");
+						StringBuilder  sb = new StringBuilder("[ ");
+						for (XdOplogDetail xdOplogDetail : xdOplogDetails) {
+							sb.append(xdOplogDetail.getFieldDesc()+" ").append("原值 ： ")
+									.append((xdOplogDetail.getOldValue()==null|| "".equals(xdOplogDetail.getOldValue()))?"空":xdOplogDetail.getOldValue())
+									.append(", 现值 ： ").append((xdOplogDetail.getNewValue()==null||"".equals(xdOplogDetail.getNewValue()))?"空":xdOplogDetail.getNewValue())
+									.append("  --  ");
+						}
+						String s1 = sb.toString().replaceAll("--  $", "")+" ]";
+						workExper.setBackup2("修改");
+						workExper.setBackup3(s1);
+						oplogWork.add(JSONUtil.beanToJsonString(workExper));
+					}
 
-				}*/
+				}
 			}
 
 
 			setAttr("oplogEmployee",oplogEmployee);
 			setAttr("oplogEdu",oplogEdu);
+			setAttr("oplogWork",oplogWork);
 		}
 
 
@@ -287,6 +319,7 @@ public class XdEmployeeController extends BaseController {
 		setAttr("o",xdEmployee);
 		setAttr("listEdu",listEdu);
 		setAttr("listWExper",listWExper);
+		setAttr("otype",step.getBackup1());
 		if(ShiroKit.getUserOrgId().equals("1")){
 			setAttr("oper","approver");
 		}
@@ -312,20 +345,6 @@ public class XdEmployeeController extends BaseController {
 			String tName = summary.getTname();
 			String oType = summary.getOtype();
 			String values="";
-			//if("C".equals(summary.getOtype())){
-
-			//String values = summary.getChangea();
-				/*	if("XdEmployee".equals(tname)){
-					XdEmployee xdEmployee = JSONUtil.jsonToBean(values, XdEmployee.class);
-					xdEmployee.save();
-				}else if("XdEdutrain".equals(tname)){
-					XdEdutrain xdEdutrain = JSONUtil.jsonToBean(values, XdEdutrain.class);
-					xdEdutrain.save();
-				}else{
-					XdWorkExper workExper = JSONUtil.jsonToBean(values, XdWorkExper.class);
-					workExper.save();
-				}*/
-
 				try {
 					Class clazz = Class.forName("com.pointlion.mvc.common.model." + tName);
 					Method method =null;
@@ -335,6 +354,9 @@ public class XdEmployeeController extends BaseController {
 					}else if("D".equals(oType)){
 						values = summary.getChangeb();
 						method = clazz.getMethod("delete");
+					}else if("U".equals(oType)){
+						method = clazz.getMethod("update");
+						values = summary.getChangea();
 					}
 					method.setAccessible(true);
 					method.invoke(JSONUtil.jsonToBean(values,clazz));
@@ -349,26 +371,6 @@ public class XdEmployeeController extends BaseController {
 				}
 				summary.setStatus(XdOperEnum.PASS.name());
 				summary.update();
-			//}else if("D".equals(summary.getOtype())){
-//				try {
-//					Class clazz = Class.forName("com.pointlion.mvc.common.model." + tName);
-//					//Method delete = clazz.getDeclaredMethod("delete");
-//					Method delete = clazz.getMethod("delete");
-//					delete.setAccessible(true);
-//					delete.invoke(JSONUtil.jsonToBean(values,clazz));
-//				} catch (ClassNotFoundException e) {
-//					e.printStackTrace();
-//				} catch (NoSuchMethodException e) {
-//					e.printStackTrace();
-//				} catch (IllegalAccessException e) {
-//					e.printStackTrace();
-//				} catch (InvocationTargetException e) {
-//					e.printStackTrace();
-//				}
-//
-//				summary.setStatus(XdOperEnum.PASS.name());
-//				summary.update();
-//			}
 		}
 		steps.setFinished("Y");
 		steps.setUserid(ShiroKit.getUserId());
@@ -387,7 +389,29 @@ public class XdEmployeeController extends BaseController {
 	}
 
 	public void noPass(){
+		String stepsId = getPara("stepsId");
+		XdSteps steps = XdSteps.dao.findById(stepsId);
+		String oid = steps.getOid();
 
+		List<XdOplogSummary> summaries = XdOplogSummary.dao.find("select * from xd_oplog_summary where oid='" + oid + "' and lastversion='0'");
+		for (XdOplogSummary summary : summaries) {
+			summary.setStatus(XdOperEnum.FAIL.name());
+			summary.update();
+		}
+		steps.setFinished("Y");
+		steps.setUserid(ShiroKit.getUserId());
+		steps.setUsername(ShiroKit.getUsername());
+		steps.setFinishtime(DateUtil.getCurrentTime());
+		steps.setRemarks(getPara("comment"));
+		steps.update();
+		XdEmployee employee = new XdEmployee();
+		employee.setId(steps.getOid());
+		employee.setName(steps.getStep());
+		employee.setEmpnum(steps.getStepdesc());
+		SysUser user = SysUser.dao.findById(steps.getCuserid());
+		XdOperUtil.insertEmpoloyeeSteps(employee,stepsId,user.getOrgid(),user.getId(),user.getName(),"UP");
+
+		renderSuccess("操作成功!");
 	}
 
 }

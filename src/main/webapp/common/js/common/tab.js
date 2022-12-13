@@ -29,13 +29,13 @@
             animatSpeed)
         } else {
         	
-        	console.log("===========")
+        /*	console.log("===========")
         	console.log(releft)
         	console.log(selDom.width())
             console.log(wwidth)
              console.log(operationWidth)
              console.log(left - releft + wwidth - selDom.width() - operationWidth - marginLeft)
-        	console.log("===========")
+        	console.log("===========")*/
         	
         	
             if (releft + selDom.width() > wwidth - operationWidth) {

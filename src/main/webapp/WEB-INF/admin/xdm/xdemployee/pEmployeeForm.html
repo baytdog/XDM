@@ -144,7 +144,7 @@
                         <a data-parent="#accordion" data-toggle="collapse" href="#collapseTwo"  style="text-align: center;background: #0ab1fc">教育/培训经历</a>
                     </h4>
                 </div>
-                <div class="panel-collapse collapse in" id="collapseTwo">
+                <div class="panel-collapse collapse " id="collapseTwo">
                     <div class="panel-body">
                         <mini-datagrid id="datagrid1" class="mini-datagrid" style="width:100%;height:280px;"
                                        url="" idField="id"  allowResize="true" pageSize="15"
@@ -388,31 +388,30 @@
                 </div>
             </div>
             <div class="panel">
-
+            #if(otype=="U")
                 <div class="panel-heading">
                     <h4 class="panel-title">
                         <a data-parent="#accordion" data-toggle="collapse" href="#collapseSix" style="text-align: center;background:red">异动信息</a>
                     </h4>
                 </div>
-                <div class="panel-collapse collapse" id="collapseSix">
+                <div class="panel-collapse collapse in" id="collapseSix">
                     <div class="panel-body">
 
 
                         #if(oplogEmployee&&oplogEmployee.size()>0)
                             #for(x : oplogEmployee)
-
                                 <div class="form-group">
-                                    <label class="col-md-1 control-label">修改项</label>
+                                    <label class="col-md-1 control-label">修改项   </label>
                                     <div class="col-md-1">
-                                        <input type="text"    class="form-control"  value="#(x.fieldDesc)"  >
+                                        <input type="text"    class="form-control" readonly  value="#(x.fieldDesc)"  >
                                     </div>
-                                    <label class="col-md-2 control-label">修改前</label>
+                                    <label class="col-md-2 control-label">修改前值为：</label>
                                     <div class="col-md-2">
-                                        <input type="text"  class="form-control"  value="#( x.oldValue)"  >
+                                        <input type="text"  class="form-control" readonly  value="#( x.oldValue)"  >
                                     </div>
-                                    <label class="col-md-2 control-label">修改后</label>
+                                    <label class="col-md-2 control-label">修改后值为：</label>
                                     <div class="col-md-2">
-                                        <input type="text"    class="form-control"  value="#(x.newValue)"  >
+                                        <input type="text"    class="form-control"  readonly value="#(x.newValue)"  >
                                     </div>
                                 </div>
                             #end
@@ -420,65 +419,110 @@
                         #end
 
 
-                        <mini-datagrid id="datagrid3" class="mini-datagrid" style="width:100%;height:280px;"
+                        #if(oplogEdu!=null && oplogEdu.size()>0)
+                        <mini-datagrid id="datagrid3" class="mini-datagrid" style="width:100%;"
+                                       url="" idField="id"  allowResize="true" pageSize="15"
+                                       allowCellEdit="false" allowCellSelect="false" multiSelect="false"
+                                       editNextOnEnterKey="true"  editNextRowCell="true" allowCellWrap="true"
+                                       showSortIcon="false"  _dataField="data"  showPager="false" allowSortColumn="false"
+                        >
+                            <columns>
+                                <column type="indexcolumn"></column>
+                                <column name="enrolldate" field="enrolldate"  headerAlign="center"  align="center"    >入学日期
+                                </column>
+                                <column name="graduatdate" field="graduatdate"     headerAlign="center"  align="center" >毕业日期
+                                </column>
+                                <column name="trainOrgname"  field="trainOrgname"  headerAlign="center"  align="center"   >
+                                    学校/培训机构名称
+                                <!--    <editor>
+                                        <input   class="mini-textbox" style="width:100%;"   />
+                                    </editor>-->
+                                </column>
+                                <column name="major"  field="major" headerAlign="center"   align="center"   >
+                                    专业
+                                    <!--<editor>
+                                        <input property="editor" class="mini-textbox" style="width:100%;"   />
+                                    </editor>-->
+                                </column>
+                                <column name="edubg"  field="edubg" headerAlign="center"  align="center"   >
+                                    学历
+                                  <!--  <editor>
+                                        <input property="editor" class="mini-textbox" style="width:100%;" />
+                                    </editor>-->
+                                </column>
+                                <column name="addr"  field="bakcup2" width="40px" headerAlign="center"  align="center"     >
+                                    操作类型
+                                   <!-- <editor>
+                                        <input  class="mini-textbox" style="width:100%;"  />
+                                    </editor>-->
+                                </column>
+                                <column name="addr"  field="backup3" width="260px" headerAlign="center"   align="center"   >
+                                    修改信息
+                                 <!--   <editor>
+                                        <input property="editor" class="mini-textbox" style="width:100%;" _minWidth="200" />
+                                    </editor>-->
+                                </column>
+                            </columns>
+                        </mini-datagrid>
+                        #end
+                        <br/>
+                        <br/>
+                        #if(oplogWork!=null&&oplogWork.size()>0)
+                        <mini-datagrid id="datagrid4" class="mini-datagrid" style="width:100%;"
                                        url="" idField="id"
                                        allowResize="true" pageSize="15"
                                        allowCellEdit="false" allowCellSelect="true" multiSelect="false"
                                        editNextOnEnterKey="true"  editNextRowCell="true"
                                        showSortIcon="true"  _dataField="data"
-                                       showPager="false" allowSortColumn="false"
+                                       showPager="false" allowSortColumn="false" allowCellWrap="true"
                         >
                             <columns>
                                 <column type="indexcolumn"></column>
-                                <!--   <column type="checkcolumn"></column>-->
-                                <column name="entrydate" field="entrydate" width="100"   dateFormat="yyyy-MM-dd">入职日期
-                                    <editor>
-                                        <mini-datepicker style="width:100%;" format="yyyy-MM-dd"></mini-datepicker>
-                                    </editor>
+                                <column name="entrydate" field="entrydate"   headerAlign="center"  align="center"  >入职日期
+                                        <!--<mini-input style="width:100%;" format="yyyy-MM-dd"></mini-input>-->
                                 </column>
-                                <column name="departdate" field="departdate" width="100"   dateFormat="yyyy-MM-dd">离职日期
-                                    <editor>
-                                        <mini-datepicker style="width:100%;" format="yyyy-MM-dd"></mini-datepicker>
-                                    </editor>
+                                <column name="departdate" field="departdate"   headerAlign="center"  align="center">离职日期
+                                       <!-- <mini-input style="width:100%;" format="yyyy-MM-dd"></mini-input>-->
                                 </column>
 
 
-                                <column name="serviceunit"  field="serviceunit" headerAlign="center"   width="150" >
+                                <column name="serviceunit"  field="serviceunit" headerAlign="center"   align="center"  >
                                     服务单位名称
-                                    <editor>
-                                        <input property="editor" class="mini-textbox" style="width:100%;" _minWidth="200" />
-                                    </editor>
+                                    <!--<editor>
+                                        <input property="editor" class="mini-textbox" style="width:100%;"   />
+                                    </editor>-->
                                 </column>
-                                <column name="job"  field="job" headerAlign="center"   width="150" >
+                                <column name="job"  field="job" headerAlign="center"    align="center">
                                     职务
-                                    <editor>
-                                        <input property="editor" class="mini-textbox" style="width:100%;" _minWidth="200" />
-                                    </editor>
+                                   <!-- <editor>
+                                        <input property="editor" class="mini-textbox" style="width:100%;"   />
+                                    </editor>-->
                                 </column>
-                                <column name="addr"  field="addr" headerAlign="center"  width="150" >
+                                <column name="addr"  field="addr" headerAlign="center"  align="center" >
                                     地点
-                                    <editor>
-                                        <input property="editor" class="mini-textbox" style="width:100%;" _minWidth="200" />
-                                    </editor>
+                                 <!--   <editor>
+                                        <input property="editor" class="mini-textbox" style="width:100%;"   />
+                                    </editor>-->
                                 </column>
 
-                                <column name="addr"  field="backup2" headerAlign="center"  width="150" >
-                                    类型
-                                    <editor>
-                                        <input property="editor" class="mini-textbox" style="width:100%;" _minWidth="200" />
-                                    </editor>
+                                <column name="addr"  field="backup2" width="40px"  headerAlign="center"  align="center"  >
+                                    操作类型
+                                  <!--  <editor>
+                                        <input property="editor" class="mini-textbox" style="width:100%;"  />
+                                    </editor>-->
                                 </column>
-                                <column name="addr"  field="backup3" headerAlign="center"  width="150" >
+                                <column name="addr"  field="backup3" headerAlign="center"  width="260px"  align="center" >
                                     修改信息
                                     <editor>
-                                        <input property="editor" class="mini-textbox" style="width:100%;" _minWidth="200" />
+                                        <input property="editor" class="mini-textbox" style="width:100%;"   />
                                     </editor>
                                 </column>
                             </columns>
                         </mini-datagrid>
-
+                        #end
                     </div>
                 </div>
+            #end
             </div>
         </div>
 

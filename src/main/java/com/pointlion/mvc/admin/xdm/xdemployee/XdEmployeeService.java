@@ -84,7 +84,7 @@ public class XdEmployeeService{
 		}
 	}
 
-
+	/*@Before(Tx.class)*/
 	public void modifyObj(XdEmployee newEmp,XdEmployee oldEmp,List<XdEdutrain> gridList1,List<XdWorkExper> gridList2){
 		boolean rs ="1".equals(ShiroKit.getUserOrgId());
 		String summaryStatus=XdOperEnum.WAITAPPRO.name();
@@ -96,18 +96,19 @@ public class XdEmployeeService{
 		String employeeChanges = XdOperUtil.getChangedMetheds(newEmp, oldEmp);
 		employeeChanges = employeeChanges.replaceAll("-$","");
 		List<XdOplogDetail> list =new ArrayList<>();
+		List<XdOplogSummary> summaryList =new ArrayList<>();
 		if(!"".equals(employeeChanges)){
 			String lid=UuidUtil.getUUID();
 			String[] empCArray = employeeChanges.split("-");
 			for (String change : empCArray) {
 				change="{"+change+"}";
-				System.out.println(change);
+//				System.out.println(change);
 				XdOplogDetail logDetail = JSONUtil.jsonToBean(change, XdOplogDetail.class);
 				logDetail.setRsid(lid);
 				list.add(logDetail);
 			}
 			flag=true;
-			XdOperUtil.logSummary(lid,oldEmp.getId(),newEmp,oldEmp,XdOperEnum.U.name(),summaryStatus);
+			summaryList.add(XdOperUtil.logSummary(lid,oldEmp.getId(),newEmp,oldEmp,XdOperEnum.U.name(),summaryStatus));
 		}
 		if(rs){
 			newEmp.update();
@@ -123,7 +124,7 @@ public class XdEmployeeService{
 				if(rs){
 					xdEdutrain.delete();
 				}
-				XdOperUtil.logSummary(UuidUtil.getUUID(),oldEmp.getId(),null,xdEdutrain,XdOperEnum.D.name(),summaryStatus);
+				summaryList.add(XdOperUtil.logSummary(UuidUtil.getUUID(),oldEmp.getId(),null,xdEdutrain,XdOperEnum.D.name(),summaryStatus));
 				flag=true;
 			}
 		}else{
@@ -132,8 +133,10 @@ public class XdEmployeeService{
 					xdEdutrain.setEid(oldEmp.getId());
 					if (rs) {
 						xdEdutrain.save(xdEdutrain);
+					}else{
+						xdEdutrain.loadObj(xdEdutrain);
 					}
-					XdOperUtil.logSummary(UuidUtil.getUUID(),oldEmp.getId(),null,xdEdutrain,XdOperEnum.C.name(),summaryStatus);
+					summaryList.add(XdOperUtil.logSummary(UuidUtil.getUUID(),oldEmp.getId(),xdEdutrain,null,XdOperEnum.C.name(),summaryStatus));
 				}else{
 					XdEdutrain oldXdEduTrain = eduMap.get(xdEdutrain.getId());
 					if(oldXdEduTrain!=null){
@@ -149,7 +152,7 @@ public class XdEmployeeService{
 							}
 							flag=true;
 							String lid =UuidUtil.getUUID();
-							XdOperUtil.logSummary(lid,oldEmp.getId(),xdEdutrain,oldXdEduTrain,XdOperEnum.U.name(),summaryStatus);
+							summaryList.add(XdOperUtil.logSummary(lid,oldEmp.getId(),xdEdutrain,oldXdEduTrain,XdOperEnum.U.name(),summaryStatus));
 							String[] eduCArry = changedEduTrain.split("-");
 							for (String edu : eduCArry) {
 								edu="{"+edu+"}";
@@ -161,16 +164,17 @@ public class XdEmployeeService{
 						}
 					}
 				}
-				Collection<XdEdutrain> entries = eduMap.values();
-				Iterator<XdEdutrain> iterator = entries.iterator();
-				while (iterator.hasNext()){
-					XdEdutrain next = iterator.next();
-					if (rs) {
-						next.delete();
-					}
-					flag=true;
-					XdOperUtil.logSummary(UuidUtil.getUUID(),oldEmp.getId(),null,next,XdOperEnum.D.name(),summaryStatus);
+
+			}
+			Collection<XdEdutrain> entries = eduMap.values();
+			Iterator<XdEdutrain> iterator = entries.iterator();
+			while (iterator.hasNext()){
+				XdEdutrain next = iterator.next();
+				if (rs) {
+					next.delete();
 				}
+				flag=true;
+				summaryList.add(XdOperUtil.logSummary(UuidUtil.getUUID(),oldEmp.getId(),null,next,XdOperEnum.D.name(),summaryStatus));
 			}
 		}
 
@@ -184,7 +188,7 @@ public class XdEmployeeService{
 				if (rs) {
 					workExper.delete();
 				}
-				XdOperUtil.logSummary(UuidUtil.getUUID(),oldEmp.getId(),null,workExper,XdOperEnum.D.name(),summaryStatus);
+				summaryList.add(XdOperUtil.logSummary(UuidUtil.getUUID(),oldEmp.getId(),null,workExper,XdOperEnum.D.name(),summaryStatus));
 				flag=true;
 			}
 		}else{
@@ -193,8 +197,10 @@ public class XdEmployeeService{
 					workExper.setEid(oldEmp.getId());
 					if (rs) {
 						workExper.save(workExper);
+					}else{
+						workExper.loadObj(workExper);
 					}
-					XdOperUtil.logSummary(UuidUtil.getUUID(),oldEmp.getId(),null,workExper,XdOperEnum.C.name(),summaryStatus);
+					summaryList.add(XdOperUtil.logSummary(UuidUtil.getUUID(),oldEmp.getId(),workExper,null,XdOperEnum.C.name(),summaryStatus));
 					flag=true;
 				}else{
 					XdWorkExper oldWorkExper = workMap.get(workExper.getId());
@@ -210,7 +216,7 @@ public class XdEmployeeService{
 							}
 							flag=true;
 							String lid =UuidUtil.getUUID();
-							XdOperUtil.logSummary(lid,oldEmp.getId(),workExper,oldWorkExper,XdOperEnum.U.name(),summaryStatus);
+							summaryList.add(XdOperUtil.logSummary(lid,oldEmp.getId(),workExper,oldWorkExper,XdOperEnum.U.name(),summaryStatus));
 							String[] workCArry = changedWorkExper.split("-");
 							for (String work : workCArry) {
 
@@ -222,27 +228,36 @@ public class XdEmployeeService{
 						}
 					}
 				}
-				Collection<XdWorkExper> entries = workMap.values();
-				Iterator<XdWorkExper> iterator = entries.iterator();
-				while (iterator.hasNext()){
-					XdWorkExper next = iterator.next();
-					if (rs) {
-						next.delete();
-					}
-					flag=true;
-					XdOperUtil.logSummary(UuidUtil.getUUID(),oldEmp.getId(),null,next,XdOperEnum.D.name(),summaryStatus);
+
+			}
+
+			Collection<XdWorkExper> entries = workMap.values();
+			Iterator<XdWorkExper> iterator = entries.iterator();
+			while (iterator.hasNext()){
+				XdWorkExper next = iterator.next();
+				if (rs) {
+					next.delete();
 				}
+				flag=true;
+				summaryList.add(XdOperUtil.logSummary(UuidUtil.getUUID(),oldEmp.getId(),null,next,XdOperEnum.D.name(),summaryStatus));
 			}
 		}
 
-
+		if (summaryList.size() > 0) {
+			XdOperUtil.queryLastVersion(oldEmp.getId());
+		}
+		for (XdOplogSummary xdOplogSummary : summaryList) {
+			xdOplogSummary.save();
+		}
 		for (XdOplogDetail detail : list) {
 			detail.setId(UuidUtil.getUUID());
 			detail.save();
 		}
 
 		if(!rs && flag){
+			//XdOperUtil.queryLastVersion(oldEmp.getId());
 			XdOperUtil.insertEmpoloyeeSteps(newEmp,"","1","","","U");
 		}
 	}
+
 }
