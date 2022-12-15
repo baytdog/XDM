@@ -18,7 +18,7 @@
 
 			var data = common_ajax.ajaxFunc("/admin/xd/xdemployee/save",$('#editForm').serialize()+"&gridData1="+mini.encode(gridData1)+"&gridData2="+mini.encode(gridData2), "json", null);
 			if(data.success){
-				pointLion.alertMsg("保存成功!" , "success" , "small" , function(){
+				pointLion.alertMsg("操作成功!" , "success" , "small" , function(){
 					location.href = ctx+'/admin/xd/xdemployee/getListPage';//跳转到列表页
 				},data);
 			}else{

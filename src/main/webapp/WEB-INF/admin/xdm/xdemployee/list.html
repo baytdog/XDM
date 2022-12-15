@@ -5,9 +5,24 @@
 								<div class="panel-body">
 									<div class="form-inline">
 										<div class="form-group">
-											<input id="applyUser" placeholder="制单人" class="form-control">
+											<input id="name" placeholder="姓名" class="form-control">
 										</div>
 										<div class="form-group">
+											<input id="empnum" placeholder="员工编号" class="form-control">
+										</div>
+										<div class="form-group">
+											<input id="emprelation" placeholder="员工关系" class="form-control">
+										</div>
+										<div class="form-group">
+											<input id="department" placeholder="所属部门" class="form-control">
+										</div>
+										<div class="form-group">
+											<input id="unitname" placeholder="单元" class="form-control">
+										</div>
+										<div class="form-group">
+											<input id="costitem" placeholder="成本项目" class="form-control">
+										</div>
+										<!--<div class="form-group">
 											<div class="input-group date form_datetime">
 												<input id="searchStartTime" placeholder="开始时间" class="form-control">
 												<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
@@ -18,7 +33,7 @@
 												<input id="searchEndTime" placeholder="结束时间" class="form-control">
 												<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
 											</div>
-										</div>
+										</div>-->
 										<div class="form-group">
 											<button class="btn btn-primary" type="button" onclick="searchTable()">搜索</button>
 										</div>
@@ -29,7 +44,8 @@
 								<div class="panel-body">
 									<a id="add" class="btn btn-primary data-toolbar" href="#(ctx)/admin/xd/xdemployee/getEditPage?view=edit"><i class="demo-pli-add"></i> 添加</a>
 									<a id="del" class="btn btn-danger data-toolbar" onclick="delSel()" href="javascript:void(0);"><i class="demo-pli-cross"></i> 批量删除</a>
-									<table id="pageTable" class="demo-add-niftycheck" data-toolbar="#del,#add"
+									<a id="export" class="btn btn-primary data-toolbar" onclick="exportExcel()" target="_blank"><i class="demo-pli-download-from-cloud "></i> 导出</a>
+									<table id="pageTable" class="demo-add-niftycheck" data-toolbar="#del,#add,#export"
 										   data-search="true"
 										   data-show-refresh="true"
 										   data-show-toggle="true"
@@ -164,6 +180,21 @@
 		// 刷新表格
 		$('#pageTable').bootstrapTable('refresh',param);
 	}
+
+
+	/***
+	 * 导出
+	 */
+	function exportExcel(){
+		var lnum = encodeURI(encodeURI($("#lnum").val()));
+		var lfromer = encodeURI(encodeURI($("#lfromer").val()));
+		var lfromnum = encodeURI(encodeURI($("#lfromnum").val()));
+		var startTime = $("#searchStartTime").val();
+		var endTime = $("#searchEndTime").val();
+		var lstate = $("#lstate").val();
+		location.href = "#(ctx)/admin/oa/letter/exportExcel?lnum="+lnum+"&lfromer="+lfromer+"&lfromnum="+lfromnum+"&startTime="+startTime+"&endTime="+endTime+"&lstate="+lstate;
+	}
+
 
 	$(document).ready(function(){
 		$('.form_datetime').datepicker({format: 'yyyy-mm-dd',weekStart: 1,todayBtn:  1,autoclose: 1,language:  'zh-CN',todayHighlight: 1,forceParse: 0,clearBtn: true }).on('changeDate',null);

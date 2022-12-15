@@ -161,13 +161,14 @@ public class XdEmployeeController extends BaseController {
 		String sid = getPara("id");
 		keepPara("id");
 		XdSteps step = XdSteps.dao.findById(sid);
-		if(step.getBackup1().equals("P")||step.getBackup1().equals("UP")){
+		String resultType = step.getBackup1();
+	/*	if(resultType.equals("P")||resultType.equals("UP")){
 			step.setFinished("Y");
 			step.setFinishtime(DateUtil.getCurrentTime());
 			step.update();
-		}
+		}*/
 		String s = (step.getRemarks() == null ? "" : step.getRemarks());
-		if(step.getBackup1().equals("UP")){
+		if(resultType.equals("UP")){
 			XdSteps pStep = XdSteps.dao.findById(step.getParentid());
 			s=pStep.getRemarks();
 		}
@@ -178,7 +179,7 @@ public class XdEmployeeController extends BaseController {
 		List<String> listEdu=new ArrayList<>();
 		List<String> listWExper=new ArrayList<>();
 		XdEmployee xdEmployee=null;
-		if("C".equals(step.getBackup1())){
+		if("C".equals(resultType)){
 			for (XdOplogSummary summary : summaries) {
 					if("XdEmployee".equals(summary.getTname())){
 						String changea = summary.getChangea();
@@ -189,7 +190,7 @@ public class XdEmployeeController extends BaseController {
 						listWExper.add(summary.getChangea());
 					}
 			}
-		}else if("D".equals(step.getBackup1())){
+		}else if("D".equals(resultType)){
 			for (XdOplogSummary summary : summaries) {
 				if("XdEmployee".equals(summary.getTname())){
 					String changeb = summary.getChangeb();
@@ -200,7 +201,7 @@ public class XdEmployeeController extends BaseController {
 					listWExper.add(summary.getChangeb());
 				}
 			}
-		}else{
+		}else if("U".equals(resultType)){
 			xdEmployee = XdEmployee.dao.findById(oid);
 			List<XdEdutrain> edutrainList = XdEdutrain.dao.find("select * from  xd_edutrain where eid='" + oid + "'");
 			for (XdEdutrain edutrain : edutrainList) {
@@ -213,7 +214,6 @@ public class XdEmployeeController extends BaseController {
 			List<XdOplogDetail> oplogEmployee  =new ArrayList<>();
 			List<String> oplogEdu  =new ArrayList<>();
 			List<String> oplogWork  =new ArrayList<>();
-			//List<XdOplogSummary> summaries1 = XdOplogSummary.dao.find("select * from xd_oplog_summary where oid='" + oid + "'");
 			for (XdOplogSummary summary : summaries) {
 				if(summary.getTname().equals("XdEmployee")){
 					oplogEmployee = XdOplogDetail.dao.find("select * from xd_oplog_detail where rsid='" + summary.getId() + "'");
@@ -228,7 +228,6 @@ public class XdEmployeeController extends BaseController {
 						xdEdutrain.setBakcup2("删除");
 						oplogEdu.add(JSONUtil.beanToJsonString(xdEdutrain));
 					}else {
-
 						XdEdutrain xdEdutrain = JSONUtil.jsonToBean(summary.getChangeb(), XdEdutrain.class);
 						List<XdOplogDetail> xdOplogDetails = XdOplogDetail.dao.find("select * from xd_oplog_detail where rsid='" + summary.getId() + "'");
 						StringBuilder  sb = new StringBuilder("[ ");
@@ -273,53 +272,33 @@ public class XdEmployeeController extends BaseController {
 
 				}
 			}
-
-
 			setAttr("oplogEmployee",oplogEmployee);
 			setAttr("oplogEdu",oplogEdu);
 			setAttr("oplogWork",oplogWork);
+		}else if("P".equals(resultType)||"UP".equals(resultType)){
+			for (XdOplogSummary summary : summaries) {
+				if("XdEmployee".equals(summary.getTname())){
+					String empStr = summary.getChangea();
+					xdEmployee = JSONUtil.jsonToBean(empStr, XdEmployee.class);
+				}else if("XdEdutrain".equals(summary.getTname())){
+					listEdu.add(summary.getChangea());
+				}else{
+					listWExper.add(summary.getChangea());
+				}
+			}
+			if (xdEmployee == null) {
+				xdEmployee=XdEmployee.dao.findById(step.getOid());
+			}
+			step.setFinished("Y");
+			step.setFinishtime(DateUtil.getCurrentTime());
+			step.update();
 		}
 
 
-
-
-		/*for (XdOplogSummary summary : summaries) {
-			if("C".equals(summary.getOtype())){
-				if("XdEmployee".equals(summary.getTname())){
-					String changea = summary.getChangea();
-					xdEmployee = JSONUtil.jsonToBean(changea, XdEmployee.class);
-
-				}else if("XdEdutrain".equals(summary.getTname())){
-					//XdEdutrain xdEdutrain = JSONUtil.jsonToBean(summary.getChangea(), XdEdutrain.class);
-					listEdu.add(summary.getChangea());
-				}else{
-					//XdWorkExper workExper = JSONUtil.jsonToBean(summary.getChangea(), XdWorkExper.class);
-					listWExper.add(summary.getChangea());
-				}
-			}else if("D".equals(summary.getOtype())){
-
-				if("XdEmployee".equals(summary.getTname())){
-					String changeb = summary.getChangeb();
-					xdEmployee = JSONUtil.jsonToBean(changeb, XdEmployee.class);
-
-				}else if("XdEdutrain".equals(summary.getTname())){
-					//XdEdutrain xdEdutrain = JSONUtil.jsonToBean(summary.getChangea(), XdEdutrain.class);
-					listEdu.add(summary.getChangeb());
-				}else{
-					//XdWorkExper workExper = JSONUtil.jsonToBean(summary.getChangea(), XdWorkExper.class);
-					listWExper.add(summary.getChangeb());
-				}
-
-
-			}else{
-
-
-			}
-		}*/
 		setAttr("o",xdEmployee);
 		setAttr("listEdu",listEdu);
 		setAttr("listWExper",listWExper);
-		setAttr("otype",step.getBackup1());
+		setAttr("otype",resultType);
 		if(ShiroKit.getUserOrgId().equals("1")){
 			setAttr("oper","approver");
 		}
