@@ -466,4 +466,42 @@ public abstract class BaseXdEmployee<M extends BaseXdEmployee<M>> extends Model<
 		return getStr("chrecord");
 	}
 
+	public void setBirthday(java.lang.String birthday) {
+		set("birthday", birthday);
+	}
+	@ChangeFields(value = "birthday",desc = "出生日期")
+	public java.lang.String getBirthday() {
+		return getStr("birthday");
+	}
+
+	public void setPositivedate(java.lang.String positivedate) {
+		set("positivedate", positivedate);
+	}
+	@ChangeFields(value = "positivedate",desc = "转正日期")
+	public java.lang.String getPositivedate() {
+		return getStr("positivedate");
+	}
+
+	public void setBanaccount(java.lang.String banaccount) {
+		set("banaccount", banaccount);
+	}
+	@ChangeFields(value = "banaccount",desc = "银行账号")
+	public java.lang.String getBanaccount() {
+		return getStr("banaccount");
+	}
+
+	public void setFundaccount(java.lang.String fundaccount) {
+		set("fundaccount", fundaccount);
+	}
+	@ChangeFields(value = "fundaccount",desc = "公积金账号")
+	public java.lang.String getFundaccount() {
+		return getStr("fundaccount");
+	}
+	public void setRetirestatus(java.lang.String retirestatus) {
+		set("retirestatus", retirestatus);
+	}
+	@ChangeFields(value = "retirestatus",desc = "退休状态")
+	public java.lang.String getRetirestatus() {
+		return getStr("retirestatus");
+	}
 }

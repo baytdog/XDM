@@ -4,17 +4,21 @@ import com.jfinal.kit.StrKit;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.plugin.activerecord.Record;
+import com.jfinal.upload.UploadFile;
 import com.pointlion.enums.XdOperEnum;
 import com.pointlion.mvc.common.base.BaseController;
 import com.pointlion.mvc.common.model.*;
 import com.pointlion.mvc.common.utils.*;
+import com.pointlion.mvc.common.utils.office.excel.ExcelUtil;
 import com.pointlion.plugin.shiro.ShiroKit;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.sql.SQLException;
+import java.util.*;
 
 
 public class XdEmployeeController extends BaseController {
@@ -391,6 +395,55 @@ public class XdEmployeeController extends BaseController {
 		XdOperUtil.insertEmpoloyeeSteps(employee,stepsId,user.getOrgid(),user.getId(),user.getName(),"UP");
 
 		renderSuccess("操作成功!");
+	}
+
+
+
+
+	/**
+	 * @Method exportExcel
+	 * @param :
+	 * @Date 2022/12/15 14:31
+	 * @Exception
+	 * @Description  员工信息导出excle
+	 * @Author king
+	 * @Version  1.0
+	 * @Return void
+	 */
+	public void exportExcel() throws UnsupportedEncodingException {
+
+		/*String endTime = getPara("endTime","");
+		String startTime = getPara("startTime","");*/
+		String name = java.net.URLDecoder.decode(getPara("name",""),"UTF-8");
+		String empnum = java.net.URLDecoder.decode(getPara("empnum",""),"UTF-8");
+		String emprelation = getPara("emprelation","");
+		String unitname=getPara("unitname","");
+		String costitem=getPara("costitem","");
+		String path = this.getSession().getServletContext().getRealPath("")+"/upload/export/"+DateUtil.format(new Date(),21)+".xlsx";
+		File file = service.exportExcel(path,name,empnum,emprelation,unitname,costitem);
+		renderFile(file);
+	}
+
+
+	 /**
+	  * @Method importExcel
+	  * @param :
+	  * @Date 2022/12/15 14:31
+	  * @Exception 员工信息excel导入
+	  * @Description
+	  * @Author king
+	  * @Version  1.0
+	  * @Return void
+	  */
+	public void importExcel() throws IOException, SQLException {
+		UploadFile file = getFile("file","/content");
+		List<List<String>> list = ExcelUtil.excelToList(file.getFile().getAbsolutePath());
+		Map<String,Object> result = service.importExcel(list);
+		if((Boolean)result.get("success")){
+			renderSuccess((String)result.get("message"));
+		}else{
+			renderError((String)result.get("message"));
+		}
 	}
 
 }

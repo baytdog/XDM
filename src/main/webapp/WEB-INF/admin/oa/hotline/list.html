@@ -45,7 +45,6 @@
 												 <option value="4">承办审核</option>
 												 <option value="5">承办完成</option>
 												 <option value="6">已归档</option>
-												 
 				    						</select>
 										
 										</div>
@@ -245,34 +244,6 @@
 			}
 		});
 	};
-	//提交，启动流�?
-	function startProcess(id){
-			pointLion.confimMsg("您将要提交该单据！并且启动流�?<br/><span style='color:green;'>您将无法进行修改和删除！！！</span> <br/>点击确认进行提交 , 点击取消取消该操�?",null,function(){
-				var data = common_ajax.ajaxFunc("/admin/hotline/startProcess",{"id":id}, "json", null);
-				if(data.success){
-					pointLion.alertMsg(data.message,"success",null,function(){
-						location.href = ctx+'/admin/hotline/getListPage';//跳转到列表页
-					});
-				}else{
-					pointLion.alertMsg(data.message,"danger",null,null);
-				}
-			});
-	}
-	//撤回
-	function callBack(id){
-		pointLion.confimMsg("您将要撤回该单据流程�?<br/><span style='color:red;'>该操作将取回单据，您将可以对单据进行修改，并可将单据重新送交审批�?</span> <br/>点击确认进行撤回单据 , 点击取消取消该操�?",null,function(){
-			//执行删除
-			var data = common_ajax.ajaxFunc("/admin/hotline/callBack",{"id":id}, "json", null);
-			//删除结果
-			if(data.success){
-				pointLion.alertMsg(data.message,"success",null,function(){
-					location.href = ctx+'/admin/hotline/getListPage';//跳转到列表页
-				});
-			}else{
-				pointLion.alertMsg(data.message,"danger",null,null);
-			}
-		});
-	}
 
 	//查询
 	function searchTable(){
