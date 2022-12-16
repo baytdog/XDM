@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="#(ctx)/common/js/LodopFuncs.js"></script>
+  <!--  <object  id="LODOP_OB" classid="clsid:2105C259-1E0C-4534-8141-A753534CB4CA" width=0 height=0>
+        <embed id="LODOP_EM" type="application/x-print-lodop" width=0 height=0></embed>
+    </object>-->
+   <!-- <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>-->
+    <script>
+        var tableStart = `
+  <style>
+    /*  table, td, th { border: 1px solid black; border-style: solid; border-collapse: collapse; text-align: center; font-size: 15px; }
+    .inner table, .inner td, .inner th { text-align: left; border: none; }
+  .td-cls-1 { width: 6.66%; }
+    .td-cls-2 { width: 13.32%; }
+    .td-cls-3 { width: 19.98%; }
+    .image-cls { z-index: -1; position: absolute; top: 0; left: 120px; height: 90px; }*/
+  </style>
+  <table border="1" style="width:100%;">
+   <!-- <tr style="height:106px;">
+      <td colspan="15"></td>
+    </tr>-->
+    <tr>
+    <td rowspan="9" style="width:2%;">个人基本资料</td>
+      <td >姓      名</td> <td  ></td>
+     <!-- <td class="td-cls-3" colspan="3">原料名称/描述</td>-->
+      <td >员工编号</td> <td ></td>
+      <td >员工关系</td> <td ></td>
+
+    </tr>
+    <tr>
+      <td style="width: 15%;" >民      族</td> <td style="width: 15%;" ></td>
+      <td  style="width: 15%;">政治面貌</td> <td  style="width: 15%;"></td>
+      <td style="width: 15%;" >最高学历</td> <td style="width: 15%;" ></td>
+    </tr>
+     <tr>
+      <td  >学历(非全日制)</td>      <td  ></td>
+      <td  >学校</td> <td  ></td>
+      <td  >专业</td> <td  ></td>
+    </tr>
+     <tr>
+      <td  >学历(全日制)</td>      <td  ></td>
+      <td  >学校</td> <td  ></td>
+      <td  >专业</td> <td  ></td>
+    </tr>
+     <tr>
+      <td  >特      长</td><td colspan="3"></td>
+      <td  >最高学位</td> <td  ></td>
+    </tr> <tr>
+     <td  >身份证号码</td><td colspan="3"></td>
+      <td  >户    籍</td> <td  ></td>
+    </tr>
+     <tr>
+     <td  >户籍地址</td><td colspan="3"></td>
+      <td  >出 生 地</td> <td  ></td>
+    </tr> <tr>
+     <td  >现 住 址</td><td colspan="3"></td>
+      <td  >籍    贯</td> <td  ></td>
+    </tr>
+     <tr>
+      <td  >联系方式</td>      <td  ></td>
+      <td  >退休日期</td> <td  ></td>
+      <td  >退伍军人</td> <td  ></td>
+    </tr>
+   <tr>
+      <td rowspan="6" style="width:2%;">教育<br>&nbsp;/<br>培训经历</td>
+      <td  >入学日期</td>      <td  >毕业日期</td>
+      <td colspan="2" >学校/培训机构名称</td> <td  >专业</td>
+      <td  >学历</td>
+    </tr>
+  <tr>
+      <td style="height: 15px;"> </td>      <td  > </td>
+      <td colspan="2" > </td> <td  > </td>
+      <td  > </td>
+    </tr>
+     <tr>
+      <td style="height: 15px;" > </td>      <td  > </td>
+      <td colspan="2" > </td> <td  > </td>
+      <td  > </td>
+    </tr>
+     <tr>
+      <td  style="height: 15px;"> </td>      <td  > </td>
+      <td colspan="2" > </td> <td  > </td>
+      <td  > </td>
+    </tr>
+     <tr>
+      <td  style="height: 15px;"> </td>      <td  > </td>
+      <td colspan="2" > </td> <td  > </td>
+      <td  > </td>
+    </tr>
+     <tr>
+      <td  style="height: 15px;"> </td>      <td  > </td>
+      <td colspan="2" > </td> <td  > </td>
+      <td  > </td>
+    </tr>
+
+
+     <tr>
+      <td rowspan="6" style="width:2%;">工作经历</td>
+      <td  >入职日期</td>      <td  >离职日期</td>
+      <td colspan="2" >服务单位名称</td> <td  >职务</td>
+      <td  >地点</td>
+    </tr>
+  <tr>
+      <td style="height: 15px;"> </td>      <td  > </td>
+      <td colspan="2" > </td> <td  > </td>
+      <td  > </td>
+    </tr>
+     <tr>
+      <td style="height: 15px;" > </td>      <td  > </td>
+      <td colspan="2" > </td> <td  > </td>
+      <td  > </td>
+    </tr>
+     <tr>
+      <td  style="height: 15px;"> </td>      <td  > </td>
+      <td colspan="2" > </td> <td  > </td>
+      <td  > </td>
+    </tr>
+     <tr>
+      <td  style="height: 15px;"> </td>      <td  > </td>
+      <td colspan="2" > </td> <td  > </td>
+      <td  > </td>
+    </tr>
+     <tr>
+      <td  style="height: 15px;"> </td>      <td  > </td>
+      <td colspan="2" > </td> <td  > </td>
+      <td  > </td>
+    </tr>
+
+
+     <tr>
+    <td rowspan="7" style="width:2%;">任职信息</td>
+      <td >入职时间</td> <td  ></td>
+     <!-- <td class="td-cls-3" colspan="3">原料名称/描述</td>-->
+      <td >离职日期</td> <td ></td>
+      <td >就职状况</td> <td ></td>
+
+    </tr>
+    <tr>
+      <td style="width: 15%;" >所属部门</td> <td style="width: 15%;" ></td>
+      <td  style="width: 15%;">单元</td> <td  style="width: 15%;"></td>
+      <td style="width: 15%;" >成本项目</td> <td style="width: 15%;" ></td>
+    </tr>
+     <tr>
+      <td  >职   位</td>      <td  ></td>
+      <td  >专业技术等级</td> <td  ></td>
+      <td  >职业资格等级</td> <td  ></td>
+    </tr>
+     <tr>
+      <td  >工作岗位</td>      <td  ></td>
+      <td  >专业技术职务</td> <td  ></td>
+      <td  >职业资格等级</td> <td  ></td>
+    </tr>
+     <tr>
+      <td  >所持证书</td><td colspan="5"></td>
+
+    </tr>
+    <tr>
+      <td  >合同开始日期</td>      <td  ></td>
+      <td  >结束日期</td> <td  ></td>
+      <td  >工 龄(年)</td> <td  ></td>
+    </tr>
+     <tr>
+      <td  >合同期数</td>      <td  ></td>
+      <td  >合同性质</td> <td  ></td>
+      <td  >参加工作时间</td> <td  ></td>
+    </tr>
+
+
+
+     <td rowspan="3" style="width:2%;">其它信息</td>
+      <td >紧急联系人</td> <td  ></td>
+     <!-- <td class="td-cls-3" colspan="3">原料名称/描述</td>-->
+      <td >招聘来源</td> <td ></td>
+      <td >困难员工</td> <td ></td>
+
+    </tr>
+    <tr>
+      <td style="width: 15%;height: 50px;" >调薪记录</td> <td colspan="5" ></td>
+    </tr>
+     <tr>
+      <td style="width: 15%; height: 50px;" >异动记录</td> <td colspan="5" ></td>
+    </tr>
+<!--<tr>
+<td class="td-cls-1"> 1</td>
+ <td class="td-cls-3" colspan="3">原料1.04.0073</td>
+ <td class="td-cls-1">R</td>
+ <td class="td-cls-1">PO201215195</td>
+ <td class="td-cls-1">1426.464</td>
+ <td class="td-cls-1">1426.464平</td>
+ <td class="td-cls-1">80</td>
+  <td class="td-cls-2" colspan="2">114117.12</td>
+   <td class="td-cls-2" colspan="2">2020-12-22</td>
+   <td class="td-cls-2" colspan="2">无</td>
+   </tr>
+<tr>
+ <td class="td-cls-2" colspan="2">付款方式</td>
+ <td class="td-cls-2" colspan="2">月结90天</td>
+  <td class="td-cls-1">币种</td>
+  <td class="td-cls-2" colspan="2">人民币</td>
+   <td class="td-cls-1">税率</td>
+   <td class="td-cls-3" colspan="3">0.01</td>
+   <td class="td-cls-2" colspan="2">总价</td>
+    <td class="td-cls-2" colspan="2">114117.12</td>
+    </tr>
+    <tr style="height: 160px;">
+     <td class="td-cls-1">备<br>注</td>
+      <td colspan="14" style="text-align: left; font-size: 14px;"> 送货时附出货检测报告及样品。检测报告加盖出货专用章；样品规格:整支出货的物料，样品A4*1张，分切后出货的物料，样品不小于50MM*30MM，样品用密封袋装好，且无折皱。<br> 1、收到订单及时回复材料交期，严格按交期交货。逾期未交货，违约金按未结货款的1%赔偿，另须承担买方因此逾期所致的所有损失。<br> 2、送货时，送货单必须清楚注明我司订单编号，材料名称、型号、生产批次号、以及规格和数量，品牌物料需要提供COC,COA等相关资料。<br> 3、物料外包装必须贴有ROHS环保标签和产品标签标识，产品标签需填写我方提供的材料名称、型号、生产批次号、订单编号、规格和数量。物料内包装也必须贴有产品标签标识（卷芯内壁也要有标签标识，包括分切后的规格料都必须贴有产品标签标识）。<br> 4、所供物料必须符合欧盟最新环境物质管理要求（ROHS最新环保要求），判定不合格的物料必须无条件接受退换货处理，并且不合格的材料在我司存放时间不能超过7日；<br> 5、所有的订单请在一个工作日内确认回传，没有回传将直接影响对账。<br> 6、接头收货标准：辅材：不允许接头。主材：长度100M以上（含100米）的物料，按1：10/次收货，即：单次来料10R，接受1个接头（注意：是1个接头，不是1支多个接）；长度100M以内的物料，不接受接头。超标的物料,处理如下, 换货: 按我司要求换货。<br> 7、收货时间：8:00-12：00，13：30-17：30，其它时间请提前通知 </td> </tr>
+      <tr style="height: 100px;">
+      <td colspan="15"> <div>
+      <table class="inner" style="width: 100%;height: 100px;border: none;">
+      <tr style="height: 50px;vertical-align: bottom;"> <td>供方单位 (章)</td> <td style="position: relative;">购方单位 (章) <img class="image-cls" transcolor="#FFFFFF" src=""/> </td> </tr> <tr> <td>确认: </td> <td>制单:
+MES</td> </tr>
+ <tr> <td>审核: </td> <td>审核: </td> </tr> </table> </div> </td> </tr> --></table>
+`;
+
+        $(function(){
+            function  addPrintContent(companyName, address, telephone, fax, purchaseCode, orderDate, purchaseMan, supplier, supplierContactMan, supplierAddress, supplierFax, supplierTel, businessUnit) {
+
+                var LODOP=getLodop();
+                LODOP.PRINT_INIT('');
+               // LODOP.SET_PRINT_PAGESIZE(1,300,500,"");
+
+                LODOP.SET_PRINT_PAGESIZE(1, 0, 0, "A4")
+                // LODOP.SET_PRINT_PAGESIZE(2, 2100, 2970, '');
+                /*LODOP.SET_PRINT_MODE('PRINT_NOCOLLATE', 1);
+                LODOP.SET_PRINT_MODE('AUTO_CLOSE_PREWINDOW', 1);
+                LODOP.ADD_PRINT_TEXT('16mm', '3mm', '291mm', '9.53mm', '采购单');
+                LODOP.SET_PRINT_STYLEA(0, 'FontSize', 20);
+                LODOP.SET_PRINT_STYLEA(0, 'Alignment', 2);
+                LODOP.SET_PRINT_STYLEA(0, 'Bold', 1);
+                LODOP.ADD_PRINT_IMAGE('15mm', '20mm', 50, 50, "<img border='0' src=''/>");
+                LODOP.SET_PRINT_STYLEA(0, 'Stretch', 2);
+                LODOP.ADD_PRINT_TEXT('25mm', '20mm', '152.65mm', '8mm', 'PO  NO: ' + purchaseCode);
+                LODOP.SET_PRINT_STYLEA(0, 'FontSize', 11);
+                LODOP.SET_PRINT_STYLEA(0, 'Bold', 1);
+                LODOP.ADD_PRINT_TEXT('25mm', '200mm', '77mm', '8mm', '制单日期: ' + orderDate);
+                LODOP.SET_PRINT_STYLEA(0, 'FontSize', 11);
+                LODOP.SET_PRINT_STYLEA(0, 'Alignment', 3);
+                LODOP.ADD_PRINT_TEXT(120, 84, 456, 22, '供    方: ' + supplier);
+                LODOP.SET_PRINT_STYLEA(0, 'FontSize', 11);
+                LODOP.ADD_PRINT_TEXT(140, 84, 456, 22, '电话/TEL: ' + supplierTel);
+                LODOP.SET_PRINT_STYLEA(0, 'FontSize', 11);
+                LODOP.ADD_PRINT_TEXT(180, 84, 456, 22, '联 系 人: ' + supplierContactMan);
+                LODOP.SET_PRINT_STYLEA(0, 'FontSize', 11);
+                LODOP.ADD_PRINT_TEXT(160, 84, 456, 22, '传真/FAX: ' + supplierFax);
+                LODOP.SET_PRINT_STYLEA(0, 'FontSize', 11);
+                LODOP.ADD_PRINT_TEXT(200, 84, 456, 22, '联系地址: ' + supplierAddress);
+                LODOP.SET_PRINT_STYLEA(0, 'FontSize', 11);
+                LODOP.ADD_PRINT_TEXT(120, 560, 456, 22, '需    方: ' + companyName);
+                LODOP.SET_PRINT_STYLEA(0, 'FontSize', 11);
+
+                LODOP.ADD_PRINT_TEXT(200, 560, 456, 22, '联系地址: ' + '云南');
+                LODOP.SET_PRINT_STYLEA(0, 'FontSize', 11);
+                LODOP.ADD_PRINT_TEXT(180, 560, 500, 22, '联 系 人: ' + '涛涛16898365262')
+
+                LODOP.SET_PRINT_STYLEA(0, 'FontSize', 11);
+                LODOP.ADD_PRINT_TEXT(160, 560, 456, 22, '传真/FAX: ' + fax);
+                LODOP.SET_PRINT_STYLEA(0, 'FontSize', 11);
+                LODOP.ADD_PRINT_TEXT(140, 560, 456, 22, '电话/TEL: ' + telephone);
+                LODOP.SET_PRINT_STYLEA(0, 'FontSize', 11);*/
+
+              //  LODOP.ADD_PRINT_TABLE('30mm', '20mm', '257mm', 'BottomMargin:12mm', tableStart);
+                LODOP.ADD_PRINT_TABLE('0', '0', '100%', '100%', tableStart);
+                // LODOP.SET_SHOW_MODE('HIDE_PAPER_BOARD', 1);
+                // LODOP.SET_SHOW_MODE('PREVIEW_NO_MINIMIZE', true);
+                // LODOP.SET_SHOW_MODE("LANDSCAPE_DEFROTATED", 1); //横向时的正向显示
+                LODOP.PREVIEW();
+            };
+
+
+            $("#print").click(function(){
+                addPrintContent('haha','深圳','16575657584','2948475874','a00001','2020-12-22','MES',1,1,1,1,'3300585887','云海还');
+            })
+        })
+
+
+    </script>
+</head>
+<body>
+<input type="button" value="打印" id="print">
+</body>
+</html>

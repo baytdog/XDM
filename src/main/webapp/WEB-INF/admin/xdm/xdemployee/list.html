@@ -54,7 +54,8 @@
 									<a id="export" class="btn btn-primary data-toolbar" onclick="exportExcel()" target="_blank"><i class="demo-pli-download-from-cloud"></i> 导出</a>
 									<!--<a id="import" class="btn btn-primary data-toolbar" onclick="importExcel()" target="_blank"><i class="demo-pli-download-from-cloud"></i>导入</a>-->
 									<a id="filePicker"  href="javascript:void(0);" ><i class="demo-pli-add"></i> 导入</a>
-									<table id="pageTable" class="demo-add-niftycheck" data-toolbar="#del,#add,#export,#filePicker"
+									<a id="print" class="btn btn-primary data-toolbar"  onclick="print()" ><i class="demo-pli-print"></i> 打印测试</a>
+									<table id="pageTable" class="demo-add-niftycheck" data-toolbar="#del,#add,#export,#filePicker,#print"
 										   data-search="true"
 										   data-show-refresh="true"
 										   data-show-toggle="true"
@@ -220,4 +221,423 @@
 			}
 		});
 	});
+
+
+
+	function print(){
+		var name = encodeURIComponent($("#name").val());
+		var empnum = encodeURIComponent($("#empnum").val());
+		var emprelation = encodeURIComponent($("#emprelation").val());
+
+		var department = encodeURIComponent($("#department").val());
+		var unitname = encodeURIComponent($("#unitname").val());
+		var costitem = encodeURIComponent($("#costitem").val());
+		var data = common_ajax.ajaxFunc("/admin/xd/xdemployee/getPrintInfo",{"name":name,"empnum":empnum,"emprelation":emprelation,"department":department,"unitname":unitname,"costitem":costitem,}, "json", null);
+		//删除结果
+
+		//console.log(data);
+		var LODOP=getLodop();
+		LODOP.PRINT_INIT('');
+
+		LODOP.SET_PRINT_PAGESIZE(1, 0, 0, "A4")
+
+
+		for(var item of data) {
+			LODOP.NewPage();
+			let infos= contactFormInfo(item);
+			LODOP.ADD_PRINT_TABLE('50', '0', '100%', '100%', infos);
+		}
+		LODOP.PREVIEW();
+	}
+</script>
+
+<script src="#(ctx)/common/js/LodopFuncs.js"></script>
+
+<script>
+
+
+	function eduList(item){
+		var returnStr;
+
+		if(item == null){
+			for (let i = 0; i < 5; i++) {
+				returnStr=returnStr+ `<tr>
+				<td style="height: 25px;">  </td><td  > </td>
+				<td colspan="2" >  </td> <td  >  </td>
+				<td  >  </td>
+				</tr>`
+			}
+		}else{
+			if(item.length>=5) {
+				for (let i = 0; i < item.length; i++) {
+					var edu=item[i];
+					returnStr=returnStr+ `<tr>
+					<td style="height: 25px;"> `+edu.enrolldate+`</td><td  >`+edu.graduatdate+`</td>
+					<td colspan="2" >`+edu.trainOrgname+` </td> <td  > `+edu.major+`</td>
+					<td  > `+edu.edubg+`</td>
+					</tr>`;
+				}
+
+			}else{
+				for (let i = 0; i < item.length; i++) {
+					var edu=item[i];
+					returnStr=returnStr+ `<tr>
+					<td style="height: 25px;"> `+edu.enrolldate+`</td><td  >`+edu.graduatdate+`</td>
+					<td colspan="2" >`+edu.trainOrgname+` </td> <td  > `+edu.major+`</td>
+					<td  > `+edu.edubg+`</td>
+					</tr>`;
+				}
+				for(let i = 0; i < 5-item.length; i++){
+					returnStr=returnStr+ `<tr>
+				<td style="height: 25px;">  </td><td  > </td>
+				<td colspan="2" > </td> <td  >  </td>
+				<td  >  </td>
+				</tr>`
+
+				}
+
+			}
+
+		}
+
+
+		return returnStr;
+
+	}
+
+
+	function workList(item){
+		var returnStr;
+
+		if(item == null){
+			for (let i = 0; i < 5; i++) {
+				returnStr=returnStr+ `<tr>
+				<td style="height: 25px;">  </td><td  > </td>
+				<td colspan="2" >  </td> <td  >  </td>
+				<td  >  </td>
+				</tr>`
+			}
+		}else{
+			if(item.length>=5) {
+				for (let i = 0; i < item.length; i++) {
+					var edu=item[i];
+					returnStr=returnStr+ `<tr>
+					<td style="height: 25px;"> `+edu.entrydate+`</td><td  >`+edu.departdate+`</td>
+					<td colspan="2" >`+edu.serviceunit+` </td> <td  > `+edu.job+`</td>
+					<td  > `+edu.addr+`</td>
+					</tr>`;
+				}
+
+			}else{
+				for (let i = 0; i < item.length; i++) {
+					var edu=item[i];
+					returnStr=returnStr+ `<tr>
+					<td style="height: 25px;"> `+edu.entrydate+`</td><td  >`+edu.departdate+`</td>
+					<td colspan="2" >`+edu.serviceunit+` </td> <td  > `+edu.job+`</td>
+					<td  > `+edu.addr+`</td>
+					</tr>`;
+				}
+				for(let i = 0; i < 5-item.length; i++){
+					returnStr=returnStr+ `<tr>
+				<td style="height: 25px;">  </td><td  > </td>
+				<td colspan="2" > </td> <td  >  </td>
+				<td  >  </td>
+				</tr>`
+
+				}
+
+			}
+
+		}
+
+
+		return returnStr;
+
+	}
+	function contactFormInfo(item){
+		var emp=item.emp;
+
+		let edutrainList=item.edutrainList;
+
+		let workExperList=item.workExperList;
+
+	var infos=	`
+  <style>
+     table, td, th { border: 1px solid black; border-style: solid; border-collapse: collapse; text-align: center; font-size: 15px; }
+    .inner table, .inner td, .inner th { text-align: left; border: none; }
+  </style>
+  <table border="1" style="width:100%;">
+    <tr>
+    <td rowspan="9" style="width:2%;">个人基本资料</td>
+      <td>姓      名</td> <td>`+emp.name+`</td>
+      <td>员工编号</td> <td>`+emp.empnum+`</td>
+      <td>员工关系</td><td>`+emp.emprelation+`</td>
+    </tr>
+    <tr>
+      <td style="width: 15%;" >民      族</td> <td style="width: 15%;">`+emp.national+`</td>
+      <td style="width: 15%;">政治面貌</td> <td  style="width: 15%;">`+emp.politicsstatus+`</td>
+      <td style="width: 15%;" >最高学历</td> <td style="width: 15%;">`+emp.topedu+`</td>
+    </tr>
+     <tr>
+      <td >学历(非全日制)</td><td>`+emp.edubg1+`</td>
+      <td >学校</td> <td>`+emp.school1+`</td>
+      <td >专业</td> <td  >`+emp.major1+`</td>
+    </tr>
+     <tr>
+      <td  >学历(全日制)</td><td  >`+emp.edubg2+`</td>
+      <td  >学校</td> <td  >`+emp.school2+`</td>
+      <td  >专业</td> <td  >`+emp.major2+`</td>
+    </tr>
+     <tr>
+      <td  >特      长</td><td colspan="3">`+emp.specialty+`</td>
+      <td  >最高学位</td> <td  >`+emp.topdegree+`</td>
+    </tr> <tr>
+     <td  >身份证号码</td><td colspan="3">`+emp.Idnum+`</td>
+      <td  >户    籍</td> <td  >`+emp.censusregister+`</td>
+    </tr>
+     <tr>
+     <td  >户籍地址</td><td colspan="3">`+emp.censusregisteraddr+`</td>
+      <td  >出 生 地</td> <td  >`+emp.birthplace+`</td>
+    </tr> <tr>
+     <td  >现 住 址</td><td colspan="3">`+emp.presentaddr+`</td>
+      <td  >籍    贯</td> <td  >`+emp.nativeplace+`</td>
+    </tr>
+     <tr>
+      <td  >联系方式</td>      <td  >`+emp.tel+`</td>
+      <td  >退休日期</td> <td  >`+emp.retiretime+`</td>
+      <td  >退伍军人</td> <td  >`+emp.issoldier+`</td>
+    </tr>
+   <tr>
+      <td rowspan="6" style="width:2%;">教育<br>&nbsp;/<br>培训经历</td>
+      <td  >入学日期</td>      <td  >毕业日期</td>
+      <td colspan="2" >学校/培训机构名称</td> <td  >专业</td>
+      <td  >学历</td>
+    </tr>`+
+	eduList(edutrainList)
+			+`
+     <tr>
+      <td rowspan="6" style="width:2%;">工作经历</td>
+      <td  >入职日期</td>      <td  >离职日期</td>
+      <td colspan="2" >服务单位名称</td> <td  >职务</td>
+      <td  >地点</td>
+    </tr>
+    `+
+			workList(workExperList)
+			+`
+
+     <tr>
+    <td rowspan="7" style="width:2%;">任职信息</td>
+      <td >入职时间</td> <td  >`+emp.entrytime+`</td>
+      <td >离职日期</td> <td >`+emp.departime+`</td>
+      <td >就职状况</td> <td >`+emp.inductionstatus+`</td>
+
+    </tr>
+    <tr>
+      <td style="width: 15%;" >所属部门</td> <td style="width: 15%;" >`+emp.department+`</td>
+      <td  style="width: 15%;">单元</td> <td  style="width: 15%;">`+emp.unitname+`</td>
+      <td style="width: 15%;" >成本项目</td> <td style="width: 15%;" >`+emp.costitem+`</td>
+    </tr>
+     <tr>
+      <td  >职   位</td>      <td  >`+emp.position+`</td>
+      <td  >专业技术等级</td> <td  >`+emp.protechgrade+`</td>
+      <td  >职业资格等级</td> <td  >`+emp.vocaqualifilevel+`</td>
+    </tr>
+     <tr>
+      <td  >工作岗位</td>      <td  >`+emp.workstation+`</td>
+      <td  >专业技术职务</td> <td  >`+emp.protechposts+`</td>
+      <td  >职业资格等级</td> <td  >`+emp.vocaQualifilevel1+`</td>
+    </tr>
+     <tr>
+      <td  >所持证书</td><td colspan="5">`+emp.certificates+`</td>
+
+    </tr>
+    <tr>
+      <td  >合同开始日期</td>      <td  >`+emp.contractstartdate+`</td>
+      <td  >结束日期</td> <td  >`+emp.contractenddate+`</td>
+      <td  >工 龄(年)</td> <td  >`+emp.seniority+`</td>
+    </tr>
+     <tr>
+      <td  >合同期数</td>      <td  >`+emp.contractclauses+`</td>
+      <td  >合同性质</td> <td  >`+emp.contractnature+`</td>
+      <td  >参加工作时间</td> <td  >`+emp.worktime+`</td>
+    </tr>
+
+     <td rowspan="3" style="width:2%;">其它信息</td>
+      <td >紧急联系人</td> <td  >`+emp.emcontact+`</td>
+      <td >招聘来源</td> <td >`+emp.recruitsource+`</td>
+      <td >困难员工</td> <td >`+emp.hardstaff+`</td>
+
+    </tr>
+    <tr>
+      <td style="width: 15%;height: 50px;" >调薪记录</td> <td colspan="5" >`+emp.saladjrecord+`</td>
+    </tr>
+     <tr>
+      <td style="width: 15%; height: 50px;" >异动记录</td> <td colspan="5" >`+emp.chrecord+`</td>
+    </tr>
+</table>`;
+	return  infos;
+	}
+	var tableStart = `
+  <table border="1" style="width:100%;">
+    <tr>
+    <td rowspan="9" style="width:2%;">个人基本资料</td>
+      <td >姓      名</td> <td  ></td>
+      <td >员工编号</td> <td ></td>
+      <td >员工关系</td> <td ></td>
+
+    </tr>
+    <tr>
+      <td style="width: 15%;" >民      族</td> <td style="width: 15%;" ></td>
+      <td  style="width: 15%;">政治面貌</td> <td  style="width: 15%;"></td>
+      <td style="width: 15%;" >最高学历</td> <td style="width: 15%;" ></td>
+    </tr>
+     <tr>
+      <td  >学历(非全日制)</td>      <td  ></td>
+      <td  >学校</td> <td  ></td>
+      <td  >专业</td> <td  ></td>
+    </tr>
+     <tr>
+      <td  >学历(全日制)</td>      <td  ></td>
+      <td  >学校</td> <td  ></td>
+      <td  >专业</td> <td  ></td>
+    </tr>
+     <tr>
+      <td  >特      长</td><td colspan="3"></td>
+      <td  >最高学位</td> <td  ></td>
+    </tr> <tr>
+     <td  >身份证号码</td><td colspan="3"></td>
+      <td  >户    籍</td> <td  ></td>
+    </tr>
+     <tr>
+     <td  >户籍地址</td><td colspan="3"></td>
+      <td  >出 生 地</td> <td  ></td>
+    </tr> <tr>
+     <td  >现 住 址</td><td colspan="3"></td>
+      <td  >籍    贯</td> <td  ></td>
+    </tr>
+     <tr>
+      <td  >联系方式</td>      <td  ></td>
+      <td  >退休日期</td> <td  ></td>
+      <td  >退伍军人</td> <td  ></td>
+    </tr>
+   <tr>
+      <td rowspan="6" style="width:2%;">教育<br>&nbsp;/<br>培训经历</td>
+      <td  >入学日期</td>      <td  >毕业日期</td>
+      <td colspan="2" >学校/培训机构名称</td> <td  >专业</td>
+      <td  >学历</td>
+    </tr>
+  <tr>
+      <td style="height: 15px;"> </td>      <td  > </td>
+      <td colspan="2" > </td> <td  > </td>
+      <td  > </td>
+    </tr>
+     <tr>
+      <td style="height: 15px;" > </td>      <td  > </td>
+      <td colspan="2" > </td> <td  > </td>
+      <td  > </td>
+    </tr>
+     <tr>
+      <td  style="height: 15px;"> </td>      <td  > </td>
+      <td colspan="2" > </td> <td  > </td>
+      <td  > </td>
+    </tr>
+     <tr>
+      <td  style="height: 15px;"> </td>      <td  > </td>
+      <td colspan="2" > </td> <td  > </td>
+      <td  > </td>
+    </tr>
+     <tr>
+      <td  style="height: 15px;"> </td>      <td  > </td>
+      <td colspan="2" > </td> <td  > </td>
+      <td  > </td>
+    </tr>
+
+
+     <tr>
+      <td rowspan="6" style="width:2%;">工作经历</td>
+      <td  >入职日期</td>      <td  >离职日期</td>
+      <td colspan="2" >服务单位名称</td> <td  >职务</td>
+      <td  >地点</td>
+    </tr>
+  <tr>
+      <td style="height: 15px;"> </td>      <td  > </td>
+      <td colspan="2" > </td> <td  > </td>
+      <td  > </td>
+    </tr>
+     <tr>
+      <td style="height: 15px;" > </td>      <td  > </td>
+      <td colspan="2" > </td> <td  > </td>
+      <td  > </td>
+    </tr>
+     <tr>
+      <td  style="height: 15px;"> </td>      <td  > </td>
+      <td colspan="2" > </td> <td  > </td>
+      <td  > </td>
+    </tr>
+     <tr>
+      <td  style="height: 15px;"> </td>      <td  > </td>
+      <td colspan="2" > </td> <td  > </td>
+      <td  > </td>
+    </tr>
+     <tr>
+      <td  style="height: 15px;"> </td>      <td  > </td>
+      <td colspan="2" > </td> <td  > </td>
+      <td  > </td>
+    </tr>
+
+
+     <tr>
+    <td rowspan="7" style="width:2%;">任职信息</td>
+      <td >入职时间</td> <td  ></td>
+      <td >离职日期</td> <td ></td>
+      <td >就职状况</td> <td ></td>
+
+    </tr>
+    <tr>
+      <td style="width: 15%;" >所属部门</td> <td style="width: 15%;" ></td>
+      <td  style="width: 15%;">单元</td> <td  style="width: 15%;"></td>
+      <td style="width: 15%;" >成本项目</td> <td style="width: 15%;" ></td>
+    </tr>
+     <tr>
+      <td  >职   位</td>      <td  ></td>
+      <td  >专业技术等级</td> <td  ></td>
+      <td  >职业资格等级</td> <td  ></td>
+    </tr>
+     <tr>
+      <td  >工作岗位</td>      <td  ></td>
+      <td  >专业技术职务</td> <td  ></td>
+      <td  >职业资格等级</td> <td  ></td>
+    </tr>
+     <tr>
+      <td  >所持证书</td><td colspan="5"></td>
+
+    </tr>
+    <tr>
+      <td  >合同开始日期</td>      <td  ></td>
+      <td  >结束日期</td> <td  ></td>
+      <td  >工 龄(年)</td> <td  ></td>
+    </tr>
+     <tr>
+      <td  >合同期数</td>      <td  ></td>
+      <td  >合同性质</td> <td  ></td>
+      <td  >参加工作时间</td> <td  ></td>
+    </tr>
+
+     <td rowspan="3" style="width:2%;">其它信息</td>
+      <td >紧急联系人</td> <td  ></td>
+     <!-- <td class="td-cls-3" colspan="3">原料名称/描述</td>-->
+      <td >招聘来源</td> <td ></td>
+      <td >困难员工</td> <td ></td>
+
+    </tr>
+    <tr>
+      <td style="width: 15%;height: 50px;" >调薪记录</td> <td colspan="5" ></td>
+    </tr>
+     <tr>
+      <td style="width: 15%; height: 50px;" >异动记录</td> <td colspan="5" ></td>
+    </tr>
+</table>`;
+
+
+
 </script>

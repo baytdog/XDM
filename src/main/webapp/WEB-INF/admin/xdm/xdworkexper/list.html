@@ -47,20 +47,23 @@
 	
 	var col = [{field: 'checked', checkbox : true, align: 'center'},
 	   
-		   {field: '', title: '', align: 'center'},
-	   
-	   
-	   {field: 'control', title: '操作', align: 'left', width:'200',
-	       formatter:function(value,row,index){
-	           	//通过formatter可以自定义列显示的内容
-	           	//value：当前field的值，即id
-	           	//row：当前行的数据
-	           	var a = '<a class="label label-table label-success" href="'+ctx+'/admin/xdworkexper/getEditPage?id='+row.id+'&view=detail" >查看</a>&nbsp;';
-	           	a = a + '<a class="label label-table label-success" href="'+ctx+'/admin/xdworkexper/getEditPage?id='+row.id+'&view=edit" >编辑</a>&nbsp;';
-				a = a + '<a class="label label-table label-danger" onclick="del(\''+row.id+'\')" href="javascript:void(0);" >删除</a>';
-	           	return a;
-	       }
-	   }];
+		   {field: 'name', title: '姓名', align: 'center'},
+		   {field: 'serviceunit', title: '服务单位', align: 'center'},
+		   {field: 'job', title: '职务', align: 'center'},
+		   {field: 'addr', title: '地点', align: 'center'},
+			{field: 'entrydate', title: '入职时间', align: 'center'},
+			{field: 'departdate', title: '离职时间', align: 'center'},
+		   {field: 'control', title: '操作', align: 'left', width:'200',
+			   formatter:function(value,row,index){
+					//通过formatter可以自定义列显示的内容
+					//value：当前field的值，即id
+					//row：当前行的数据
+					var a = '<a class="label label-table label-success" href="'+ctx+'/admin/xd/xdworkexper/getEditPage?id='+row.id+'&view=detail" >查看</a>&nbsp;';
+					a = a + '<a class="label label-table label-success" href="'+ctx+'/admin/xd/xdworkexper/getEditPage?id='+row.id+'&view=edit" >编辑</a>&nbsp;';
+					a = a + '<a class="label label-table label-danger" onclick="del(\''+row.id+'\')" href="javascript:void(0);" >删除</a>';
+					return a;
+			   }
+		   }];
 	var opt = {
 		    //请求方法
 			   method: 'get',
@@ -83,7 +86,7 @@
 			   //可供选择的每页的行数（*）    
 			   pageList: [10, 25, 50, 100],
 			   //这个接口需要处理bootstrap table传递的固定参数,并返回特定格式的json数据  
-			   url: ctx+"/admin/xdworkexper/listData",
+			   url: ctx+"/admin/xd/xdworkexper/listData",
 			   //默认值为 'limit',传给服务端的参数为：limit, offset, search, sort, order Else
 			   //queryParamsType:'',   
 			   ////查询参数,每次调用是会带上这个参数，可自定义                         
@@ -131,45 +134,17 @@
 	function del(ids){
 		pointLion.confimMsg("您是否要删除所选信息 ?<br/> 点击确认进行删除 , 点击取消取消该操作",null,function(){
 			//执行删除
-			var data = common_ajax.ajaxFunc("/admin/xdworkexper/delete",{"ids":ids}, "json", null);
+			var data = common_ajax.ajaxFunc("/admin/xd/xdworkexper/delete",{"ids":ids}, "json", null);
 			//删除结果
 			if(data.success){
 				pointLion.alertMsg(data.message,"success",null,function(){
-					location.href = ctx+'/admin/xdworkexper/getListPage';//跳转到列表页
+					location.href = ctx+'/admin/xd/xdworkexper/getListPage';//跳转到列表页
 				});
 			}else{
 				pointLion.alertMsg(data.message,"success",null,null);
 			}
 		});
 	};
-	//提交，启动流程
-	function startProcess(id){
-			pointLion.confimMsg("您将要提交该单据！并且启动流程<br/><span style='color:green;'>您将无法进行修改和删除！！！</span> <br/>点击确认进行提交 , 点击取消取消该操作",null,function(){
-				var data = common_ajax.ajaxFunc("/admin/xdworkexper/startProcess",{"id":id}, "json", null);
-				if(data.success){
-					pointLion.alertMsg(data.message,"success",null,function(){
-						location.href = ctx+'/admin/xdworkexper/getListPage';//跳转到列表页
-					});
-				}else{
-					pointLion.alertMsg(data.message,"danger",null,null);
-				}
-			});
-	}
-	//撤回
-	function callBack(id){
-		pointLion.confimMsg("您将要撤回该单据流程！<br/><span style='color:red;'>该操作将取回单据，您将可以对单据进行修改，并可将单据重新送交审批。</span> <br/>点击确认进行撤回单据 , 点击取消取消该操作",null,function(){
-			//执行删除
-			var data = common_ajax.ajaxFunc("/admin/xdworkexper/callBack",{"id":id}, "json", null);
-			//删除结果
-			if(data.success){
-				pointLion.alertMsg(data.message,"success",null,function(){
-					location.href = ctx+'/admin/xdworkexper/getListPage';//跳转到列表页
-				});
-			}else{
-				pointLion.alertMsg(data.message,"danger",null,null);
-			}
-		});
-	}
 
 	//查询
 	function searchTable(){

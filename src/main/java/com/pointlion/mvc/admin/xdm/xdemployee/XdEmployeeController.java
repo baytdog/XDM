@@ -446,4 +446,32 @@ public class XdEmployeeController extends BaseController {
 		}
 	}
 
+
+	public void printTest(){
+		renderIframe("printTest.html");
+	}
+
+
+	public void getPrintInfo() throws UnsupportedEncodingException {
+		String name = java.net.URLDecoder.decode(getPara("name",""),"UTF-8");
+		String empnum = java.net.URLDecoder.decode(getPara("empnum",""),"UTF-8");
+		String department = java.net.URLDecoder.decode(getPara("department",""),"UTF-8");
+		String emprelation = java.net.URLDecoder.decode(getPara("emprelation",""),"UTF-8");
+		String unitname=java.net.URLDecoder.decode(getPara("unitname",""),"UTF-8");
+		String costitem=java.net.URLDecoder.decode(getPara("costitem",""),"UTF-8");
+		List<XdEmployee> employees = service.getPrintInfos(name, empnum, department, emprelation, unitname, costitem);
+		List<PrintInfoVo> list=new ArrayList<>();
+		for (XdEmployee emp : employees) {
+			PrintInfoVo printInfoVo = new PrintInfoVo();
+			printInfoVo.setEmp(emp);
+			List<XdEdutrain> xdEdutrainList = XdEdutrain.dao.find("select * from xd_edutrain where eid='"+emp.getId()+"'");
+			printInfoVo.setEdutrainList(xdEdutrainList);
+			List<XdWorkExper> workExperList = XdWorkExper.dao.find("select * from xd_work_exper where eid='"+emp.getId()+"'");
+			printInfoVo.setWorkExperList(workExperList);
+			list.add(printInfoVo);
+		}
+		renderJson(list);
+
+	}
+
 }

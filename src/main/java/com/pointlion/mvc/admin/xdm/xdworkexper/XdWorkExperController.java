@@ -41,13 +41,6 @@ public class XdWorkExperController extends BaseController {
      */
     public void save(){
     	XdWorkExper o = getModel(XdWorkExper.class);
-//    	if(StrKit.notBlank(o.getId())){
-//    		o.update();
-//    	}else{
-////    		o.setId(UuidUtil.getUUID());
-////    		o.setCreateTime(DateUtil.getCurrentTime());
-//    		o.save();
-//    	}
     	renderSuccess();
     }
     /***
@@ -59,20 +52,9 @@ public class XdWorkExperController extends BaseController {
 		setAttr("view", view);
 		XdWorkExper o = new XdWorkExper();
 		if(StrKit.notBlank(id)){
-//    		o = service.getById(id);
-//    		if("detail".equals(view)){
-//    			if(StrKit.notBlank(o.getProcInsId())){
-//    				setAttr("procInsId", o.getProcInsId());
-//    				setAttr("defId", wfservice.getDefIdByInsId(o.getProcInsId()));
-//    			}
-//    		}
     	}else{
     		SysUser user = SysUser.dao.findById(ShiroKit.getUserId());
     		SysOrg org = SysOrg.dao.findById(user.getOrgid());
-//			o.setOrgId(org.getId());
-//			o.setOrgName(org.getName());
-//			o.setUserid(user.getId());
-//			o.setApplyerName(user.getName());
     	}
 		setAttr("o", o);
     	setAttr("formModelName",StringUtil.toLowerCaseFirstOne(XdWorkExper.class.getSimpleName()));

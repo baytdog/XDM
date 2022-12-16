@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>WEB打印控件LODOP</title>
+    <script language="javascript" src="#(ctx)/common/js/LodopFuncs.js"></script>
+</head>
+<body><input type="text" id="T6" size="2" value="4" name="copies">
+<a href="javascript:prn1_preview()">预览打印多份一样的内容</a><br>
+<a href="javascript:prn1_preview2()">预览打印多页</a><br>
+<a href="javascript:prn1_preview3()">直接打印多任务</a><br>
+<a href="javascript:prn1_preview4()">直接打印分页分任务 分组打印</a>
+<script language="javascript" type="text/javascript">
+    var LODOP; //声明为全局变量
+ /*   function prn1_preview() {//批量打印相同内容可以用份数
+        LODOP=getLodop();
+        LODOP.PRINT_INIT("");
+        LODOP.SET_PRINT_PAGESIZE(1,300,500,"");
+        LODOP.SET_PRINT_COPIES(document.getElementById('T6').value);
+        LODOP.ADD_PRINT_TEXT(75,6,100,20,"一个文本");
+        //LODOP.PRINT_DESIGN();
+        LODOP.PREVIEW();
+    };*/
+    function prn1_preview2() {    //一个任务中循环多页，每页内容不同
+        LODOP=getLodop();
+        var wenben=["一号文本","二号文本","三号文本","四号文本"];
+        LODOP.PRINT_INIT("");//初始化在循环外
+        LODOP.SET_PRINT_PAGESIZE(1,300,500,"");
+        for (i=0;i<wenben.length;i++)
+        {
+            LODOP.NewPage();
+            LODOP.ADD_PRINT_TEXT(75,6,100,20,wenben[i]);
+        }
+        //LODOP.PRINT_DESIGN();
+        LODOP.PREVIEW();
+    };
+  /*  function prn1_preview3() {    //循环多个任务，每个任务内容不同
+        LODOP=getLodop();
+        var wenben=["一号文本","二号文本","三号文本","四号文本"];
+        for (i=0;i<wenben.length;i++)
+        {
+            LODOP.PRINT_INIT("");//初始化在循环中
+            LODOP.SET_PRINT_PAGESIZE(1,300,500,"");
+            LODOP.ADD_PRINT_TEXT(75,6,100,20,wenben[i]);
+            LODOP.PRINT();
+        }
+    };
+    function prn1_preview4() {    //循环多个任务，任务中循环页数，分页分任务
+        LODOP=getLodop();
+        var wenben=["一号文本","二号文本","三号文本","四号文本"];
+        for (i=0;i<4;i=i+2)
+        {
+            LODOP.PRINT_INIT("");//初始化在外循环中
+            LODOP.SET_PRINT_PAGESIZE(1,300,500,"");
+            for (j=0;j<2;j++)
+            {
+                console.log(i+j);
+                LODOP.ADD_PRINT_TEXT(75,6,100,20,wenben[i+j]);
+                LODOP.NewPage();
+            }
+            //LODOP.PRINT_DESIGN();
+            LODOP.PRINT();
+        }
+    };*/
+</script>
+</body>
+</html>

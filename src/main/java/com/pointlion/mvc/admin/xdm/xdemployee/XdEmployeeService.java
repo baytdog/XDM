@@ -698,23 +698,6 @@ public class XdEmployeeService{
 							emp.setSalary(Integer.valueOf((empStr.get(53)==null||empStr.get(53).equals(""))?"0":empStr.get(53)));
 							emp.setSaladjrecord(empStr.get(54));
 							emp.setChrecord(empStr.get(55));
-
-
-
-
-
-
-							//emp.setName(empStr);
-						 	/*hotLine.setBackup1("1");//数据来源 0 系统录入1 导入
-							hotLine.setNum(getStr(l,0));
-							hotLine.setFromtime(getStr(l,1));
-							hotLine.setFromer(getStr(l,2));
-							hotLine.setContact(getStr(l,3));
-							hotLine.setFromchannel(getStr(l,4));
-							hotLine.setHotlinetype(getStr(l,5));
-							hotLine.setBackup2(getStr(l,6));
-							hotLine.setCbrremark(getStr(l,7));
-							hotLine.setStatus("6"); */
 							emp.save();
 
 
@@ -752,5 +735,33 @@ public class XdEmployeeService{
 			re = "";
 		}
 		return re;
+	}
+
+
+	public List<XdEmployee> getPrintInfos(String name,String empnum,String department
+	,String emprelation,String unitname,String costitem){
+		String userId = ShiroKit.getUserId();
+		String sql  = "select * from "+TABLE_NAME+" o where 1=1";
+		if(StrKit.notBlank(name)){
+			sql = sql + " and o.name like '%"+ name+"%'";
+		}
+		if(StrKit.notBlank(empnum)){
+			sql = sql + " and o.empnum like '%"+ empnum+"%'";
+		}
+		if(StrKit.notBlank(department)){
+			sql = sql + " and o.department = '"+ department+"'";
+		}
+		if(StrKit.notBlank(emprelation)){
+			sql = sql + " and o.emprelation = '"+ emprelation+"'";
+		}
+		if(StrKit.notBlank(unitname)){
+			sql = sql + " and o.unitname = '"+ unitname+"'";
+		}
+		if(StrKit.notBlank(costitem)){
+			sql = sql + " and o.costitem = '"+ costitem+"'";
+		}
+		sql = sql + " order by o.ctime desc";
+
+		return  XdEmployee.dao.find(sql);
 	}
 }
