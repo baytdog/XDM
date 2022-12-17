@@ -30,7 +30,8 @@ public class OrgController extends BaseController {
 	 */
 	public void getListPage(){
 //		String userParentChildCompanyId = ShiroKit.getUserParentChileCompanyId();//上级子公司id
-		setAttr("pid",ShiroKit.getUserOrgId());
+		//setAttr("pid",ShiroKit.getUserOrgId());
+		setAttr("pid","root");
     	renderIframe("list.html");
     }
     /***

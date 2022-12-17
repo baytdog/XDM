@@ -43,6 +43,30 @@ public class ExcelUtil {
 	}
 
 
+    public static List<List<String>> excelToStringList(String filePath) throws FileNotFoundException, IOException{
+        List<List<String>> result = new ArrayList<List<String>>();
+        // 读取，全部sheet表及数据
+        Workbook workbook = null;
+        if (filePath.toLowerCase().endsWith("xls")) {
+            workbook = new HSSFWorkbook(new FileInputStream(new File(filePath)));
+        } else {
+            workbook = new XSSFWorkbook(new FileInputStream(new File(filePath)));
+        }
+        Sheet sheet = workbook.getSheetAt(0);
+        int maxRowNum = sheet.getLastRowNum()+1;
+        for (int j = 0; j < maxRowNum; j++) {// 循环所有行
+            List<String> rowList = new ArrayList<String>();
+            Row row = sheet.getRow(j);//读取行
+            if (row != null) {
+                for (int k = 0; k < row.getLastCellNum(); k++) {// getLastCellNum，是获取最后一个不为空的列是第几个
+                    String cellStr = row.getCell(k) != null?DbImportExcelUtils.formatgetCellStringValue(row.getCell(k)):"";
+                    rowList.add(cellStr);
+                }
+            }
+            result.add(rowList);
+        }
+        return result;
+    }
     /***
      * 数组转excel文件
      * @param path

@@ -1,41 +1,85 @@
-<form id="editForm" class="panel-body form-horizontal form-padding">
-	<input type="hidden"  name="#(formModelName).id" class="form-control" value="#(o?o.id:'')">
-	<div class="form-group">
-		<label class="col-md-2 control-label">������</label>
-		<div class="col-md-4">
-			<input type="hidden"  name="#(formModelName).userid" class="form-control"  value="#(o?o.user_id:'')">
-			<input type="text"  name="#(formModelName).applyer_name" class="form-control"  value="#(o?o.applyer_name:'')" readonly>
-		</div>
-		<label class="col-md-1 control-label">����</label>
-		<div class="col-md-4">
-			<input type="hidden"  name="#(formModelName).org_id" class="form-control"  value="#(o?o.org_id:'')">
-			<input type="text"  name="#(formModelName).org_name" class="form-control"  value="#(o?o.org_name:'')" readonly>
-		</div>
-	</div>
-		<div class="form-group">
-			<label class="col-md-2 control-label"></label>
-			<div class="col-md-9">
-				<input type="text"  name="#(formModelName)." class="form-control"  value="#(o?o.:'')" #if(view=='detail') readonly #end>
-				<small class="help-block">������</small>
+<form id="editForm" class="panel-body form-horizontal form-padding" onkeydown="if(event.keyCode==13){return false;}">
+	<input  id="employeeId" type="hidden"  name="#(formModelName).id" class="form-control" value="#(o?o.id:'')">
+	<div class="col-md-12 col-lg-12"  >
+		<div class="panel-group accordion" id="accordion">
+			<div class="panel">
+				<div class="panel-heading">
+					<h4 class="panel-title">
+						<a data-parent="#accordion" data-toggle="collapse" href="#collapseOne" style="text-align: center;background: #0ab1fc">班次信息管理</a>
+					</h4>
+				</div>
+				<div class="panel-collapse collapse in" id="collapseOne">
+					<div class="panel-body">
+						<div class="form-group">
+							<label class="col-md-1 control-label">班次名称</label>
+							<div class="col-md-3">
+								<input type="text"  name="#(formModelName).shiftname" class="form-control"  value="#(o?o.shiftname:'')"  >
+							</div>
+							<label class="col-md-1 control-label">上班时间</label>
+							<div class="col-md-3">
+								<input type="text"  name="#(formModelName).busitime" class="form-control"  value="#(o?o.busitime:'')"  >
+							</div>
+							<label class="col-md-1 control-label">下班时间</label>
+							<div class="col-md-3">
+								<input type="text"  name="#(formModelName).unbusitime" class="form-control"  value="#(o?o.unbusitime:'')"  >
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-md-1 control-label">时间段</label>
+							<div class="col-md-3">
+								<input type="text"  name="#(formModelName).timebucket" class="form-control"  value="#(o?o.timebucket:'')"  >
+							</div>
+							<label class="col-md-1 control-label">上班时长</label>
+							<div class="col-md-3">
+								<input type="text"  name="#(formModelName).hours" class="form-control"  value="#(o?o.hours:'')"  >
+							</div>
+							<label class="col-md-1 control-label">中班</label>
+							<div class="col-md-3">
+								<input type="text"  name="#(formModelName).middleshift" class="form-control"  value="#(o?o.middleshift:'')"  >
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-md-1 control-label">夜班</label>
+							<div class="col-md-3">
+								<input type="text"  name="#(formModelName).nigthshift" class="form-control"  value="#(o?o.nigthshift:'')"  >
+							</div>
+							<label class="col-md-1 control-label">中/夜班费</label>
+							<div class="col-md-3">
+								<input type="text"  name="#(formModelName).shiftcost" class="form-control"  value="#(o?o.shiftcost:'')"  >
+							</div>
+							<label class="col-md-1 control-label">值班金额</label>
+							<div class="col-md-3">
+								<input type="text"  name="#(formModelName).dutyamount" class="form-control"  value="#(o?o.dutyamount:'')"  >
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-md-1 control-label">值班说明</label>
+							<div class="col-md-11">
+								<input type="text"  name="#(formModelName).dutydesc" class="form-control"  value="#(o?o.dutydesc:'')"  >
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-md-1 control-label">备注</label>
+							<div class="col-md-11">
+								<textarea rows="5" name="#(formModelName).remarks" class="form-control" #if(view=='detail') readonly #end>#(o?o.remarks:'')</textarea>
+							</div>
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
-	<div class="form-group">
-		<label class="col-md-2 control-label">��ע</label>
-		<div class="col-md-9">
-			<textarea rows="8" name="#(formModelName).des" class="form-control" #if(view=='detail') readonly #end></textarea>
-			<small class="help-block">�����뱸ע</small>
-		</div>
-	</div>
-	#if(view=='edit')
-	<div class="panel-footer">
-		<div class="row">
-			<div class="col-sm-8 col-sm-offset-3">
-				<button class="btn btn-warning" type="reset" #if(view=='detail') disabled #end>����</button>
-				<button class="btn btn-primary" type="submit" #if(view=='detail') disabled #end>����</button>
-			</div>
-		</div>
-	</div>
-	#else
 
-	#end
+	</div>
+	<div class="col-sm-12" style="text-align: center;">
+		#if(view=='edit')
+
+		<!--<button class="btn btn-warning" type="reset" #if(view=='detail') disabled #end>重置</button>-->
+		<button class="btn btn-primary" type="submit" #if(view=='detail') disabled #end>保存 </button>
+		<button class="btn btn-primary" type="button" onclick="window.history.back();" >返回</button>
+		#else
+		<button class="btn btn-primary" type="button" onclick="window.history.back();" >返回</button>
+		#end
+	</div>
+
+
 </form>
