@@ -1,0 +1,107 @@
+<link href="#(ctx)/common/plugins/jquery-ui/scripts/miniui/themes/default/miniui.css" rel="stylesheet"/>
+<div id="page-content">
+	<div class="col-lg-12">
+		<div class="panel">
+			#include("editForm.html")
+		</div>
+	</div>
+</div>
+
+
+<script>
+	function save(){
+
+		let data = common_ajax.ajaxFunc("/admin/xd/xdempcert/save",$('#editForm').serialize(), "json", null);
+		if(data.success){
+			pointLion.alertMsg("操作成功!" , "success" , "small" , function(){
+				location.href = ctx+'/admin/xd/xdempcert/getListPage';//跳转到列表页
+			},data);
+		}else{
+			pointLion.alertMsg(data.message , "danger" , "small" , function(){
+				$(".btn").removeAttr("disabled");
+			},data);
+		}
+	}
+	$(document).ready(function() {
+		$('#editForm').bootstrapValidator({
+			fields: {
+			}
+		}).on("success.form.bv", function (e) {
+			save();
+			return false;//阻止表单跳转
+		});
+	});
+</script>
+
+<script>
+
+	function chooseEmployees(){
+		pointLion.selectManyUser1("orgid="+encodeURIComponent("root"),$("#eid").val(),function(data){
+			$("#eid").val(data.idData);
+			$("#ename").val(data.nameData);
+		});
+	}
+
+	function resetVali(){
+		if(!$("#editForm").data('bootstrapValidator').isValid()) {
+			$("#editForm").data('bootstrapValidator').resetForm();
+			$(".btn").removeAttr("disabled");
+		}
+	}
+	$(function(){
+
+		$('.form_datetime').datepicker({format: 'yyyy-mm-dd',weekStart: 1,todayBtn:  1,autoclose: 1,language:  'zh-CN',todayHighlight: 1,forceParse: 0,showMeridian: 1}).on('changeDate',function(){
+			let startTime = $("#startTime").val();
+			let endTime = $("#endTime").val();
+			/*if(startTime&&endTime){
+				if(!dateUtil.compareCalendar(startTime,endTime)){
+				}else{
+
+				}
+			}*/
+			resetVali();
+		});
+
+
+		$(".selectpicker").selectpicker({});
+		$(".bootstrap-select").attr("style","width:100%;");
+
+		let haveCertificate=$("#haveCertificate").val();
+		if(haveCertificate){
+			$('#haveCertificateSelect').selectpicker('val',haveCertificate.split(",")).trigger("change");
+		}
+
+		$('#haveCertificateSelect').on('changed.bs.select', function (e) {
+			$('#haveCertificate').val($('#haveCertificateSelect').val())
+		});
+
+		let haveEndDate=$("#haveEndDate").val();
+		if(haveEndDate){
+			$('#haveEndDateSelect').selectpicker('val',haveEndDate.split(",")).trigger("change");
+		}
+
+		$('#haveEndDateSelect').on('changed.bs.select', function (e) {
+			$('#haveEndDate').val($('#haveEndDateSelect').val())
+		});
+
+		let continuEdu=$("#continuEdu").val();
+		if(continuEdu){
+			$('#continuEduSelect').selectpicker('val',continuEdu.split(",")).trigger("change");
+		}
+
+		$('#continuEduSelect').on('changed.bs.select', function (e) {
+			$('#continuEdu').val($('#continuEduSelect').val())
+		});
+		let certstatus=$("#certstatus").val();
+		if(continuEdu){
+			$('#certstatusSelect').selectpicker('val',certstatus.split(",")).trigger("change");
+		}
+
+		$('#certstatusSelect').on('changed.bs.select', function (e) {
+			$('#certstatus').val($('#certstatusSelect').val())
+		});
+	})
+</script>
+
+
+

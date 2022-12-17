@@ -153,6 +153,8 @@ public class _MappingKit {
 		arp.addMapping("xd_shift","id",XdShift.class);
 		arp.addMapping("xd_dict","id",XdDict.class);
 		arp.addMapping("xd_dict_group","id",XdDictGroup.class);
+		arp.addMapping("xd_certificate","id",XdCertificate.class);
+		arp.addMapping("xd_emp_cert","id",XdEmpCert.class);
 	}
 }
 

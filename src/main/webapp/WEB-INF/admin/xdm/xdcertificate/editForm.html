@@ -1,0 +1,84 @@
+<form id="editForm" class="panel-body form-horizontal form-padding" onkeydown="if(event.keyCode==13){return false;}">
+	<input  id="employeeId" type="hidden"  name="#(formModelName).id" class="form-control" value="#(o?o.id:'')">
+	<div class="col-md-12 col-lg-12"  >
+		<div class="panel-group accordion" id="accordion">
+			<div class="panel">
+				<div class="panel-heading">
+					<h4 class="panel-title">
+						<a data-parent="#accordion" data-toggle="collapse" href="#collapseOne" style="text-align: center;background: #0ab1fc">证书信息管理</a>
+					</h4>
+				</div>
+				<div class="panel-collapse collapse in" id="collapseOne">
+					<div class="panel-body">
+						<div class="form-group">
+							<label class="col-md-2 control-label">证书名称</label>
+							<div class="col-md-9">
+								<input type="text"  name="#(formModelName).certificateTitle" class="form-control"  value="#(o?o.certificateTitle:'')"  >
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-md-2 control-label">有无职称/职业职格证书</label>
+							<input type="hidden" id="haveCertificate" name="#(formModelName).haveCertificate" value="#(o?o.haveCertificate:'')">
+							<div class="col-md-9">
+								<select id="haveCertificateSelect"   title="请选择"  class="selectpicker show-tick form-control" actionsBox="true"  disable  data-live-search="false">
+									<option value=" ">  </option>
+									<option value="1">有</option>
+									<option value="0">无</option>
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-md-2 control-label">有无到期日</label>
+							<input type="hidden" id="haveEndDate" name="#(formModelName).haveEndDate" value="#(o?o.haveEndDate:'')">
+							<div class="col-md-9">
+								<select id="haveEndDateSelect"   title="请选择"  class="selectpicker show-tick form-control" actionsBox="true"  disable  data-live-search="false">
+									<option value=" ">  </option>
+									<option value="1">有</option>
+									<option value="0">无</option>
+								</select>
+							</div>
+
+						</div>
+						<div class="form-group">
+							<label class="col-md-2 control-label">继续教育</label>
+							<input type="hidden" id="continuEdu" name="#(formModelName).continuEdu" value="#(o?o.continuEdu:'')">
+							<div class="col-md-9">
+								<select id="continuEduSelect"   title="请选择"  class="selectpicker show-tick form-control" actionsBox="true"  disable  data-live-search="false">
+									<option value=" ">  </option>
+									<option value="1">是</option>
+									<option value="0">否</option>
+								</select>
+							</div>
+
+						</div>
+						<div class="form-group">
+							<label class="col-md-2 control-label">编号</label>
+							<div class="col-md-9">
+								<input type="text"  name="#(formModelName).num" class="form-control"  value="#(o?o.num:'')"  >
+							</div>
+						</div>
+						<br/>
+						<br/>
+						<br/>
+						<br/>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+
+
+	<div class="col-sm-12" style="text-align: center;">
+		#if(view=='edit')
+
+		<!--<button class="btn btn-warning" type="reset" #if(view=='detail') disabled #end>重置</button>-->
+		<button class="btn btn-primary" type="submit" #if(view=='detail') disabled #end>保存 </button>
+		<button class="btn btn-primary" type="button" onclick="window.history.back();" >返回</button>
+		#else
+		<button class="btn btn-primary" type="button" onclick="window.history.back();" >返回</button>
+		#end
+	</div>
+
+
+</form>

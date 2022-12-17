@@ -2,8 +2,10 @@ package com.pointlion.config.routes;
 
 import com.jfinal.config.Routes;
 import com.pointlion.mvc.admin.oa.dict.OaDictController;
+import com.pointlion.mvc.admin.xdm.xdcertificate.XdCertificateController;
 import com.pointlion.mvc.admin.xdm.xddict.XdDictController;
 import com.pointlion.mvc.admin.xdm.xdedutrain.XdEdutrainController;
+import com.pointlion.mvc.admin.xdm.xdempcert.XdEmpCertController;
 import com.pointlion.mvc.admin.xdm.xdemployee.XdEmployeeController;
 import com.pointlion.mvc.admin.xdm.xdschoolinfo.XdSchoolinfoController;
 import com.pointlion.mvc.admin.xdm.xdshift.XdShiftController;
@@ -28,6 +30,8 @@ public class XDRoutes extends Routes {
         add("/admin/xd/steps", XdStepsController.class,"/steps");
         add("/admin/xd/xdshift", XdShiftController.class,"/xdshift");
         add("/admin/xd/xddict", XdDictController.class,"/xddict");
+        add("/admin/xd/xdcertificate", XdCertificateController.class,"/xdcertificate");
+        add("/admin/xd/xdempcert", XdEmpCertController.class,"/xdempcert");
 
     }
 }

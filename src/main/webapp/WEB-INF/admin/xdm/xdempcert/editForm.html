@@ -1,0 +1,158 @@
+<form id="editForm" class="panel-body form-horizontal form-padding" onkeydown="if(event.keyCode==13){return false;}">
+	<input  id="employeeId" type="hidden"  name="#(formModelName).id" class="form-control" value="#(o?o.id:'')">
+	<div class="col-md-12 col-lg-12"  >
+		<div class="panel-group accordion" id="accordion">
+			<div class="panel">
+				<div class="panel-heading">
+					<h4 class="panel-title">
+						<a data-parent="#accordion" data-toggle="collapse" href="#collapseOne" style="text-align: center;background: #0ab1fc">人员证书管理</a>
+					</h4>
+				</div>
+				<div class="panel-collapse collapse in" id="collapseOne">
+					<div class="panel-body">
+						<div class="form-group">
+							<label class="col-md-2 control-label">部门</label>
+							<input type="hidden" id="department" name="#(formModelName).department" value="#(o?o.department:'')">
+							<div class="col-md-9">
+								<select id="departmentSelect"   title="请选择"  class="selectpicker show-tick form-control" actionsBox="true"  disable  data-live-search="false">
+									<!--<option value=" ">  </option>
+									<option value="1">有</option>
+									<option value="0">无</option>-->
+									#for(depart:departs)
+									<option value="#(depart.id)">#(depart.name)</option>
+									#end
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
+								<label class="col-md-2 control-label" >姓名</label>
+								<div class="col-md-9" style="line-height: 30px;">
+									<div #if(view!="detail") class="input-group mar-btm" #end>
+										<input type="hidden" id="eid" name="#(formModelName).eid" value="#(o?o.eid:'')">
+										<input type="text"   id="ename" name="#(formModelName).ename" value="#(o?o.ename:'')" readonly class="form-control">
+										#if(view!="detail")
+										<span class="input-group-btn">
+				                            <button class="btn btn-primary" type="button" onclick="chooseEmployees()">选择</button>
+				                        </span>
+										#end
+									</div>
+								</div>
+						</div>
+
+						<div class="form-group">
+							<label class="col-md-2 control-label">证书名称</label>
+							<input type="hidden" id="certId" name="#(formModelName).certId" value="#(o?o.certId:'')">
+							<div class="col-md-9">
+								<select id="certIdSelect"   title="请选择证书"  class="selectpicker show-tick form-control" actionsBox="true"  disable  data-live-search="true">
+									#for(cert:certs)
+									<option value="#(cert.id)">#(cert.certificateTitle)</option>
+									#end
+								</select>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label class="col-md-2 control-label">证书等级</label>
+							<input type="hidden" id="certLevel" name="#(formModelName).certLevel" value="#(o?o.certLevel:'')">
+							<div class="col-md-9">
+								<select id="certLevelSelect"   title="请选择证书"  class="selectpicker show-tick form-control" actionsBox="true"  disable  data-live-search="false">
+									#for(certLevel:certLevels)
+									<option value="#(certLevel.value)">#(certLevel.name)</option>
+									#end
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-md-2 control-label">发证机关</label>
+							<input type="hidden" id="certAuth" name="#(formModelName).certAuth" value="#(o?o.certAuth:'')">
+							<div class="col-md-9">
+								<select id="certAuthSelect"   title="请选择证书"  class="selectpicker show-tick form-control" actionsBox="true"  disable  data-live-search="true">
+									#for(cert:certs)
+									<option value="#(cert.id)">#(cert.certificateTitle)</option>
+									#end
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-md-2 control-label">发证日期</label>
+							<div class="input-group date form_datetime col-md-4" style="float:left">
+								<input type="text" id="startTime" name="#(formModelName).openDate" class="form-control"  value="#(o?o.openDate:'')"    >
+								<span class="input-group-addon"> <span class="glyphicon glyphicon-th"></span>
+									</span>
+							</div>
+
+							<label class="col-md-2 control-label">到期日</label>
+							<div class="input-group date form_datetime col-md-3" style="float:left">
+								<input type="text" id="endTime" name="#(formModelName).closeDate" class="form-control"  value="#(o?o.closeDate:'')"    >
+								<span class="input-group-addon"> <span class="glyphicon glyphicon-th"></span>
+									</span>
+							</div>
+						</div>
+						<!--<div class="form-group">
+							<label class="col-md-2 control-label">到期日</label>
+							<div class="input-group date form_datetime col-md-4" style="float:left">
+								<input type="text" id="endTime" name="#(formModelName).closeDate" class="form-control"  value="#(o?o.closeDate:'')"    >
+								<span class="input-group-addon"> <span class="glyphicon glyphicon-th"></span>
+									</span>
+							</div>
+						</div>-->
+
+						<div class="form-group">
+							<label class="col-md-2 control-label">有效期/年</label>
+							<div class="col-md-9">
+								<input type="text"  name="#(formModelName).validity" class="form-control"  value="#(o?o.validity:'')"  >
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label class="col-md-2 control-label">身份证号码</label>
+							<div class="col-md-9">
+								<input type="text"  name="#(formModelName).idnum" class="form-control"  value="#(o?o.idnum:'')"  >
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-md-2 control-label">证书编号</label>
+							<div class="col-md-9">
+								<input type="text"  name="#(formModelName).certnum" class="form-control"  value="#(o?o.certnum:'')"  >
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-md-2 control-label">备注</label>
+							<div class="col-md-9">
+								<input type="text"  name="#(formModelName).remak" class="form-control"  value="#(o?o.remak:'')"  >
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-md-2 control-label">原件是否在公司</label>
+							<input type="hidden" id="certstatus" name="#(formModelName).certstatus" value="#(o?o.certstatus:'')">
+							<div class="col-md-9">
+								<select id="certstatusSelect"   title="请选择"  class="selectpicker show-tick form-control" actionsBox="true"  disable  data-live-search="false">
+									<option value=" ">  </option>
+									<option value="1">原件</option>
+									<option value="0">复印件</option>
+								</select>
+							</div>
+						</div>
+						<br/>
+						<br/>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+
+
+	<div class="col-sm-12" style="text-align: center;">
+		#if(view=='edit')
+
+		<!--<button class="btn btn-warning" type="reset" #if(view=='detail') disabled #end>重置</button>-->
+		<button class="btn btn-primary" type="submit" #if(view=='detail') disabled #end>保存 </button>
+		<button class="btn btn-primary" type="button" onclick="window.history.back();" >返回</button>
+		#else
+		<button class="btn btn-primary" type="button" onclick="window.history.back();" >返回</button>
+		#end
+	</div>
+
+
+</form>
