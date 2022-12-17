@@ -104,7 +104,6 @@ public class XdEmployeeService{
 			String[] empCArray = employeeChanges.split("-");
 			for (String change : empCArray) {
 				change="{"+change+"}";
-//				System.out.println(change);
 				XdOplogDetail logDetail = JSONUtil.jsonToBean(change, XdOplogDetail.class);
 				logDetail.setRsid(lid);
 				list.add(logDetail);
@@ -133,6 +132,7 @@ public class XdEmployeeService{
 			for (XdEdutrain xdEdutrain : gridList1) {
 				if("".equals(xdEdutrain.getId())){
 					xdEdutrain.setEid(oldEmp.getId());
+					xdEdutrain.setEname(oldEmp.getName());
 					if (rs) {
 						xdEdutrain.save(xdEdutrain);
 					}else{
@@ -197,6 +197,7 @@ public class XdEmployeeService{
 			for (XdWorkExper workExper : gridList2) {
 				if("".equals(workExper.getId())){
 					workExper.setEid(oldEmp.getId());
+					workExper.setEname(oldEmp.getId());
 					if (rs) {
 						workExper.save(workExper);
 					}else{

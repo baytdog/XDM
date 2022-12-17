@@ -21,10 +21,17 @@ public abstract class BaseXdWorkExper<M extends BaseXdWorkExper<M>> extends Mode
 	public void setEid(String eid) {
 		set("eid", eid);
 	}
-	@ChangeFields(value="eid",desc = "id")
+	@ChangeFields(value="eid",desc = "eid")
 	public String getEid() {
 		return getStr("eid");
 	}
+	public void setEname(java.lang.String ename) {
+		set("ename", ename);
+	}
+	public java.lang.String getEname() {
+		return getStr("ename");
+	}
+
 
 	public void setEntrydate(String entrydate) {
 		set("entrydate", entrydate);

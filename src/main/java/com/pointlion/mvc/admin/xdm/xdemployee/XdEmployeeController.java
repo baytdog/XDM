@@ -82,6 +82,7 @@ public class XdEmployeeController extends BaseController {
 				for (int i = 0; i < gridList1.size(); i++) {
 					XdEdutrain xdEdutrain = gridList1.get(i);
 					xdEdutrain.setEid(o.getId());
+					xdEdutrain.setEname(o.getName());
 					if("1".equals(ShiroKit.getUserOrgId())){
 						xdEdutrain.save(xdEdutrain);
 						XdOperUtil.logSummary(oid,xdEdutrain,operName,XdOperEnum.UNAPPRO.name(),0);
@@ -94,6 +95,7 @@ public class XdEmployeeController extends BaseController {
     		if(gridList2.size()!=0){
 				for (XdWorkExper workExper : gridList2) {
 					workExper.setEid(o.getId());
+					workExper.setEname(o.getName());
 					if("1".equals(ShiroKit.getUserOrgId())){
 						workExper.save(workExper);
 						XdOperUtil.logSummary(oid,workExper,operName,XdOperEnum.UNAPPRO.name(),0);

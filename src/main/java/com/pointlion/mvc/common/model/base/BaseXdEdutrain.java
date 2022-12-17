@@ -25,6 +25,12 @@ public abstract class BaseXdEdutrain<M extends BaseXdEdutrain<M>> extends Model<
 	public String getEid() {
 		return getStr("eid");
 	}
+	public void setEname(java.lang.String ename) {
+		set("ename", ename);
+	}
+	public java.lang.String getEname() {
+		return getStr("ename");
+	}
 
 	public void setEnrolldate(String enrolldate) {
 		set("enrolldate", enrolldate);

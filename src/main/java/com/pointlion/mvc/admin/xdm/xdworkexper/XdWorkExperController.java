@@ -9,15 +9,18 @@ import com.pointlion.mvc.common.model.SysOrg;
 import com.pointlion.mvc.common.model.SysUser;
 import com.pointlion.mvc.common.model.XdEdutrain;
 import com.pointlion.mvc.common.model.XdWorkExper;
+import com.pointlion.mvc.common.utils.DateUtil;
 import com.pointlion.mvc.common.utils.StringUtil;
 import com.pointlion.plugin.shiro.ShiroKit;
 
+import java.io.File;
+import java.io.UnsupportedEncodingException;
+import java.util.Date;
 import java.util.List;
 
 
 public class XdWorkExperController extends BaseController {
 	public static final XdWorkExperService service = XdWorkExperService.me;
-	public static WorkFlowService wfservice = WorkFlowService.me;
 	/***
 	 * get list page
 	 */
@@ -73,6 +76,31 @@ public class XdWorkExperController extends BaseController {
 		String employeeId = getPara("employeeId");
 		List<XdWorkExper> list = service.getWorkExperList(employeeId);
 		renderJson(list);
+	}
+
+
+
+	/**
+	 * @Method exportExcel
+	 * @param :
+	 * @Date 2022/12/17 9:28
+	 * @Exception
+	 * @Description
+	 * @Author king
+	 * @Version  1.0
+	 * @Return void
+	 */
+	public void exportExcel() throws UnsupportedEncodingException {
+
+
+		String name = java.net.URLDecoder.decode(getPara("name",""),"UTF-8");
+		String empnum = java.net.URLDecoder.decode(getPara("empnum",""),"UTF-8");
+		String emprelation = getPara("emprelation","");
+		String unitname=getPara("unitname","");
+		String costitem=getPara("costitem","");
+		String path = this.getSession().getServletContext().getRealPath("")+"/upload/export/"+ DateUtil.format(new Date(),21)+".xlsx";
+		File file = service.exportExcel(path,name,empnum,emprelation,unitname,costitem);
+		renderFile(file);
 	}
 
 
