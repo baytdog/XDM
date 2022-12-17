@@ -12,8 +12,9 @@ import com.pointlion.mvc.common.utils.office.excel.ExcelUtil;
 import com.pointlion.plugin.shiro.ShiroKit;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.function.Consumer;
+import java.util.stream.Stream;
 
 public class XdWorkExperService{
 	public static final XdWorkExperService me = new XdWorkExperService();
@@ -29,9 +30,9 @@ public class XdWorkExperService{
 	/***
 	 * get page
 	 */
-	public Page<Record> getPage(int pnum,int psize,String startTime,String endTime,String applyUser){
+	public Page<Record> getPage(int pnum,int psize,String name, String workUnit, String job, String adrr, String entryDate, String dimissionDate){
 		String userId = ShiroKit.getUserId();
-		String sql  = " from "+TABLE_NAME+" o LEFT JOIN xd_employee e ON o.eid=e.id  where 1=1";
+		String sql  = " from "+TABLE_NAME+" o   where 1=1";
 		//sql = sql + SysRoleOrg.dao.getRoleOrgSql(userId) ;
 
 		if(ShiroKit.getUserOrgId().equals("1")){
@@ -39,17 +40,26 @@ public class XdWorkExperService{
 		}else{
 
 		}
-		/*if(StrKit.notBlank(startTime)){
-			sql = sql + " and o.create_time>='"+ DateUtil.formatSearchTime(startTime,"0")+"'";
+		if (StrKit.notBlank(name)) {
+			sql = sql + " and o.ename like '%"+name +"%'";
 		}
-		if(StrKit.notBlank(endTime)){
-			sql = sql + " and o.create_time<='"+DateUtil.formatSearchTime(endTime,"1")+"'";
+		if (StrKit.notBlank(workUnit)) {
+			sql = sql + " and o.serviceunit like '%"+workUnit +"%'";
 		}
-		if(StrKit.notBlank(applyUser)){
-			sql = sql + " and o.applyer_name like '%"+applyUser+"%'";
-		}*/
+		if (StrKit.notBlank(job)) {
+			sql = sql + " and o.job like '%"+job +"%'";
+		}
+		if (StrKit.notBlank(adrr)) {
+			sql = sql + " and o.addr like '%"+adrr+"%'";
+		}
+		if(StrKit.notBlank(entryDate)){
+			sql = sql + " and o.entrydate='"+ entryDate+"'";
+		}
+		if (StrKit.notBlank(dimissionDate)) {
+			sql = sql + " and o.departdate='"+dimissionDate+"'";
+		}
 		sql = sql + " order by o.ctime desc";
-		return Db.paginate(pnum, psize, " select o.*,e.name ", sql);
+		return Db.paginate(pnum, psize, " select * ", sql);
 	}
 	
 	/***
@@ -75,37 +85,109 @@ public class XdWorkExperService{
 		return  list;
     }
 
-	public File exportExcel(String path, String name, String empnum, String emprelation, String unitname, String costitem){
+	public File exportExcel(String path, String name, String workUnit, String job, String adrr, String entryDate, String dimissionDate){
 
 		String userId = ShiroKit.getUserId();
-
-		String sql  = " from "+TABLE_NAME+" o   where 1=1";
-
-
+		String sql  = "from "+TABLE_NAME+" o   where 1=1";
 		if (StrKit.notBlank(name)) {
-			sql = sql + " and o.name like '%"+name +"%'";
+			sql = sql + " and o.ename like '%"+name +"%'";
+		}
+		if (StrKit.notBlank(workUnit)) {
+			sql = sql + " and o.serviceunit like '%"+workUnit +"%'";
+		}
+		if (StrKit.notBlank(job)) {
+			sql = sql + " and o.job like '%"+job +"%'";
+		}
+		if (StrKit.notBlank(adrr)) {
+			sql = sql + " and o.addr like '%"+adrr+"%'";
+		}
+		if(StrKit.notBlank(entryDate)){
+			sql = sql + " and o.entrydate='"+ entryDate+"'";
+		}
+		if (StrKit.notBlank(dimissionDate)) {
+			sql = sql + " and o.departdate='"+dimissionDate+"'";
+		}
+		sql = sql + " order by o.ctime desc,o.eid";
+
+
+		List<XdWorkExper> list = XdWorkExper.dao.find(" select * "+sql);//查询全部
+		Map<String,Integer> mapCount=new HashMap<>();
+		Map<String,List<XdWorkExper>> mapObje=new HashMap<>();
+		for (XdWorkExper workExper : list) {
+			if(mapCount.get(workExper.getEid())==null){
+				mapCount.put(workExper.getEid(),1);
+				List<XdWorkExper> workExperList=new ArrayList<>();
+				workExperList.add(workExper);
+				mapObje.put(workExper.getEid(),workExperList);
+			}else{
+				Integer integer = mapCount.get(workExper.getEid());
+				mapCount.put(workExper.getEid(),integer+1);
+				List<XdWorkExper> workExperList = mapObje.get(workExper.getEid());
+				workExperList.add(workExper);
+				mapObje.put(workExper.getEid(),workExperList );
+			}
 		}
 
-		if (StrKit.notBlank(empnum)) {
-			sql = sql + " and o.empnum like '%"+empnum +"%'";
-		}
-		if (StrKit.notBlank(emprelation)) {
-			sql = sql + " and o.emprelation like '%"+emprelation+"%'";
-		}
-		if (StrKit.notBlank(unitname)) {
-			sql = sql + " and o.unitname like '%"+unitname+"%'";
-		}
-
-		if (StrKit.notBlank(costitem)) {
-			sql = sql + " and o.status='"+costitem+"'";
-		}
-		sql = sql + " order by o.ctime desc";
+		Collection<Integer> values = mapCount.values();
+		Stream<Integer> sorted = values.stream().sorted((o1,o2) ->  -o1.compareTo(o2));
+		Integer maxLen = sorted.findFirst().get();
+		System.out.println(maxLen);
 
 
-		List<XdEmployee> list = XdEmployee.dao.find(" select * "+sql);//查询全部
+
 		List<List<String>> rows = new ArrayList<List<String>>();
 		List<String> first = new ArrayList<String>();
-		first.add("员工编号");
+		List<String> second = new ArrayList<String>();
+		first.add("姓名");
+		second.add("");
+
+		for (int i = 1; i <=maxLen ; i++) {
+			first.add("工作经历"+i);
+			second.add("入职日期");
+			second.add("离职日期");
+			second.add("服务公司");
+			second.add("职务");
+			second.add("地点");
+		}
+
+		rows.add(first);
+		rows.add(second);
+		Collection<List<XdWorkExper>> collWorkExper = mapObje.values();
+		Stream<List<XdWorkExper>> sorted1 = collWorkExper.stream().sorted((o1, o2) -> -(o1.size() - o2.size()));
+
+		sorted1.forEach(new Consumer<List<XdWorkExper>>() {
+			@Override
+			public void accept(List<XdWorkExper> xdWorkExpers) {
+				List<String> row = new ArrayList<String>();
+
+				for (int i = 0; i < xdWorkExpers.size(); i++) {
+					XdWorkExper workExper = xdWorkExpers.get(i);
+					if(i==0){
+						row.add(workExper.getEname());
+					}
+					row.add(workExper.getEntrydate());
+					row.add(workExper.getDepartdate());
+					row.add(workExper.getServiceunit());
+					row.add(workExper.getJob());
+					row.add(workExper.getAddr());
+				}
+
+				for (int i = 0; i < (maxLen - xdWorkExpers.size()); i++) {
+					row.add("");
+					row.add("");
+					row.add("");
+					row.add("");
+					row.add("");
+				}
+
+				rows.add(row);
+
+			}
+		});
+
+
+
+			/*	first.add("员工编号");
 		first.add("姓名");//0
 		first.add("身份证号");
 		first.add("性别");//1
@@ -223,6 +305,8 @@ public class XdWorkExperService{
 			rows.add(row);
 		}
 		File file = ExcelUtil.listToFile(path,rows);
+		return file;*/
+		File file = ExcelUtil.workExperFile(path,rows);
 		return file;
 	}
 

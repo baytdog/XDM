@@ -150,6 +150,7 @@ public class _MappingKit {
 		arp.addMapping("xd_oplog_summary","id",XdOplogSummary.class);
 		arp.addMapping("xd_oplog_detail","id",XdOplogDetail.class);
 		arp.addMapping("xd_steps","id",XdSteps.class);
+		arp.addMapping("xd_shift","id",XdShift.class);
 	}
 }
 

@@ -9,6 +9,7 @@ import java.util.List;
 
 import cn.hutool.poi.excel.ExcelWriter;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -55,6 +56,25 @@ public class ExcelUtil {
         //ExcelWriter writer = new ExcelWriter("d:/writeTest.xls");
         //跳过当前行，既第一行，非必须，在此演示用
         writer.write(rows, true);
+        //关闭writer，释放内存
+        writer.close();
+        return new File(path);
+    }
+
+
+    public static File workExperFile(String path,List<List<String>> rows){
+        //通过工具类创建writer
+        ExcelWriter writer = cn.hutool.poi.excel.ExcelUtil.getWriter(path);
+
+        writer.write(rows, true);
+
+        writer.merge(0,1,0,0,rows.get(0).get(0),false);
+        List<String> secondRow = rows.get(1);
+        int secondColumnSize = secondRow.size() / 5;
+        for (int i = 0; i < secondColumnSize; i++) {
+            writer.merge(0,0,i*5+1,(i+1)*5,rows.get(0).get(i+1),false);
+        }
+
         //关闭writer，释放内存
         writer.close();
         return new File(path);

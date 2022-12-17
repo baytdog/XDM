@@ -4,18 +4,29 @@
 							<div class="panel panel-search">
 								<div class="panel-body">
 									<div class="form-inline">
+
 										<div class="form-group">
-											<input id="applyUser" placeholder="制单人" class="form-control">
+											<input id="name" placeholder="姓名" class="form-control">
 										</div>
 										<div class="form-group">
+											<input id="trainOrgname" placeholder="学校/培训机构名称" class="form-control">
+										</div>
+										<div class="form-group">
+											<input id="major" placeholder="专业" class="form-control">
+										</div>
+										<div class="form-group">
+											<input id="edubg" placeholder="学历" class="form-control">
+										</div>
+
+										<div class="form-group">
 											<div class="input-group date form_datetime">
-												<input id="searchStartTime" placeholder="开始时间" class="form-control">
+												<input id="enrolldate" placeholder="入学日期" class="form-control">
 												<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
 											</div>
 										</div>
 										<div class="form-group">
 											<div class="input-group date form_datetime">
-												<input id="searchEndTime" placeholder="结束时间" class="form-control">
+												<input id="graduatdate" placeholder="毕业日期" class="form-control">
 												<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
 											</div>
 										</div>
@@ -27,9 +38,10 @@
 							</div>
 							<div class="panel ">
 								<div class="panel-body">
-									<a id="add" class="btn btn-primary data-toolbar" href="#(ctx)/admin/xdedutrain/getEditPage?view=edit"><i class="demo-pli-add"></i> 添加</a>
-									<a id="del" class="btn btn-danger data-toolbar" onclick="delSel()" href="javascript:void(0);"><i class="demo-pli-cross"></i> 批量删除</a>
-									<table id="pageTable" class="demo-add-niftycheck" data-toolbar="#del,#add"
+									<!--<a id="add" class="btn btn-primary data-toolbar" href="#(ctx)/admin/xdedutrain/getEditPage?view=edit"><i class="demo-pli-add"></i> 添加</a>
+									<a id="del" class="btn btn-danger data-toolbar" onclick="delSel()" href="javascript:void(0);"><i class="demo-pli-cross"></i> 批量删除</a>-->
+									<a id="export" class="btn btn-primary data-toolbar" onclick="exportExcel()" target="_blank"><i class="demo-pli-download-from-cloud"></i> 导出</a>
+									<table id="pageTable" class="demo-add-niftycheck" data-toolbar="#del,#export"
 										   data-search="true"
 										   data-show-refresh="true"
 										   data-show-toggle="true"
@@ -46,11 +58,16 @@
 <script>
 	
 	var col = [{field: 'checked', checkbox : true, align: 'center'},
+
+		{field: 'ename', title: '姓名', align: 'center'},
+		{field: 'enrolldate', title: '入学日期', align: 'center'},
+		{field: 'graduatdate', title: '毕业日期', align: 'center'},
+		{field: 'trainOrgname', title: '学校/培训机构名称', align: 'center'},
+		{field: 'major', title: '专业', align: 'center'},
+		{field: 'edubg', title: '学历', align: 'center'},
+
 	   
-		   {field: '', title: '', align: 'center'},
-	   
-	   
-	   {field: 'control', title: '操作', align: 'left', width:'200',
+	 /*  {field: 'control', title: '操作', align: 'left', width:'200',
 	       formatter:function(value,row,index){
 	           	//通过formatter可以自定义列显示的内容
 	           	//value：当前field的值，即id
@@ -60,7 +77,7 @@
 				a = a + '<a class="label label-table label-danger" onclick="del(\''+row.id+'\')" href="javascript:void(0);" >删除</a>';
 	           	return a;
 	       }
-	   }];
+	   }*/];
 	var opt = {
 		    //请求方法
 			   method: 'get',
@@ -83,7 +100,7 @@
 			   //可供选择的每页的行数（*）    
 			   pageList: [10, 25, 50, 100],
 			   //这个接口需要处理bootstrap table传递的固定参数,并返回特定格式的json数据  
-			   url: ctx+"/admin/xdedutrain/listData",
+			   url: ctx+"/admin/xd/xdedutrain/listData",
 			   //默认值为 'limit',传给服务端的参数为：limit, offset, search, sort, order Else
 			   //queryParamsType:'',   
 			   ////查询参数,每次调用是会带上这个参数，可自定义                         
@@ -142,50 +159,44 @@
 			}
 		});
 	};
-	//提交，启动流程
-	function startProcess(id){
-			pointLion.confimMsg("您将要提交该单据！并且启动流程<br/><span style='color:green;'>您将无法进行修改和删除！！！</span> <br/>点击确认进行提交 , 点击取消取消该操作",null,function(){
-				var data = common_ajax.ajaxFunc("/admin/xdedutrain/startProcess",{"id":id}, "json", null);
-				if(data.success){
-					pointLion.alertMsg(data.message,"success",null,function(){
-						location.href = ctx+'/admin/xdedutrain/getListPage';//跳转到列表页
-					});
-				}else{
-					pointLion.alertMsg(data.message,"danger",null,null);
-				}
-			});
-	}
-	//撤回
-	function callBack(id){
-		pointLion.confimMsg("您将要撤回该单据流程！<br/><span style='color:red;'>该操作将取回单据，您将可以对单据进行修改，并可将单据重新送交审批。</span> <br/>点击确认进行撤回单据 , 点击取消取消该操作",null,function(){
-			//执行删除
-			var data = common_ajax.ajaxFunc("/admin/xdedutrain/callBack",{"id":id}, "json", null);
-			//删除结果
-			if(data.success){
-				pointLion.alertMsg(data.message,"success",null,function(){
-					location.href = ctx+'/admin/xdedutrain/getListPage';//跳转到列表页
-				});
-			}else{
-				pointLion.alertMsg(data.message,"danger",null,null);
-			}
-		});
-	}
 
 	//查询
 	function searchTable(){
-		var startTime = $("#searchStartTime").val();
-		var endTime = $("#searchEndTime").val();
-		var applyUser = $("#applyUser").val();
+		var name = encodeURIComponent($("#name").val());
+		var trainOrgname = encodeURIComponent($("#trainOrgname").val());
+		var major = encodeURIComponent($("#major").val());
+		var edubg = encodeURIComponent($("#edubg").val());
+		var enrolldate = $("#enrolldate").val();
+		var graduatdate = $("#graduatdate").val();
 		var param = {
 			query: {
-				"startTime":startTime,
-				"endTime":endTime,
-				"applyUser":applyUser
+				"name":name,
+				"trainOrgname":trainOrgname,
+				"major":major,
+				"edubg":edubg,
+				"enrolldate":enrolldate,
+				"graduatdate":graduatdate
 			}
 		}
 		// 刷新表格
 		$('#pageTable').bootstrapTable('refresh',param);
 	}
+
+
+	/***
+	 * 导出
+	 */
+	function exportExcel(){
+
+		var name = encodeURIComponent($("#name").val());
+		var trainOrgname = encodeURIComponent($("#trainOrgname").val());
+		var major = encodeURIComponent($("#major").val());
+		var edubg = encodeURIComponent($("#edubg").val());
+		var enrolldate = $("#enrolldate").val();
+		var graduatdate = $("#graduatdate").val();
+		location.href = "#(ctx)/admin/xd/xdedutrain/exportExcel?name="+name+"&trainOrgname="+trainOrgname+"&major="+major+"&edubg="+edubg+"&enrolldate="+enrolldate+"&graduatdate="+graduatdate;
+	}
+
 
 	$(document).ready(function(){
 		$('.form_datetime').datepicker({format: 'yyyy-mm-dd',weekStart: 1,todayBtn:  1,autoclose: 1,language:  'zh-CN',todayHighlight: 1,forceParse: 0,clearBtn: true }).on('changeDate',null);

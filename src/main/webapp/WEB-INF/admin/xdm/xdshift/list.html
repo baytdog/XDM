@@ -1,0 +1,194 @@
+                <div id="page-content">
+			        <div class="col-sm-12 eq-box-sm">
+						<div class="panel">
+							<div class="panel panel-search">
+								<div class="panel-body">
+									<div class="form-inline">
+										<div class="form-group">
+											<input id="applyUser" placeholder="�Ƶ���" class="form-control">
+										</div>
+										<div class="form-group">
+											<div class="input-group date form_datetime">
+												<input id="searchStartTime" placeholder="��ʼʱ��" class="form-control">
+												<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+											</div>
+										</div>
+										<div class="form-group">
+											<div class="input-group date form_datetime">
+												<input id="searchEndTime" placeholder="����ʱ��" class="form-control">
+												<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+											</div>
+										</div>
+										<div class="form-group">
+											<button class="btn btn-primary" type="button" onclick="searchTable()">����</button>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="panel ">
+								<div class="panel-body">
+									<a id="add" class="btn btn-primary data-toolbar" href="#(ctx)/admin/xdshift/getEditPage?view=edit"><i class="demo-pli-add"></i> ���</a>
+									<a id="del" class="btn btn-danger data-toolbar" onclick="delSel()" href="javascript:void(0);"><i class="demo-pli-cross"></i> ����ɾ��</a>
+									<table id="pageTable" class="demo-add-niftycheck" data-toolbar="#del,#add"
+										   data-search="true"
+										   data-show-refresh="true"
+										   data-show-toggle="true"
+										   data-show-columns="true"
+										   data-sort-name="id"
+										   data-page-list="[5, 10, 20]"
+										   data-page-size="5"
+										   data-pagination="true" data-show-pagination-switch="true" ></table>
+								</div>
+							</div>
+			        	</div>
+                	</div>
+				</div>
+<script>
+	
+	var col = [{field: 'checked', checkbox : true, align: 'center'},
+	   
+		   {field: '', title: '', align: 'center'},
+	   
+	   
+	   {field: 'control', title: '����', align: 'left', width:'200',
+	       formatter:function(value,row,index){
+	           	//ͨ��formatter�����Զ�������ʾ������
+	           	//value����ǰfield��ֵ����id
+	           	//row����ǰ�е�����
+	           	var a = '<a class="label label-table label-success" href="'+ctx+'/admin/xdshift/getEditPage?id='+row.id+'&view=detail" >�鿴</a>&nbsp;';
+	           	a = a + '<a class="label label-table label-success" href="'+ctx+'/admin/xdshift/getEditPage?id='+row.id+'&view=edit" >�༭</a>&nbsp;';
+				a = a + '<a class="label label-table label-danger" onclick="del(\''+row.id+'\')" href="javascript:void(0);" >ɾ��</a>';
+	           	return a;
+	       }
+	   }];
+	var opt = {
+		    //���󷽷�
+			   method: 'get',
+			    //�Ƿ���ʾ�м��ɫ
+			   striped: true,
+			   //�Ƿ�ʹ�û��棬Ĭ��Ϊtrue������һ���������Ҫ����һ��������ԣ�*��     
+			   cache: false,  
+			   //data-toolbar: "#demo-delete-row",
+			   //�Ƿ���ʾ��ҳ��*��  
+			   pagination: true,   
+			    //�Ƿ���������  
+			   sortable: false,    
+			    //����ʽ 
+			   sortOrder: "asc",    
+			   //��ʼ�����ص�һҳ��Ĭ�ϵ�һҳ
+			   //����������һ�����ò��û�����ã���������Ĭ����0,- -
+			   //pageNumber:1,   
+			   //ÿҳ�ļ�¼������*��   
+			   pageSize: 10,  
+			   //�ɹ�ѡ���ÿҳ��������*��    
+			   pageList: [10, 25, 50, 100],
+			   //����ӿ���Ҫ����bootstrap table���ݵĹ̶�����,�������ض���ʽ��json����  
+			   url: ctx+"/admin/xdshift/listData",
+			   //Ĭ��ֵΪ 'limit',��������˵Ĳ���Ϊ��limit, offset, search, sort, order Else
+			   //queryParamsType:'',   
+			   ////��ѯ����,ÿ�ε����ǻ����������������Զ���                         
+			   queryParams : function(params) {
+			       return {
+			             pageNumber: (params.offset/params.limit)+1,
+			             pageSize: params.limit
+			           };
+			   },
+			   //��ҳ��ʽ��client�ͻ��˷�ҳ��server����˷�ҳ��*��
+			   sidePagination: "server",
+			   //�Ƿ���ʾ����
+			   search: false,  
+			   //Enable the strict search.    
+			   strictSearch: true,
+			   //Indicate which field is an identity field.
+			   idField : "id",
+			   columns: col,
+			   pagination:true,paginationShowPageGo: true
+			}; 
+		
+	//���
+	function initTable(){
+		$('#pageTable').bootstrapTable(opt);
+		$('#pageTable').bootstrapTable('hideColumn', 'id');
+	}
+	function refreshTable(){
+		$("#pageTable").bootstrapTable('refresh', opt);
+		$('#pageTable').bootstrapTable('hideColumn', 'id');
+	}
+	
+	//����ɾ��
+	function delSel(){
+		var data = [];
+		$("#pageTable input[type='checkbox'][name!='btSelectAll']:checked").each(function(){
+			data.push($(this).val());
+		});
+		if(data.length==0){
+			pointLion.alertMsg("��ѡ��Ҫɾ��������!","danger",null,null);
+			return;
+		}
+		del(data.join(","));//ִ��ɾ��
+	}
+	//ɾ��
+	function del(ids){
+		pointLion.confimMsg("���Ƿ�Ҫɾ����ѡ��Ϣ ?<br/> ���ȷ�Ͻ���ɾ�� , ���ȡ��ȡ���ò���",null,function(){
+			//ִ��ɾ��
+			var data = common_ajax.ajaxFunc("/admin/xdshift/delete",{"ids":ids}, "json", null);
+			//ɾ�����
+			if(data.success){
+				pointLion.alertMsg(data.message,"success",null,function(){
+					location.href = ctx+'/admin/xdshift/getListPage';//��ת���б�ҳ
+				});
+			}else{
+				pointLion.alertMsg(data.message,"success",null,null);
+			}
+		});
+	};
+	//�ύ����������
+	function startProcess(id){
+			pointLion.confimMsg("����Ҫ�ύ�õ��ݣ�������������<br/><span style='color:green;'>�����޷������޸ĺ�ɾ��������</span> <br/>���ȷ�Ͻ����ύ , ���ȡ��ȡ���ò���",null,function(){
+				var data = common_ajax.ajaxFunc("/admin/xdshift/startProcess",{"id":id}, "json", null);
+				if(data.success){
+					pointLion.alertMsg(data.message,"success",null,function(){
+						location.href = ctx+'/admin/xdshift/getListPage';//��ת���б�ҳ
+					});
+				}else{
+					pointLion.alertMsg(data.message,"danger",null,null);
+				}
+			});
+	}
+	//����
+	function callBack(id){
+		pointLion.confimMsg("����Ҫ���ظõ������̣�<br/><span style='color:red;'>�ò�����ȡ�ص��ݣ��������ԶԵ��ݽ����޸ģ����ɽ����������ͽ�������</span> <br/>���ȷ�Ͻ��г��ص��� , ���ȡ��ȡ���ò���",null,function(){
+			//ִ��ɾ��
+			var data = common_ajax.ajaxFunc("/admin/xdshift/callBack",{"id":id}, "json", null);
+			//ɾ�����
+			if(data.success){
+				pointLion.alertMsg(data.message,"success",null,function(){
+					location.href = ctx+'/admin/xdshift/getListPage';//��ת���б�ҳ
+				});
+			}else{
+				pointLion.alertMsg(data.message,"danger",null,null);
+			}
+		});
+	}
+
+	//��ѯ
+	function searchTable(){
+		var startTime = $("#searchStartTime").val();
+		var endTime = $("#searchEndTime").val();
+		var applyUser = $("#applyUser").val();
+		var param = {
+			query: {
+				"startTime":startTime,
+				"endTime":endTime,
+				"applyUser":applyUser
+			}
+		}
+		// ˢ�±��
+		$('#pageTable').bootstrapTable('refresh',param);
+	}
+
+	$(document).ready(function(){
+		$('.form_datetime').datepicker({format: 'yyyy-mm-dd',weekStart: 1,todayBtn:  1,autoclose: 1,language:  'zh-CN',todayHighlight: 1,forceParse: 0,clearBtn: true }).on('changeDate',null);
+		initTable();//��ʼ��
+	});
+</script>

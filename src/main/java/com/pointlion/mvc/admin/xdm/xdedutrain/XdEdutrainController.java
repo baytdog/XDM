@@ -1,5 +1,8 @@
 package com.pointlion.mvc.admin.xdm.xdedutrain;
 
+import java.io.File;
+import java.io.UnsupportedEncodingException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,13 +38,16 @@ public class XdEdutrainController extends BaseController {
 	/***
      * list page data
      **/
-    public void listData(){
+    public void listData() throws UnsupportedEncodingException {
     	String curr = getPara("pageNumber");
     	String pageSize = getPara("pageSize");
-		String endTime = getPara("endTime","");
-		String startTime = getPara("startTime","");
-		String applyUser = getPara("applyUser","");
-    	Page<Record> page = service.getPage(Integer.valueOf(curr),Integer.valueOf(pageSize),startTime,endTime,applyUser);
+		String name = java.net.URLDecoder.decode(getPara("name",""),"UTF-8");
+		String trainOrgname = java.net.URLDecoder.decode(getPara("trainOrgname",""),"UTF-8");
+		String major = java.net.URLDecoder.decode(getPara("major",""),"UTF-8");
+		String edubg = java.net.URLDecoder.decode(getPara("edubg",""),"UTF-8");
+		String enrolldate =  getPara("enrolldate","");
+		String graduatdate =  getPara("graduatdate","");
+    	Page<Record> page = service.getPage(Integer.valueOf(curr),Integer.valueOf(pageSize),name,trainOrgname,major,edubg,enrolldate,graduatdate);
     	renderPage(page.getList(),"",page.getTotalRow());
     }
     /***
@@ -104,5 +110,20 @@ public class XdEdutrainController extends BaseController {
 		String employeeId = getPara("employeeId");
 		List<XdEdutrain> list = service.getEduTrainList(employeeId);
 		renderJson(list);
+	}
+
+
+	public void exportExcel() throws UnsupportedEncodingException {
+
+
+		String name = java.net.URLDecoder.decode(getPara("name",""),"UTF-8");
+		String serviceUnit = java.net.URLDecoder.decode(getPara("serviceUnit",""),"UTF-8");
+		String job = java.net.URLDecoder.decode(getPara("job",""),"UTF-8");
+		String addr = java.net.URLDecoder.decode(getPara("addr",""),"UTF-8");
+		String entryDate =  getPara("entryDate","");
+		String departDate =  getPara("departDate","");
+		String path = this.getSession().getServletContext().getRealPath("")+"/upload/export/"+ DateUtil.format(new Date(),21)+".xlsx";
+		File file = service.exportExcel(path,name,serviceUnit,job,addr,entryDate,departDate);
+		renderFile(file);
 	}
 }

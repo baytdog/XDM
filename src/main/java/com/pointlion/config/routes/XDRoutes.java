@@ -4,6 +4,7 @@ import com.jfinal.config.Routes;
 import com.pointlion.mvc.admin.xdm.xdedutrain.XdEdutrainController;
 import com.pointlion.mvc.admin.xdm.xdemployee.XdEmployeeController;
 import com.pointlion.mvc.admin.xdm.xdschoolinfo.XdSchoolinfoController;
+import com.pointlion.mvc.admin.xdm.xdshift.XdShiftController;
 import com.pointlion.mvc.admin.xdm.xdsteps.XdStepsController;
 import com.pointlion.mvc.admin.xdm.xdworkexper.XdWorkExperController;
 
@@ -23,6 +24,7 @@ public class XDRoutes extends Routes {
         add("/admin/xd/xdschoolinfo", XdSchoolinfoController.class,"/xdschoolinfo");
         add("/admin/xd/xdworkexper", XdWorkExperController.class,"/xdworkexper");
         add("/admin/xd/steps", XdStepsController.class,"/steps");
+        add("/admin/xd/shift", XdShiftController.class,"/shift");
 
     }
 }

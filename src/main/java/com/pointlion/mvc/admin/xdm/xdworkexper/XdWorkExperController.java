@@ -30,13 +30,17 @@ public class XdWorkExperController extends BaseController {
 	/***
      * list page data
      **/
-    public void listData(){
+    public void listData() throws UnsupportedEncodingException {
         String curr = getPara("pageNumber");
         String pageSize = getPara("pageSize");
-        String endTime = getPara("endTime","");
-        String startTime = getPara("startTime","");
-        String applyUser = getPara("applyUser","");
-        Page<Record> page = service.getPage(Integer.valueOf(curr),Integer.valueOf(pageSize),startTime,endTime,applyUser);
+
+		String name = java.net.URLDecoder.decode(getPara("name",""),"UTF-8");
+		String serviceUnit = java.net.URLDecoder.decode(getPara("serviceUnit",""),"UTF-8");
+		String job = java.net.URLDecoder.decode(getPara("job",""),"UTF-8");
+		String addr = java.net.URLDecoder.decode(getPara("addr",""),"UTF-8");
+		String entryDate =  getPara("entryDate","");
+		String departDate =  getPara("departDate","");
+        Page<Record> page = service.getPage(Integer.valueOf(curr),Integer.valueOf(pageSize),name,serviceUnit,job,addr,entryDate,departDate);
         renderPage(page.getList(),"",page.getTotalRow());
     }
     /***
@@ -94,12 +98,13 @@ public class XdWorkExperController extends BaseController {
 
 
 		String name = java.net.URLDecoder.decode(getPara("name",""),"UTF-8");
-		String empnum = java.net.URLDecoder.decode(getPara("empnum",""),"UTF-8");
-		String emprelation = getPara("emprelation","");
-		String unitname=getPara("unitname","");
-		String costitem=getPara("costitem","");
+		String serviceUnit = java.net.URLDecoder.decode(getPara("serviceUnit",""),"UTF-8");
+		String job = java.net.URLDecoder.decode(getPara("job",""),"UTF-8");
+		String addr = java.net.URLDecoder.decode(getPara("addr",""),"UTF-8");
+		String entryDate =  getPara("entryDate","");
+		String departDate =  getPara("departDate","");
 		String path = this.getSession().getServletContext().getRealPath("")+"/upload/export/"+ DateUtil.format(new Date(),21)+".xlsx";
-		File file = service.exportExcel(path,name,empnum,emprelation,unitname,costitem);
+		File file = service.exportExcel(path,name,serviceUnit,job,addr,entryDate,departDate);
 		renderFile(file);
 	}
 
