@@ -54,7 +54,7 @@
 									<a id="export" class="btn btn-primary data-toolbar" onclick="exportExcel()" target="_blank"><i class="demo-pli-download-from-cloud"></i> 导出</a>
 									<!--<a id="import" class="btn btn-primary data-toolbar" onclick="importExcel()" target="_blank"><i class="demo-pli-download-from-cloud"></i>导入</a>-->
 									<a id="filePicker"  href="javascript:void(0);" ><i class="demo-pli-add"></i> 导入</a>
-									<a id="print" class="btn btn-primary data-toolbar"  onclick="print()" ><i class="demo-pli-print"></i> 打印测试</a>
+									<a id="print" class="btn btn-primary data-toolbar"  onclick="print()" ><i class="demo-pli-print"></i> 打印</a>
 									<table id="pageTable" class="demo-add-niftycheck" data-toolbar="#del,#add,#export,#filePicker,#print"
 										   data-search="true"
 										   data-show-refresh="true"
@@ -76,8 +76,24 @@
 		   {field: 'name', title: '姓名', align: 'center'},
 		   {field: 'empnum', title: '员工编号', align: 'center'},
 		   {field: 'emprelation', title: '员工关系', align: 'center'},
-		   {field: 'gender', title: '性别', align: 'center'},
-		   {field: 'married', title: '婚姻状况', align: 'center'},
+		   {field: 'gender', title: '性别', align: 'center', formatter:function(value,row,index){
+		   				if(value=='1'){
+		   					return "男";
+						}else{
+		   					return "女";
+				   }
+
+
+			   }},
+		   {field: 'married', title: '婚姻状况', align: 'center', formatter:function(value,row,index){
+				   if(value=='1'){
+					   return "未婚";
+				   }else if(value=='2'){
+					   return "已婚未育";
+				   }else if(value=='3'){
+					   return "已婚已育";
+				   }
+			   }},
 
 	   
 	   {field: 'control', title: '操作', align: 'left', width:'200',

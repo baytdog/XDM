@@ -1,5 +1,6 @@
 package com.pointlion.mvc.admin.xdm.xdemployee;
 
+import cn.hutool.core.lang.Dict;
 import com.jfinal.kit.StrKit;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Page;
@@ -136,6 +137,29 @@ public class XdEmployeeController extends BaseController {
 				setAttr("oper","0");
 			}
 		}
+
+		List<XdDict> ismarry = XdDict.dao.find("select * from xd_dict where type ='ismarry'");
+		setAttr("ismarry",ismarry);
+		List<XdDict> nations = XdDict.dao.find("select * from xd_dict where type ='nation' order by sortnum");
+		setAttr("nations",nations);
+		List<XdDict> polities = XdDict.dao.find("select * from xd_dict where type ='polity' order by sortnum");
+		setAttr("polities",polities);
+		List<XdDict> edus = XdDict.dao.find("select * from xd_dict where type ='edu' order by sortnum");
+		setAttr("edus",edus);
+		List<XdDict> officestatus = XdDict.dao.find("select * from xd_dict where type ='officestatus' order by sortnum");
+		setAttr("officestatus",officestatus);
+
+		List<SysOrg> sysOrgs = SysOrg.dao.find("select * from sys_org where id<>'root' order by sort");
+		setAttr("sysOrgs",sysOrgs);
+		List<XdDict> units = XdDict.dao.find("select * from xd_dict where type ='unit' order by sortnum");
+		setAttr("units",units);
+		List<XdDict> projects = XdDict.dao.find("select * from xd_dict where type ='projects' order by sortnum");
+		setAttr("projects",projects);
+		List<XdDict> position = XdDict.dao.find("select * from xd_dict where type ='position' order by sortnum");
+		setAttr("position",position);
+		List<XdDict> hardstuff = XdDict.dao.find("select * from xd_dict where type ='hardstuff' order by sortnum");
+		setAttr("hardstuff",hardstuff);
+
 		setAttr("o", o);
     	setAttr("formModelName",StringUtil.toLowerCaseFirstOne(XdEmployee.class.getSimpleName()));
 		renderIframe("edit.html");
@@ -300,7 +324,27 @@ public class XdEmployeeController extends BaseController {
 			step.update();
 		}
 
+		List<XdDict> ismarry = XdDict.dao.find("select * from xd_dict where type ='ismarry'");
+		setAttr("ismarry",ismarry);
+		List<XdDict> nations = XdDict.dao.find("select * from xd_dict where type ='nation' order by sortnum");
+		setAttr("nations",nations);
+		List<XdDict> polities = XdDict.dao.find("select * from xd_dict where type ='polity' order by sortnum");
+		setAttr("polities",polities);
+		List<XdDict> edus = XdDict.dao.find("select * from xd_dict where type ='edu' order by sortnum");
+		setAttr("edus",edus);
+		List<XdDict> officestatus = XdDict.dao.find("select * from xd_dict where type ='officestatus' order by sortnum");
+		setAttr("officestatus",officestatus);
 
+		List<SysOrg> sysOrgs = SysOrg.dao.find("select * from sys_org where id<>'root' order by sort");
+		setAttr("sysOrgs",sysOrgs);
+		List<XdDict> units = XdDict.dao.find("select * from xd_dict where type ='unit' order by sortnum");
+		setAttr("units",units);
+		List<XdDict> projects = XdDict.dao.find("select * from xd_dict where type ='projects' order by sortnum");
+		setAttr("projects",projects);
+		List<XdDict> position = XdDict.dao.find("select * from xd_dict where type ='position' order by sortnum");
+		setAttr("position",position);
+		List<XdDict> hardstuff = XdDict.dao.find("select * from xd_dict where type ='hardstuff' order by sortnum");
+		setAttr("hardstuff",hardstuff);
 		setAttr("o",xdEmployee);
 		setAttr("listEdu",listEdu);
 		setAttr("listWExper",listWExper);

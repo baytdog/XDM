@@ -48,7 +48,7 @@ public class XdOperUtil {
                                 .append("\"fieldDesc\":\""+method.getAnnotation(ChangeFields.class).desc()+"\",")
                                     .append("\"oldValue\":\""+oldValue+"\",")
                                         .append("\"newValue\":\""+newValue)
-                                            .append("\"-");
+                                            .append("\"--");
                     }
                 } catch (Exception e) {
                     e.printStackTrace();

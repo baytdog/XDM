@@ -122,8 +122,13 @@
 	</script>
 	<script>
 
+		function resetVali(){
+			if(!$("#editForm").data('bootstrapValidator').isValid()) {
+				$("#editForm").data('bootstrapValidator').resetForm();
+				$(".btn").removeAttr("disabled");
+			}
+		}
 		$(function(){
-			//alert("123")
 			var employeeId=$("#employeeId").val();
 			console.log(employeeId);
 			console.log(grid.getData())
@@ -138,5 +143,134 @@
 			// }
 		});
 
-	</script>
 
+
+		$('.form_datetime').datepicker({format: 'yyyy-mm-dd',weekStart: 1,todayBtn:  1,autoclose: 1,language:  'zh-CN',todayHighlight: 1,forceParse: 0,showMeridian: 1}).on('changeDate',function(){
+			resetVali();
+		});
+
+
+		$(".selectpicker").selectpicker({});
+		$(".bootstrap-select").attr("style","width:100%;");
+
+	</script>
+<script>
+	$(function () {
+		//性别
+		let gender=$("#gender").val();
+		if(gender){
+			$('#genderSelect').selectpicker('val',gender.split(",")).trigger("change");
+		}
+
+		$('#genderSelect').on('changed.bs.select', function (e) {
+			$('#gender').val($('#genderSelect').val())
+		});
+		//婚姻
+		let married=$("#married").val();
+		if(married){
+			$('#marriedSelect').selectpicker('val',married.split(",")).trigger("change");
+		}
+
+		$('#marriedSelect').on('changed.bs.select', function (e) {
+			$('#married').val($('#marriedSelect').val())
+		});
+		//民族
+		let national=$("#national").val();
+		if(national){
+			$('#nationalSelect').selectpicker('val',national.split(",")).trigger("change");
+		}
+
+		$('#nationalSelect').on('changed.bs.select', function (e) {
+			$('#national').val($('#nationalSelect').val())
+		});
+		//政治面貌
+		let politicsstatus=$("#politicsstatus").val();
+		if(national){
+			$('#politSelect').selectpicker('val',politicsstatus.split(",")).trigger("change");
+		}
+		$('#politSelect').on('changed.bs.select', function (e) {
+			$('#politicsstatus').val($('#politSelect').val())
+		});
+		//最高学历
+		let topedu=$("#topedu").val();
+		if(topedu){
+			$('#topeduSelect').selectpicker('val',topedu.split(",")).trigger("change");
+		}
+		$('#topeduSelect').on('changed.bs.select', function (e) {
+			$('#topedu').val($('#topeduSelect').val())
+		});
+		//学历(非全日制)
+		let edubg1=$("#edubg1").val();
+		if(edubg1){
+			$('#edubg1Select').selectpicker('val',edubg1.split(",")).trigger("change");
+		}
+		$('#edubg1Select').on('changed.bs.select', function (e) {
+			$('#edubg1').val($('#edubg1Select').val())
+		});
+		//学历(全日制)
+		let edubg2=$("#edubg2").val();
+		if(edubg2){
+			$('#edubg2Select').selectpicker('val',edubg2.split(",")).trigger("change");
+		}
+		$('#edubg2Select').on('changed.bs.select', function (e) {
+			$('#edubg2').val($('#edubg2Select').val())
+		});
+		//退伍军人
+		let issoldier=$("#issoldier").val();
+		if(issoldier){
+			$('#issoldierSelect').selectpicker('val',issoldier.split(",")).trigger("change");
+		}
+		$('#issoldierSelect').on('changed.bs.select', function (e) {
+			$('#issoldier').val($('#issoldierSelect').val())
+		});
+		//就职状况
+		let inductionstatus=$("#inductionstatus").val();
+		if(inductionstatus){
+			$('#inductionstatusSelect').selectpicker('val',inductionstatus.split(",")).trigger("change");
+		}
+		$('#inductionstatusSelect').on('changed.bs.select', function (e) {
+			$('#inductionstatus').val($('#inductionstatusSelect').val())
+		});
+		//所属部门
+		let department=$("#department").val();
+		if(department){
+			$('#departmentSelect').selectpicker('val',department.split(",")).trigger("change");
+		}
+		$('#departmentSelect').on('changed.bs.select', function (e) {
+			$('#department').val($('#departmentSelect').val())
+		});
+		//单元
+		let unitname=$("#unitname").val();
+		if(unitname){
+			$('#unitnameSelect').selectpicker('val',unitname.split(",")).trigger("change");
+		}
+		$('#unitnameSelect').on('changed.bs.select', function (e) {
+			$('#unitname').val($('#unitnameSelect').val())
+		});
+		//成本项目
+		let costitem=$("#costitem").val();
+		if(costitem){
+			$('#costitemSelect').selectpicker('val',costitem.split(",")).trigger("change");
+		}
+		$('#costitemSelect').on('changed.bs.select', function (e) {
+			$('#unitname').val($('#costitemSelect').val())
+		});
+		//职   位
+		let position=$("#position").val();
+		if(position){
+			$('#positionSelect').selectpicker('val',position.split(",")).trigger("change");
+		}
+		$('#positionSelect').on('changed.bs.select', function (e) {
+			$('#position').val($('#positionSelect').val())
+		});
+		//困难员工
+		let hardstaff=$("#hardstaff").val();
+		if(hardstaff){
+			$('#hardstaffSelect').selectpicker('val',hardstaff.split(",")).trigger("change");
+		}
+		$('#hardstaffSelect').on('changed.bs.select', function (e) {
+			$('#position').val($('#hardstaffSelect').val())
+		});
+	})
+
+</script>

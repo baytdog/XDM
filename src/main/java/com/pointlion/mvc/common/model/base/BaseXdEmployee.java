@@ -202,12 +202,12 @@ public abstract class BaseXdEmployee<M extends BaseXdEmployee<M>> extends Model<
 		return getInt("inductionstatus");
 	}
 
-	public void setDepartment(Integer department) {
+	public void setDepartment(String department) {
 		set("department", department);
 	}
 	@ChangeFields(value = "department",desc = "所属部门")
-	public Integer getDepartment() {
-		return getInt("department");
+	public String getDepartment() {
+		return getStr("department");
 	}
 
 	public void setUnitname(Integer unitname) {
