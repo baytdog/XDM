@@ -1,7 +1,8 @@
 @charset "utf-8";
 /* CSS Document */
 body{ padding:0; margin:0;}
-.top_bg{ height:154px; background:url(../img/top.jpg) left top no-repeat;}
+/*.top_bg{ height:154px; background:url(../img/top.jpg) left top no-repeat;}*/
+.top_bg{ height:154px; width: 100%;background: #0965AE;}
 .top_title{ float:right;padding:45px 10px 0 0; width:80%;font-size:16px; font-family:Microsoft Yahei;}
 .top_title a{ color:#ffffff; text-decoration:none;}
 

@@ -186,21 +186,21 @@
 <div class="con_left f_l">
 <!-- 7个图标开始 -->
 	<!-- <div class="con_bg1 f_l" onclick="receiveDoc()"><p>收文<span>#(receiveSize)</span>份 可办<span >#(receiveCanDo)</span>份</p></div> -->
-	<div class="con_bg1 f_l"  ><p><a href="javascript:void(0);" onclick="receiveDoc()">收文<span >#(receiveSize)</span>份</a>　<a href="javascript:void(0);" onclick="receiveDocWaido()">待办结<span >#(receiveCanDo)</span>份</a></p></div>
+	<div class="con_bg1 f_l"  ><p><a href="javascript:void(0);" onclick="receiveDoc()">排班<span >0</span>份</a>　</p></div>
 	<div class="con_bg2 f_l" onclick="employee()"><p>员工<span>#(empSize)</span>份</p></div>
-	<div class="con_bg3 f_l" onclick="hotline()"><p>热线<span>#(hotSize)</span>个</p></div>
-	<div class="con_bg4 f_l" onclick="letter()"><p>信访<span>#(letterSize)</span>个</p></div>
+	<div class="con_bg3 f_l" onclick="hotline()"><p>加班申请<span>#(hotSize)</span>份</p></div>
+	<div class="con_bg4 f_l" onclick="letter()"><p>加班结算<span>#(letterSize)</span>份</p></div>
     <div class="f_clear"></div>
     
     
 	<div class="con_bg5 f_l" onclick="history()"><p>历史<!-- <span>1</span>个 --></p></div>    
-	<div class="con_bg6 f_l" onclick="plan()"><p>计划<!-- <span>1</span>份 --></p></div>
-	<div class="con_bg7 f_l" onclick="email()"><p>收件<span>#(emailSize)</span>封   未读<span>#(noReademail)</span>封</p></div>
+	<div class="con_bg6 f_l" onclick="plan()"><p>rcp补贴申请<!-- <span>1</span>份 --></p></div>
+	<div class="con_bg7 f_l" onclick="email()"><p>请假<span>#(emailSize)</span>份</p></div>
     <div class="f_clear"></div>
 <!-- 7个图标结束 -->
 
 <!-- 待办/已办开始 -->
-	<div> 
+	<!--<div>
  <div class="tabs">
   <div class="tabs_item">
    <div class="list_item">待办</div>
@@ -226,15 +226,16 @@
   </div>
  </div>
     </div>
-
+-->
 
 <!-- 通知开始 -->
-  <div class="con_mk_bg1">最新发布<span class="f_r"><a href="#(ctx)/admin/oa/notices/getListFromHomePage"  >更多<t>>></t></a></span></div>
+<!--  <div class="con_mk_bg1">最新发布<span class="f_r"><a href="#(ctx)/admin/oa/notices/getListFromHomePage"  >更多<t>>></t></a></span></div>
     <ul class="artical_title1">
     	#@noticeList(notices)
     </ul>
+
+</div>-->
 <!-- 通知结束 -->
-</div>
 
 <!-- 左侧结束 -->
 
@@ -252,24 +253,23 @@
 		
 		</div>
 <!-- 信息简报开始 -->
-	<div class="con_mk_bg2">信息简报<span class="f_r"><a href="#(ctx)/admin/oa/showinfo/homeMorListPage?menuid=9b576e6581204cda90ae04722d8640c9" >更多<t>>></t></a></span></div>
+	<!--<div class="con_mk_bg2">信息简报<span class="f_r"><a href="#(ctx)/admin/oa/showinfo/homeMorListPage?menuid=9b576e6581204cda90ae04722d8640c9" >更多<t>>></t></a></span></div>
     <ul class="artical_title2">
     
      	#@makeXxjb(xxjb)
     </ul>
-<!-- 信息简报结束 -->
 
-
-<!-- 办事指南开始 -->
 	<div class="con_mk_bg2">办事指南<span class="f_r"><a href="#(ctx)/admin/oa/bumph/getBsznListFromHomtPage" >更多<t>>></t></a></span></div>
     <ul class="artical_title2">
     
           #@makeBszn(bsznList)
     </ul>
-<!-- 办事指南结束 -->
+
  
     
-</div>
+</div>-->
+
+	<!-- 办事指南结束 -->
 
 
 
