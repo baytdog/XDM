@@ -1,14 +1,17 @@
 package com.pointlion.mvc.common.utils.office.excel;
 
+import org.apache.poi.hssf.usermodel.HSSFDataFormat;
+import org.apache.poi.hssf.usermodel.HSSFDateUtil;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.FormulaEvaluator;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
-import org.apache.poi.hssf.usermodel.HSSFDataFormat;
-import org.apache.poi.hssf.usermodel.HSSFDateUtil;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellType;
-import org.apache.poi.ss.util.NumberToTextConverter;
 
 public class DbImportExcelUtils {
 	@SuppressWarnings("deprecation")
@@ -48,7 +51,7 @@ public class DbImportExcelUtils {
     }
 
     public static String formatgetCellStringValue(Cell cell) {
-
+        System.out.println(cell.getCellTypeEnum());
         if(cell.getCellTypeEnum()==CellType.NUMERIC){
             if(HSSFDateUtil.isCellDateFormatted(cell)){
                 SimpleDateFormat sdf = null;
@@ -62,6 +65,8 @@ public class DbImportExcelUtils {
                 return sdf.format(date);
             }
         }
+
+
 
         cell.setCellType(CellType.STRING);
 

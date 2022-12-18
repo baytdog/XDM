@@ -57,20 +57,28 @@ public abstract class BaseXdEmpCert<M extends BaseXdEmpCert<M>> extends Model<M>
 		return getStr("certTile");
 	}
 
-	public void setCertLevel(Integer certLevel) {
+	public void setCertLevel(String certLevel) {
 		set("certLevel", certLevel);
 	}
 	
-	public Integer getCertLevel() {
-		return getInt("certLevel");
+	public String getCertLevel() {
+		return getStr("certLevel");
 	}
 
-	public void setCertAuth(Integer certAuth) {
-		set("certAuth", certAuth);
+	public void setCertAuthValue(Integer certAuthValue) {
+		set("certAuthValue", certAuthValue);
 	}
 	
-	public Integer getCertAuth() {
-		return getInt("certAuth");
+	public Integer getCertAuthValue() {
+		return getInt("certAuthValue");
+	}
+
+	public void setCertAuthName(String certAuthName) {
+		set("certAuthName", certAuthName);
+	}
+	
+	public String getCertAuthName() {
+		return getStr("certAuthName");
 	}
 
 	public void setOpenDate(String openDate) {
@@ -81,12 +89,12 @@ public abstract class BaseXdEmpCert<M extends BaseXdEmpCert<M>> extends Model<M>
 		return getStr("openDate");
 	}
 
-	public void setValidity(Integer validity) {
+	public void setValidity(String validity) {
 		set("validity", validity);
 	}
 	
-	public Integer getValidity() {
-		return getInt("validity");
+	public String getValidity() {
+		return getStr("validity");
 	}
 
 	public void setCloseDate(String closeDate) {
@@ -151,6 +159,22 @@ public abstract class BaseXdEmpCert<M extends BaseXdEmpCert<M>> extends Model<M>
 	
 	public String getStatus() {
 		return getStr("status");
+	}
+
+	public void setCtime(String ctime) {
+		set("ctime", ctime);
+	}
+	
+	public String getCtime() {
+		return getStr("ctime");
+	}
+
+	public void setCuser(String cuser) {
+		set("cuser", cuser);
+	}
+	
+	public String getCuser() {
+		return getStr("cuser");
 	}
 
 	public void setBackup1(String backup1) {

@@ -1,19 +1,18 @@
 package com.pointlion.mvc.common.utils.office.excel;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import cn.hutool.poi.excel.ExcelWriter;
+import org.apache.http.impl.conn.Wire;
+import org.apache.poi.hssf.usermodel.*;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.util.CellAddress;
+import org.apache.poi.xssf.usermodel.XSSFClientAnchor;
+import org.apache.poi.xssf.usermodel.XSSFDrawing;
+import org.apache.poi.xssf.usermodel.XSSFSimpleShape;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
-
-import cn.hutool.poi.excel.ExcelWriter;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.Font;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class ExcelUtil {
 	@SuppressWarnings("resource")
@@ -103,4 +102,69 @@ public class ExcelUtil {
         writer.close();
         return new File(path);
     }
+
+    public static File empCertFile(String path,List<List<String>> rows){
+        //通过工具类创建writer
+        ExcelWriter writer = cn.hutool.poi.excel.ExcelUtil.getWriter(path);
+
+        writer.write(rows, true);
+
+        Sheet sheet = writer.getSheet();
+
+
+        XSSFDrawing drawing = (XSSFDrawing) sheet.createDrawingPatriarch();
+        XSSFClientAnchor anchor = new XSSFClientAnchor(0, 0, 0, 0, 2, 0, 3, 1);
+        XSSFSimpleShape shape = drawing.createSimpleShape(anchor);
+        // 设置图形的类型为线
+        shape.setShapeType(ShapeTypes.LINE);
+        // 设置填充颜色
+        shape.setFillColor(0, 0, 0);
+        // 设置边框线型：solid=0、dot=1、dash=2、lgDash=3、dashDot=4、lgDashDot=5、lgDashDotDot=6、sysDash=7、sysDot=8、sysDashDot=9、sysDashDotDot=10
+        shape.setLineStyle(0);
+        // 设置边框线颜色
+        shape.setLineStyleColor(0, 0, 0);
+        // 设置边框线宽,单位Point
+        shape.setLineWidth(1);
+        // 对角线单元格内容
+        //writer.writeCellValue(0, 0, "地下      土壤");
+        int sumtotal=0,sumperson = 0,sumnc = 0,sumwc = 0,sumyb = 0,sumeb = 0,sumzn = 0;
+        for (int i = 2; i < rows.size(); i++) {
+            List<String> row = rows.get(i);
+            sumperson+=Integer.valueOf(row.get(2));
+                sumnc+=Integer.valueOf(row.get(3));
+                sumwc+=Integer.valueOf(row.get(4));
+                sumyb+=Integer.valueOf(row.get(5));
+                sumeb+=Integer.valueOf(row.get(6));
+                sumzn+=Integer.valueOf(row.get(7));
+        }
+
+        sumtotal=sumperson+sumnc+sumwc+sumyb+sumeb+sumzn;
+
+        writer.writeCellValue(1, 1, sumtotal);
+        writer.writeCellValue(2, 1, sumperson);
+        writer.writeCellValue(3, 1, sumnc);
+        writer.writeCellValue(4, 1, sumwc);
+        writer.writeCellValue(5, 1, sumyb);
+        writer.writeCellValue(6, 1, sumeb);
+        writer.writeCellValue(7, 1, sumzn);
+
+
+        //关闭writer，释放内存
+        writer.close();
+        return new File(path);
+    }
+
+    public static File empCertByTitleFile(String path,List<List<String>> rows){
+        //通过工具类创建writer
+        ExcelWriter writer = cn.hutool.poi.excel.ExcelUtil.getWriter(path);
+
+        writer.write(rows, true);
+
+        writer.merge(0,0,0,12,rows.get(0).get(0),false);
+
+        //关闭writer，释放内存
+        writer.close();
+        return new File(path);
+    }
+
 }

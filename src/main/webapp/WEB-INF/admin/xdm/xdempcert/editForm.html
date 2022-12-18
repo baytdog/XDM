@@ -15,9 +15,7 @@
 							<input type="hidden" id="department" name="#(formModelName).department" value="#(o?o.department:'')">
 							<div class="col-md-9">
 								<select id="departmentSelect"   title="请选择"  class="selectpicker show-tick form-control" actionsBox="true"  disable  data-live-search="false">
-									<!--<option value=" ">  </option>
-									<option value="1">有</option>
-									<option value="0">无</option>-->
+
 									#for(depart:departs)
 									<option value="#(depart.id)">#(depart.name)</option>
 									#end
@@ -42,6 +40,7 @@
 						<div class="form-group">
 							<label class="col-md-2 control-label">证书名称</label>
 							<input type="hidden" id="certId" name="#(formModelName).certId" value="#(o?o.certId:'')">
+							<input type="hidden" id="certTile" name="#(formModelName).certTile" value="#(o?o.certTile:'')">
 							<div class="col-md-9">
 								<select id="certIdSelect"   title="请选择证书"  class="selectpicker show-tick form-control" actionsBox="true"  disable  data-live-search="true">
 									#for(cert:certs)
@@ -54,8 +53,10 @@
 						<div class="form-group">
 							<label class="col-md-2 control-label">证书等级</label>
 							<input type="hidden" id="certLevel" name="#(formModelName).certLevel" value="#(o?o.certLevel:'')">
+
 							<div class="col-md-9">
 								<select id="certLevelSelect"   title="请选择证书"  class="selectpicker show-tick form-control" actionsBox="true"  disable  data-live-search="false">
+									<option value=" ">  </option>
 									#for(certLevel:certLevels)
 									<option value="#(certLevel.value)">#(certLevel.name)</option>
 									#end
@@ -64,11 +65,12 @@
 						</div>
 						<div class="form-group">
 							<label class="col-md-2 control-label">发证机关</label>
-							<input type="hidden" id="certAuth" name="#(formModelName).certAuth" value="#(o?o.certAuth:'')">
+							<input type="hidden" id="certAuthName" name="#(formModelName).certAuthName" value="#(o?o.certAuthName:'')">
+							<input type="hidden" id="certAuthValue" name="#(formModelName).certAuthValue" value="#(o?o.certAuthValue:'')">
 							<div class="col-md-9">
 								<select id="certAuthSelect"   title="请选择证书"  class="selectpicker show-tick form-control" actionsBox="true"  disable  data-live-search="true">
-									#for(cert:certs)
-									<option value="#(cert.id)">#(cert.certificateTitle)</option>
+									#for(licenseAuth:licenseAuths)
+									<option value="#(licenseAuth.value)">#(licenseAuth.name)</option>
 									#end
 								</select>
 							</div>
@@ -123,7 +125,7 @@
 							</div>
 						</div>
 						<div class="form-group">
-							<label class="col-md-2 control-label">原件是否在公司</label>
+							<label class="col-md-2 control-label">证件说明</label>
 							<input type="hidden" id="certstatus" name="#(formModelName).certstatus" value="#(o?o.certstatus:'')">
 							<div class="col-md-9">
 								<select id="certstatusSelect"   title="请选择"  class="selectpicker show-tick form-control" actionsBox="true"  disable  data-live-search="false">
@@ -133,6 +135,8 @@
 								</select>
 							</div>
 						</div>
+						<br/>
+						<br/>
 						<br/>
 						<br/>
 					</div>

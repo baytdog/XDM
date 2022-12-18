@@ -66,34 +66,55 @@
 		$(".selectpicker").selectpicker({});
 		$(".bootstrap-select").attr("style","width:100%;");
 
-		let haveCertificate=$("#haveCertificate").val();
-		if(haveCertificate){
-			$('#haveCertificateSelect').selectpicker('val',haveCertificate.split(",")).trigger("change");
+		// 下拉框处理 start
+
+		let department=$("#department").val();
+		if(department){
+			$('#departmentSelect').selectpicker('val',department.split(",")).trigger("change");
 		}
 
-		$('#haveCertificateSelect').on('changed.bs.select', function (e) {
-			$('#haveCertificate').val($('#haveCertificateSelect').val())
+		$('#departmentSelect').on('changed.bs.select', function (e) {
+			$('#department').val($('#departmentSelect').val())
 		});
 
-		let haveEndDate=$("#haveEndDate").val();
-		if(haveEndDate){
-			$('#haveEndDateSelect').selectpicker('val',haveEndDate.split(",")).trigger("change");
+		let certId=$("#certId").val();
+		if(certId){
+			$('#certIdSelect').selectpicker('val',certId.split(",")).trigger("change");
 		}
 
-		$('#haveEndDateSelect').on('changed.bs.select', function (e) {
-			$('#haveEndDate').val($('#haveEndDateSelect').val())
+		$('#certIdSelect').on('changed.bs.select', function (e) {
+			console.log($('#certIdSelect'))
+			$('#certId').val($('#certIdSelect').val())
+			$('#certTile').val($('#certIdSelect option:selected').text())
+
 		});
 
-		let continuEdu=$("#continuEdu").val();
-		if(continuEdu){
-			$('#continuEduSelect').selectpicker('val',continuEdu.split(",")).trigger("change");
+		let certAuthValue=$("#certAuthValue").val();
+		if(certAuthValue){
+			$('#certAuthSelect').selectpicker('val',certAuthValue.split(",")).trigger("change");
 		}
 
-		$('#continuEduSelect').on('changed.bs.select', function (e) {
-			$('#continuEdu').val($('#continuEduSelect').val())
+		$('#certAuthSelect').on('changed.bs.select', function (e) {
+			$('#certAuthValue').val($('#certAuthSelect').val())
+			$('#certAuthName').val($('#certAuthSelect option:selected').text())
 		});
+
+
+		let certLevel=$("#certLevel").val();
+		if(certLevel){
+			$('#certLevelSelect').selectpicker('val',certLevel.split(",")).trigger("change");
+		}
+
+		$('#certLevelSelect').on('changed.bs.select', function (e) {
+			$('#certLevel').val($('#certLevelSelect').val())
+		});
+
+
+
+
+
 		let certstatus=$("#certstatus").val();
-		if(continuEdu){
+		if(certstatus){
 			$('#certstatusSelect').selectpicker('val',certstatus.split(",")).trigger("change");
 		}
 

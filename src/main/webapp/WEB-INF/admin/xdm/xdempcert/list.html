@@ -11,8 +11,35 @@
 			<div class="panel panel-search">
 				<div class="panel-body">
 					<div class="form-inline">
+
 						<div class="form-group">
-							<input id="title" placeholder="证书名称" class="form-control">
+							<select class="selectpicker form-control"  id="dept"  >
+								<option value="">------请选择部门------</option>
+								<option value="1">人力资源部</option>
+								<option value="2">外场单元部</option>
+								<option value="3">设施一部</option>
+								<option value="4">内场单元部</option>
+								<option value="5">工程/设施二部</option>
+								<option value="887163179b6c4eaabd06c44e47e41f92">职能部门</option>
+							</select>
+						</div>
+						<div class="form-group">
+							<input id="name" placeholder="姓名" class="form-control">
+						</div>
+						<div class="form-group">
+							<input id="certTitle" placeholder="证书名称" class="form-control">
+						</div>
+						<div class="form-group">
+						<input id="certAuth" placeholder="发证机关" class="form-control">
+					</div>
+
+						<div class="form-group">
+							<select class="selectpicker form-control"  id="sny"  >
+								<option value="">------请选择到期日期------</option>
+								#for(sny:snyList)
+								<option value="#(sny.sny)">#(sny.sny)</option>
+								#end
+							</select>
 						</div>
 						<!-- <div class="form-group">
                              <div class="input-group date form_datetime">
@@ -36,8 +63,11 @@
 				<div class="panel-body">
 					<a id="add" class="btn btn-primary data-toolbar" href="#(ctx)/admin/xd/xdempcert/getEditPage?view=edit"><i class="demo-pli-add"></i> 添加</a>
 					<a id="del" class="btn btn-danger data-toolbar" onclick="delSel()" href="javascript:void(0);"><i class="demo-pli-cross"></i> 批量删除</a>
+					<a id="export" class="btn btn-primary data-toolbar" onclick="exportExcel()" target="_blank"><i class="demo-pli-download-from-cloud"></i>导出证书部门汇总</a>
+					<a id="export2" class="btn btn-primary data-toolbar" onclick="exportExcel2()" target="_blank"><i class="demo-pli-download-from-cloud"></i>导出具体证件类型</a>
 					<a id="filePicker"  href="javascript:void(0);" ><i class="demo-pli-add"></i> 导入</a>
-					<table id="pageTable" class="demo-add-niftycheck" data-toolbar="#del,#add,#filePicker"
+
+					<table id="pageTable" class="demo-add-niftycheck" data-toolbar="#del,#add,#filePicker,#export,#export2"
 						   data-search="true"
 						   data-show-refresh="true"
 						   data-show-toggle="true"
@@ -55,41 +85,66 @@
 
 	var col = [{field: 'checked', checkbox : true, align: 'center'},
 
-		{field: 'certificateTitle', title: '证书名称', align: 'center'},
-		{field: 'haveCertificate', title: '有无职称/职业职格证书', align: 'center',
+		{field: 'department', title: '部门', align: 'center',
 			formatter:function(value,row,index){
 				if(value=='1'){
-					return "有";
-				}else if(value=='0'){
-					return "无";
+					return "人力资源部";
+				}else if(value=='2'){
+					return "外场单元部";
+				}else if(value=='3'){
+					return "设施一部";
+				}else if(value=='4'){
+					return "内场单元部";
+				}else if(value=='5'){
+					return "工程/设施二部";
+				}else if(value=='887163179b6c4eaabd06c44e47e41f92'){
+					return "职能部门";
 				}else{
 					return "";
 				}
 			}
 		},
-		{field: 'haveEndDate', title: '有无到期日', align: 'center',
+		{field: 'ename', title: '姓名', align: 'center'},
+		{field: 'certTile', title: '证书名称', align: 'center'},
+		{field: 'certLevel', title: '证书等级', align: 'center',
 			formatter:function(value,row,index){
 				if(value=='1'){
-					return "有";
-				}else if(value=='0'){
-					return "无";
+					return "A1";
+				}else if(value=='2'){
+					return "A2";
+				}else if(value=='3'){
+					return "B1";
+				}else if(value=='4'){
+					return "B2";
+				}else if(value=='5'){
+					return "D";
+				}else if(value=='6'){
+					return "E";
+				}else if(value=='6'){
+					return "F";
 				}else{
 					return "";
 				}
 			}
 		},
-		{field: 'continuEdu', title: '继续教育', align: 'center',
+		{field: 'certAuthName', title: '发证机关', align: 'center'},
+		{field: 'openDate', title: '发证日期', align: 'center'},
+		{field: 'validity', title: '有效期/年', align: 'center'},
+		{field: 'closeDate', title: '到期日', align: 'center'},
+		{field: 'idnum', title: '身份证号', align: 'center'},
+		{field: 'certnum', title: '证书编号', align: 'center'},
+		{field: 'remak', title: '备注', align: 'center'},
+		{field: 'certstatus', title: '证件说明', align: 'center',
 			formatter:function(value,row,index){
 				if(value=='1'){
-					return "是";
+					return "原件";
 				}else if(value=='0'){
-					return "否";
+					return "复印件";
 				}else{
 					return "";
 				}
 			}
 		},
-		{field: 'num', title: '编号', align: 'center'},
 
 
 		{field: 'control', title: '操作', align: 'left', width:'200',
@@ -187,10 +242,19 @@
 
 	//查询
 	function searchTable(){
-		var title =encodeURIComponent($("#title").val());
+		let dept = $("#dept").val();
+
+		let name =encodeURIComponent($("#name").val());
+		let certTitle =encodeURIComponent($("#certTitle").val());
+		let certAuth =encodeURIComponent($("#certAuth").val());
+		let sny = encodeURIComponent($("#sny").val());
 		var param = {
 			query: {
-				"title":title
+				"dept":dept,
+				"name":name,
+				"certTitle":certTitle,
+				"certAuth":certAuth,
+				"sny":sny
 			}
 		}
 		// 刷新表格
@@ -201,7 +265,7 @@
 		$('.form_datetime').datepicker({format: 'yyyy-mm-dd',weekStart: 1,todayBtn:  1,autoclose: 1,language:  'zh-CN',todayHighlight: 1,forceParse: 0,clearBtn: true }).on('changeDate',null);
 		initTable();//初始化
 
-		pointLion.initUploader("/admin/xd/xdshift/importExcel",function(data){
+		pointLion.initUploader("/admin/xd/xdempcert/importExcel",function(data){
 			if(data.success){
 				pointLion.alertMsg("导入成功！","success",null,null);
 				searchTable();
@@ -210,4 +274,22 @@
 			}
 		});
 	});
+
+
+	function exportExcel(){
+
+		var name = encodeURIComponent($("#name").val());
+		var trainOrgname = encodeURIComponent($("#trainOrgname").val());
+		var major = encodeURIComponent($("#major").val());
+		var edubg = encodeURIComponent($("#edubg").val());
+		var enrolldate = $("#enrolldate").val();
+		var graduatdate = $("#graduatdate").val();
+		location.href = "#(ctx)/admin/xd/xdempcert/exportExcel?name="+name+"&trainOrgname="+trainOrgname+"&major="+major+"&edubg="+edubg+"&enrolldate="+enrolldate+"&graduatdate="+graduatdate;
+	}
+	function exportExcel2(){
+
+		var certTitle = $("#certTitle").val();
+		location.href = "#(ctx)/admin/xd/xdempcert/exportExcel2?certTitle="+certTitle;
+	}
+
 </script>

@@ -7,15 +7,11 @@ import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.plugin.activerecord.Record;
 import com.jfinal.plugin.activerecord.tx.Tx;
 import com.pointlion.mvc.common.model.XdEdutrain;
-import com.pointlion.mvc.common.model.XdWorkExper;
 import com.pointlion.mvc.common.utils.office.excel.ExcelUtil;
 import com.pointlion.plugin.shiro.ShiroKit;
-import com.pointlion.mvc.common.model.SysRoleOrg;
-import com.pointlion.mvc.common.utils.DateUtil;
 
 import java.io.File;
 import java.util.*;
-import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 public class XdEdutrainService{
