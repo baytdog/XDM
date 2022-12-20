@@ -155,6 +155,7 @@ public class _MappingKit {
 		arp.addMapping("xd_dict_group","id",XdDictGroup.class);
 		arp.addMapping("xd_certificate","id",XdCertificate.class);
 		arp.addMapping("xd_emp_cert","id",XdEmpCert.class);
+		arp.addMapping("xd_contract_info","id",XdContractInfo.class);
 	}
 }
 

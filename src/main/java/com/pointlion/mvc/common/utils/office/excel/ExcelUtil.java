@@ -167,4 +167,37 @@ public class ExcelUtil {
         return new File(path);
     }
 
+
+    /**
+     * @Method conTractFile
+     * @param path:
+     * @param rows:
+     * @Date 2022/12/20 15:47
+     * @Exception
+     * @Description 合同导出
+     * @Author king
+     * @Version  1.0
+     * @Return java.io.File
+     */
+    public static File conTractFile(String path,List<List<String>> rows){
+        //通过工具类创建writer
+        ExcelWriter writer = cn.hutool.poi.excel.ExcelUtil.getWriter(path);
+
+        writer.write(rows, true);
+        for (int i = 0; i < 7; i++) {
+            writer.merge(0,1,i,i,rows.get(0).get(i),false);
+        }
+
+
+        List<String> secondRow = rows.get(1);
+        int secondColumnSize = (secondRow.size()-7) / 4;
+        for (int i = 0; i < secondColumnSize; i++) {
+            writer.merge(0,0,i*4+7,(i+1)*4+6,rows.get(0).get(i+7),false);
+        }
+
+        //关闭writer，释放内存
+        writer.close();
+        return new File(path);
+    }
+
 }

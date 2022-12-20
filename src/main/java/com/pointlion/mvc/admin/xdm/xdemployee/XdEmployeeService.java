@@ -20,6 +20,9 @@ import javax.jnlp.ServiceManagerStub;
 import java.io.File;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.stream.Stream;
 
 public class XdEmployeeService{
 	public static final XdEmployeeService me = new XdEmployeeService();
@@ -111,8 +114,8 @@ public class XdEmployeeService{
 
 				if(rs){
 					if("salary".equals(logDetail.getFieldName())){
-						String salaryRecord = newEmp.getSaladjrecord()+"\n" + "原工资: " + logDetail.getOldValue() + "-" + "最新工资: " + logDetail.getNewValue();
-						salaryRecord.replaceAll("^\n","");
+						String salaryRecord = (newEmp.getSaladjrecord()==null?"":newEmp.getSaladjrecord()+"\t" )+ "原工资: " + logDetail.getOldValue() + " - " + "最新工资: " + logDetail.getNewValue();
+						//salaryRecord.replaceAll("^\n","");
 						newEmp.setSaladjrecord(salaryRecord);
 					}
 					if("contractclauses".equals(logDetail.getFieldName())){
@@ -128,8 +131,8 @@ public class XdEmployeeService{
 						contract.save();
 					}
 					if("workstation".equals(logDetail.getFieldName())){
-						String workRecord = newEmp.getChrecord()+"\n" + "原岗位: " + logDetail.getOldValue() + "-" + "最新岗位: " + logDetail.getNewValue();
-						workRecord.replaceAll("^\n","");
+						String workRecord = (newEmp.getChrecord()==null?"":newEmp.getChrecord()+"\t") + "原岗位: " + logDetail.getOldValue() + "-" + "最新岗位: " + logDetail.getNewValue();
+						//workRecord.replaceAll("^\n","");
 						newEmp.setChrecord(workRecord);
 					}
 
@@ -457,6 +460,162 @@ public class XdEmployeeService{
 			rows.add(row);
 		}
 		File file = ExcelUtil.listToFile(path,rows);
+		return file;
+	}
+	/**
+	 * @Method exportContractExcel
+	 * @param path:
+	 * @param name:
+	 * @param empnum:
+	 * @param emprelation:
+	 * @param unitname:
+	 * @param costitem:
+	 * @Date 2022/12/20 14:48
+	 * @Exception
+	 * @Description 导出合同信息
+	 * @Author king
+	 * @Version  1.0
+	 * @Return java.io.File
+	 */
+	public File exportContractExcel(String path, String name, String empnum, String emprelation, String unitname, String costitem){
+		String sql  = " from "+TABLE_NAME+" o   where 1=1";
+
+
+		if (StrKit.notBlank(name)) {
+			sql = sql + " and o.name like '%"+name +"%'";
+		}
+
+		if (StrKit.notBlank(empnum)) {
+			sql = sql + " and o.empnum like '%"+empnum +"%'";
+		}
+		if (StrKit.notBlank(emprelation)) {
+			sql = sql + " and o.emprelation like '%"+emprelation+"%'";
+		}
+		if (StrKit.notBlank(unitname)) {
+			sql = sql + " and o.unitname like '%"+unitname+"%'";
+		}
+
+		if (StrKit.notBlank(costitem)) {
+			sql = sql + " and o.status='"+costitem+"'";
+		}
+		sql = sql + " order by o.ctime desc";
+
+
+		List<XdEmployee> list = XdEmployee.dao.find(" select * "+sql);//查询全部
+		List<XdContractInfo> listContract =new ArrayList<>();
+		Map<String,XdEmployee> mapObj=new HashMap<>();
+		if("".equals(name)&&"".equals(empnum)&&"".equals(emprelation)&&"".equals(unitname)&&"".equals(costitem)){
+		  listContract = XdContractInfo.dao.find("select * from xd_contract_info  order by eid,contractclauses ");
+			for (XdEmployee xdEmployee : list) {
+				mapObj.put(xdEmployee.getId(),xdEmployee);
+			}
+		}else{
+			String inSql="";
+			for (XdEmployee xdEmployee : list) {
+				inSql=inSql+"'"+xdEmployee.getId()+"'"+",";
+				mapObj.put(xdEmployee.getId(),xdEmployee);
+			}
+			inSql=inSql.replaceAll(",&","");
+			listContract = XdContractInfo.dao.find("select * from xd_contract_info where  eid in (" + inSql + ")  order by eid,contractclauses ");
+		}
+
+		Map<String,Integer> mapCount=new HashMap<>();
+		Map<String,List<XdContractInfo>> mapObje=new HashMap<>();
+		for (XdContractInfo contractInfo : listContract) {
+			if(mapCount.get(contractInfo.getEid())==null){
+				mapCount.put(contractInfo.getEid(),1);
+				List<XdContractInfo> conInfoList=new ArrayList<>();
+				conInfoList.add(contractInfo);
+				mapObje.put(contractInfo.getEid(),conInfoList);
+			}else{
+				Integer integer = mapCount.get(contractInfo.getEid());
+				mapCount.put(contractInfo.getEid(),integer+1);
+				List<XdContractInfo> conList = mapObje.get(contractInfo.getEid());
+				conList.add(contractInfo);
+				mapObje.put(contractInfo.getEid(),conList );
+			}
+		}
+
+		Collection<Integer> values = mapCount.values();
+		Stream<Integer> sorted = values.stream().sorted((o1, o2) ->  -o1.compareTo(o2));
+		Integer maxLen = sorted.findFirst().get();
+		String[] num = {"一", "二", "三", "四", "五", "六", "七", "八", "九"};
+		List<List<String>> rows = new ArrayList<List<String>>();
+		List<String> first = new ArrayList<String>();
+		List<String> second = new ArrayList<String>();
+		first.add("工号");
+		first.add("身份证号");
+		first.add("部门/条线");
+		first.add("姓名");
+		first.add("年龄");
+		first.add("员工性质");
+		first.add("入职日期");
+		second.add("");
+		second.add("");
+		second.add("");
+		second.add("");
+		second.add("");
+		second.add("");
+		second.add("");
+
+		for (int i = 1; i <=maxLen ; i++) {
+			if(i==1){
+				first.add("最近一份合同");
+				second.add("合同起始日期");
+				second.add("合同结束日期");
+				second.add("期数");
+				second.add("合同性质");
+			}else{
+				first.add(num[i-2]);
+				second.add("合同起始日期"+(i-1));
+				second.add("合同结束日期"+(i-1));
+				second.add("期数"+(i-1));
+				second.add("合同性质"+(i-1));
+			}
+			//first.add("教育/培训经历"+i);
+
+		}
+
+		rows.add(first);
+		rows.add(second);
+		Collection<List<XdContractInfo>> collContract = mapObje.values();
+		Stream<List<XdContractInfo>> sorted1 = collContract.stream().sorted((o1, o2) -> -(o1.size() - o2.size()));
+
+		sorted1.forEach( xdContractInfos->{
+			List<String> row = new ArrayList<String>();
+			XdContractInfo contract = xdContractInfos.get(xdContractInfos.size() - 1);
+			XdEmployee xdEmployee = mapObj.get(contract.getEid());
+			row.add(xdEmployee.getEmpnum()
+			);
+			row.add(xdEmployee.getIdnum());
+			row.add(xdEmployee.getDepartment());
+			row.add(xdEmployee.getName());
+			row.add(String.valueOf(xdEmployee.getAge()));
+			row.add(xdEmployee.getEmprelation());
+			row.add(xdEmployee.getEntrytime());
+			row.add(contract.getContractstartdate());
+			row.add(contract.getContractenddate());
+			row.add(String.valueOf(contract.getContractclauses()));
+			row.add(contract.getContractnature());
+			for (int i = 0; i < xdContractInfos.size()-1; i++) {
+				contract = xdContractInfos.get(i);
+				row.add(contract.getContractstartdate());
+				row.add(contract.getContractenddate());
+				row.add(String.valueOf(contract.getContractclauses()));
+				row.add(contract.getContractnature());
+			}
+			for (int i = 0; i < (maxLen - xdContractInfos.size()); i++) {
+				row.add("");
+				row.add("");
+				row.add("");
+				row.add("");
+			}
+
+			rows.add(row);
+
+		});
+
+		File file = ExcelUtil.conTractFile(path,rows);
 		return file;
 	}
 

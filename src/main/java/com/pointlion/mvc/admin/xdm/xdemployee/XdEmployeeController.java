@@ -392,8 +392,8 @@ public class XdEmployeeController extends BaseController {
 							List<XdOplogDetail> xdOplogDetails = XdOplogDetail.dao.find("select * from xd_oplog_detail where rsid='" + summary.getId() + "'");
 							for (XdOplogDetail logDetail : xdOplogDetails) {
 								if("salary".equals(logDetail.getFieldName())){
-									String salaryRecord = emp.getSaladjrecord()+"\n" + "原工资: " + logDetail.getOldValue() + "-" + "最新工资: " + logDetail.getNewValue();
-									salaryRecord.replaceAll("^\n","");
+									String salaryRecord = (emp.getSaladjrecord()==null?"":emp.getSaladjrecord()+"\t" )+ "原工资: " + logDetail.getOldValue() + " - " + "最新工资: " + logDetail.getNewValue();
+
 									emp.setSaladjrecord(salaryRecord);
 								}
 								if("contractclauses".equals(logDetail.getFieldName())){
@@ -409,8 +409,7 @@ public class XdEmployeeController extends BaseController {
 									contract.save();
 								}
 								if("workstation".equals(logDetail.getFieldName())){
-									String workRecord = emp.getChrecord()+"\n" + "原岗位: " + logDetail.getOldValue() + "-" + "最新岗位: " + logDetail.getNewValue();
-									workRecord.replaceAll("^\n","");
+									String workRecord = (emp.getChrecord()==null?"":emp.getChrecord()+"\t") + "原岗位: " + logDetail.getOldValue() + "-" + "最新岗位: " + logDetail.getNewValue();
 									emp.setChrecord(workRecord);
 								}
 							}
@@ -497,6 +496,17 @@ public class XdEmployeeController extends BaseController {
 		String costitem=getPara("costitem","");
 		String path = this.getSession().getServletContext().getRealPath("")+"/upload/export/"+DateUtil.format(new Date(),21)+".xlsx";
 		File file = service.exportExcel(path,name,empnum,emprelation,unitname,costitem);
+		renderFile(file);
+	}
+	public void exportContractExcel() throws UnsupportedEncodingException {
+
+		String name = java.net.URLDecoder.decode(getPara("name",""),"UTF-8");
+		String empnum = java.net.URLDecoder.decode(getPara("empnum",""),"UTF-8");
+		String emprelation = getPara("emprelation","");
+		String unitname=getPara("unitname","");
+		String costitem=getPara("costitem","");
+		String path = this.getSession().getServletContext().getRealPath("")+"/upload/export/"+DateUtil.format(new Date(),21)+".xlsx";
+		File file = service.exportContractExcel(path,name,empnum,emprelation,unitname,costitem);
 		renderFile(file);
 	}
 

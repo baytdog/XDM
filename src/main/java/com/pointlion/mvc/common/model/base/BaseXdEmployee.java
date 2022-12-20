@@ -453,7 +453,7 @@ public abstract class BaseXdEmployee<M extends BaseXdEmployee<M>> extends Model<
 	public void setSaladjrecord(String saladjrecord) {
 		set("saladjrecord", saladjrecord);
 	}
-	@ChangeFields(value = "saladjrecord",desc = "调薪记录")
+	//@ChangeFields(value = "saladjrecord",desc = "调薪记录")
 	public String getSaladjrecord() {
 		return getStr("saladjrecord");
 	}
@@ -461,7 +461,7 @@ public abstract class BaseXdEmployee<M extends BaseXdEmployee<M>> extends Model<
 	public void setChrecord(String chrecord) {
 		set("chrecord", chrecord);
 	}
-	@ChangeFields(value = "chrecord",desc = "异动记录")
+	//@ChangeFields(value = "chrecord",desc = "异动记录")
 	public String getChrecord() {
 		return getStr("chrecord");
 	}
