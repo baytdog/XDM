@@ -108,13 +108,40 @@ public class XdEmployeeService{
 				XdOplogDetail logDetail = JSONUtil.jsonToBean(change, XdOplogDetail.class);
 				logDetail.setRsid(lid);
 				list.add(logDetail);
+
+				if(rs){
+					if("salary".equals(logDetail.getFieldName())){
+						String salaryRecord = newEmp.getSaladjrecord()+"\n" + "原工资: " + logDetail.getOldValue() + "-" + "最新工资: " + logDetail.getNewValue();
+						salaryRecord.replaceAll("^\n","");
+						newEmp.setSaladjrecord(salaryRecord);
+					}
+					if("contractclauses".equals(logDetail.getFieldName())){
+						XdContractInfo contract =new XdContractInfo();
+						contract.setId(UuidUtil.getUUID());
+						contract.setEid(newEmp.getId());
+						contract.setContractstartdate(newEmp.getContractstartdate());
+						contract.setContractenddate(newEmp.getContractenddate());
+						contract.setContractclauses(newEmp.getContractclauses());
+						contract.setContractnature(newEmp.getContractnature());
+						contract.setCtime(DateUtil.getCurrentTime());
+						contract.setCuser(ShiroKit.getUserId());
+						contract.save();
+					}
+					if("workstation".equals(logDetail.getFieldName())){
+						String workRecord = newEmp.getChrecord()+"\n" + "原岗位: " + logDetail.getOldValue() + "-" + "最新岗位: " + logDetail.getNewValue();
+						workRecord.replaceAll("^\n","");
+						newEmp.setChrecord(workRecord);
+					}
+
+				}
 			}
 			flag=true;
 			summaryList.add(XdOperUtil.logSummary(lid,oldEmp.getId(),newEmp,oldEmp,XdOperEnum.U.name(),summaryStatus));
+			if(rs){
+				newEmp.update();
+			}
 		}
-		if(rs){
-			newEmp.update();
-		}
+
 
 		List<XdEdutrain> eduTrainList = XdEdutrain.dao.find("select * from xd_edutrain where eid='" + oldEmp.getId() + "'");
 		Map<String,XdEdutrain> eduMap =new HashMap<>();

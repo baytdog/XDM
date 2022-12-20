@@ -150,33 +150,46 @@
 						</div>
 						<div class="form-group">
 							<label class="col-md-1 control-label">身份证号码</label>
-							<div class="col-md-7">
+							<div class="col-md-3">
 								<input type="text"  name="#(formModelName).Idnum" class="form-control"  value="#(o?o.Idnum:'')"  >
 							</div>
-							<label class="col-md-1 control-label">户    籍</label>
-							<div class="col-md-3">
-								<input type="text"  name="#(formModelName).censusregister" class="form-control"  value="#(o?o.censusregister:'')"  >
-							</div>
-						</div>
-						<div class="form-group">
-							<label class="col-md-1 control-label">户籍地址</label>
-							<div class="col-md-7">
-								<input type="text"  name="#(formModelName).censusregisteraddr" class="form-control"  value="#(o?o.censusregisteraddr:'')"  >
+							<label class="col-md-1 control-label">出生日期</label>
+							<!--<div class="col-md-3">
+								<input type="text"  name="#(formModelName).birthday" class="form-control"  value="#(o?o.birthday:'')"  >
+							</div>-->
+
+							<div class="input-group date form_datetime col-md-3" style="float:left">
+								<input type="text" id="birthday" name="#(formModelName).birthday" class="form-control"  value="#(o?o.birthday:'')"    >
+								<span class="input-group-addon"> <span class="glyphicon glyphicon-th"></span>
+									</span>
 							</div>
 							<label class="col-md-1 control-label">出 生 地</label>
 							<div class="col-md-3">
 								<input type="text"  name="#(formModelName).birthplace" class="form-control"  value="#(o?o.birthplace:'')"  >
 							</div>
+
 						</div>
 						<div class="form-group">
-							<label class="col-md-1 control-label">现 住 址</label>
-							<div class="col-md-7">
-								<input type="text"  name="#(formModelName).presentaddr" class="form-control"  value="#(o?o.presentaddr:'')"  >
+							<label class="col-md-1 control-label">户    籍</label>
+							<div class="col-md-3">
+								<input type="text"  name="#(formModelName).censusregister" class="form-control"  value="#(o?o.censusregister:'')"  >
 							</div>
+							<label class="col-md-1 control-label">户籍地址</label>
+							<div class="col-md-7">
+								<input type="text"  name="#(formModelName).censusregisteraddr" class="form-control"  value="#(o?o.censusregisteraddr:'')"  >
+							</div>
+
+						</div>
+						<div class="form-group">
 							<label class="col-md-1 control-label">籍    贯</label>
 							<div class="col-md-3">
 								<input type="text"  name="#(formModelName).nativeplace" class="form-control"  value="#(o?o.nativeplace:'')"  >
 							</div>
+							<label class="col-md-1 control-label">现 住 址</label>
+							<div class="col-md-7">
+								<input type="text"  name="#(formModelName).presentaddr" class="form-control"  value="#(o?o.presentaddr:'')"  >
+							</div>
+
 						</div>
 						<div class="form-group">
 							<label class="col-md-1 control-label">联系方式</label>
@@ -348,6 +361,15 @@
 								<span class="input-group-addon"> <span class="glyphicon glyphicon-th"></span>
 									</span>
 							</div>
+							<label class="col-md-1 control-label">转正日期</label>
+							<!--<div class="col-md-3">
+								<input type="text"  name="#(formModelName).entrytime" class="form-control"  value="#(o?o.entrytime:'')"  >
+							</div>-->
+							<div class="input-group date form_datetime col-md-3" style="float:left">
+								<input type="text" id="positivedate" name="#(formModelName).positivedate" class="form-control"  value="#(o?o.positivedate:'')"    >
+								<span class="input-group-addon"> <span class="glyphicon glyphicon-th"></span>
+									</span>
+							</div>
 							<label class="col-md-1 control-label">离职日期</label>
 							<!--<div class="col-md-3">
 								<input type="text"  name="#(formModelName).departime" class="form-control"  value="#(o?o.departime:'')"  >
@@ -357,18 +379,7 @@
 								<span class="input-group-addon"> <span class="glyphicon glyphicon-th"></span>
 									</span>
 							</div>
-							<label class="col-md-1 control-label">就职状况</label>
-							<!--<div class="col-md-3">
-								<input type="text"  name="#(formModelName).inductionstatus" class="form-control"  value="#(o?o.inductionstatus:'')"  >
-							</div>-->
-							<input type="hidden" id="inductionstatus" name="#(formModelName).inductionstatus" value="#(o?o.inductionstatus:'')">
-							<div class="col-md-3">
-								<select id="inductionstatusSelect"   title="请选择"  class="selectpicker show-tick form-control" actionsBox="true"  disable  data-live-search="false">
-									#for(ofstatus:officestatus)
-									<option value="#(ofstatus.value)">#(ofstatus.name)</option>
-									#end
-								</select>
-							</div>
+
 						</div>
 						<div class="form-group">
 							<label class="col-md-1 control-label">所属部门</label>
@@ -444,9 +455,23 @@
 								<input type="text"  name="#(formModelName).vocaQualifilevel1" class="form-control"  value="#(o?o.vocaQualifilevel1:'')"  >
 							</div>
 						</div>
+
 						<div class="form-group">
+
+							<label class="col-md-1 control-label">就职状况</label>
+							<!--<div class="col-md-3">
+								<input type="text"  name="#(formModelName).inductionstatus" class="form-control"  value="#(o?o.inductionstatus:'')"  >
+							</div>-->
+							<input type="hidden" id="inductionstatus" name="#(formModelName).inductionstatus" value="#(o?o.inductionstatus:'')">
+							<div class="col-md-3">
+								<select id="inductionstatusSelect"   title="请选择"  class="selectpicker show-tick form-control" actionsBox="true"  disable  data-live-search="false">
+									#for(ofstatus:officestatus)
+									<option value="#(ofstatus.value)">#(ofstatus.name)</option>
+									#end
+								</select>
+							</div>
 							<label class="col-md-1 control-label">所持证书</label>
-							<div class="col-md-11">
+							<div class="col-md-7">
 								<input type="text"  name="#(formModelName).certificates" class="form-control"  value="#(o?o.certificates:'')"  >
 							</div>
 						</div>
@@ -495,6 +520,29 @@
 
 						</div>
 
+						<div class="form-group">
+							<label class="col-md-1 control-label">薪资</label>
+							<div class="col-md-3">
+								<input type="text"  name="#(formModelName).salary" class="form-control"  value="#(o?o.salary:'')"  >
+							</div>
+							<label class="col-md-1 control-label">银行账号</label>
+							<div class="col-md-3">
+								<input type="text"  name="#(formModelName).banaccount" class="form-control"  value="#(o?o.banaccount:'')"  >
+							</div>
+							<label class="col-md-1 control-label">公积金账号</label>
+							<div class="col-md-3">
+								<input type="text"  name="#(formModelName).fundaccount" class="form-control"  value="#(o?o.fundaccount:'')"  >
+							</div>
+
+
+						</div>
+						<div class="form-group">
+							<label class="col-md-1 control-label">退休状态</label>
+							<div class="col-md-3">
+								<input type="text"  name="#(formModelName).retirestatus" class="form-control"  value="#(o?o.retirestatus:'')"  >
+							</div>
+						</div>
+
 					</div>
 				</div>
 			</div>
@@ -533,13 +581,13 @@
 						<div class="form-group">
 							<label class="col-md-1 control-label">调薪记录</label>
 							<div class="col-md-11">
-								<textarea rows="5" name="#(formModelName).saladjrecord" class="form-control" #if(view=='detail') readonly #end></textarea>
+								<textarea rows="5" name="#(formModelName).saladjrecord" class="form-control"   readonly ></textarea>
 							</div>
 						</div>
 						<div class="form-group">
 							<label class="col-md-1 control-label">异动记录</label>
 							<div class="col-md-11">
-								<textarea rows="5" name="#(formModelName).chrecord" class="form-control" #if(view=='detail') readonly #end></textarea>
+								<textarea rows="5" name="#(formModelName).chrecord" class="form-control"   readonly></textarea>
 							</div>
 						</div>
 					</div>

@@ -386,6 +386,36 @@ public class XdEmployeeController extends BaseController {
 					}else if("U".equals(oType)){
 						method = clazz.getMethod("update");
 						values = summary.getChangea();
+						if("XdEmployee".equals(tName)){
+							values = summary.getChangea();
+							XdEmployee emp = (XdEmployee)JSONUtil.jsonToBean(values, clazz);
+							List<XdOplogDetail> xdOplogDetails = XdOplogDetail.dao.find("select * from xd_oplog_detail where rsid='" + summary.getId() + "'");
+							for (XdOplogDetail logDetail : xdOplogDetails) {
+								if("salary".equals(logDetail.getFieldName())){
+									String salaryRecord = emp.getSaladjrecord()+"\n" + "原工资: " + logDetail.getOldValue() + "-" + "最新工资: " + logDetail.getNewValue();
+									salaryRecord.replaceAll("^\n","");
+									emp.setSaladjrecord(salaryRecord);
+								}
+								if("contractclauses".equals(logDetail.getFieldName())){
+									XdContractInfo contract =new XdContractInfo();
+									contract.setId(UuidUtil.getUUID());
+									contract.setEid(emp.getId());
+									contract.setContractstartdate(emp.getContractstartdate());
+									contract.setContractenddate(emp.getContractenddate());
+									contract.setContractclauses(emp.getContractclauses());
+									contract.setContractnature(emp.getContractnature());
+									contract.setCtime(summary.getCtime());
+									contract.setCuser(summary.getCuser());
+									contract.save();
+								}
+								if("workstation".equals(logDetail.getFieldName())){
+									String workRecord = emp.getChrecord()+"\n" + "原岗位: " + logDetail.getOldValue() + "-" + "最新岗位: " + logDetail.getNewValue();
+									workRecord.replaceAll("^\n","");
+									emp.setChrecord(workRecord);
+								}
+							}
+							values=JSONUtil.beanToJsonString(emp);
+						}
 					}
 					method.setAccessible(true);
 					method.invoke(JSONUtil.jsonToBean(values,clazz));
@@ -407,10 +437,10 @@ public class XdEmployeeController extends BaseController {
 		steps.setFinishtime(DateUtil.getCurrentTime());
 		steps.setRemarks(getPara("comment"));
 		steps.update();
-		 XdEmployee employee = new XdEmployee();
-		 employee.setId(steps.getOid());
-		 employee.setName(steps.getStep());
-		 employee.setEmpnum(steps.getStepdesc());
+		XdEmployee employee = new XdEmployee();
+		employee.setId(steps.getOid());
+		employee.setName(steps.getStep());
+		employee.setEmpnum(steps.getStepdesc());
 		SysUser user = SysUser.dao.findById(steps.getCuserid());
 		XdOperUtil.insertEmpoloyeeSteps(employee,stepsId,user.getOrgid(),user.getId(),user.getName(),"P");
 

@@ -357,7 +357,7 @@ public abstract class BaseXdEmployee<M extends BaseXdEmployee<M>> extends Model<
 	public void setSalary(Integer salary) {
 		set("salary", salary);
 	}
-/*	@ChangeFields(value = "salary",desc = "薪资")*/
+	@ChangeFields(value = "salary",desc = "薪资")
 	public Integer getSalary() {
 		return getInt("salary");
 	}
