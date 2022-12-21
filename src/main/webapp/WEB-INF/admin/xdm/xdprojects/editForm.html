@@ -1,0 +1,74 @@
+<form id="editForm" class="panel-body form-horizontal form-padding" onkeydown="if(event.keyCode==13){return false;}">
+	<input  id="employeeId" type="hidden"  name="#(formModelName).id" class="form-control" value="#(o?o.id:'')">
+	<div class="col-md-12 col-lg-12"  >
+		<div class="panel-group accordion" id="accordion">
+			<div class="panel">
+				<div class="panel-heading">
+					<h4 class="panel-title">
+						<a data-parent="#accordion" data-toggle="collapse" href="#collapseOne" style="text-align: center;background:#42A5F5;color: white">项目信息管理</a>
+					</h4>
+				</div>
+				<div class="panel-collapse collapse in" id="collapseOne" >
+					<div class="panel-body">
+						<div class="form-group">
+							<label class="col-md-2 control-label">项目名称</label>
+							<div class="col-md-10">
+								<input type="text"  name="#(formModelName).project_name" class="form-control"  value="#(o?o.project_name:'')"  >
+							</div>
+
+						</div>
+						<div class="form-group">
+							<label class="col-md-2 control-label">所属部门</label>
+							<input type="hidden" id="dept_id" name="#(formModelName).dept_id" value="#(o?o.dept_id:'')">
+							<input type="hidden" id="dept_name" name="#(formModelName).dept_name" value="#(o?o.dept_name:'')">
+							<div class="col-md-10">
+								<select id="departmentSelect"   title="请选择"  class="selectpicker show-tick form-control" actionsBox="true"  disable  multiple data-live-search="false">
+									#for(sysOrg:sysOrgs)
+									<option value="#(sysOrg.id)">#(sysOrg.name)</option>
+									#end
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-md-2 control-label">所属单元</label>
+							<input type="hidden" id="unit_value" name="#(formModelName).unit_value" value="#(o?o.unit_value:'')">
+							<input type="hidden" id="unit_name" name="#(formModelName).unit_name" value="#(o?o.unit_name:'')">
+							<div class="col-md-10">
+								<select id="unitnameSelect"   title="请选择"  class="selectpicker show-tick form-control" actionsBox="true"  disable multiple data-live-search="true">
+									#for(unit:units)
+									<option value="#(unit.value)">#(unit.name)</option>
+									#end
+								</select>
+							</div>
+						</div>
+
+						<br>
+						<br>
+						<br>
+						<br>
+						<br>
+						<br>
+						<br>
+						<br>
+						<br>
+						<br>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+
+	<div class="col-sm-12" style="text-align: center;">
+		#if(view=='edit')
+
+		<!--<button class="btn btn-warning" type="reset" #if(view=='detail') disabled #end>重置</button>-->
+		<button class="btn btn-primary" type="submit" #if(view=='detail') disabled #end>保存 </button>
+		<button class="btn btn-primary" type="button" onclick="window.history.back();" >返回</button>
+		#else
+		<button class="btn btn-primary" type="button" onclick="window.history.back();" >返回</button>
+		#end
+	</div>
+
+
+</form>

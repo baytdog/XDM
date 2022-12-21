@@ -7,6 +7,7 @@ import com.pointlion.mvc.admin.xdm.xddict.XdDictController;
 import com.pointlion.mvc.admin.xdm.xdedutrain.XdEdutrainController;
 import com.pointlion.mvc.admin.xdm.xdempcert.XdEmpCertController;
 import com.pointlion.mvc.admin.xdm.xdemployee.XdEmployeeController;
+import com.pointlion.mvc.admin.xdm.xdprojects.XdProjectsController;
 import com.pointlion.mvc.admin.xdm.xdschoolinfo.XdSchoolinfoController;
 import com.pointlion.mvc.admin.xdm.xdshift.XdShiftController;
 import com.pointlion.mvc.admin.xdm.xdsteps.XdStepsController;
@@ -32,6 +33,8 @@ public class XDRoutes extends Routes {
         add("/admin/xd/xddict", XdDictController.class,"/xddict");
         add("/admin/xd/xdcertificate", XdCertificateController.class,"/xdcertificate");
         add("/admin/xd/xdempcert", XdEmpCertController.class,"/xdempcert");
+        add("/admin/xd/xdprojects", XdProjectsController.class,"/xdprojects");
+
 
     }
 }

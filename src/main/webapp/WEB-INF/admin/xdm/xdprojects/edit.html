@@ -1,0 +1,61 @@
+<link href="#(ctx)/common/plugins/jquery-ui/scripts/miniui/themes/default/miniui.css" rel="stylesheet"/>
+<div id="page-content">
+	<div class="col-lg-12">
+		<div class="panel">
+			#include("editForm.html")
+		</div>
+	</div>
+</div>
+
+
+<script>
+	function save(){
+
+		let data = common_ajax.ajaxFunc("/admin/xd/xdprojects/save",$('#editForm').serialize(), "json", null);
+		if(data.success){
+			pointLion.alertMsg("操作成功!" , "success" , "small" , function(){
+				location.href = ctx+'/admin/xd/xdprojects/getListPage';//跳转到列表页
+			},data);
+		}else{
+			pointLion.alertMsg(data.message , "danger" , "small" , function(){
+				$(".btn").removeAttr("disabled");
+			},data);
+		}
+	}
+	$(document).ready(function() {
+		$('#editForm').bootstrapValidator({
+			fields: {
+			}
+		}).on("success.form.bv", function (e) {
+			save();
+			return false;//阻止表单跳转
+		});
+	});
+
+
+
+	$(function () {
+		//所属部门
+		let department=$("#dept_id").val();
+		if(department){
+			$('#departmentSelect').selectpicker('val',department.split(",")).trigger("change");
+		}
+		$('#departmentSelect').on('changed.bs.select', function (e) {
+			$('#dept_id').val($('#departmentSelect').val())
+			$('#dept_name').val($('#departmentSelect option:selected').text())
+		});
+
+		//单元
+		let unitValue=$("#unit_value").val();
+		if(unitValue){
+			$('#unitnameSelect').selectpicker('val',unitValue.split(",")).trigger("change");
+		}
+		$('#unitnameSelect').on('changed.bs.select', function (e) {
+			$('#unit_value').val($('#unitnameSelect').val())
+			$('#unit_name').val($('#unitnameSelect option:selected').text())
+		});
+	})
+</script>
+
+
+
