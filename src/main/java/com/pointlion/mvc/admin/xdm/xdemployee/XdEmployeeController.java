@@ -472,6 +472,84 @@ public class XdEmployeeController extends BaseController {
 		renderSuccess("操作成功!");
 	}
 
+	/**
+	 * @Method getWarningEmpList
+	 * @Date 2022/12/21 16:19
+	 * @Description 获取首页员工即将合同到期、试用到期页面
+	 * @Author king
+	 * @Version  1.0
+	 * @Return void
+	 */
+	public void getWarningEmpList(){
+		keepPara("warnType");
+		renderIframe("pWarningList.html");
+	}
+	/**
+	 * @Method listWaringData
+	 * @Date 2022/12/21 16:20
+	 * @Description  获取员工到期提醒数据
+	 * @Author king
+	 * @Version  1.0
+	 * @Return void
+	 */
+	public void listWaringData(){
+		String curr = getPara("pageNumber");
+		String pageSize = getPara("pageSize");
+		String warnType = getPara("warnType","");
+		Page<Record> page = service.getPage(Integer.valueOf(curr),Integer.valueOf(pageSize),warnType);
+		renderPage(page.getList(),"",page.getTotalRow());
+	}
+
+
+	/**
+	 * @Method openWarningEmployeePage
+	 * @Date 2022/12/21 17:23
+	 * @Description 提醒信息详情
+	 * @Author king
+	 * @Version  1.0
+	 * @Return void
+	 */
+	public void openWarningEmployeePage(){
+		String id = getPara("id");
+		String view = getPara("view");
+		setAttr("view", view);
+		XdEmployee o = new XdEmployee();
+		if(StrKit.notBlank(id)){
+			o = service.getById(id);
+    		/*if("detail".equals(view)){
+    		}*/
+		}else{
+			String uuid = UuidUtil.getUUID();
+			System.out.println(uuid);
+			o.setId(uuid);
+		}
+
+		List<XdDict> ismarry = XdDict.dao.find("select * from xd_dict where type ='ismarry'");
+		setAttr("ismarry",ismarry);
+		List<XdDict> nations = XdDict.dao.find("select * from xd_dict where type ='nation' order by sortnum");
+		setAttr("nations",nations);
+		List<XdDict> polities = XdDict.dao.find("select * from xd_dict where type ='polity' order by sortnum");
+		setAttr("polities",polities);
+		List<XdDict> edus = XdDict.dao.find("select * from xd_dict where type ='edu' order by sortnum");
+		setAttr("edus",edus);
+		List<XdDict> officestatus = XdDict.dao.find("select * from xd_dict where type ='officestatus' order by sortnum");
+		setAttr("officestatus",officestatus);
+
+		List<SysOrg> sysOrgs = SysOrg.dao.find("select * from sys_org where id<>'root' order by sort");
+		setAttr("sysOrgs",sysOrgs);
+		List<XdDict> units = XdDict.dao.find("select * from xd_dict where type ='unit' order by sortnum");
+		setAttr("units",units);
+		List<XdDict> projects = XdDict.dao.find("select * from xd_dict where type ='projects' order by sortnum");
+		setAttr("projects",projects);
+		List<XdDict> position = XdDict.dao.find("select * from xd_dict where type ='position' order by sortnum");
+		setAttr("position",position);
+		List<XdDict> hardstuff = XdDict.dao.find("select * from xd_dict where type ='hardstuff' order by sortnum");
+		setAttr("hardstuff",hardstuff);
+
+		setAttr("o", o);
+		setAttr("formModelName",StringUtil.toLowerCaseFirstOne(XdEmployee.class.getSimpleName()));
+		renderIframe("editWarning.html");
+	}
 
 
 
@@ -533,11 +611,17 @@ public class XdEmployeeController extends BaseController {
 	}
 
 
-	public void printTest(){
-		renderIframe("printTest.html");
-	}
 
-
+	/**
+	 * @Method getPrintInfo
+	 * @param :
+	 * @Date 2022/12/21 16:13
+	 * @Exception
+	 * @Description 获取打印信息
+	 * @Author king
+	 * @Version  1.0
+	 * @Return void
+	 */
 	public void getPrintInfo() throws UnsupportedEncodingException {
 		String name = java.net.URLDecoder.decode(getPara("name",""),"UTF-8");
 		String empnum = java.net.URLDecoder.decode(getPara("empnum",""),"UTF-8");

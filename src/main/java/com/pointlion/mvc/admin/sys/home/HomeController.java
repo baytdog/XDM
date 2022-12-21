@@ -21,10 +21,16 @@ import com.pointlion.plugin.shiro.ext.SimpleUser;
 
 import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.chrono.ChronoLocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 
 /***
@@ -69,9 +75,42 @@ public class HomeController extends BaseController {
 		if(findFirst.getType().equals("1")||findFirst.getType().equals("2")) {
 			renderIframe("/WEB-INF/admin/home/personalhome.html");
 		}else {
+//			人员修改审批
 			String empSql = " select * from   xd_steps s where  s.orgid ='"+ShiroKit.getUserOrgId()+"' and  s.finished='N'";
 			int empSize = Db.find(empSql).size();
 			setAttr("empSize",empSize);
+			String employeeSql="select * from xd_employee";
+			List<XdEmployee> xdEmployees = XdEmployee.dao.find(employeeSql);
+//			合同到期
+			DateTimeFormatter dtf=DateTimeFormatter.ofPattern("yyyy-MM-dd");
+			Stream<XdEmployee> contractEndStream = xdEmployees.stream().filter( employee-> {
+					String contractenddate = employee.getContractenddate();
+					if(contractenddate==null||"".equals(contractenddate)||"无固定期限".equals(contractenddate)){
+						return false;
+					}else{
+
+						LocalDate parse = LocalDate.parse(contractenddate, dtf).minusDays(7);
+						LocalDate now = LocalDate.now();
+						 return  now.isAfter(parse);
+					}
+			});
+			setAttr("contractEndSize",contractEndStream.count());
+
+//			适用到期
+			Stream<XdEmployee> tryEmpStream = xdEmployees.stream().filter( employee->{
+					String contractenddate = employee.getContractenddate();
+					if (contractenddate != null&&!"".equals(contractenddate)) {
+						return false;
+					}else{
+						String positivedate = employee.getPositivedate();
+						LocalDate bsposiDate = LocalDate.parse(positivedate, dtf).minusDays(7);
+						LocalDate now = LocalDate.now();
+						return  now.isAfter(bsposiDate);
+					}
+			});
+			setAttr("tryEmpEndSize",tryEmpStream.count());
+
+
 			 renderIframe("/common/include/content.html");
 		}
     }
@@ -85,33 +124,21 @@ public class HomeController extends BaseController {
 		
 
     	Map<String,List<Record>> todoMap = new HashMap<String,List<Record>>();
-    	//List<OaPicNews> picNewsList = OaPicNews.dao.find("select   * from oa_pic_news where ifshow='1' order by  cdate desc");
     	List<OaPicNews> picNewsList =null;
 //    	List<OaNotice> xxjbList = OaNotice.dao.find("select * from oa_showinfo  where menuid='9b576e6581204cda90ae04722d8640c9' and sfpublish='1' order by changetime desc  limit 6");
     	List<OaNotice> xxjbList =null;
     	setAttr("picNewsList", picNewsList);
     	setAttr("xxjb", xxjbList);
     	
-    	/*List<OaBumphUser> find = OaBumphUser.dao.find("select  * from  oa_bumph_user where  lookornot ='1' and looked='0' and  username='"+ShiroKit.getUsername()+"'");
-	
-    	setAttr("bumpcount",find==null?0: find.size());
-    	
-    	List<OaEmail> emailList = OaEmail.dao.find("select  * from oa_email  where  suserid like '%"+ShiroKit.getUserId()+"%' and  opstatis='0'");
-    	setAttr("emailcount", emailList==null?0:emailList.size());
-    	int todonum=(find==null?0: find.size())+(emailList==null?0:emailList.size());
-    	setAttr("todonum", todonum);*/
     	//事务公开查询
-    	//List<OaShowinfo> swgkList = OaShowinfo.dao.find("select  * from  oa_showinfo  where  menuid='4af75c3436574f86a123f6f31afb557a' and sfpublish='1' order by changetime desc  limit 6");
     	List<OaShowinfo> swgkList = null;
     	setAttr("swgk", swgkList);
     	
      	
     	//学习交流
-//    	List<OaShowinfo> xxjlList = OaShowinfo.dao.find("select  * from  oa_showinfo  where  menuid='cff2723852f5445c90dbec2bc826e5e1'  and sfpublish='1' order by changetime desc  limit 6");
     	List<OaShowinfo> xxjlList = null;
     	setAttr("xxjl", xxjlList);
     	//党务公开
-//    	List<OaShowinfo> dwgk = OaShowinfo.dao.find("select  * from  oa_showinfo  where  menuid in('9b36bb2a18e54b86be3176e0433335c4' ) and sfpublish='1' order by changetime desc  limit 6");
     	List<OaShowinfo> dwgk =null;
     	setAttr("dwgk", dwgk);
     	

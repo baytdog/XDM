@@ -1,0 +1,604 @@
+<form id="editForm" class="panel-body form-horizontal form-padding" onkeydown="if(event.keyCode==13){return false;}">
+    <input  id="employeeId" type="hidden"  name="#(formModelName).id" class="form-control" value="#(o?o.id:'')">
+    <div class="col-md-12 col-lg-12"  >
+        <div class="panel-group accordion" id="accordion">
+            <div class="panel">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a data-parent="#accordion" data-toggle="collapse" href="#collapseOne" style="text-align: center;background:#42A5F5;color: white">个人基本资料</a>
+                    </h4>
+                </div>
+                <div class="panel-collapse collapse in" id="collapseOne">
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <label class="col-md-1 control-label">姓      名</label>
+                            <div class="col-md-3">
+                                <input type="text"  name="#(formModelName).name" class="form-control"  value="#(o?o.name:'')"  >
+                            </div>
+                            <label class="col-md-1 control-label">员工编号</label>
+                            <div class="col-md-3">
+                                <input type="text"  name="#(formModelName).empnum" class="form-control"  value="#(o?o.empnum:'')"  >
+                            </div>
+                            <label class="col-md-1 control-label">员工关系</label>
+                            <div class="col-md-3">
+                                <input type="text"  name="#(formModelName).emprelation" class="form-control"  value="#(o?o.emprelation:'')"  >
+                            </div>
+
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-1 control-label">性      别</label>
+                            <!--<div class="col-md-3">
+                                <input type="text"  name="#(formModelName).gender" class="form-control"  value="#(o?o.gender:'')"  >
+
+                            </div>-->
+                            <input type="hidden" id="gender" name="#(formModelName).gender" value="#(o?o.gender:'')">
+                            <div class="col-md-3">
+                                <select id="genderSelect"   title="请选择"  class="selectpicker show-tick form-control" actionsBox="true"  disable  data-live-search="false">
+                                    <option value="1">男</option>
+                                    <option value="0">女</option>
+                                </select>
+                            </div>
+                            <label class="col-md-1 control-label">婚姻状况</label>
+                            <!--<div class="col-md-3">
+                                <input type="text"  name="#(formModelName).married" class="form-control"  value="#(o?o.married:'')"  >
+                            </div>-->
+                            <input type="hidden" id="married" name="#(formModelName).married" value="#(o?o.married:'')">
+                            <div class="col-md-3">
+                                <select id="marriedSelect"   title="请选择"  class="selectpicker show-tick form-control" actionsBox="true"  disable  data-live-search="false">
+                                    #for(im:ismarry)
+                                    <option value="#(im.value)">#(im.name)</option>
+                                    #end
+                                </select>
+                            </div>
+
+                            <label class="col-md-1 control-label">年龄</label>
+                            <div class="col-md-3">
+                                <input type="text"  name="#(formModelName).age" class="form-control"  value="#(o?o.age:'')"  >
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-1 control-label">民      族</label>
+                            <!--<div class="col-md-3">
+                                <input type="text"  name="#(formModelName).national" class="form-control"  value="#(o?o.national:'')"  >
+                            </div>-->
+                            <input type="hidden" id="national" name="#(formModelName).national" value="#(o?o.national:'')">
+                            <div class="col-md-3">
+                                <select id="nationalSelect"   title="请选择"  class="selectpicker show-tick form-control" actionsBox="true"  disable  data-live-search="false">
+                                    #for(nation:nations)
+                                    <option value="#(nation.value)">#(nation.name)</option>
+                                    #end
+                                </select>
+                            </div>
+                            <label class="col-md-1 control-label">政治面貌</label>
+                            <!--<div class="col-md-3">
+                                <input type="text"  name="#(formModelName).politicsstatus" class="form-control"  value="#(o?o.politicsstatus:'')"  >
+                            </div>-->
+                            <input type="hidden" id="politicsstatus" name="#(formModelName).politicsstatus" value="#(o?o.politicsstatus:'')">
+                            <div class="col-md-3">
+                                <select id="politSelect"   title="请选择"  class="selectpicker show-tick form-control" actionsBox="true"  disable  data-live-search="false">
+                                    #for(politie:polities)
+                                    <option value="#(politie.value)">#(politie.name)</option>
+                                    #end
+                                </select>
+                            </div>
+                            <label class="col-md-1 control-label">最高学历</label>
+                            <!--	<div class="col-md-3">
+                                    <input type="text"  name="#(formModelName).topedu" class="form-control"  value="#(o?o.topedu:'')"  >
+                                </div>-->
+                            <input type="hidden" id="topedu" name="#(formModelName).topedu" value="#(o?o.topedu:'')">
+                            <div class="col-md-3">
+                                <select id="topeduSelect"   title="请选择"  class="selectpicker show-tick form-control" actionsBox="true"  disable  data-live-search="false">
+                                    #for(edu:edus)
+                                    <option value="#(edu.value)">#(edu.name)</option>
+                                    #end
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-1 control-label">学历(非全日制)</label>
+                            <!--<div class="col-md-3">
+                                <input type="text"  name="#(formModelName).edubg1" class="form-control"  value="#(o?o.edubg1:'')"  >
+                            </div>-->
+                            <input type="hidden" id="edubg1" name="#(formModelName).edubg1" value="#(o?o.edubg1:'')">
+                            <div class="col-md-3">
+                                <select id="edubg1Select"   title="请选择"  class="selectpicker show-tick form-control" actionsBox="true"  disable  data-live-search="false">
+                                    #for(edu:edus)
+                                    <option value="#(edu.value)">#(edu.name)</option>
+                                    #end
+                                </select>
+                            </div>
+                            <label class="col-md-1 control-label">学校</label>
+                            <div class="col-md-3">
+                                <input type="text"  name="#(formModelName).school1" class="form-control"  value="#(o?o.school1:'')"  >
+                            </div>
+                            <label class="col-md-1 control-label">专业</label>
+                            <div class="col-md-3">
+                                <input type="text"  name="#(formModelName).major1" class="form-control"  value="#(o?o.major1:'')"  >
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-1 control-label">学历(全日制)</label>
+                            <!--<div class="col-md-3">
+                                <input type="text"  name="#(formModelName).edubg2" class="form-control"  value="#(o?o.edubg2:'')"  >
+                            </div>-->
+                            <input type="hidden" id="edubg2" name="#(formModelName).edubg2" value="#(o?o.edubg2:'')">
+                            <div class="col-md-3">
+                                <select id="edubg2Select"   title="请选择"  class="selectpicker show-tick form-control" actionsBox="true"  disable  data-live-search="false">
+                                    #for(edu:edus)
+                                    <option value="#(edu.value)">#(edu.name)</option>
+                                    #end
+                                </select>
+                            </div>
+                            <label class="col-md-1 control-label">学校</label>
+                            <div class="col-md-3">
+                                <input type="text"  name="#(formModelName).school2" class="form-control"  value="#(o?o.school2:'')"  >
+                            </div>
+                            <label class="col-md-1 control-label">专业</label>
+                            <div class="col-md-3">
+                                <input type="text"  name="#(formModelName).major2" class="form-control"  value="#(o?o.major2:'')"  >
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-1 control-label">特      长</label>
+                            <div class="col-md-7">
+                                <input type="text"  name="#(formModelName).specialty" class="form-control"  value="#(o?o.specialty:'')"  >
+                            </div>
+                            <label class="col-md-1 control-label">最高学位</label>
+                            <div class="col-md-3">
+                                <input type="text"  name="#(formModelName).topdegree" class="form-control"  value="#(o?o.topdegree:'')"  >
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-1 control-label">身份证号码</label>
+                            <div class="col-md-3">
+                                <input type="text"  name="#(formModelName).Idnum" class="form-control"  value="#(o?o.Idnum:'')"  >
+                            </div>
+                            <label class="col-md-1 control-label">出生日期</label>
+                            <!--<div class="col-md-3">
+                                <input type="text"  name="#(formModelName).birthday" class="form-control"  value="#(o?o.birthday:'')"  >
+                            </div>-->
+
+                            <div class="input-group date form_datetime col-md-3" style="float:left">
+                                <input type="text" id="birthday" name="#(formModelName).birthday" class="form-control"  value="#(o?o.birthday:'')"    >
+                                <span class="input-group-addon"> <span class="glyphicon glyphicon-th"></span>
+									</span>
+                            </div>
+                            <label class="col-md-1 control-label">出 生 地</label>
+                            <div class="col-md-3">
+                                <input type="text"  name="#(formModelName).birthplace" class="form-control"  value="#(o?o.birthplace:'')"  >
+                            </div>
+
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-1 control-label">户    籍</label>
+                            <div class="col-md-3">
+                                <input type="text"  name="#(formModelName).censusregister" class="form-control"  value="#(o?o.censusregister:'')"  >
+                            </div>
+                            <label class="col-md-1 control-label">户籍地址</label>
+                            <div class="col-md-7">
+                                <input type="text"  name="#(formModelName).censusregisteraddr" class="form-control"  value="#(o?o.censusregisteraddr:'')"  >
+                            </div>
+
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-1 control-label">籍    贯</label>
+                            <div class="col-md-3">
+                                <input type="text"  name="#(formModelName).nativeplace" class="form-control"  value="#(o?o.nativeplace:'')"  >
+                            </div>
+                            <label class="col-md-1 control-label">现 住 址</label>
+                            <div class="col-md-7">
+                                <input type="text"  name="#(formModelName).presentaddr" class="form-control"  value="#(o?o.presentaddr:'')"  >
+                            </div>
+
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-1 control-label">联系方式</label>
+                            <div class="col-md-3">
+                                <input type="text"  name="#(formModelName).tel" class="form-control"  value="#(o?o.tel:'')"  >
+                            </div>
+                            <label class="col-md-1 control-label">退休日期</label>
+                            <!--<div class="col-md-3">
+                                <input type="text"  name="#(formModelName).retiretime" class="form-control"  value="#(o?o.retiretime:'')"  >
+                            </div>-->
+                            <div class="input-group date form_datetime col-md-3" style="float:left">
+                                <input type="text" id="retiretime" name="#(formModelName).retiretime" class="form-control"  value="#(o?o.retiretime:'')"    >
+                                <span class="input-group-addon"> <span class="glyphicon glyphicon-th"></span>
+									</span>
+                            </div>
+                            <label class="col-md-1 control-label">退伍军人</label>
+                            <!--<div class="col-md-3">
+                                <input type="text"  name="#(formModelName).issoldier" class="form-control"  value="#(o?o.issoldier:'')"  >
+                            </div>-->
+                            <input type="hidden" id="issoldier" name="#(formModelName).issoldier" value="#(o?o.issoldier:'')">
+                            <div class="col-md-3">
+                                <select id="issoldierSelect"   title="请选择"  class="selectpicker show-tick form-control" actionsBox="true"  disable  data-live-search="false">
+                                    <option value="1">是</option>
+                                    <option value="0">否</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a data-parent="#accordion" data-toggle="collapse" href="#collapseTwo"  style="text-align: center;background:#42A5F5;color: white">教育/培训经历</a>
+                    </h4>
+                </div>
+                <div class="panel-collapse collapse" id="collapseTwo">
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-sm-8">
+                                <button class="btn btn-primary" type="button"  onclick="addRow1()" #if(view=='detail') disabled #end>新增</button>
+                                <button class="btn btn-warning" type="button" onclick="removeRow1()"  #if(view=='detail') disabled #end>删除</button>
+                                <!--								<button class="btn btn-warning" type="button" onclick="ttt()"   >测试</button>-->
+                            </div>
+                        </div>
+                        <mini-datagrid id="datagrid1" class="mini-datagrid" style="width:100%;height:280px;"
+                                       url="" idField="id"  allowResize="true" pageSize="15"
+                                       allowCellEdit="true" allowCellSelect="true" multiSelect="false"
+                                       editNextOnEnterKey="true"  editNextRowCell="true"
+                                       showSortIcon="true"  _dataField="data"  showPager="false" allowSortColumn="false"
+                        >
+                            <columns>
+                                <column type="indexcolumn"></column>
+                                <column type="checkcolumn"></column>
+                                <column name="enrolldate" field="enrolldate" width="100"   dateFormat="yyyy-MM-dd">入学日期
+                                    <editor>
+                                        <mini-datepicker style="width:100%;" format="yyyy-MM-dd"></mini-datepicker>
+                                    </editor>
+                                </column>
+                                <column name="graduatdate" field="graduatdate" width="100"   dateFormat="yyyy-MM-dd">毕业日期
+                                    <editor>
+                                        <mini-datepicker style="width:100%;" format="yyyy-MM-dd"></mini-datepicker>
+                                    </editor>
+                                </column>
+
+
+                                <column name="trainOrgname"  field="trainOrgname" headerAlign="center"   width="150" >
+                                    学校/培训机构名称
+                                    <editor>
+                                        <input property="editor" class="mini-textbox" style="width:100%;" _minWidth="200" />
+                                    </editor>
+                                </column>
+                                <column name="major"  field="major" headerAlign="center"   width="150" >
+                                    专业
+                                    <editor>
+                                        <input property="editor" class="mini-textbox" style="width:100%;" _minWidth="200" />
+                                    </editor>
+                                </column>
+                                <column name="edubg"  field="edubg" headerAlign="center"  width="150" >
+                                    学历
+                                    <editor>
+                                        <input property="editor" class="mini-textbox" style="width:100%;" _minWidth="200" />
+                                    </editor>
+                                </column>
+                            </columns>
+                        </mini-datagrid>
+                    </div>
+                </div>
+            </div>
+            <div class="panel">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a data-parent="#accordion" data-toggle="collapse" href="#collapseThree" style="text-align: center;background:#42A5F5;color: white">工作经历</a>
+                    </h4>
+                </div>
+
+                <div class="panel-collapse collapse" id="collapseThree">
+                    <div class="panel-body">
+
+                        <div class="row">
+                            <div class="col-sm-8">
+                                <button class="btn btn-primary" type="button"  onclick="addRow2()" #if(view=='detail') disabled #end>新增</button>
+                                <button class="btn btn-warning" type="button" onclick="removeRow2()"  #if(view=='detail') disabled #end>删除</button>
+                            </div>
+                        </div>
+                        <mini-datagrid id="datagrid2" class="mini-datagrid" style="width:100%;height:280px;"
+                                       url="" idField="id"
+                                       allowResize="true" pageSize="15"
+                                       allowCellEdit="true" allowCellSelect="true" multiSelect="false"
+                                       editNextOnEnterKey="true"  editNextRowCell="true"
+                                       showSortIcon="true"  _dataField="data"
+                                       showPager="false" allowSortColumn="false"
+                        >
+                            <columns>
+                                <column type="indexcolumn"></column>
+                                <column type="checkcolumn"></column>
+                                <column name="entrydate" field="entrydate" width="100"   dateFormat="yyyy-MM-dd">入职日期
+                                    <editor>
+                                        <mini-datepicker style="width:100%;" format="yyyy-MM-dd"></mini-datepicker>
+                                    </editor>
+                                </column>
+                                <column name="departdate" field="departdate" width="100"   dateFormat="yyyy-MM-dd">离职日期
+                                    <editor>
+                                        <mini-datepicker style="width:100%;" format="yyyy-MM-dd"></mini-datepicker>
+                                    </editor>
+                                </column>
+
+
+                                <column name="serviceunit"  field="serviceunit" headerAlign="center"   width="150" >
+                                    服务单位名称
+                                    <editor>
+                                        <input property="editor" class="mini-textbox" style="width:100%;" _minWidth="200" />
+                                    </editor>
+                                </column>
+                                <column name="job"  field="job" headerAlign="center"   width="150" >
+                                    职务
+                                    <editor>
+                                        <input property="editor" class="mini-textbox" style="width:100%;" _minWidth="200" />
+                                    </editor>
+                                </column>
+                                <column name="addr"  field="addr" headerAlign="center"  width="150" >
+                                    地点
+                                    <editor>
+                                        <input property="editor" class="mini-textbox" style="width:100%;" _minWidth="200" />
+                                    </editor>
+                                </column>
+                            </columns>
+                        </mini-datagrid>
+                    </div>
+                </div>
+            </div>
+            <div class="panel">
+
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a data-parent="#accordion" data-toggle="collapse" href="#collapseFour" style="text-align: center;background:#42A5F5;color: white">任职信息</a>
+                    </h4>
+                </div>
+
+                <div class="panel-collapse collapse" id="collapseFour">
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <label class="col-md-1 control-label">入职时间</label>
+                            <!--<div class="col-md-3">
+                                <input type="text"  name="#(formModelName).entrytime" class="form-control"  value="#(o?o.entrytime:'')"  >
+                            </div>-->
+                            <div class="input-group date form_datetime col-md-3" style="float:left">
+                                <input type="text" id="entrytime" name="#(formModelName).entrytime" class="form-control"  value="#(o?o.entrytime:'')"    >
+                                <span class="input-group-addon"> <span class="glyphicon glyphicon-th"></span>
+									</span>
+                            </div>
+                            <label class="col-md-1 control-label">转正日期</label>
+                            <!--<div class="col-md-3">
+                                <input type="text"  name="#(formModelName).entrytime" class="form-control"  value="#(o?o.entrytime:'')"  >
+                            </div>-->
+                            <div class="input-group date form_datetime col-md-3" style="float:left">
+                                <input type="text" id="positivedate" name="#(formModelName).positivedate" class="form-control"  value="#(o?o.positivedate:'')"    >
+                                <span class="input-group-addon"> <span class="glyphicon glyphicon-th"></span>
+									</span>
+                            </div>
+                            <label class="col-md-1 control-label">离职日期</label>
+                            <!--<div class="col-md-3">
+                                <input type="text"  name="#(formModelName).departime" class="form-control"  value="#(o?o.departime:'')"  >
+                            </div>-->
+                            <div class="input-group date form_datetime col-md-3" style="float:left">
+                                <input type="text" id="departime" name="#(formModelName).departime" class="form-control"  value="#(o?o.departime:'')"    >
+                                <span class="input-group-addon"> <span class="glyphicon glyphicon-th"></span>
+									</span>
+                            </div>
+
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-1 control-label">所属部门</label>
+                            <!--<div class="col-md-3">
+                                <input type="text"  name="#(formModelName).department" class="form-control"  value="#(o?o.department:'')"  >
+                            </div>-->
+                            <input type="hidden" id="department" name="#(formModelName).department" value="#(o?o.department:'')">
+                            <div class="col-md-3">
+                                <select id="departmentSelect"   title="请选择"  class="selectpicker show-tick form-control" actionsBox="true"  disable  data-live-search="false">
+                                    #for(sysOrg:sysOrgs)
+                                    <option value="#(sysOrg.id)">#(sysOrg.name)</option>
+                                    #end
+                                </select>
+                            </div>
+                            <label class="col-md-1 control-label">单元</label>
+                            <!--<div class="col-md-3">
+                                <input type="text"  name="#(formModelName).unitname" class="form-control"  value="#(o?o.unitname:'')"  >
+                            </div>-->
+                            <input type="hidden" id="unitname" name="#(formModelName).unitname" value="#(o?o.unitname:'')">
+                            <div class="col-md-3">
+                                <select id="unitnameSelect"   title="请选择"  class="selectpicker show-tick form-control" actionsBox="true"  disable  data-live-search="true">
+                                    #for(unit:units)
+                                    <option value="#(unit.value)">#(unit.name)</option>
+                                    #end
+                                </select>
+                            </div>
+                            <label class="col-md-1 control-label">成本项目</label>
+                            <!--<div class="col-md-3">
+                                <input type="text"  name="#(formModelName).costitem" class="form-control"  value="#(o?o.costitem:'')"  >
+                            </div>-->
+                            <input type="hidden" id="costitem" name="#(formModelName).costitem" value="#(o?o.costitem:'')">
+                            <div class="col-md-3">
+                                <select id="costitemSelect"   title="请选择"  class="selectpicker show-tick form-control" actionsBox="true"  disable  data-live-search="true">
+                                    #for(project:projects)
+                                    <option value="#(project.value)">#(project.name)</option>
+                                    #end
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-1 control-label">职   位</label>
+                            <!--	<div class="col-md-3">
+                                    <input type="text"  name="#(formModelName).position" class="form-control"  value="#(o?o.position:'')"  >
+                                </div>-->
+                            <input type="hidden" id="position" name="#(formModelName).position" value="#(o?o.position:'')">
+                            <div class="col-md-3">
+                                <select id="positionSelect"   title="请选择"  class="selectpicker show-tick form-control" actionsBox="true"  disable  data-live-search="false">
+                                    #for(posi:position)
+                                    <option value="#(posi.value)">#(posi.name)</option>
+                                    #end
+                                </select>
+                            </div>
+                            <label class="col-md-1 control-label">专业技术等级</label>
+                            <div class="col-md-3">
+                                <input type="text"  name="#(formModelName).protechgrade" class="form-control"  value="#(o?o.protechgrade:'')"  >
+                            </div>
+                            <label class="col-md-1 control-label">职业资格等级</label>
+                            <div class="col-md-3">
+                                <input type="text"  name="#(formModelName).vocaqualifilevel" class="form-control"  value="#(o?o.vocaqualifilevel:'')"  >
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-1 control-label">工作岗位</label>
+                            <div class="col-md-3">
+                                <input type="text"  name="#(formModelName).workstation" class="form-control"  value="#(o?o.workstation:'')"  >
+                            </div>
+                            <label class="col-md-1 control-label">专业技术职务</label>
+                            <div class="col-md-3">
+                                <input type="text"  name="#(formModelName).protechposts" class="form-control"  value="#(o?o.protechposts:'')"  >
+                            </div>
+                            <label class="col-md-1 control-label">职业资格等级</label>
+                            <div class="col-md-3">
+                                <input type="text"  name="#(formModelName).vocaQualifilevel1" class="form-control"  value="#(o?o.vocaQualifilevel1:'')"  >
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+
+                            <label class="col-md-1 control-label">就职状况</label>
+                            <!--<div class="col-md-3">
+                                <input type="text"  name="#(formModelName).inductionstatus" class="form-control"  value="#(o?o.inductionstatus:'')"  >
+                            </div>-->
+                            <input type="hidden" id="inductionstatus" name="#(formModelName).inductionstatus" value="#(o?o.inductionstatus:'')">
+                            <div class="col-md-3">
+                                <select id="inductionstatusSelect"   title="请选择"  class="selectpicker show-tick form-control" actionsBox="true"  disable  data-live-search="false">
+                                    #for(ofstatus:officestatus)
+                                    <option value="#(ofstatus.value)">#(ofstatus.name)</option>
+                                    #end
+                                </select>
+                            </div>
+                            <label class="col-md-1 control-label">所持证书</label>
+                            <div class="col-md-7">
+                                <input type="text"  name="#(formModelName).certificates" class="form-control"  value="#(o?o.certificates:'')"  >
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-1 control-label">合同开始日期</label>
+                            <!--	<div class="col-md-3">
+                                    <input type="text"  name="#(formModelName).contractstartdate" class="form-control"  value="#(o?o.contractstartdate:'')"  >
+                                </div>-->
+                            <div class="input-group date form_datetime col-md-3" style="float:left">
+                                <input type="text" id="contractstartdate" name="#(formModelName).contractstartdate" class="form-control"  value="#(o?o.contractstartdate:'')"    >
+                                <span class="input-group-addon"> <span class="glyphicon glyphicon-th"></span>
+									</span>
+                            </div>
+                            <label class="col-md-1 control-label">结束日期</label>
+                            <!--<div class="col-md-3">
+                                <input type="text"  name="#(formModelName).contractenddate" class="form-control"  value="#(o?o.contractenddate:'')"  >
+                            </div>-->
+                            <div class="input-group date form_datetime col-md-3" style="float:left">
+                                <input type="text" id="contractenddate" name="#(formModelName).contractenddate" class="form-control"  value="#(o?o.contractenddate:'')"    >
+                                <span class="input-group-addon"> <span class="glyphicon glyphicon-th"></span>
+									</span>
+                            </div>
+                            <label class="col-md-1 control-label">工 龄(年)</label>
+                            <div class="col-md-3">
+                                <input type="text"  name="#(formModelName).seniority" class="form-control"  value="#(o?o.seniority:'')"  >
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-1 control-label">合同期数</label>
+                            <div class="col-md-3">
+                                <input type="text"  name="#(formModelName).contractclauses" class="form-control"  value="#(o?o.contractclauses:'')"  >
+                            </div>
+                            <label class="col-md-1 control-label">合同性质</label>
+                            <div class="col-md-3">
+                                <input type="text"  name="#(formModelName).contractnature" class="form-control"  value="#(o?o.contractnature:'')"  >
+                            </div>
+                            <label class="col-md-1 control-label">参加工作时间</label>
+                            <!--	<div class="col-md-3">
+                                    <input type="text"  name="#(formModelName).worktime" class="form-control"  value="#(o?o.worktime:'')"  >
+                                </div>-->
+                            <div class="input-group date form_datetime col-md-3" style="float:left">
+                                <input type="text" id="worktime" name="#(formModelName).worktime" class="form-control"  value="#(o?o.worktime:'')"    >
+                                <span class="input-group-addon"> <span class="glyphicon glyphicon-th"></span>
+									</span>
+                            </div>
+
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-md-1 control-label">薪资</label>
+                            <div class="col-md-3">
+                                <input type="text"  name="#(formModelName).salary" class="form-control"  value="#(o?o.salary:'')"  >
+                            </div>
+                            <label class="col-md-1 control-label">银行账号</label>
+                            <div class="col-md-3">
+                                <input type="text"  name="#(formModelName).banaccount" class="form-control"  value="#(o?o.banaccount:'')"  >
+                            </div>
+                            <label class="col-md-1 control-label">公积金账号</label>
+                            <div class="col-md-3">
+                                <input type="text"  name="#(formModelName).fundaccount" class="form-control"  value="#(o?o.fundaccount:'')"  >
+                            </div>
+
+
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-1 control-label">退休状态</label>
+                            <div class="col-md-3">
+                                <input type="text"  name="#(formModelName).retirestatus" class="form-control"  value="#(o?o.retirestatus:'')"  >
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="panel">
+
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a data-parent="#accordion" data-toggle="collapse" href="#collapseFive" style="text-align: center;background:#42A5F5;color: white">其它信息</a>
+                    </h4>
+                </div>
+
+                <div class="panel-collapse collapse" id="collapseFive">
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <label class="col-md-1 control-label">紧急联系人</label>
+                            <div class="col-md-3">
+                                <input type="text"  name="#(formModelName).emcontact" class="form-control"  value="#(o?o.emcontact:'')"  >
+                            </div>
+                            <label class="col-md-1 control-label">招聘来源</label>
+                            <div class="col-md-3">
+                                <input type="text"  name="#(formModelName).recruitsource" class="form-control"  value="#(o?o.recruitsource:'')"  >
+                            </div>
+                            <label class="col-md-1 control-label">困难员工</label>
+                            <!--<div class="col-md-3">
+                                <input type="text"  name="#(formModelName).hardstaff" class="form-control"  value="#(o?o.hardstaff:'')"  >
+                            </div>-->
+                            <input type="hidden" id="hardstaff" name="#(formModelName).hardstaff" value="#(o?o.hardstaff:'')">
+                            <div class="col-md-3">
+                                <select id="hardstaffSelect"   title="请选择"  class="selectpicker show-tick form-control" actionsBox="true"  disable  data-live-search="false">
+                                    #for(hd:hardstuff)
+                                    <option value="#(hd.value)">#(hd.name)</option>
+                                    #end
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-1 control-label">调薪记录</label>
+                            <div class="col-md-11">
+                                <textarea rows="5" name="#(formModelName).saladjrecord" class="form-control"   readonly >#(o.saladjrecord)</textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-1 control-label">异动记录</label>
+                            <div class="col-md-11">
+                                <textarea rows="5" name="#(formModelName).chrecord" class="form-control"   readonly>#(o.chrecord)</textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="col-sm-12" style="text-align: center;">
+        <button class="btn btn-primary" type="button" onclick="window.history.back();" >返回</button>
+    </div>
+
+
+</form>
