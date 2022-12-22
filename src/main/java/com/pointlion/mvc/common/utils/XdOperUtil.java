@@ -58,6 +58,8 @@ public class XdOperUtil {
         return builder.toString();
     }
 
+
+
     public static <T> XdOplogSummary logSummary(String lid,String oid,T newObj,T oldObj,String otype,String status){
         String id = null;
         T obj=(oldObj==null?newObj:oldObj);

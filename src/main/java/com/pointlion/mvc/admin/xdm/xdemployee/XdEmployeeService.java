@@ -14,7 +14,9 @@ import com.pointlion.mvc.common.utils.*;
 import com.pointlion.mvc.common.utils.office.excel.ExcelUtil;
 import com.pointlion.plugin.shiro.ShiroKit;
 import com.pointlion.plugin.shiro.ext.SimpleUser;
+import com.pointlion.util.DictMapping;
 import org.apache.commons.lang3.StringUtils;
+import org.flowable.cmmn.model.Case;
 
 import javax.jnlp.ServiceManagerStub;
 import java.io.File;
@@ -802,6 +804,7 @@ public class XdEmployeeService{
 	}
 
 
+
 	/**
 	 * @Method importExcel
 	 * @param list:
@@ -815,14 +818,15 @@ public class XdEmployeeService{
 	public Map<String,Object> importExcel(List<List<String>> list) throws SQLException {
 		final List<String> message = new ArrayList<String>();
 		final Map<String,Object> result = new HashMap<String,Object>();
+		Map<String,String> orgMap=DictMapping.orgMapping("1");
+		Map<String,String> projectsMap=DictMapping.projectsMapping();
+		Map<String, Map<String, String>> dictMapping= DictMapping.dictMapping();
 		Db.tx(new IAtom() {
 			@Override
 			public boolean run() throws SQLException {
 				try{
 					if(list.size()>1){
 						SimpleUser user = ShiroKit.getLoginUser();
-						/*String orgid = ShiroKit.getUserOrgId();
-						String orgName = ShiroKit.getUserOrgName();*/
 						String time = DateUtil.getCurrentTime();
 						for(int i = 1;i<list.size();i++){//从第二行开始取
 							List<String> empStr = list.get(i);
@@ -836,83 +840,129 @@ public class XdEmployeeService{
 							emp.setEmpnum(empStr.get(1));
 							emp.setName(empStr.get(2));
 							emp.setIdnum(empStr.get(3));
-							emp.setGender(empStr.get(4).equals("女")?0:1);
+							emp.setGender(empStr.get(4).equals("女")?"0":"1");
 							String org = empStr.get(5);
-							SysOrg orgInfo = SysOrg.dao.findFirst("select * from sys_org where name ='" + org + "'");
-							if(orgInfo==null){
+
+							String orgid = orgMap.get(org);
+							//SysOrg orgInfo = SysOrg.dao.findFirst("select * from sys_org where name ='" + org + "'");
+							if(orgid==null){
 								emp.setDepartment("0");//empStr.get(5) 所属部门
 							}else{
-								emp.setDepartment(orgInfo.getId());
+//								emp.setDepartment(orgInfo.getId());
+								emp.setDepartment(orgid);
 							}
 
-							XdDict unit = XdDict.dao.findFirst("select * from xd_dict where type='unit' and name ='" + empStr.get(6) + "'");
-							if(unit==null){
+//							XdDict unit = XdDict.dao.findFirst("select * from xd_dict where type='unit' and name ='" + empStr.get(6) + "'");
+							Map<String, String> unit = dictMapping.get("unit");
+							 unit.get(empStr.get(6));
+							/*if(unit==null){
 								emp.setUnitname(0);//所属单元empStr.get(6)
 							}else{
 								emp.setUnitname(Integer.valueOf(unit.getValue()));
+							}*/
+							if(unit.get(empStr.get(6))==null){
+								emp.setUnitname("0");//所属单元empStr.get(6)
+							}else{
+								emp.setUnitname(unit.get(empStr.get(6)));
 							}
 							//emp.setUnitname(0);//所属单元empStr.get(6)
-							XdDict project = XdDict.dao.findFirst("select * from xd_dict where type='projects' and name ='" + empStr.get(7) + "'");
+							/*XdDict project = XdDict.dao.findFirst("select * from xd_dict where type='projects' and name ='" + empStr.get(7) + "'");
 							if(project==null){
 								emp.setCostitem(0);//empStr.get(7)成本项目
 							}else{
 								emp.setCostitem(Integer.valueOf(project.getValue()));
-							}
+							}*/
+						/*	Map<String, Integer> projects = dictMapping.get("projects");
+							if(projects.get(empStr.get(7))==null){
+								emp.setCostitem(0);//empStr.get(7)成本项目
+							}else{
+								emp.setCostitem(projects.get(empStr.get(7)));
+							}*/
+							String projectValue = (projectsMap.get(empStr.get(7)))==null?"0":projectsMap.get(empStr.get(7));
+							emp.setCostitem(projectValue);
 							emp.setEntrytime(empStr.get(8));
 							emp.setPositivedate(empStr.get(9));
 							emp.setDepartime(empStr.get(10));
-							XdDict officestatus = XdDict.dao.findFirst("select * from xd_dict where type='officestatus' and name ='" + empStr.get(11) + "'");
+							/*XdDict officestatus = XdDict.dao.findFirst("select * from xd_dict where type='officestatus' and name ='" + empStr.get(11) + "'");
 							if(officestatus==null){
 								emp.setInductionstatus(0);//就职状态empStr.get(11)
 							}else{
 								emp.setInductionstatus(Integer.valueOf(officestatus.getValue()));
-							}
+							}*/
 							//emp.setInductionstatus(0);//就职状态empStr.get(11)
+							Map<String, String> officestatus = dictMapping.get("officestatus");
+							if(officestatus.get(empStr.get(11))==null){
+								emp.setInductionstatus("0");//就职状态empStr.get(11)
+							}else{
+								emp.setInductionstatus(officestatus.get(empStr.get(11)));
+							}
 							emp.setBirthday(empStr.get(12));
 							emp.setSeniority(empStr.get(13));
 							emp.setAge(Integer.valueOf(empStr.get(14)));
 							emp.setRetiretime(empStr.get(15));
 							emp.setRetirestatus(empStr.get(16));
 							emp.setEmprelation(empStr.get(17));
-							XdDict position = XdDict.dao.findFirst("select * from xd_dict where type='position' and name ='" + empStr.get(18) + "'");
+							/*XdDict position = XdDict.dao.findFirst("select * from xd_dict where type='position' and name ='" + empStr.get(18) + "'");
 							if(position==null){
 								emp.setPosition(0);//职位empStr.get(18)
 							}else{
 								emp.setPosition(Integer.valueOf(position.getValue()));
+							}*/
+							Map<String, String> position = dictMapping.get("position");
+							if(position.get(empStr.get(18))==null){
+								emp.setPosition("0");//职位empStr.get(18)
+							}else{
+								emp.setPosition(position.get(empStr.get(18)));
 							}
 
 							emp.setWorkstation(empStr.get(19));
 							emp.setTel(empStr.get(20));
 							emp.setNational(empStr.get(21));
 							emp.setPoliticsstatus(empStr.get(22));
-							XdDict ismarry = XdDict.dao.findFirst("select * from xd_dict where type='ismarry' and name ='" + empStr.get(23) + "'");
+							/*XdDict ismarry = XdDict.dao.findFirst("select * from xd_dict where type='ismarry' and name ='" + empStr.get(23) + "'");
 							if(ismarry==null){
 								emp.setMarried(0);//婚姻：empStr.get(23)
 							}else{
 								emp.setMarried(Integer.valueOf(ismarry.getValue()));
-							}
+							}*/
+							Map<String, String> ismarry = dictMapping.get("ismarry");
+							String marryCode=ismarry.get(empStr.get(23))==null?"0":ismarry.get(empStr.get(23));
+							emp.setMarried(marryCode);
+
+
 							//emp.setMarried(0);//婚姻：empStr.get(23)
 							//emp.setTopedu(empStr.get(24));
-							XdDict edu = XdDict.dao.findFirst("select * from xd_dict where type='edu' and name ='" + empStr.get(24) + "'");
+							/*XdDict edu = XdDict.dao.findFirst("select * from xd_dict where type='edu' and name ='" + empStr.get(24) + "'");
 							if(edu==null){
 								emp.setTopedu(empStr.get(24));;//婚姻：empStr.get(23)
 							}else{
 								emp.setTopedu(edu.getValue());
-							}
+							}*/
+							Map<String, String> eduMap = dictMapping.get("edu");
+							String  edu=eduMap.get(empStr.get(24))==null?empStr.get(24):eduMap.get(empStr.get(24)).toString();
+							emp.setTopedu(edu);
+
+
 							//emp.setEdubg1(empStr.get(25));//0
-							if(edu==null){
-								emp.setEdubg1(empStr.get(25));//婚姻：empStr.get(23)
+							/*if(edu==null){
+								emp.setEdubg1(empStr.get(25));
 							}else{
 								emp.setEdubg1(edu.getValue());
-							}
+							}*/
+							String edubg1=eduMap.get(empStr.get(25))==null?empStr.get(25):eduMap.get(empStr.get(25)).toString();
+							emp.setEdubg1(edubg1);
 							emp.setSchool1(empStr.get(26));//0
 							emp.setMajor1(empStr.get(27));//0
 							//emp.setEdubg2(empStr.get(28));//0
-							if(edu==null){
-								emp.setEdubg2(empStr.get(28));//婚姻：empStr.get(23)
+							/*if(edu==null){
+								emp.setEdubg2(empStr.get(28));
 							}else{
 								emp.setEdubg2(edu.getValue());
-							}
+							}*/
+
+							String edubg2=eduMap.get(empStr.get(28))==null?empStr.get(28):eduMap.get(empStr.get(28)).toString();
+							emp.setEdubg2(edubg2);
+							emp.setEdubg1(edubg1);
 							emp.setSchool2(empStr.get(29));//0
 							emp.setMajor2(empStr.get(30));//0
 							emp.setTopdegree(empStr.get(31));//0
@@ -921,7 +971,7 @@ public class XdEmployeeService{
 							emp.setNativeplace(empStr.get(34));//0
 							emp.setPresentaddr(empStr.get(35));//0
 							emp.setCensusregisteraddr(empStr.get(36));//0
-							emp.setIssoldier("是".equals(empStr.get(37))?1:0);//会是否军人empStr.get(37)
+							emp.setIssoldier("是".equals(empStr.get(37))?"1":"0");//会是否军人empStr.get(37)
 
 							emp.setWorktime(empStr.get(38));//0
 							emp.setContractstartdate(empStr.get(39));//0

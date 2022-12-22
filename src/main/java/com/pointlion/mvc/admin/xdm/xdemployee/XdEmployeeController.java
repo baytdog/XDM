@@ -12,6 +12,7 @@ import com.pointlion.mvc.common.model.*;
 import com.pointlion.mvc.common.utils.*;
 import com.pointlion.mvc.common.utils.office.excel.ExcelUtil;
 import com.pointlion.plugin.shiro.ShiroKit;
+import com.pointlion.util.DictMapping;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,6 +21,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.function.Consumer;
 
 
 public class XdEmployeeController extends BaseController {
@@ -555,9 +557,7 @@ public class XdEmployeeController extends BaseController {
 
 	/**
 	 * @Method exportExcel
-	 * @param :
 	 * @Date 2022/12/15 14:31
-	 * @Exception
 	 * @Description  员工信息导出excle
 	 * @Author king
 	 * @Version  1.0
@@ -576,6 +576,15 @@ public class XdEmployeeController extends BaseController {
 		File file = service.exportExcel(path,name,empnum,emprelation,unitname,costitem);
 		renderFile(file);
 	}
+	/**
+	 * @Method exportContractExcel
+	 * @Date 2022/12/22 9:38
+	 * @Exception 转码异常
+	 * @Description 导出合同信息
+	 * @Author king
+	 * @Version  1.0
+	 * @Return void
+	 */
 	public void exportContractExcel() throws UnsupportedEncodingException {
 
 		String name = java.net.URLDecoder.decode(getPara("name",""),"UTF-8");
@@ -591,17 +600,16 @@ public class XdEmployeeController extends BaseController {
 
 	 /**
 	  * @Method importExcel
-	  * @param :
 	  * @Date 2022/12/15 14:31
-	  * @Exception 员工信息excel导入
-	  * @Description
+	  * @Description 员工信息excel导入
 	  * @Author king
 	  * @Version  1.0
 	  * @Return void
 	  */
 	public void importExcel() throws IOException, SQLException {
 		UploadFile file = getFile("file","/content");
-		List<List<String>> list = ExcelUtil.excelToList(file.getFile().getAbsolutePath());
+		//List<List<String>> list = ExcelUtil.excelToList(file.getFile().getAbsolutePath());
+		List<List<String>> list = ExcelUtil.excelToStringList(file.getFile().getAbsolutePath());
 		Map<String,Object> result = service.importExcel(list);
 		if((Boolean)result.get("success")){
 			renderSuccess((String)result.get("message"));
@@ -614,9 +622,7 @@ public class XdEmployeeController extends BaseController {
 
 	/**
 	 * @Method getPrintInfo
-	 * @param :
 	 * @Date 2022/12/21 16:13
-	 * @Exception
 	 * @Description 获取打印信息
 	 * @Author king
 	 * @Version  1.0
@@ -630,6 +636,17 @@ public class XdEmployeeController extends BaseController {
 		String unitname=java.net.URLDecoder.decode(getPara("unitname",""),"UTF-8");
 		String costitem=java.net.URLDecoder.decode(getPara("costitem",""),"UTF-8");
 		List<XdEmployee> employees = service.getPrintInfos(name, empnum, department, emprelation, unitname, costitem);
+		Map<String, String> orgMap = DictMapping.orgMapping("0");
+		Map<String, String> projectMap = DictMapping.projectsMappingValueToName();
+		Map<String, Map<String, String>> dictMap = DictMapping.dictMappingValueToName();
+		employees.stream().forEach(new Consumer<XdEmployee>() {
+			@Override
+			public void accept(XdEmployee employee){
+				DictMapping.fieldValueToName(employee,orgMap,projectMap,dictMap);
+			}
+		});
+
+
 		List<PrintInfoVo> list=new ArrayList<>();
 		for (XdEmployee emp : employees) {
 			PrintInfoVo printInfoVo = new PrintInfoVo();

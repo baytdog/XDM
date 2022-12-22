@@ -51,7 +51,6 @@ public class DbImportExcelUtils {
     }
 
     public static String formatgetCellStringValue(Cell cell) {
-        System.out.println(cell.getCellTypeEnum());
         if(cell.getCellTypeEnum()==CellType.NUMERIC){
             if(HSSFDateUtil.isCellDateFormatted(cell)){
                 SimpleDateFormat sdf = null;
@@ -65,12 +64,7 @@ public class DbImportExcelUtils {
                 return sdf.format(date);
             }
         }
-
-
-
         cell.setCellType(CellType.STRING);
-
         return cell.getStringCellValue();
-
     }
 }
