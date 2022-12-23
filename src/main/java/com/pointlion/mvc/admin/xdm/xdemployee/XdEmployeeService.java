@@ -40,14 +40,33 @@ public class XdEmployeeService{
 	/***
 	 * get page
 	 */
-	public Page<Record> getPage(int pnum,int psize,String startTime,String endTime,String applyUser){
+	public Page<Record> getPage(int pnum,int psize,String name,String empnum,String emprelation
+			,String department,String unitname,String costitem){
 		String userId = ShiroKit.getUserId();
-		String sql  = " from "+TABLE_NAME+" o where cuser='"+ShiroKit.getUserId()+"'";
-		if(StrKit.notBlank(startTime)){
-			sql = sql + " and o.create_time>='"+ DateUtil.formatSearchTime(startTime,"0")+"'";
+		String userOrgId = ShiroKit.getUserOrgId();
+
+		String sql  = " from "+TABLE_NAME+" o where 1=1";
+		if(!"1".equals(userOrgId)){
+			sql=sql+" and cuser='"+ShiroKit.getUserId()+"'";
 		}
-		if(StrKit.notBlank(endTime)){
-			sql = sql + " and o.create_time<='"+DateUtil.formatSearchTime(endTime,"1")+"'";
+		if(StrKit.notBlank(name)){
+			sql = sql + " and o.name like '%"+ name+"%'";
+		}
+		if(StrKit.notBlank(empnum)){
+			sql = sql + " and o.empnum like '%"+ empnum+"%'";
+		}
+
+		if(StrKit.notBlank(emprelation)){
+			sql = sql + " and o.emprelation like '%"+ emprelation+"%'";
+		}
+		if(StrKit.notBlank(department)){
+			sql = sql + " and o.department = '"+ department+"'";
+		}
+		if(StrKit.notBlank(unitname)){
+			sql = sql + " and o.unitname = '"+ unitname+"'";
+		}
+		if(StrKit.notBlank(costitem)){
+			sql = sql + " and o.costitem = '"+ costitem+"'";
 		}
 		sql = sql + " order by o.ctime desc";
 		return Db.paginate(pnum, psize, " select * ", sql);
@@ -326,15 +345,8 @@ public class XdEmployeeService{
 	 * @Version  1.0
 	 * @Return java.io.File
 	 */
-	public File exportExcel(String path, String name, String empnum, String emprelation, String unitname, String costitem){
-
-		String userId = ShiroKit.getUserId();
-
+	public File exportExcel(String path, String name, String empnum, String emprelation, String department, String unitname, String costitem){
 		String sql  = " from "+TABLE_NAME+" o   where 1=1";
-
-//		String adminUser = Constants.ADMIN_USER;
-		SysUser user = SysUser.dao.findById(userId);
-
 		if (StrKit.notBlank(name)) {
 			sql = sql + " and o.name like '%"+name +"%'";
 		}
@@ -345,17 +357,24 @@ public class XdEmployeeService{
 		if (StrKit.notBlank(emprelation)) {
 			sql = sql + " and o.emprelation like '%"+emprelation+"%'";
 		}
+		if (StrKit.notBlank(department)) {
+			sql = sql + " and o.department = '"+department+"'";
+		}
 		if (StrKit.notBlank(unitname)) {
-			sql = sql + " and o.unitname like '%"+unitname+"%'";
+			sql = sql + " and o.unitname = '"+unitname+"'";
 		}
 
 		if (StrKit.notBlank(costitem)) {
-			sql = sql + " and o.status='"+costitem+"'";
+			sql = sql + " and o.costitem='"+costitem+"'";
 		}
 		sql = sql + " order by o.ctime desc";
 
 
 		List<XdEmployee> list = XdEmployee.dao.find(" select * "+sql);//查询全部
+		Map<String, Map<String, String>> dictMap = DictMapping.dictMappingValueToName();
+		Map<String, String> projectMap = DictMapping.projectsMappingValueToName();
+		Map<String, String> orgMap = DictMapping.orgMapping("0");
+
 		List<List<String>> rows = new ArrayList<List<String>>();
 		List<String> first = new ArrayList<String>();
 		first.add("员工编号");
@@ -418,6 +437,7 @@ public class XdEmployeeService{
 		rows.add(first);
 		for(XdEmployee emp:list){
 			List<String> row = new ArrayList<String>();
+			DictMapping.fieldValueToName(emp,orgMap,projectMap,dictMap);
 			row.add(emp.getEmpnum());//0
 			row.add(emp.getName());//0
 			row.add(emp.getIdnum());//0
@@ -431,7 +451,7 @@ public class XdEmployeeService{
 			row.add(emp.getInductionstatus()==null?"":emp.getInductionstatus().toString());//0
 			row.add(emp.getBirthday());//出生日期
 			row.add(emp.getSeniority());//0
-			row.add(emp.getAge().toString());//0
+			row.add(emp.getAge()==null?"0":String.valueOf(emp.getAge()));//0
 			row.add(emp.getRetiretime());//0
 			row.add("");//退休状态
 			row.add(emp.getEmprelation());
@@ -471,8 +491,8 @@ public class XdEmployeeService{
 			row.add(emp.getFundaccount());//公积金账号
 			row.add(emp.getRecruitsource());
 			row.add(emp.getSalary()==null?"":emp.getSalary().toString());
-			row.add("");//薪资变动
-			row.add("");//调职记录
+			row.add(emp.getSaladjrecord()==null?"":emp.getSaladjrecord());//薪资变动
+			row.add(emp.getChrecord()==null?"":emp.getChrecord());//调职记录
 			rows.add(row);
 		}
 		File file = ExcelUtil.listToFile(path,rows);
@@ -493,9 +513,8 @@ public class XdEmployeeService{
 	 * @Version  1.0
 	 * @Return java.io.File
 	 */
-	public File exportContractExcel(String path, String name, String empnum, String emprelation, String unitname, String costitem){
+	public File exportContractExcel(String path, String name, String empnum, String emprelation, String department, String unitname, String costitem){
 		String sql  = " from "+TABLE_NAME+" o   where 1=1";
-
 
 		if (StrKit.notBlank(name)) {
 			sql = sql + " and o.name like '%"+name +"%'";
@@ -507,12 +526,14 @@ public class XdEmployeeService{
 		if (StrKit.notBlank(emprelation)) {
 			sql = sql + " and o.emprelation like '%"+emprelation+"%'";
 		}
-		if (StrKit.notBlank(unitname)) {
-			sql = sql + " and o.unitname like '%"+unitname+"%'";
+		if (StrKit.notBlank(department)) {
+			sql = sql + " and o.department = '"+department+"'";
 		}
-
+		if (StrKit.notBlank(unitname)) {
+			sql = sql + " and o.unitname = '"+unitname+"'";
+		}
 		if (StrKit.notBlank(costitem)) {
-			sql = sql + " and o.status='"+costitem+"'";
+			sql = sql + " and o.costitem='"+costitem+"'";
 		}
 		sql = sql + " order by o.ctime desc";
 
@@ -526,12 +547,12 @@ public class XdEmployeeService{
 				mapObj.put(xdEmployee.getId(),xdEmployee);
 			}
 		}else{
-			String inSql="";
+			String inSql="'0'";
 			for (XdEmployee xdEmployee : list) {
 				inSql=inSql+"'"+xdEmployee.getId()+"'"+",";
 				mapObj.put(xdEmployee.getId(),xdEmployee);
 			}
-			inSql=inSql.replaceAll(",&","");
+			inSql=inSql.replaceAll(",$","");
 			listContract = XdContractInfo.dao.find("select * from xd_contract_info where  eid in (" + inSql + ")  order by eid,contractclauses ");
 		}
 
@@ -554,7 +575,7 @@ public class XdEmployeeService{
 
 		Collection<Integer> values = mapCount.values();
 		Stream<Integer> sorted = values.stream().sorted((o1, o2) ->  -o1.compareTo(o2));
-		Integer maxLen = sorted.findFirst().get();
+		int maxLen =sorted.findFirst().get();;
 		String[] num = {"一", "二", "三", "四", "五", "六", "七", "八", "九"};
 		List<List<String>> rows = new ArrayList<List<String>>();
 		List<String> first = new ArrayList<String>();
@@ -596,7 +617,7 @@ public class XdEmployeeService{
 		rows.add(second);
 		Collection<List<XdContractInfo>> collContract = mapObje.values();
 		Stream<List<XdContractInfo>> sorted1 = collContract.stream().sorted((o1, o2) -> -(o1.size() - o2.size()));
-
+		Map<String, String> orgMap = DictMapping.orgMapping("0");
 		sorted1.forEach( xdContractInfos->{
 			List<String> row = new ArrayList<String>();
 			XdContractInfo contract = xdContractInfos.get(xdContractInfos.size() - 1);
@@ -604,7 +625,7 @@ public class XdEmployeeService{
 			row.add(xdEmployee.getEmpnum()
 			);
 			row.add(xdEmployee.getIdnum());
-			row.add(xdEmployee.getDepartment());
+			row.add(xdEmployee.getDepartment()==null?"":orgMap.get(xdEmployee.getDepartment()));
 			row.add(xdEmployee.getName());
 			row.add(String.valueOf(xdEmployee.getAge()));
 			row.add(xdEmployee.getEmprelation());
@@ -635,173 +656,10 @@ public class XdEmployeeService{
 		return file;
 	}
 
-	public String formatFromchannel(String fromchannel) {
-		String fFromchannel="";
-		switch (fromchannel) {
-			case "1":
-				fFromchannel="国家局转信";
-				break;
-			case "2":
-				fFromchannel="国家局转访";
-				break;
-			case "3":
-				fFromchannel="市转来信";
-				break;
-			case "4":
-				fFromchannel="市转来访";
-				break;
-			case "5":
-				fFromchannel="市委领导信箱";
-				break;
-			case "6":
-				fFromchannel="市长信箱";
-				break;
-			case "7":
-				fFromchannel="委转来信";
-				break;
-			case "8":
-				fFromchannel="委转来访";
-				break;
-			case "9":
-				fFromchannel="委转来电";
-				break;
-			case "10":
-				fFromchannel="中心来访";
-				break;
-			case "11":
-				fFromchannel="中心来信";
-				break;
-			case "12":
-				fFromchannel="交通网";
-				break;
-			case "13":
-				fFromchannel="主任信箱";
-				break;
-			case "14":
-				fFromchannel="投诉受理信箱";
-				break;
-			case "15":
-				fFromchannel="市交通委信箱";
-				break;
-
-			default:
-				break;
-		}
-		return fFromchannel;
-
-	}
-
-	public String formatLetterresult(String letterresult) {
-		String fletterresult="";
-		if(letterresult==null) {
-
-		}else {
-
-			switch (letterresult) {
-				case "1":
-					fletterresult="解决";
-					break;
-				case "2":
-					fletterresult="部分解决";
-					break;
-				case "3":
-					fletterresult="视为解决";
-					break;
-				case "4":
-					fletterresult="未解决";
-					break;
-				case "5":
-					fletterresult="留作参考";
-					break;
-
-				default:
-					break;
-			}
-		}
-
-		return fletterresult;
-
-	}
 
 
-	public String formatLetterreason(String letterreason) {
-		String fLetterreason="";
 
-		if(letterreason==null) {
 
-		}else {
-
-			switch (letterreason) {
-				case "1":
-					fLetterreason="无理/失实";
-					break;
-				case "2":
-					fLetterreason="政策所限";
-					break;
-				case "3":
-					fLetterreason="客观所限";
-					break;
-				case "4":
-					fLetterreason="要求过高";
-					break;
-
-				default:
-					break;
-			}
-		}
-		return fLetterreason;
-
-	}
-
-	public String formatFromersug(String fromersug) {
-		String fFromersug="";
-		if(fromersug==null) {
-
-		}else {
-
-			switch (fromersug) {
-				case "1":
-					fFromersug="同意";
-					break;
-				case "2":
-					fFromersug="不同意";
-					break;
-				case "3":
-					fFromersug="未有明确意见";
-					break;
-				default:
-					break;
-			}
-		}
-
-		return fFromersug;
-
-	}
-	public String formatLettertype(String lettertype) {
-		String flettertype="";
-		switch (lettertype) {
-			case "1":
-				flettertype="申述";
-				break;
-			case "2":
-				flettertype="求决";
-				break;
-			case "3":
-				flettertype="举报";
-				break;
-			case "4":
-				flettertype="意见建议";
-				break;
-			case "5":
-				flettertype="其他";
-				break;
-
-			default:
-				break;
-		}
-		return flettertype;
-
-	}
 
 
 
@@ -865,31 +723,11 @@ public class XdEmployeeService{
 							}else{
 								emp.setUnitname(unit.get(empStr.get(6)));
 							}
-							//emp.setUnitname(0);//所属单元empStr.get(6)
-							/*XdDict project = XdDict.dao.findFirst("select * from xd_dict where type='projects' and name ='" + empStr.get(7) + "'");
-							if(project==null){
-								emp.setCostitem(0);//empStr.get(7)成本项目
-							}else{
-								emp.setCostitem(Integer.valueOf(project.getValue()));
-							}*/
-						/*	Map<String, Integer> projects = dictMapping.get("projects");
-							if(projects.get(empStr.get(7))==null){
-								emp.setCostitem(0);//empStr.get(7)成本项目
-							}else{
-								emp.setCostitem(projects.get(empStr.get(7)));
-							}*/
 							String projectValue = (projectsMap.get(empStr.get(7)))==null?"0":projectsMap.get(empStr.get(7));
 							emp.setCostitem(projectValue);
 							emp.setEntrytime(empStr.get(8));
 							emp.setPositivedate(empStr.get(9));
 							emp.setDepartime(empStr.get(10));
-							/*XdDict officestatus = XdDict.dao.findFirst("select * from xd_dict where type='officestatus' and name ='" + empStr.get(11) + "'");
-							if(officestatus==null){
-								emp.setInductionstatus(0);//就职状态empStr.get(11)
-							}else{
-								emp.setInductionstatus(Integer.valueOf(officestatus.getValue()));
-							}*/
-							//emp.setInductionstatus(0);//就职状态empStr.get(11)
 							Map<String, String> officestatus = dictMapping.get("officestatus");
 							if(officestatus.get(empStr.get(11))==null){
 								emp.setInductionstatus("0");//就职状态empStr.get(11)
@@ -917,14 +755,33 @@ public class XdEmployeeService{
 
 							emp.setWorkstation(empStr.get(19));
 							emp.setTel(empStr.get(20));
-							emp.setNational(empStr.get(21));
-							emp.setPoliticsstatus(empStr.get(22));
-							/*XdDict ismarry = XdDict.dao.findFirst("select * from xd_dict where type='ismarry' and name ='" + empStr.get(23) + "'");
-							if(ismarry==null){
-								emp.setMarried(0);//婚姻：empStr.get(23)
+//							emp.setNational(empStr.get(21));
+							if(empStr.get(21)==null){
+								emp.setNational("");
 							}else{
-								emp.setMarried(Integer.valueOf(ismarry.getValue()));
-							}*/
+								String nation = dictMapping.get("nation").get(empStr.get(21));
+								if(nation==null){
+									emp.setNational("");
+								}else{
+									emp.setNational(nation);
+								}
+							}
+//							政治面貌
+//							emp.setPoliticsstatus(empStr.get(22));
+							String politicsstatus = empStr.get(22);
+							if(politicsstatus==null){
+								emp.setPoliticsstatus("");
+							}else{
+								String polity = dictMapping.get("polity").get(empStr.get(22));
+								if (polity == null) {
+									emp.setPoliticsstatus("");
+								}else{
+									emp.setPoliticsstatus(polity);
+								}
+							}
+
+
+
 							Map<String, String> ismarry = dictMapping.get("ismarry");
 							String marryCode=ismarry.get(empStr.get(23))==null?"0":ismarry.get(empStr.get(23));
 							emp.setMarried(marryCode);
@@ -1041,11 +898,11 @@ public class XdEmployeeService{
 		if(StrKit.notBlank(empnum)){
 			sql = sql + " and o.empnum like '%"+ empnum+"%'";
 		}
+		if(StrKit.notBlank(emprelation)){
+			sql = sql + " and o.emprelation like '%"+ emprelation+"%'";
+		}
 		if(StrKit.notBlank(department)){
 			sql = sql + " and o.department = '"+ department+"'";
-		}
-		if(StrKit.notBlank(emprelation)){
-			sql = sql + " and o.emprelation = '"+ emprelation+"'";
 		}
 		if(StrKit.notBlank(unitname)){
 			sql = sql + " and o.unitname = '"+ unitname+"'";

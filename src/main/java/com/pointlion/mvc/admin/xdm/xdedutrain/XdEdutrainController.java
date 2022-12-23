@@ -47,7 +47,7 @@ public class XdEdutrainController extends BaseController {
 		String edubg = java.net.URLDecoder.decode(getPara("edubg",""),"UTF-8");
 		String enrolldate =  getPara("enrolldate","");
 		String graduatdate =  getPara("graduatdate","");
-    	Page<Record> page = service.getPage(Integer.valueOf(curr),Integer.valueOf(pageSize),name,trainOrgname,major,edubg,enrolldate,graduatdate);
+    	Page<Record> page = service.getPage(Integer.valueOf(curr),Integer.valueOf(pageSize),"","","","","","");
     	renderPage(page.getList(),"",page.getTotalRow());
     }
     /***

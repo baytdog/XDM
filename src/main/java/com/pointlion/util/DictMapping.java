@@ -35,7 +35,16 @@ public class DictMapping {
         Map<String,Map<String,String>> dictMap=new HashMap<>();
         List<XdDict> dictsList = XdDict.dao.find("select * from xd_dict");
         dictsList.stream().forEach(xdDict -> {
-            switch (xdDict.getType()){
+            if (dictMap.get(xdDict.getType()) == null) {
+                Map<String,String> map =new HashMap<>();
+                map.put(xdDict.getName(),xdDict.getValue());
+                dictMap.put(xdDict.getType(),map);
+            }else{
+                Map<String, String> map = dictMap.get(xdDict.getType());
+                map.put(xdDict.getName(),xdDict.getValue());
+                dictMap.put(xdDict.getType(),map);
+            }
+            /*switch (xdDict.getType()){
                 case "unit":
                     if(dictMap.get("unit")==null){
                         Map<String,String> unitMap=new HashMap<>();
@@ -93,7 +102,7 @@ public class DictMapping {
                     break;
                 default:
 
-            }
+            }*/
         });
         return dictMap;
     }
@@ -249,10 +258,5 @@ public class DictMapping {
 
             }
         }
-    }
-    public static void EmpFieldMapping(XdEmployee employee){
-
-
-
     }
 }

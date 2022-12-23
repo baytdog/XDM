@@ -21,26 +21,35 @@
 											<input id="emprelation" placeholder="员工关系" class="form-control">
 										</div>
 										<div class="form-group">
-											<input id="department" placeholder="所属部门" class="form-control">
+											<!--<input id="department" placeholder="所属部门" class="form-control">-->
+											<select class="selectpicker form-control"  id="department"  >
+												<option value="">------请选择部门------</option>
+												<option value="1">人力资源部</option>
+												<option value="2">外场单元部</option>
+												<option value="3">设施一部</option>
+												<option value="4">内场单元部</option>
+												<option value="5">工程/设施二部</option>
+												<option value="887163179b6c4eaabd06c44e47e41f92">职能部门</option>
+											</select>
 										</div>
 										<div class="form-group">
-											<input id="unitname" placeholder="单元" class="form-control">
+											<!--<input id="unitname" placeholder="单元" class="form-control">-->
+											<select class="selectpicker form-control"  id="unitname"  data-live-search="true" >
+												<option value="">------请选择单元------</option>
+												#for(unit:units)
+												<option value="#(unit.value)">#(unit.name)</option>
+												#end
+											</select>
 										</div>
 										<div class="form-group">
-											<input id="costitem" placeholder="成本项目" class="form-control">
+										<!--	<input id="costitem" placeholder="成本项目" class="form-control">-->
+											<select class="selectpicker form-control"  id="costitem"  data-live-search="true" >
+												<option value="">------请选择项目------</option>
+												#for(pro:projects)
+												<option value="#(pro.id)">#(pro.project_name)</option>
+												#end
+											</select>
 										</div>
-										<!--<div class="form-group">
-											<div class="input-group date form_datetime">
-												<input id="searchStartTime" placeholder="开始时间" class="form-control">
-												<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
-											</div>
-										</div>
-										<div class="form-group">
-											<div class="input-group date form_datetime">
-												<input id="searchEndTime" placeholder="结束时间" class="form-control">
-												<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
-											</div>
-										</div>-->
 										<div class="form-group">
 											<button class="btn btn-primary" type="button" onclick="searchTable()">搜索</button>
 										</div>
@@ -139,7 +148,13 @@
 			   queryParams : function(params) {
 			       return {
 			             pageNumber: (params.offset/params.limit)+1,
-			             pageSize: params.limit
+			             pageSize: params.limit,
+						   "name":encodeURIComponent($("#name").val()),
+						   "empnum":encodeURIComponent($("#empnum").val()),
+						   "emprelation":encodeURIComponent($("#emprelation").val()),
+						   "department":$("#department").val(),
+						   "unitname":$("#unitname").val(),
+						   "costitem":$("#costitem").val()
 			           };
 			   },
 			   //分页方式：client客户端分页，server服务端分页（*）
@@ -194,14 +209,20 @@
 
 	//查询
 	function searchTable(){
-		var startTime = $("#searchStartTime").val();
-		var endTime = $("#searchEndTime").val();
-		var applyUser = $("#applyUser").val();
+		var name = encodeURIComponent($("#name").val());
+		var empnum = encodeURIComponent($("#empnum").val());
+		var emprelation = encodeURIComponent($("#emprelation").val());
+		var department = $("#department").val();
+		var unitname =$("#unitname").val();
+		var costitem = $("#costitem").val();
 		var param = {
 			query: {
-				"startTime":startTime,
-				"endTime":endTime,
-				"applyUser":applyUser
+				"name":name,
+				"empnum":empnum,
+				"emprelation":emprelation,
+				"department":department,
+				"unitname":unitname,
+				"costitem":costitem,
 			}
 		}
 		// 刷新表格
@@ -216,11 +237,10 @@
 		var name = encodeURI(encodeURI($("#name").val()));
 		var empnum = encodeURI(encodeURI($("#empnum").val()));
 		var emprelation = encodeURI(encodeURI($("#emprelation").val()));
-	/*	var startTime = $("#searchStartTime").val();
-		var endTime = $("#searchEndTime").val();*/
+		var department = $("#department").val();
 		var unitname = $("#unitname").val();
 		var costitem = $("#costitem").val();
-		location.href = "#(ctx)/admin/xd/xdemployee/exportExcel?name="+name+"&empnum="+empnum+"&emprelation="+emprelation+"&unitname="+unitname+"&costitem="+costitem;
+		location.href = "#(ctx)/admin/xd/xdemployee/exportExcel?name="+name+"&empnum="+empnum+"&emprelation="+emprelation+"&department="+department+"&unitname="+unitname+"&costitem="+costitem;
 	}
 	/***
 	 * 导出合同信息
@@ -229,9 +249,10 @@
 		var name = encodeURI(encodeURI($("#name").val()));
 		var empnum = encodeURI(encodeURI($("#empnum").val()));
 		var emprelation = encodeURI(encodeURI($("#emprelation").val()));
+		var department = $("#department").val();
 		var unitname = $("#unitname").val();
 		var costitem = $("#costitem").val();
-		location.href = "#(ctx)/admin/xd/xdemployee/exportContractExcel?name="+name+"&empnum="+empnum+"&emprelation="+emprelation+"&unitname="+unitname+"&costitem="+costitem;
+		location.href = "#(ctx)/admin/xd/xdemployee/exportContractExcel?name="+name+"&empnum="+empnum+"&emprelation="+emprelation+"&department="+department+"&unitname="+unitname+"&costitem="+costitem;
 	}
 
 

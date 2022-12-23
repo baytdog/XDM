@@ -1,8 +1,6 @@
 package com.pointlion.mvc.admin.xdm.xdemployee;
 
-import cn.hutool.core.lang.Dict;
 import com.jfinal.kit.StrKit;
-import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.plugin.activerecord.Record;
 import com.jfinal.upload.UploadFile;
@@ -20,7 +18,10 @@ import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 
 
@@ -37,18 +38,28 @@ public class XdEmployeeController extends BaseController {
 			setAttr("personnel","N");
 
 		}
+
+		List<XdDict> units = XdDict.dao.find("select *from xd_dict where type='unit' order by  sortnum");
+		setAttr("units",units);
+		List<XdProjects> projects = XdProjects.dao.find("select * from xd_projects where status='1' ");
+		setAttr("projects",projects);
+
 		renderIframe("list.html");
     }
 	/***
      * list page data
      **/
-    public void listData(){
+    public void listData() throws UnsupportedEncodingException {
 		String curr = getPara("pageNumber");
     	String pageSize = getPara("pageSize");
-		String endTime = getPara("endTime","");
-		String startTime = getPara("startTime","");
-		String applyUser = getPara("applyUser","");
-    	Page<Record> page = service.getPage(Integer.valueOf(curr),Integer.valueOf(pageSize),startTime,endTime,applyUser);
+		String name = java.net.URLDecoder.decode(getPara("name",""),"UTF-8");
+		String empnum = java.net.URLDecoder.decode(getPara("empnum",""),"UTF-8");
+		String emprelation = java.net.URLDecoder.decode(getPara("emprelation",""),"UTF-8");
+		String department =getPara("department","");
+		String unitname = getPara("unitname","");
+		String costitem = getPara("costitem","");
+
+    	Page<Record> page = service.getPage(Integer.valueOf(curr),Integer.valueOf(pageSize),name,empnum,emprelation,department,unitname,costitem);
     	renderPage(page.getList(),"",page.getTotalRow());
     }
     /***
@@ -155,7 +166,8 @@ public class XdEmployeeController extends BaseController {
 		setAttr("sysOrgs",sysOrgs);
 		List<XdDict> units = XdDict.dao.find("select * from xd_dict where type ='unit' order by sortnum");
 		setAttr("units",units);
-		List<XdDict> projects = XdDict.dao.find("select * from xd_dict where type ='projects' order by sortnum");
+//		List<XdDict> projects = XdDict.dao.find("select * from xd_dict where type ='projects' order by sortnum");
+		List<XdProjects> projects = XdProjects.dao.find("select * from xd_projects where status='1'");
 		setAttr("projects",projects);
 		List<XdDict> position = XdDict.dao.find("select * from xd_dict where type ='position' order by sortnum");
 		setAttr("position",position);
@@ -341,7 +353,7 @@ public class XdEmployeeController extends BaseController {
 		setAttr("sysOrgs",sysOrgs);
 		List<XdDict> units = XdDict.dao.find("select * from xd_dict where type ='unit' order by sortnum");
 		setAttr("units",units);
-		List<XdDict> projects = XdDict.dao.find("select * from xd_dict where type ='projects' order by sortnum");
+		List<XdProjects> projects = XdProjects.dao.find("select * from xd_projects where status='1'");
 		setAttr("projects",projects);
 		List<XdDict> position = XdDict.dao.find("select * from xd_dict where type ='position' order by sortnum");
 		setAttr("position",position);
@@ -541,7 +553,7 @@ public class XdEmployeeController extends BaseController {
 		setAttr("sysOrgs",sysOrgs);
 		List<XdDict> units = XdDict.dao.find("select * from xd_dict where type ='unit' order by sortnum");
 		setAttr("units",units);
-		List<XdDict> projects = XdDict.dao.find("select * from xd_dict where type ='projects' order by sortnum");
+		List<XdProjects> projects = XdProjects.dao.find("select * from xd_projects where status='1'");
 		setAttr("projects",projects);
 		List<XdDict> position = XdDict.dao.find("select * from xd_dict where type ='position' order by sortnum");
 		setAttr("position",position);
@@ -565,15 +577,14 @@ public class XdEmployeeController extends BaseController {
 	 */
 	public void exportExcel() throws UnsupportedEncodingException {
 
-		/*String endTime = getPara("endTime","");
-		String startTime = getPara("startTime","");*/
 		String name = java.net.URLDecoder.decode(getPara("name",""),"UTF-8");
 		String empnum = java.net.URLDecoder.decode(getPara("empnum",""),"UTF-8");
-		String emprelation = getPara("emprelation","");
+		String emprelation = java.net.URLDecoder.decode(getPara("emprelation",""),"UTF-8");
+		String department=getPara("department","");
 		String unitname=getPara("unitname","");
 		String costitem=getPara("costitem","");
 		String path = this.getSession().getServletContext().getRealPath("")+"/upload/export/"+DateUtil.format(new Date(),21)+".xlsx";
-		File file = service.exportExcel(path,name,empnum,emprelation,unitname,costitem);
+		File file = service.exportExcel(path,name,empnum,emprelation,department,unitname,costitem);
 		renderFile(file);
 	}
 	/**
@@ -589,11 +600,12 @@ public class XdEmployeeController extends BaseController {
 
 		String name = java.net.URLDecoder.decode(getPara("name",""),"UTF-8");
 		String empnum = java.net.URLDecoder.decode(getPara("empnum",""),"UTF-8");
-		String emprelation = getPara("emprelation","");
+		String emprelation = java.net.URLDecoder.decode(getPara("emprelation",""),"UTF-8");
+		String department=getPara("department","");
 		String unitname=getPara("unitname","");
 		String costitem=getPara("costitem","");
 		String path = this.getSession().getServletContext().getRealPath("")+"/upload/export/"+DateUtil.format(new Date(),21)+".xlsx";
-		File file = service.exportContractExcel(path,name,empnum,emprelation,unitname,costitem);
+		File file = service.exportContractExcel(path,"","","","","","");
 		renderFile(file);
 	}
 

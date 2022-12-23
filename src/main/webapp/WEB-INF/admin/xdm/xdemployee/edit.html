@@ -253,7 +253,7 @@
 			$('#costitemSelect').selectpicker('val',costitem.split(",")).trigger("change");
 		}
 		$('#costitemSelect').on('changed.bs.select', function (e) {
-			$('#unitname').val($('#costitemSelect').val())
+			$('#costitem').val($('#costitemSelect').val())
 		});
 		//职   位
 		let position=$("#position").val();
