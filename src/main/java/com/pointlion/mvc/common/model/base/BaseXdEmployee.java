@@ -46,7 +46,7 @@ public abstract class BaseXdEmployee<M extends BaseXdEmployee<M>> extends Model<
 	public void setGender(String gender) {
 		set("gender", gender);
 	}
-	@ChangeFields(value="gender",desc = "性别")
+/*	@ChangeFields(value="gender",desc = "性别")*/
 	public String getGender() {
 		return getStr("gender");
 	}
@@ -62,7 +62,7 @@ public abstract class BaseXdEmployee<M extends BaseXdEmployee<M>> extends Model<
 	public void setAge(Integer age) {
 		set("age", age);
 	}
-	@ChangeFields(value="age",desc = "年龄")
+	/*@ChangeFields(value="age",desc = "年龄")*/
 	public Integer getAge() {
 		return getInt("age");
 	}
@@ -471,7 +471,7 @@ public abstract class BaseXdEmployee<M extends BaseXdEmployee<M>> extends Model<
 	public void setBirthday(java.lang.String birthday) {
 		set("birthday", birthday);
 	}
-	@ChangeFields(value = "birthday",desc = "出生日期")
+	/*@ChangeFields(value = "birthday",desc = "出生日期")*/
 	public java.lang.String getBirthday() {
 		return getStr("birthday");
 	}
@@ -506,4 +506,13 @@ public abstract class BaseXdEmployee<M extends BaseXdEmployee<M>> extends Model<
 	public java.lang.String getRetirestatus() {
 		return getStr("retirestatus");
 	}
+
+	public void setLeaveReason(java.lang.String leaveReason) {
+		set("leave_reason", leaveReason);
+	}
+
+	public java.lang.String getLeaveReason() {
+		return getStr("leave_reason");
+	}
+
 }

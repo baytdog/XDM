@@ -12,9 +12,6 @@
 		function save(){
 			let gridData1 = grid.getData();
 			let gridData2 = grid2.getData();
-			console.log(gridData1);
-			console.log(gridData2);
-			console.log(mini.decode(gridData1));
 
 			var data = common_ajax.ajaxFunc("/admin/xd/xdemployee/save",$('#editForm').serialize()+"&gridData1="+mini.encode(gridData1)+"&gridData2="+mini.encode(gridData2), "json", null);
 			if(data.success){
@@ -29,8 +26,29 @@
 		}
 		$(document).ready(function() {
 			$('#editForm').bootstrapValidator({
-	            fields: {
-	            }
+				excluded:[":disabled"],
+				live: 'enabled',
+				fields: {
+					"#(formModelName).name": {
+						trigger: 'change',
+						validators: {
+							notEmpty: {
+								message: '*姓名不能为空'
+							}
+						}
+					},
+					"#(formModelName).Idnum": {
+						validators: {
+							notEmpty: {
+								message: '*身份证号不能为空'
+							},
+							regexp: {
+								regexp: /^(^[1-9]\d{7}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}$)|(^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])((\d{4})|\d{3}[Xx])$)$/,
+								message: '身份证号码格式不正确，为15位和18位身份证号码！'
+							},
+						}
+					}
+				}
 	        }).on("success.form.bv", function (e) {
 	            save();
 	            return false;//阻止表单跳转
@@ -38,7 +56,6 @@
 		});
 	</script>
 
-<!--	<link href="#(ctx)/common/plugins/jquery-ui/scripts/miniui/themes/default/miniui.css" rel="stylesheet" type="text/css" />-->
 
 	<script type="text/javascript">
 
@@ -121,17 +138,53 @@
 		});
 	</script>
 	<script>
-
 		function resetVali(){
 			if(!$("#editForm").data('bootstrapValidator').isValid()) {
 				$("#editForm").data('bootstrapValidator').resetForm();
 				$(".btn").removeAttr("disabled");
 			}
 		}
+
+		/*$(function () {
+			$('#editForm').bootstrapValidator({
+				excluded:[":disabled"],
+				live: 'enabled',
+				fields: {
+					"#(formModelName).name": {
+						trigger: 'change',
+						validators: {
+							notEmpty: {
+								message: '*姓名不能为空'
+							}
+						}
+					},
+					"#(formModelName).Idnum": {
+						validators: {
+							notEmpty: {
+								message: '*身份证号不能为空'
+							},
+							regexp: {
+								regexp: /^(^[1-9]\d{7}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}$)|(^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])((\d{4})|\d{3}[Xx])$)$/,
+								message: '身份证号码格式不正确，为15位和18位身份证号码！'
+							},
+						}
+					}
+				}
+			});
+			$("#submitBtn").click(function(){
+				$("#editForm").data('bootstrapValidator').validate();//相当于触发一次所有的验证
+				if(!$("#editForm").data('bootstrapValidator').isValid()){//判断验证是否已经通过
+					return false;
+				}else{
+					save();
+				}
+
+			});
+
+		})*/
 		$(function(){
+
 			var employeeId=$("#employeeId").val();
-			console.log(employeeId);
-			console.log(grid.getData())
 			var data = common_ajax.ajaxFunc("/admin/xd/xdedutrain/getEduTrainList", {"employeeId":employeeId}, "json", null);
 
 			grid.setData(data);
@@ -152,6 +205,7 @@
 
 		$(".selectpicker").selectpicker({});
 		$(".bootstrap-select").attr("style","width:100%;");
+
 
 	</script>
 <script>

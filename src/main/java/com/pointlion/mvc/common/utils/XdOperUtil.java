@@ -9,6 +9,7 @@ import com.pointlion.plugin.shiro.ShiroKit;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.time.LocalDate;
 import java.util.Objects;
 
 /**
@@ -179,11 +180,19 @@ public class XdOperUtil {
 
     public static void main(String[] args) throws Exception {
 
-        XdEmployee e1=new XdEmployee();
+        /*XdEmployee e1=new XdEmployee();
         e1.setId("12345");
         XdEmployee e2=new XdEmployee();
-        e2.setId("7890");
+        e2.setId("7890");*/
 
+        System.out.println(10%2);
+
+        LocalDate  now=LocalDate.now();
+        LocalDate of = LocalDate.of(1989, 10, 11);
+        System.out.println(now.toEpochDay() - of.toEpochDay());
+        long l = now.toEpochDay() - of.toEpochDay();
+        System.out.println(l / 365);
+        System.out.println(l % 365);
 
 //        logSummary(e2);
 //        logSummary(e1);

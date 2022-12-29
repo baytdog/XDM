@@ -21,6 +21,7 @@ import org.flowable.cmmn.model.Case;
 import javax.jnlp.ServiceManagerStub;
 import java.io.File;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -187,6 +188,35 @@ public class XdEmployeeService{
 			flag=true;
 			summaryList.add(XdOperUtil.logSummary(lid,oldEmp.getId(),newEmp,oldEmp,XdOperEnum.U.name(),summaryStatus));
 			if(rs){
+
+
+				String idnum = newEmp.getIdnum();
+				if(idnum.length()==15){
+					String year ="19"+ idnum.substring(6,8);
+					String month = idnum.substring(8,10);
+					String days = idnum.substring(10,12);
+					int lastIndex = Integer.valueOf(idnum.substring(14));
+					newEmp.setGender(String.valueOf(lastIndex%2));
+					newEmp.setBirthday(year+"-"+month+"-"+days);
+					LocalDate birthday = LocalDate.of(Integer.valueOf(year), Integer.valueOf(month), Integer.valueOf(days));
+					long minusDays = LocalDate.now().toEpochDay() - birthday.toEpochDay();
+					int age = (int) (minusDays / 365);
+					newEmp.setAge(age);
+
+				}else{
+					String year = idnum.substring(6,10);
+					String month = idnum.substring(10,12);
+					String days = idnum.substring(12,14);
+					int lastIndex = Integer.valueOf(idnum.substring(17));
+					newEmp.setGender(String.valueOf(lastIndex%2));
+					newEmp.setBirthday(year+"-"+month+"-"+days);
+
+					LocalDate birthday = LocalDate.of(Integer.valueOf(year), Integer.valueOf(month), Integer.valueOf(days));
+					long minusDays = LocalDate.now().toEpochDay() - birthday.toEpochDay();
+					int age = (int) (minusDays / 365);
+					newEmp.setAge(age);
+				}
+
 				newEmp.update();
 			}
 		}

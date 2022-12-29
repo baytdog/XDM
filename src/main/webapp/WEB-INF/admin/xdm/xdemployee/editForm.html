@@ -33,7 +33,7 @@
 							</div>-->
 							<input type="hidden" id="gender" name="#(formModelName).gender" value="#(o?o.gender:'')">
 							<div class="col-md-3">
-								<select id="genderSelect"   title="请选择"  class="selectpicker show-tick form-control" actionsBox="true"  disable  data-live-search="false">
+								<select id="genderSelect"   title="请选择"  class="selectpicker show-tick form-control" actionsBox="true"  data-live-search="false" disabled="disabled">
 									<option value="1">男</option>
 									<option value="0">女</option>
 								</select>
@@ -53,7 +53,7 @@
 
 							<label class="col-md-1 control-label">年龄</label>
 							<div class="col-md-3">
-								<input type="text"  name="#(formModelName).age" class="form-control"  value="#(o?o.age:'')"  >
+								<input type="text"  name="#(formModelName).age" class="form-control"  value="#(o?o.age:'')" readonly="readonly" >
 							</div>
 						</div>
 						<div class="form-group">
@@ -154,15 +154,15 @@
 								<input type="text"  name="#(formModelName).Idnum" class="form-control"  value="#(o?o.Idnum:'')"  >
 							</div>
 							<label class="col-md-1 control-label">出生日期</label>
-							<!--<div class="col-md-3">
-								<input type="text"  name="#(formModelName).birthday" class="form-control"  value="#(o?o.birthday:'')"  >
-							</div>-->
+							<div class="col-md-3">
+								<input type="text"  name="#(formModelName).birthday" class="form-control"  value="#(o?o.birthday:'')" readonly="readonly" >
+							</div>
 
-							<div class="input-group date form_datetime col-md-3" style="float:left">
+							<!--<div class="input-group date form_datetime col-md-3" style="float:left">
 								<input type="text" id="birthday" name="#(formModelName).birthday" class="form-control"  value="#(o?o.birthday:'')"    >
 								<span class="input-group-addon"> <span class="glyphicon glyphicon-th"></span>
 									</span>
-							</div>
+							</div>-->
 							<label class="col-md-1 control-label">出 生 地</label>
 							<div class="col-md-3">
 								<input type="text"  name="#(formModelName).birthplace" class="form-control"  value="#(o?o.birthplace:'')"  >
@@ -370,14 +370,10 @@
 								<span class="input-group-addon"> <span class="glyphicon glyphicon-th"></span>
 									</span>
 							</div>
-							<label class="col-md-1 control-label">离职日期</label>
-							<!--<div class="col-md-3">
-								<input type="text"  name="#(formModelName).departime" class="form-control"  value="#(o?o.departime:'')"  >
-							</div>-->
-							<div class="input-group date form_datetime col-md-3" style="float:left">
-								<input type="text" id="departime" name="#(formModelName).departime" class="form-control"  value="#(o?o.departime:'')"    >
-								<span class="input-group-addon"> <span class="glyphicon glyphicon-th"></span>
-									</span>
+
+							<label class="col-md-1 control-label">紧急联系人</label>
+							<div class="col-md-3">
+								<input type="text"  name="#(formModelName).emcontact" class="form-control"  value="#(o?o.emcontact:'')"  >
 							</div>
 
 						</div>
@@ -456,25 +452,7 @@
 							</div>
 						</div>
 
-						<div class="form-group">
 
-							<label class="col-md-1 control-label">就职状况</label>
-							<!--<div class="col-md-3">
-								<input type="text"  name="#(formModelName).inductionstatus" class="form-control"  value="#(o?o.inductionstatus:'')"  >
-							</div>-->
-							<input type="hidden" id="inductionstatus" name="#(formModelName).inductionstatus" value="#(o?o.inductionstatus:'')">
-							<div class="col-md-3">
-								<select id="inductionstatusSelect"   title="请选择"  class="selectpicker show-tick form-control" actionsBox="true"  disable  data-live-search="false">
-									#for(ofstatus:officestatus)
-									<option value="#(ofstatus.value)">#(ofstatus.name)</option>
-									#end
-								</select>
-							</div>
-							<label class="col-md-1 control-label">所持证书</label>
-							<div class="col-md-7">
-								<input type="text"  name="#(formModelName).certificates" class="form-control"  value="#(o?o.certificates:'')"  >
-							</div>
-						</div>
 						<div class="form-group">
 							<label class="col-md-1 control-label">合同开始日期</label>
 						<!--	<div class="col-md-3">
@@ -496,7 +474,7 @@
 							</div>
 							<label class="col-md-1 control-label">工 龄(年)</label>
 							<div class="col-md-3">
-								<input type="text"  name="#(formModelName).seniority" class="form-control"  value="#(o?o.seniority:'')"  >
+								<input type="text"  name="#(formModelName).seniority" class="form-control"  value="#(o?o.seniority:'')" readonly="readonly" >
 							</div>
 						</div>
 						<div class="form-group">
@@ -521,10 +499,11 @@
 						</div>
 
 						<div class="form-group">
-							<label class="col-md-1 control-label">薪资</label>
+						<!--	<label class="col-md-1 control-label">薪资</label>
 							<div class="col-md-3">
 								<input type="text"  name="#(formModelName).salary" class="form-control"  value="#(o?o.salary:'')"  >
-							</div>
+							</div>-->
+
 							<label class="col-md-1 control-label">银行账号</label>
 							<div class="col-md-3">
 								<input type="text"  name="#(formModelName).banaccount" class="form-control"  value="#(o?o.banaccount:'')"  >
@@ -533,13 +512,47 @@
 							<div class="col-md-3">
 								<input type="text"  name="#(formModelName).fundaccount" class="form-control"  value="#(o?o.fundaccount:'')"  >
 							</div>
-
-
-						</div>
-						<div class="form-group">
 							<label class="col-md-1 control-label">退休状态</label>
 							<div class="col-md-3">
 								<input type="text"  name="#(formModelName).retirestatus" class="form-control"  value="#(o?o.retirestatus:'')"  >
+							</div>
+
+						</div>
+						<div class="form-group">
+							<label class="col-md-1 control-label">就职状况</label>
+							<!--<div class="col-md-3">
+								<input type="text"  name="#(formModelName).inductionstatus" class="form-control"  value="#(o?o.inductionstatus:'')"  >
+							</div>-->
+							<input type="hidden" id="inductionstatus" name="#(formModelName).inductionstatus" value="#(o?o.inductionstatus:'')">
+							<div class="col-md-3">
+								<select id="inductionstatusSelect"   title="请选择"  class="selectpicker show-tick form-control" actionsBox="true"  disable  data-live-search="false">
+									#for(ofstatus:officestatus)
+									<option value="#(ofstatus.value)">#(ofstatus.name)</option>
+									#end
+								</select>
+							</div>
+
+							<label class="col-md-1 control-label">离职日期</label>
+							<!--<div class="col-md-3">
+								<input type="text"  name="#(formModelName).departime" class="form-control"  value="#(o?o.departime:'')"  >
+							</div>-->
+							<div class="input-group date form_datetime col-md-3" style="float:left">
+								<input type="text" id="departime" name="#(formModelName).departime" class="form-control"  value="#(o?o.departime:'')"    >
+								<span class="input-group-addon"> <span class="glyphicon glyphicon-th"></span>
+									</span>
+							</div>
+							<label class="col-md-1 control-label">离职原因</label>
+							<div class="col-md-3">
+								<input type="text"  name="#(formModelName).leave_reason" class="form-control"  value="#(o?o.leave_reason:'')"  >
+							</div>
+						</div>
+
+						<div class="form-group">
+
+
+							<label class="col-md-1 control-label">所持证书</label>
+							<div class="col-md-11">
+								<input type="text"  name="#(formModelName).certificates" class="form-control"  value="#(o?o.certificates:'')"  readonly="readonly">
 							</div>
 						</div>
 
@@ -557,9 +570,9 @@
 				<div class="panel-collapse collapse" id="collapseFive">
 					<div class="panel-body">
 						<div class="form-group">
-							<label class="col-md-1 control-label">紧急联系人</label>
+							<label class="col-md-1 control-label">薪资</label>
 							<div class="col-md-3">
-								<input type="text"  name="#(formModelName).emcontact" class="form-control"  value="#(o?o.emcontact:'')"  >
+								<input type="text"  name="#(formModelName).salary" class="form-control"  value="#(o?o.salary:'')"  >
 							</div>
 							<label class="col-md-1 control-label">招聘来源</label>
 							<div class="col-md-3">
@@ -600,7 +613,7 @@
 			#if(view=='edit')
 
 			<!--<button class="btn btn-warning" type="reset" #if(view=='detail') disabled #end>重置</button>-->
-			<button class="btn btn-primary" type="submit" #if(view=='detail') disabled #end>#if(oper=='1')保存 #else 提交审批 #end</button>
+			<button id="submitBtn" class="btn btn-primary" type="submit" #if(view=='detail') disabled #end>#if(oper=='1')保存 #else 提交审批 #end</button>
 			<button class="btn btn-primary" type="button" onclick="window.history.back();" >返回</button>
 			#else
 			<button class="btn btn-primary" type="button" onclick="window.history.back();" >返回</button>

@@ -18,6 +18,7 @@ import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -83,16 +84,46 @@ public class XdEmployeeController extends BaseController {
 			String operName = XdOperEnum.C.name();
 			String operStatus = XdOperEnum.WAITAPPRO.name();
 			String oid=UuidUtil.getUUID();
-			o.setId(oid);
+			//o.setId(oid);
     		o.setCtime(DateUtil.getCurrentTime());
     		o.setCuser(ShiroKit.getUserId());
 			if(!"1".equals(ShiroKit.getUserOrgId())){
 				o.setBackup1("C");
 				XdOperUtil.insertEmpoloyeeSteps(o,"","1","","","C");
-				XdOperUtil.logSummary(oid,o,operName,operStatus,0);
+				//XdOperUtil.logSummary(oid,o,operName,operStatus,0);
+				XdOperUtil.logSummary(id,o,operName,operStatus,0);
 			}else{
+				String idnum = o.getIdnum();
+				if(idnum.length()==15){
+					String year ="19"+ idnum.substring(6,8);
+					String month = idnum.substring(8,10);
+					String days = idnum.substring(10,12);
+					int lastIndex = Integer.valueOf(idnum.substring(14));
+					o.setGender(String.valueOf(lastIndex%2));
+					o.setBirthday(year+"-"+month+"-"+days);
+					LocalDate birthday = LocalDate.of(Integer.valueOf(year), Integer.valueOf(month), Integer.valueOf(days));
+					long minusDays = LocalDate.now().toEpochDay() - birthday.toEpochDay();
+					int age = (int) (minusDays / 365);
+					o.setAge(age);
+
+				}else{
+					String year = idnum.substring(6,10);
+					String month = idnum.substring(10,12);
+					String days = idnum.substring(12,14);
+					int lastIndex = Integer.valueOf(idnum.substring(17));
+					o.setGender(String.valueOf(lastIndex%2));
+					o.setBirthday(year+"-"+month+"-"+days);
+
+					LocalDate birthday = LocalDate.of(Integer.valueOf(year), Integer.valueOf(month), Integer.valueOf(days));
+					long minusDays = LocalDate.now().toEpochDay() - birthday.toEpochDay();
+					int age = (int) (minusDays / 365);
+					o.setAge(age);
+				}
+
+
 				o.save();
-				XdOperUtil.logSummary(oid,o,operName,XdOperEnum.UNAPPRO.name(),0);
+				//XdOperUtil.logSummary(oid,o,operName,XdOperEnum.UNAPPRO.name(),0);
+				XdOperUtil.logSummary(id,o,operName,XdOperEnum.UNAPPRO.name(),0);
 			}
     		if(gridList1.size()!=0){
 				for (int i = 0; i < gridList1.size(); i++) {
