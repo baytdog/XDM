@@ -58,8 +58,10 @@ public class XdEmployeeController extends BaseController {
 		String department =getPara("department","");
 		String unitname = getPara("unitname","");
 		String costitem = getPara("costitem","");
+		String checked = getPara("checked","");
+		String selectedName = java.net.URLDecoder.decode(getPara("selectedName",""),"UTF-8");
 
-    	Page<Record> page = service.getPage(Integer.valueOf(curr),Integer.valueOf(pageSize),name,empnum,emprelation,department,unitname,costitem);
+    	Page<Record> page = service.getPage(Integer.valueOf(curr),Integer.valueOf(pageSize),name,empnum,emprelation,department,unitname,costitem,checked,selectedName);
     	renderPage(page.getList(),"",page.getTotalRow());
     }
     /***

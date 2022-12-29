@@ -176,7 +176,7 @@ public class UserController extends BaseController {
     public void getEditPage(){
     	//添加和修改
     	String id = getPara("id");
-    	List<OaDict> positionList = OaDict.dao.find("select  * from  oa_dict where type='position' order by sortnum ");
+    	List<OaDict> positionList = OaDict.dao.find("select  * from  xd_dict where type='position' order by sortnum ");
     	setAttr("positionList", positionList);
     	if(StrKit.notBlank(id)){//修改
     		SysUser o = SysUser.dao.getById(id);

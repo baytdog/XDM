@@ -54,6 +54,15 @@
 											<button class="btn btn-primary" type="button" onclick="searchTable()">搜索</button>
 										</div>
 									</div>
+									<div   class="form-inline ">
+										<div class="input-group mar-btm">
+											<input id="selectEd" type="text" class="form-control" style="width:1000px;" readonly="readonly">
+											<div class="input-group-addon">
+												<input id="demo-checkbox-addons" class="magic-checkbox" type="checkbox">
+												<label for="demo-checkbox-addons"></label>
+											</div>
+										</div>
+									</div>
 								</div>
 							</div>
 							<div class="panel ">
@@ -73,16 +82,15 @@
 										   data-sort-name="id"
 										   data-page-list="[5, 10, 20]"
 										   data-page-size="5"
-										   data-pagination="true" data-show-pagination-switch="true" ></table>
+										   data-pagination="true" data-show-pagination-switch="true"  ></table>
 								</div>
 							</div>
 			        	</div>
                 	</div>
 				</div>
 <script>
-	
+	var selectRows=[];
 	var col = [{field: 'checked', checkbox : true, align: 'center'},
-	   
 		   {field: 'name', title: '姓名', align: 'center'},
 		   {field: 'empnum', title: '员工编号', align: 'center'},
 		   {field: 'emprelation', title: '员工关系', align: 'center'},
@@ -104,8 +112,6 @@
 					   return "已婚已育";
 				   }
 			   }},
-
-	   
 	   {field: 'control', title: '操作', align: 'left', width:'200',
 	       formatter:function(value,row,index){
 	           	//通过formatter可以自定义列显示的内容
@@ -130,14 +136,14 @@
 			   //是否显示分页（*）  
 			   pagination: true,   
 			    //是否启用排序  
-			   sortable: false,    
-			    //排序方式 
+			   sortable: false,
+			    //排序方式
 			   sortOrder: "asc",    
 			   //初始化加载第一页，默认第一页
 			   //我设置了这一项，但是貌似没起作用，而且我这默认是0,- -
-			   //pageNumber:1,   
+			   pageNumber:1,
 			   //每页的记录行数（*）   
-			   pageSize: 10,  
+			   pageSize: 10,
 			   //可供选择的每页的行数（*）    
 			   pageList: [10, 25, 50, 100],
 			   //这个接口需要处理bootstrap table传递的固定参数,并返回特定格式的json数据  
@@ -157,6 +163,65 @@
 						   "costitem":$("#costitem").val()
 			           };
 			   },
+				onCheck:function(row){
+					selectRows.push(row);
+
+					// let bootstrapTable = $('#pageTable').bootstrapTable("getSelections");
+					// console.log(bootstrapTable)
+					let val = $("#selectEd").val();
+					if(val){
+						if(val.indexOf(row.name)==-1){
+							val=val+","+row.name;
+							$("#selectEd").val(val);
+						}
+					}else{
+						val=row.name;
+						$("#selectEd").val(val);
+					}
+				},
+				onUncheck:function(row){
+
+					let val = $("#selectEd").val();
+
+					if(val.indexOf(","+row.name)!=-1){
+						val=val.replace(","+row.name,"");
+						$("#selectEd").val(val);
+					}else if(val.indexOf(row.name+",")!=-1){
+						val=val.replace(row.name+",","");
+						$("#selectEd").val(val);
+					}else{
+						val=val.replace(row.name,"");
+						$("#selectEd").val(val);
+					}
+				},
+				onCheckAll:function(rows){
+					let val = $("#selectEd").val();
+					for(let row of rows) {
+						if(val){
+							if(val.indexOf(row.name)==-1){
+								val=val+","+row.name;
+							}
+						}else{
+							val=row.name;
+						}
+					}
+					$("#selectEd").val(val);
+				},
+		        onUncheckAll:function(rows){
+					$("#selectEd").val("");
+				},
+				onLoadSuccess:function(){
+					let val = $("#selectEd").val();
+					//	$('#pageTable').bootstrapTable("getSelections");
+					if(val){
+						$('#pageTable').bootstrapTable("checkBy", {field: "name", values:val.split(",")});//根据列名选则行数据,field: 列名称,values:列取值数组
+					}
+
+				///	$report_table.bootstrapTable("check", 0);//选中某一行，索引从0开始
+
+				},
+
+
 			   //分页方式：client客户端分页，server服务端分页（*）
 			   sidePagination: "server",
 			   //是否显示搜索
@@ -215,7 +280,11 @@
 		var department = $("#department").val();
 		var unitname =$("#unitname").val();
 		var costitem = $("#costitem").val();
+		var checked = $("#demo-checkbox-addons").is(":checked");
+		let selectedName = encodeURIComponent($("#selectEd").val());
+
 		var param = {
+			pageNumber: 1,
 			query: {
 				"name":name,
 				"empnum":empnum,
@@ -223,10 +292,12 @@
 				"department":department,
 				"unitname":unitname,
 				"costitem":costitem,
+				"checked":checked,
+				"selectedName":selectedName
 			}
 		}
 		// 刷新表格
-		$('#pageTable').bootstrapTable('refresh',param);
+		 $('#pageTable').bootstrapTable('refresh',param);
 	}
 
 

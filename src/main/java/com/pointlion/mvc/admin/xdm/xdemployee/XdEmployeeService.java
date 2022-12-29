@@ -41,8 +41,7 @@ public class XdEmployeeService{
 	 * get page
 	 */
 	public Page<Record> getPage(int pnum,int psize,String name,String empnum,String emprelation
-			,String department,String unitname,String costitem){
-		String userId = ShiroKit.getUserId();
+			,String department,String unitname,String costitem,String checked,String selectedName){
 		String userOrgId = ShiroKit.getUserOrgId();
 
 		String sql  = " from "+TABLE_NAME+" o where 1=1";
@@ -68,6 +67,18 @@ public class XdEmployeeService{
 		if(StrKit.notBlank(costitem)){
 			sql = sql + " and o.costitem = '"+ costitem+"'";
 		}
+		if("true".equals(checked) && !"".equals(selectedName)){
+			String[] namesArr = selectedName.split(",");
+			String insql="";
+			for (String names : namesArr) {
+				insql+="'"+names+"',";
+			}
+			sql  = " from "+TABLE_NAME+" o where 1=1 and name in ("+
+					insql.replaceAll(",$","")
+					+")";
+		}
+
+
 		sql = sql + " order by o.ctime desc";
 		return Db.paginate(pnum, psize, " select * ", sql);
 	}
