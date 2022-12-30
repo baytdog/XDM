@@ -57,4 +57,20 @@ public abstract class BaseXdOplogDetail<M extends BaseXdOplogDetail<M>> extends 
 		return getStr("newValue");
 	}
 
+	public void setStatus(Integer status) {
+		set("status", status);
+	}
+	
+	public Integer getStatus() {
+		return getInt("status");
+	}
+
+	public void setReason(String reason) {
+		set("reason", reason);
+	}
+	
+	public String getReason() {
+		return getStr("reason");
+	}
+
 }

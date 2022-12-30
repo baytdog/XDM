@@ -111,5 +111,19 @@ public abstract class BaseXdEdutrain<M extends BaseXdEdutrain<M>> extends Model<
 	public String getBackup3() {
 		return getStr("backup3");
 	}
+	public void setBackup4(String backup4) {
+		set("backup4", backup4);
+	}
+
+	public String getBackup4() {
+		return getStr("backup4");
+	}
+	public void setBackup5(String backup5) {
+		set("backup5", backup5);
+	}
+
+	public String getBackup5() {
+		return getStr("backup5");
+	}
 
 }

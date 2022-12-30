@@ -113,6 +113,22 @@ public abstract class BaseXdSteps<M extends BaseXdSteps<M>> extends Model<M> imp
 		return getStr("finishtime");
 	}
 
+	public void setSoptye(String soptye) {
+		set("soptye", soptye);
+	}
+	
+	public String getSoptye() {
+		return getStr("soptye");
+	}
+
+	public void setAuditresult(String auditresult) {
+		set("auditresult", auditresult);
+	}
+	
+	public String getAuditresult() {
+		return getStr("auditresult");
+	}
+
 	public void setCuserid(String cuserid) {
 		set("cuserid", cuserid);
 	}

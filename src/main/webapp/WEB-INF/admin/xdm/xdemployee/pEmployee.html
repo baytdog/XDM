@@ -27,10 +27,50 @@
     }
 
     function pass(){
-        var data = common_ajax.ajaxFunc("/admin/xd/xdemployee/pass",$('#editForm').serialize(), "json", null);
+
+        let  g5Srows=[];
+        let  g4Srows=[];
+        let  g3Srows=[];
+        let g5ids="";
+        let g4ids="";
+        let g3ids="";
+
+        if(empLogs.length>2){
+            g5Srows = grid5.getSelecteds();
+            if (g5Srows.length > 0) {
+                grid5.removeRows(g5Srows, true);
+                for(var item of g5Srows) {
+                    g5ids=g5ids+item.id+",";
+                }
+            }
+        }
+
+
+        if(oplogEdu.length>2){
+            g3Srows = grid3.getSelecteds();
+            if (g3Srows.length > 0) {
+                grid3.removeRows(g3Srows, true);
+                for(var item of g3Srows) {
+                    g3ids=g3ids+item.backup5+",";
+                }
+            }
+        }
+        if(oplogWork.length>2){
+
+            g4Srows = grid4.getSelecteds();
+            if (g4Srows.length > 0) {
+                grid4.removeRows(g4Srows, true);
+                for(var item of g4Srows) {
+                    g4ids=g4ids+item.backup5+",";
+                }
+            }
+        }
+        let data = common_ajax.ajaxFunc("/admin/xd/xdemployee/pass",$('#editForm').serialize()+"&g5ids="+g5ids+"&g4ids="+g4ids+"&g3ids="+g3ids, "json", null);
         if(data.success){
             pointLion.alertMsg("操作成功!" , "success" , "small" , function(){
-                location.href = ctx+'/admin/xd/xdemployee/getListEmployee';//跳转到列表页
+                if(data.message=='over') {
+                    location.href = ctx + '/admin/xd/xdemployee/getListEmployee';//跳转到列表页
+                }
             },data);
         }else{
             pointLion.alertMsg(data.message , "danger" , "small" , function(){
@@ -39,10 +79,52 @@
         }
     }
     function noPass(){
-        var data = common_ajax.ajaxFunc("/admin/xd/xdemployee/noPass",$('#editForm').serialize(), "json", null);
+        let  g5Srows=[];
+        let  g4Srows=[];
+        let  g3Srows=[];
+        let g5ids="";
+        let g4ids="";
+        let g3ids="";
+
+        if(empLogs.length>2){
+            g5Srows = grid5.getSelecteds();
+            if (g5Srows.length > 0) {
+                grid5.removeRows(g5Srows, true);
+                for(var item of g5Srows) {
+                    g5ids=g5ids+item.id+",";
+                }
+            }
+        }
+
+
+        if(oplogEdu.length>2){
+            g3Srows = grid3.getSelecteds();
+            if (g3Srows.length > 0) {
+                grid3.removeRows(g3Srows, true);
+                for(var item of g3Srows) {
+                    g3ids=g3ids+item.backup5+",";
+                }
+            }
+        }
+        if(oplogWork.length>2){
+
+            g4Srows = grid4.getSelecteds();
+            if (g4Srows.length > 0) {
+                grid4.removeRows(g4Srows, true);
+                for(var item of g4Srows) {
+                    g4ids=g4ids+item.backup5+",";
+                }
+            }
+        }
+
+        let data = common_ajax.ajaxFunc("/admin/xd/xdemployee/noPass",$('#editForm').serialize()+"&g5ids="+g5ids+"&g4ids="+g4ids+"&g3ids="+g3ids, "json", null);
         if(data.success){
             pointLion.alertMsg("操作成功!" , "success" , "small" , function(){
-                location.href = ctx+'/admin/xd/xdemployee/getListEmployee';//跳转到列表页
+
+               if(data.message=='over') {
+
+                   location.href = ctx+'/admin/xd/xdemployee/getListEmployee';//跳转到列表页
+               }
             },data);
         }else{
             pointLion.alertMsg(data.message , "danger" , "small" , function(){
@@ -69,10 +151,12 @@
 
     mini.parse();
 
+
+
+
     var grid = mini.get("datagrid1");
     var grid2 = mini.get("datagrid2");
-    var grid3 = mini.get("datagrid3");
-    var grid4 = mini.get("datagrid4");
+
     var data1='#(listEdu)'
     grid.setData(mini.decode(data1))
     var data2='#(listWExper)'
@@ -80,10 +164,59 @@
 
     var otype ='#(otype)'
     if(otype=="U"){
-        var data3='#(oplogEdu)'
-        grid3.setData(mini.decode(data3));
-        var data4='#(oplogWork)'
-        grid4.setData(mini.decode(data4));
+
+
+       var empLogs= '#(oplogEmployee)';
+        if(empLogs.length>2){
+            var grid5 = mini.get("datagrid5");
+            var data5='#(oplogEmployee)'
+            grid5.setData(mini.decode(data5));
+            var status = [{ id:0, text:'待审批' }, { id:1, text:'通过'}, { id:2, text:'不通过'}];
+            function onStatusRenderer(e) {
+                if(e.value=='0'){
+                    return  '待审批';
+                }else if(e.value=='1'){
+                    return  '通过';
+                }else if(e.value=='2'){
+                    return  '不通过';
+                }
+            }
+        }
+        var oplogEdu='#(oplogEdu)';
+        if(oplogEdu.length>2){
+            var grid3 = mini.get("datagrid3");
+            var data3='#(oplogEdu)'
+            grid3.setData(mini.decode(data3));
+
+            function onAuditStatusRenderer(e) {
+                if(e.value=='WAITAPPRO'){
+                    return  '待审批';
+                }else if(e.value=='FAIL'){
+                    return  '审批不通过';
+                }else if(e.value=='FINISH'){
+                    return  '审批完成';
+                }else if(e.value=='PASS'){
+                    return  '审批通过';
+                }
+            }
+        }
+        var oplogWork='#(oplogWork)'
+        if(oplogWork.length>2){
+            var grid4 = mini.get("datagrid4");
+            var data4='#(oplogWork)'
+            grid4.setData(mini.decode(data4));
+            function onAuditStatusRenderer(e) {
+                if(e.value=='WAITAPPRO'){
+                    return  '待审批';
+                }else if(e.value=='FAIL'){
+                    return  '审批不通过';
+                }else if(e.value=='FINISH'){
+                    return  '审批完成';
+                }else if(e.value=='PASS'){
+                    return  '审批通过';
+                }
+            }
+        }
     }else{
         $("#collapseOne").addClass("in");
     }

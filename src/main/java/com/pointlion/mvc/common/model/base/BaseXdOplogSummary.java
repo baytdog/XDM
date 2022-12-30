@@ -73,6 +73,14 @@ public abstract class BaseXdOplogSummary<M extends BaseXdOplogSummary<M>> extend
 		return getStr("status");
 	}
 
+	public void setReason(String reason) {
+		set("reason", reason);
+	}
+	
+	public String getReason() {
+		return getStr("reason");
+	}
+
 	public void setCuser(String cuser) {
 		set("cuser", cuser);
 	}

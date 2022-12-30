@@ -2,10 +2,7 @@ package com.pointlion.util;
 
 import com.pointlion.annotation.ChangeFields;
 import com.pointlion.annotation.NeedMapping;
-import com.pointlion.mvc.common.model.SysOrg;
-import com.pointlion.mvc.common.model.XdDict;
-import com.pointlion.mvc.common.model.XdEmployee;
-import com.pointlion.mvc.common.model.XdProjects;
+import com.pointlion.mvc.common.model.*;
 import org.apache.poi.ss.formula.functions.T;
 
 import java.lang.reflect.Method;
@@ -13,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Consumer;
 
 /**
  * @Author: king
@@ -183,6 +181,54 @@ public class DictMapping {
         return  projectsMap;
     }
 
+    /**
+     * @Method opLogsMapping
+     * @param list:	 异动详情列表
+     * @Date 2022/12/30 15:29
+     * @Description 异动详情显示汉化
+     * @Author king
+     * @Version  1.0
+     * @Return void
+     */
+    public static void opLogsMapping(List<XdOplogDetail> list){
+        Map<String, String> orgMap = orgMapping("0");
+        Map<String, String> projectMap = projectsMappingValueToName();
+        Map<String, Map<String, String>> dictMap = dictMappingValueToName();
+        for (XdOplogDetail detail : list) {
+            String fieldName = detail.getFieldName();
+            Map<String, String> dict=new HashMap<>();
+            if("married".equals(fieldName)){
+                dict = dictMap.get("ismarry");
+                /*    xdOplogDetail.setOldValue(dict.get(xdOplogDetail.getOldValue()));
+                    xdOplogDetail.setNewValue(dict.get(xdOplogDetail.getNewValue()));*/
+            }else if("national".equals(fieldName)){
+                dict = dictMap.get("nation");
+            }else if("politicsstatus".equals(fieldName)){
+                dict = dictMap.get("polity");
+            }else if("topedu".equals(fieldName)||"edubg1".equals(fieldName)||"edubg2".equals(fieldName)){
+                dict = dictMap.get("edu");
+            }else if("issoldier".equals(fieldName)){
+                dict = dictMap.get("solider");
+            }else if("inductionstatus".equals(fieldName)){
+                dict = dictMap.get("officestatus");
+            }else if("department".equals(fieldName)){
+                dict = orgMap;
+            }else if("unitname".equals(fieldName)){
+                dict = dictMap.get("unit");
+            }else if("costitem".equals(fieldName)){
+                dict = projectMap;
+            }else if("position".equals(fieldName)){
+                dict = dictMap.get("position");
+            }else if("hardstaff".equals(fieldName)){
+                dict = dictMap.get("hardstaff");
+            }else{
+                continue;
+            }
+            detail.setOldValue(dict.get(detail.getOldValue())==null?"":dict.get(detail.getOldValue()));
+            detail.setNewValue(dict.get(detail.getNewValue())==null?"":dict.get(detail.getNewValue()));
+        }
+
+    }
 
     public static  <T> void fieldValueToName(T bean, Map<String, String> orgMap, Map<String, String> projectsMap,Map<String, Map<String, String>> dictMap ){
 

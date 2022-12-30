@@ -550,25 +550,37 @@
                 </div>
                 <div class="panel-collapse collapse in" id="collapseSix">
                     <div class="panel-body">
+                        <br/>
+                        <br/>
 
 
-                        #if(oplogEmployee&&oplogEmployee.size()>0)
-                            #for(x : oplogEmployee)
-                                <div class="form-group">
-                                    <label class="col-md-1 control-label">修改项   </label>
-                                    <div class="col-md-1">
-                                        <input type="text"    class="form-control" readonly  value="#(x.fieldDesc)"  >
-                                    </div>
-                                    <label class="col-md-2 control-label">修改前值为：</label>
-                                    <div class="col-md-2">
-                                        <input type="text"  class="form-control" readonly  value="#( x.oldValue)"  >
-                                    </div>
-                                    <label class="col-md-2 control-label">修改后值为：</label>
-                                    <div class="col-md-2">
-                                        <input type="text"    class="form-control"  readonly value="#(x.newValue)"  >
-                                    </div>
-                                </div>
-                            #end
+                        #if(oplogEmployee && oplogEmployee.size()>0)
+                                <mini-datagrid id="datagrid5" class="mini-datagrid" style="width:100%;"
+                                               url="" idField="id"  allowResize="true" pageSize="15"
+                                               allowCellEdit="false" allowCellSelect="false" multiSelect="true"
+                                               editNextOnEnterKey="true"  editNextRowCell="true" allowCellWrap="true"
+                                               showSortIcon="false"  _dataField="data"  showPager="false" allowSortColumn="false"
+                                >
+                                    <columns>
+
+                                        <column type="indexcolumn"></column>
+                                        <column type="checkcolumn" ></column>
+                                        <column name="fieldDesc" field="fieldDesc"  headerAlign="center"  align="center" >修改项
+                                        </column>
+                                        <column name="oldValue" field="oldValue" headerAlign="center" align="center" >修改前值为
+                                        </column>
+                                        <column name="newValue"  field="newValue"  headerAlign="center"  align="center"   >修改后值为
+                                        </column>
+                                        <column name="status" field="status" headerAlign="center" align="center"  renderer="onStatusRenderer"  >状态
+                                        </column>
+                                        <column name="reason"  field="reason"  headerAlign="center"  align="center"   >原因
+                                        </column>
+
+                                    </columns>
+                                </mini-datagrid>
+
+                        <br/>
+                        <br/>
 
                         #end
 
@@ -576,46 +588,41 @@
                         #if(oplogEdu!=null && oplogEdu.size()>0)
                         <mini-datagrid id="datagrid3" class="mini-datagrid" style="width:100%;"
                                        url="" idField="id"  allowResize="true" pageSize="15"
-                                       allowCellEdit="false" allowCellSelect="false" multiSelect="false"
+                                       allowCellEdit="false" allowCellSelect="false" multiSelect="true"
                                        editNextOnEnterKey="true"  editNextRowCell="true" allowCellWrap="true"
                                        showSortIcon="false"  _dataField="data"  showPager="false" allowSortColumn="false"
                         >
                             <columns>
                                 <column type="indexcolumn"></column>
+                                <div type="checkcolumn" ></div>
                                 <column name="enrolldate" field="enrolldate"  headerAlign="center"  align="center"    >入学日期
                                 </column>
                                 <column name="graduatdate" field="graduatdate"     headerAlign="center"  align="center" >毕业日期
                                 </column>
                                 <column name="trainOrgname"  field="trainOrgname"  headerAlign="center"  align="center"   >
                                     学校/培训机构名称
-                                <!--    <editor>
-                                        <input   class="mini-textbox" style="width:100%;"   />
-                                    </editor>-->
                                 </column>
                                 <column name="major"  field="major" headerAlign="center"   align="center"   >
                                     专业
-                                    <!--<editor>
-                                        <input property="editor" class="mini-textbox" style="width:100%;"   />
-                                    </editor>-->
                                 </column>
                                 <column name="edubg"  field="edubg" headerAlign="center"  align="center"   >
                                     学历
-                                  <!--  <editor>
-                                        <input property="editor" class="mini-textbox" style="width:100%;" />
-                                    </editor>-->
                                 </column>
                                 <column name="addr"  field="bakcup2" width="40px" headerAlign="center"  align="center"     >
                                     操作类型
-                                   <!-- <editor>
-                                        <input  class="mini-textbox" style="width:100%;"  />
-                                    </editor>-->
                                 </column>
                                 <column name="addr"  field="backup3" width="260px" headerAlign="center"   align="center"   >
                                     修改信息
-                                 <!--   <editor>
-                                        <input property="editor" class="mini-textbox" style="width:100%;" _minWidth="200" />
-                                    </editor>-->
                                 </column>
+                                <column name="backup1"  field="backup1" width="260px" headerAlign="center"   align="center"  renderer="onAuditStatusRenderer"  >
+                                    审批状态
+                                </column>
+                                <column name="backup4"  field="backup4" width="260px" headerAlign="center"   align="center"   >
+                                    原因
+                                </column>
+                               <!-- <column name="backup5"  field="backup5" width="260px" headerAlign="center"   align="center"   >
+
+                                </column>-->
                             </columns>
                         </mini-datagrid>
                         #end
@@ -625,52 +632,46 @@
                         <mini-datagrid id="datagrid4" class="mini-datagrid" style="width:100%;"
                                        url="" idField="id"
                                        allowResize="true" pageSize="15"
-                                       allowCellEdit="false" allowCellSelect="true" multiSelect="false"
+                                       allowCellEdit="false" allowCellSelect="true" multiSelect="true"
                                        editNextOnEnterKey="true"  editNextRowCell="true"
                                        showSortIcon="true"  _dataField="data"
                                        showPager="false" allowSortColumn="false" allowCellWrap="true"
                         >
                             <columns>
                                 <column type="indexcolumn"></column>
+                                <div type="checkcolumn" ></div>
                                 <column name="entrydate" field="entrydate"   headerAlign="center"  align="center"  >入职日期
-                                        <!--<mini-input style="width:100%;" format="yyyy-MM-dd"></mini-input>-->
                                 </column>
                                 <column name="departdate" field="departdate"   headerAlign="center"  align="center">离职日期
-                                       <!-- <mini-input style="width:100%;" format="yyyy-MM-dd"></mini-input>-->
                                 </column>
 
 
                                 <column name="serviceunit"  field="serviceunit" headerAlign="center"   align="center"  >
                                     服务单位名称
-                                    <!--<editor>
-                                        <input property="editor" class="mini-textbox" style="width:100%;"   />
-                                    </editor>-->
                                 </column>
                                 <column name="job"  field="job" headerAlign="center"    align="center">
                                     职务
-                                   <!-- <editor>
-                                        <input property="editor" class="mini-textbox" style="width:100%;"   />
-                                    </editor>-->
                                 </column>
                                 <column name="addr"  field="addr" headerAlign="center"  align="center" >
                                     地点
-                                 <!--   <editor>
-                                        <input property="editor" class="mini-textbox" style="width:100%;"   />
-                                    </editor>-->
                                 </column>
 
                                 <column name="addr"  field="backup2" width="40px"  headerAlign="center"  align="center"  >
                                     操作类型
-                                  <!--  <editor>
-                                        <input property="editor" class="mini-textbox" style="width:100%;"  />
-                                    </editor>-->
                                 </column>
                                 <column name="addr"  field="backup3" headerAlign="center"  width="260px"  align="center" >
                                     修改信息
-                                    <editor>
-                                        <input property="editor" class="mini-textbox" style="width:100%;"   />
-                                    </editor>
                                 </column>
+
+                                <column name="backup1"  field="backup1" width="260px" headerAlign="center"   align="center"  renderer="onAuditStatusRenderer"  >
+                                    审批状态
+                                </column>
+                                <column name="backup4"  field="backup4" width="260px" headerAlign="center"   align="center"   >
+                                    原因
+                                </column>
+                             <!--   <column name="backup5"  field="backup5" width="260px" headerAlign="center"   align="center"   >
+
+                                </column>-->
                             </columns>
                         </mini-datagrid>
                         #end

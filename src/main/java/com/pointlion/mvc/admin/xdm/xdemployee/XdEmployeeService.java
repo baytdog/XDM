@@ -115,7 +115,7 @@ public class XdEmployeeService{
 			if("1".equals(userOrgId)){
 				o.delete();
 			}else{
-				XdOperUtil.insertEmpoloyeeSteps(o,"","1","","","D");
+				XdOperUtil.insertEmpoloyeeSteps(o,"","1","","","D","WA");
 			}
 
 			XdOperUtil.logSummary(id,o,XdOperEnum.D.name(),XdOperEnum.WAITAPPRO.name(),0);
@@ -366,7 +366,7 @@ public class XdEmployeeService{
 
 		if(!rs && flag){
 			//XdOperUtil.queryLastVersion(oldEmp.getId());
-			XdOperUtil.insertEmpoloyeeSteps(newEmp,"","1","","","U");
+			XdOperUtil.insertEmpoloyeeSteps(newEmp,"","1","","","U","WA");
 		}
 	}
 

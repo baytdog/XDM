@@ -303,7 +303,7 @@ public abstract class BaseXdEmployee<M extends BaseXdEmployee<M>> extends Model<
 	public void setSeniority(String seniority) {
 		set("seniority", seniority);
 	}
-	@ChangeFields(value = "seniority",desc = "工龄(年)")
+	/*@ChangeFields(value = "seniority",desc = "工龄(年)")*/
 	public String getSeniority() {
 		return getStr("seniority");
 	}

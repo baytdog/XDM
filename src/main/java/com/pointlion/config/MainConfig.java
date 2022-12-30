@@ -95,7 +95,7 @@ public class MainConfig extends JFinalConfig {
 		shiroPlugin.setLoginUrl("/admin/login");//登录url：未验证成功跳转
 		shiroPlugin.setSuccessUrl("/admin/index");//登录成功url：验证成功自动跳转
 		shiroPlugin.setUnauthorizedUrl("/admin/login/needPermission");//授权url：未授权成功自动跳转
-		//QuartzPlugin quatrZPlugin = new QuartzPlugin();
+		QuartzPlugin quatrZPlugin = new QuartzPlugin();
 		//MailPlugin mailPlugin = new MailPlugin(PropKit.use("mail.properties").getProperties());
 		//添加到插件列表中
 		me.add(druidPlugin);//数据库连接池插件
@@ -103,7 +103,7 @@ public class MainConfig extends JFinalConfig {
 		me.add(acitivitiPlugin);//流程插件
 		me.add(shiroPlugin);//权限插件
 		//me.add(mailPlugin);//邮件发送插件
- 		//me.add(quatrZPlugin);//定时任务插件
+ 		me.add(quatrZPlugin);//定时任务插件
 		LOG.info("插件启动成功");
 	}
 	

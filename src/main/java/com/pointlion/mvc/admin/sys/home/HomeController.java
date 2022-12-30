@@ -103,6 +103,9 @@ public class HomeController extends BaseController {
 						return false;
 					}else{
 						String positivedate = employee.getPositivedate();
+						if (positivedate == null||"".equals(positivedate)) {
+							return false;
+						}
 						LocalDate bsposiDate = LocalDate.parse(positivedate, dtf).minusDays(7);
 						LocalDate now = LocalDate.now();
 						return  now.isAfter(bsposiDate);
