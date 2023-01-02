@@ -252,10 +252,23 @@
                                         <input property="editor" class="mini-textbox" style="width:100%;" _minWidth="200" />
                                     </editor>
                                 </column>
-                                <column name="edubg"  field="edubg" headerAlign="center"  width="150" >
+                                <!--<column name="edubg"  field="edubg" headerAlign="center"  width="150" >
                                     学历
                                     <editor>
                                         <input property="editor" class="mini-textbox" style="width:100%;" _minWidth="200" />
+                                    </editor>
+                                </column>-->
+                                <column type="comboboxcolumn"  name="edubg"  field="edubg" headerAlign="center"  width="150" >
+                                    学历
+                                    <editor>
+                                        <input property="editor" class="mini-combobox" style="width:100%;" _minWidth=""  data="xl"/>
+                                    </editor>
+                                </column>
+
+                                <column type="comboboxcolumn" name="grade"  field="grade" headerAlign="center"  width="150" >
+                                    日制
+                                    <editor>
+                                        <input property="editor" class="mini-combobox" style="width:100%;" _minWidth=""  data="grade"/>
                                     </editor>
                                 </column>
                             </columns>
@@ -605,8 +618,25 @@
                                 <column name="major"  field="major" headerAlign="center"   align="center"   >
                                     专业
                                 </column>
-                                <column name="edubg"  field="edubg" headerAlign="center"  align="center"   >
+                             <!--   <column name="edubg"  field="edubg" headerAlign="center"  align="center"   >
                                     学历
+                                </column>-->
+
+                              <!--  <column name="edubg"  field="edubg" headerAlign="center"  align="center"   >
+                                    学历
+                                </column>-->
+                                <column type="comboboxcolumn"  name="edubg"  field="edubg" headerAlign="center"  width="150" >
+                                    学历
+                                    <editor>
+                                        <input property="editor" class="mini-combobox" style="width:100%;" _minWidth=""  data="xl"/>
+                                    </editor>
+                                </column>
+
+                                <column type="comboboxcolumn" name="grade"  field="grade" headerAlign="center"  width="150" >
+                                    日制
+                                    <editor>
+                                        <input property="editor" class="mini-combobox" style="width:100%;" _minWidth=""  data="grade"/>
+                                    </editor>
                                 </column>
                                 <column name="addr"  field="bakcup2" width="40px" headerAlign="center"  align="center"     >
                                     操作类型

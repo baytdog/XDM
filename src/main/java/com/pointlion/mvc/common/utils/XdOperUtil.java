@@ -2,6 +2,7 @@ package com.pointlion.mvc.common.utils;
 
 import com.jfinal.plugin.activerecord.Db;
 import com.pointlion.annotation.ChangeFields;
+import com.pointlion.mvc.common.model.XdEdutrain;
 import com.pointlion.mvc.common.model.XdEmployee;
 import com.pointlion.mvc.common.model.XdOplogSummary;
 import com.pointlion.mvc.common.model.XdSteps;
@@ -14,6 +15,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -215,6 +217,91 @@ public class XdOperUtil {
         } catch (InvocationTargetException e) {
             e.printStackTrace();
         }
+    }
+
+
+
+    /**
+     * @Method updateEdu
+     * @param oid:	 员工id
+     * @Date 2023/1/2 14:55
+     * @Exception
+     * @Description  更新员工学历信息
+     * @Author king
+     * @Version  1.0
+     * @Return void
+     */
+    public static void updateEdu(String oid) {
+        XdEmployee employee = XdEmployee.dao.findById(oid);
+        boolean arz=true;
+        boolean uarz=true;
+
+
+        List<XdEdutrain> xdEdutrainList = XdEdutrain.dao.find("select * from xd_edutrain where eid='" + oid + "' order by grade, edubg desc");
+        for (XdEdutrain edutrain : xdEdutrainList) {
+            if(arz && edutrain.getGrade().equals("0")){//全日制
+                employee.setEdubg2(edutrain.getEdubg());
+                employee.setSchool2(edutrain.getTrainOrgname());
+                employee.setMajor2(edutrain.getMajor());
+                arz=false;
+            }
+
+            if(uarz && edutrain.getGrade().equals("1")){//非全日制
+                employee.setEdubg1(edutrain.getEdubg());
+                employee.setSchool1(edutrain.getTrainOrgname());
+                employee.setMajor1(edutrain.getMajor());
+                uarz=false;
+            }
+        }
+
+        if(arz){
+
+            employee.setEdubg2("");
+            employee.setSchool2("");
+            employee.setMajor2("");
+        }
+
+        if(uarz){
+            employee.setEdubg1("");
+            employee.setSchool1("");
+            employee.setMajor1("");
+        }
+
+
+        employee.update();
+    }
+
+
+
+    public static String apprListToValue(String filedName,String filedValue){
+        if("edubg".equals(filedName)){
+            if("1".equals(filedValue)){
+                return "技工";
+            }else if("2".equals(filedValue)){
+                return "职高";
+            }else if("3".equals(filedValue)){
+                return "中专";
+            }else if("4".equals(filedValue)){
+                return "高中";
+            }else if("5".equals(filedValue)){
+                return "大专";
+            }else if("6".equals(filedValue)){
+                return "本科";
+            }else{
+                return "";
+            }
+
+        }else if("grade".equals(filedName)){
+            if("0".equals(filedValue)){
+                return "全日制";
+            }else if("1".equals(filedValue)){
+                return "非全日制";
+            }else{
+                return "";
+            }
+        }
+        return "";
+
     }
 
 

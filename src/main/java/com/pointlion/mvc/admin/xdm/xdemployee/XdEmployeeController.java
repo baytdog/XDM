@@ -131,8 +131,31 @@ public class XdEmployeeController extends BaseController {
 					xdEdutrain.setEid(o.getId());
 					xdEdutrain.setEname(o.getName());
 					if("1".equals(ShiroKit.getUserOrgId())){
+
 						xdEdutrain.save(xdEdutrain);
 						XdOperUtil.logSummary(oid,xdEdutrain,operName,XdOperEnum.UNAPPRO.name(),0);
+						XdOperUtil.updateEdu(o.getId());
+						/*boolean arz=true;
+						boolean uarz=true;
+
+
+						List<XdEdutrain> xdEdutrainList = XdEdutrain.dao.find("select * from xd_edutrain where eid='" + o.getId() + "' order by grade, edubg desc");
+						for (XdEdutrain edutrain : xdEdutrainList) {
+							if(arz && edutrain.getGrade().equals("0")){//全日制
+								o.setEdubg2(edutrain.getEdubg());
+								o.setSchool2(edutrain.getTrainOrgname());
+								o.setMajor2(edutrain.getMajor());
+								arz=false;
+							}
+
+							if(uarz && edutrain.getGrade().equals("1")){//非全日制
+								o.setEdubg1(edutrain.getEdubg());
+								o.setSchool1(edutrain.getTrainOrgname());
+								o.setMajor1(edutrain.getMajor());
+								uarz=false;
+							}
+						}
+						o.update();*/
 					}else{
 						xdEdutrain.loadObj(xdEdutrain);
 						XdOperUtil.logSummary(oid,xdEdutrain,operName,operStatus,0);
@@ -329,10 +352,21 @@ public class XdEmployeeController extends BaseController {
 
 						StringBuilder sb = new StringBuilder("[ ");
 						for (XdOplogDetail xdOplogDetail : xdOplogDetails) {
-							sb.append(xdOplogDetail.getFieldDesc() + " ").append("原值 ： ")
-									.append((xdOplogDetail.getOldValue() == null || "".equals(xdOplogDetail.getOldValue())) ? "空" : xdOplogDetail.getOldValue())
-									.append(", 现值 ： ").append((xdOplogDetail.getNewValue() == null || "".equals(xdOplogDetail.getNewValue())) ? "空" : xdOplogDetail.getNewValue())
-									.append("  --  ");
+							String fieldName = xdOplogDetail.getFieldName();
+							sb.append(xdOplogDetail.getFieldDesc() + " ").append("原值 ： ");
+
+									if(fieldName.equals("edubg")||fieldName.equals("grade")){
+											sb.append((xdOplogDetail.getOldValue() == null || "".equals(xdOplogDetail.getOldValue())) ? "空" : XdOperUtil.apprListToValue(fieldName,xdOplogDetail.getOldValue()));
+									}else{
+										sb.append((xdOplogDetail.getOldValue() == null || "".equals(xdOplogDetail.getOldValue())) ? "空" : xdOplogDetail.getOldValue());
+									}
+									sb.append(", 现值 ： ");
+									if(xdOplogDetail.getFieldName().equals("edubg")||xdOplogDetail.getFieldName().equals("grade")){
+											sb.append((xdOplogDetail.getNewValue() == null || "".equals(xdOplogDetail.getNewValue())) ? "空" : XdOperUtil.apprListToValue(fieldName,xdOplogDetail.getNewValue()));
+									}else{
+											sb.append((xdOplogDetail.getNewValue() == null || "".equals(xdOplogDetail.getNewValue())) ? "空" : xdOplogDetail.getNewValue());
+									}
+									sb.append("  --  ");
 						}
 						String s1 = sb.toString().replaceAll("--  $", "") + " ]";
 						xdEdutrain.setBakcup2("修改");
@@ -510,7 +544,6 @@ public class XdEmployeeController extends BaseController {
 									String workRecord = (emp.getChrecord() == null ? "" : emp.getChrecord() + "\t") + "原岗位: " + logDetail.getOldValue() + "-" + "最新岗位: " + logDetail.getNewValue();
 									emp.setChrecord(workRecord);
 								}
-
 								if("Idnum".equals(logDetail.getFieldName())) {
 									String newIdNum = logDetail.getNewValue();
 									if (newIdNum.length() == 15) {
@@ -561,6 +594,14 @@ public class XdEmployeeController extends BaseController {
 				summary.setReason(comment);
 				summary.update();
 			}
+
+
+
+
+
+
+
+
 			steps.setFinished("Y");
 			steps.setUserid(ShiroKit.getUserId());
 			steps.setUsername(ShiroKit.getUsername());
@@ -741,7 +782,12 @@ public class XdEmployeeController extends BaseController {
 			}
 
 		}
+
+		XdOperUtil.updateEdu(oid);
+
+
 	}
+
 
 	public void noPass(){
 		String stepsId = getPara("stepsId");
@@ -854,7 +900,7 @@ public class XdEmployeeController extends BaseController {
 
 		}
 
-
+		XdOperUtil.updateEdu(oid);
 	}
 
 	/**
@@ -1044,4 +1090,126 @@ public class XdEmployeeController extends BaseController {
 
 	}
 
+
+
+	public void getManagerListPage(){
+		String userOrgId = ShiroKit.getUserOrgId();
+		if("1".equals(userOrgId)){
+			setAttr("personnel","Y");
+		}else{
+			setAttr("personnel","N");
+
+		}
+
+		List<XdDict> units = XdDict.dao.find("select *from xd_dict where type='unit' order by  sortnum");
+		setAttr("units",units);
+		List<XdProjects> projects = XdProjects.dao.find("select * from xd_projects where status='1' ");
+		setAttr("projects",projects);
+
+		renderIframe("managerList.html");
+	}
+
+
+	public void getEditManagerPage(){
+		String id = getPara("id");
+		String view = getPara("view");
+		setAttr("view", view);
+		XdEmployee o = new XdEmployee();
+		o = service.getById(id);
+		List<XdEffict> xdEfficts = XdEffict.dao.find("select * from  xd_effict where status='0' and eid='" + id + "'");
+
+		if(xdEfficts!=null){
+
+			for (XdEffict xdEffict : xdEfficts) {
+				if(xdEffict.getFieldtype()==1){
+					o.setWorkstation(xdEffict.getValues());
+					setAttr("workEffectDate",xdEffict.getEffectDate());
+				}else if(xdEffict.getFieldtype()==2){
+					o.setSalary(Integer.valueOf(xdEffict.getValues()));
+					setAttr("salaryEffectDate",xdEffict.getEffectDate());
+				}
+			}
+
+
+
+
+
+		}
+
+
+
+
+		List<XdDict> ismarry = XdDict.dao.find("select * from xd_dict where type ='ismarry'");
+		setAttr("ismarry",ismarry);
+		List<XdDict> nations = XdDict.dao.find("select * from xd_dict where type ='nation' order by sortnum");
+		setAttr("nations",nations);
+		List<XdDict> polities = XdDict.dao.find("select * from xd_dict where type ='polity' order by sortnum");
+		setAttr("polities",polities);
+		List<XdDict> edus = XdDict.dao.find("select * from xd_dict where type ='edu' order by sortnum");
+		setAttr("edus",edus);
+		List<XdDict> officestatus = XdDict.dao.find("select * from xd_dict where type ='officestatus' order by sortnum");
+		setAttr("officestatus",officestatus);
+
+		List<SysOrg> sysOrgs = SysOrg.dao.find("select * from sys_org where id<>'root' order by sort");
+		setAttr("sysOrgs",sysOrgs);
+		List<XdDict> units = XdDict.dao.find("select * from xd_dict where type ='unit' order by sortnum");
+		setAttr("units",units);
+//		List<XdDict> projects = XdDict.dao.find("select * from xd_dict where type ='projects' order by sortnum");
+		List<XdProjects> projects = XdProjects.dao.find("select * from xd_projects where status='1'");
+		setAttr("projects",projects);
+		List<XdDict> position = XdDict.dao.find("select * from xd_dict where type ='position' order by sortnum");
+		setAttr("position",position);
+		List<XdDict> hardstuff = XdDict.dao.find("select * from xd_dict where type ='hardstuff' order by sortnum");
+		setAttr("hardstuff",hardstuff);
+
+		setAttr("o", o);
+		setAttr("formModelName",StringUtil.toLowerCaseFirstOne(XdEmployee.class.getSimpleName()));
+		renderIframe("managerEdit.html");
+	}
+
+
+
+	public void saveManager(){
+		XdEmployee o = getModel(XdEmployee.class);
+		String id = o.getId();
+		XdEmployee employee = XdEmployee.dao.findById(id);
+		String salaryEffectDate = getPara("salaryEffectDate");
+		String workEffectDate = getPara("workEffectDate");
+
+		List<XdEffict> xdEfficts = XdEffict.dao.find("select * from  xd_effict where status='0' and eid='" + id + "'");
+		xdEfficts.stream().forEach(new Consumer<XdEffict>() {
+			@Override
+			public void accept(XdEffict xdEffict) {
+				xdEffict.setOvertime(DateUtil.getCurrentTime());
+				xdEffict.setStatus("2");
+				xdEffict.setOveruser(ShiroKit.getUserId());
+				xdEffict.update();
+			}
+		});
+
+		if(workEffectDate!=null&&!workEffectDate.trim().equals("")) {
+			XdEffict xde = new XdEffict();
+			xde.setEid(id);
+			xde.setValues(o.getWorkstation());
+			xde.setFieldtype(1);
+			xde.setEffectDate(workEffectDate);
+			xde.setCtime(DateUtil.getCurrentTime());
+			xde.setCuser(ShiroKit.getUserId());
+			xde.setStatus("0");
+			xde.save();
+		}
+
+		if(salaryEffectDate!=null&&!salaryEffectDate.trim().equals("")) {
+			XdEffict xdsalary = new XdEffict();
+			xdsalary.setEid(id);
+			xdsalary.setValues(String.valueOf(o.getSalary()));
+			xdsalary.setFieldtype(2);
+			xdsalary.setEffectDate(salaryEffectDate);
+			xdsalary.setCtime(DateUtil.getCurrentTime());
+			xdsalary.setCuser(ShiroKit.getUserId());
+			xdsalary.setStatus("0");
+			xdsalary.save();
+		}
+		renderSuccess();
+	}
 }

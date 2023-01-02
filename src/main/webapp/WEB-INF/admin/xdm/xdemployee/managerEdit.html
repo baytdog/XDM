@@ -1,0 +1,220 @@
+<link href="#(ctx)/common/plugins/jquery-ui/scripts/miniui/themes/default/miniui.css" rel="stylesheet"/>
+<div id="page-content">
+    <div class="col-lg-12">
+        <div class="panel">
+            #include("managerEditForm.html")
+        </div>
+    </div>
+</div>
+
+
+<script>
+    function save(){
+
+        var data = common_ajax.ajaxFunc("/admin/xd/xdemployee/saveManager",$('#editForm').serialize(), "json", null);
+        if(data.success){
+            pointLion.alertMsg("操作成功!" , "success" , "small" , function(){
+                location.href = ctx+'/admin/xd/xdemployee/getManagerListPage';//跳转到列表页
+            },data);
+        }else{
+            pointLion.alertMsg(data.message , "danger" , "small" , function(){
+                $(".btn").removeAttr("disabled");
+            },data);
+        }
+    }
+    $(document).ready(function() {
+        $('#editForm').bootstrapValidator({
+            excluded:[":disabled"],
+            live: 'enabled',
+            fields: {
+                "#(formModelName).workstation": {
+                    trigger: 'change',
+                    validators: {
+                        notEmpty: {
+                            message: '*岗位不能为空'
+                        }
+                    }
+                },
+               /* "workEffectDate": {
+                    validators: {
+                        notEmpty: {
+                            message: '*岗位生效日期不能为空'
+                        },
+                    }
+                },*/
+                "#(formModelName).salary": {
+                    trigger: 'change',
+                    validators: {
+                        notEmpty: {
+                            message: '*薪资不能为空'
+                        }
+                    }
+                },
+               /* "salaryEffectDate": {
+                    validators: {
+                        notEmpty: {
+                            message: '*薪资生效日期不能为空'
+                        },
+                    }
+                }*/
+            }
+        }).on("success.form.bv", function (e) {
+            save();
+            return false;//阻止表单跳转
+        });
+    });
+</script>
+
+
+<script type="text/javascript">
+
+    // var Genders = [{ id: 1, text: '男' }, { id: 2, text: '女'}];
+    var grade= [{id:0,text:'全日制'}, { id:1, text:'非全日制'}];
+    var xl= [{id:1,text:'技工'}, { id:2, text:'职高'}, { id:3, text:'中专'}, { id:4, text:'高中'}, { id:5, text:'大专'}, { id:6, text:'本科'}];
+
+
+</script>
+<script>
+    function resetVali(){
+        if(!$("#editForm").data('bootstrapValidator').isValid()) {
+            $("#editForm").data('bootstrapValidator').resetForm();
+            $(".btn").removeAttr("disabled");
+        }
+    }
+
+    $(function(){
+
+    });
+
+
+
+    $('.form_datetime').datepicker({format: 'yyyy-mm-dd',weekStart: 1,todayBtn:  1,autoclose: 1,language:  'zh-CN',todayHighlight: 1,forceParse: 0,showMeridian: 1}).on('changeDate',function(){
+        resetVali();
+    });
+
+
+    $(".selectpicker").selectpicker({});
+    $(".bootstrap-select").attr("style","width:100%;");
+
+
+</script>
+<script>
+    $(function () {
+        //性别
+        let gender=$("#gender").val();
+        if(gender){
+            $('#genderSelect').selectpicker('val',gender.split(",")).trigger("change");
+        }
+
+        $('#genderSelect').on('changed.bs.select', function (e) {
+            $('#gender').val($('#genderSelect').val())
+        });
+        //婚姻
+        let married=$("#married").val();
+        if(married){
+            $('#marriedSelect').selectpicker('val',married.split(",")).trigger("change");
+        }
+
+        $('#marriedSelect').on('changed.bs.select', function (e) {
+            $('#married').val($('#marriedSelect').val())
+        });
+        //民族
+        let national=$("#national").val();
+        if(national){
+            $('#nationalSelect').selectpicker('val',national.split(",")).trigger("change");
+        }
+
+        $('#nationalSelect').on('changed.bs.select', function (e) {
+            $('#national').val($('#nationalSelect').val())
+        });
+        //政治面貌
+        let politicsstatus=$("#politicsstatus").val();
+        if(national){
+            $('#politSelect').selectpicker('val',politicsstatus.split(",")).trigger("change");
+        }
+        $('#politSelect').on('changed.bs.select', function (e) {
+            $('#politicsstatus').val($('#politSelect').val())
+        });
+        //最高学历
+        let topedu=$("#topedu").val();
+        if(topedu){
+            $('#topeduSelect').selectpicker('val',topedu.split(",")).trigger("change");
+        }
+        $('#topeduSelect').on('changed.bs.select', function (e) {
+            $('#topedu').val($('#topeduSelect').val())
+        });
+        //学历(非全日制)
+        let edubg1=$("#edubg1").val();
+        if(edubg1){
+            $('#edubg1Select').selectpicker('val',edubg1.split(",")).trigger("change");
+        }
+        $('#edubg1Select').on('changed.bs.select', function (e) {
+            $('#edubg1').val($('#edubg1Select').val())
+        });
+        //学历(全日制)
+        let edubg2=$("#edubg2").val();
+        if(edubg2){
+            $('#edubg2Select').selectpicker('val',edubg2.split(",")).trigger("change");
+        }
+        $('#edubg2Select').on('changed.bs.select', function (e) {
+            $('#edubg2').val($('#edubg2Select').val())
+        });
+        //退伍军人
+        let issoldier=$("#issoldier").val();
+        if(issoldier){
+            $('#issoldierSelect').selectpicker('val',issoldier.split(",")).trigger("change");
+        }
+        $('#issoldierSelect').on('changed.bs.select', function (e) {
+            $('#issoldier').val($('#issoldierSelect').val())
+        });
+        //就职状况
+        let inductionstatus=$("#inductionstatus").val();
+        if(inductionstatus){
+            $('#inductionstatusSelect').selectpicker('val',inductionstatus.split(",")).trigger("change");
+        }
+        $('#inductionstatusSelect').on('changed.bs.select', function (e) {
+            $('#inductionstatus').val($('#inductionstatusSelect').val())
+        });
+        //所属部门
+        let department=$("#department").val();
+        if(department){
+            $('#departmentSelect').selectpicker('val',department.split(",")).trigger("change");
+        }
+        $('#departmentSelect').on('changed.bs.select', function (e) {
+            $('#department').val($('#departmentSelect').val())
+        });
+        //单元
+        let unitname=$("#unitname").val();
+        if(unitname){
+            $('#unitnameSelect').selectpicker('val',unitname.split(",")).trigger("change");
+        }
+        $('#unitnameSelect').on('changed.bs.select', function (e) {
+            $('#unitname').val($('#unitnameSelect').val())
+        });
+        //成本项目
+        let costitem=$("#costitem").val();
+        if(costitem){
+            $('#costitemSelect').selectpicker('val',costitem.split(",")).trigger("change");
+        }
+        $('#costitemSelect').on('changed.bs.select', function (e) {
+            $('#costitem').val($('#costitemSelect').val())
+        });
+        //职   位
+        let position=$("#position").val();
+        if(position){
+            $('#positionSelect').selectpicker('val',position.split(",")).trigger("change");
+        }
+        $('#positionSelect').on('changed.bs.select', function (e) {
+            $('#position').val($('#positionSelect').val())
+        });
+        //困难员工
+        let hardstaff=$("#hardstaff").val();
+        if(hardstaff){
+            $('#hardstaffSelect').selectpicker('val',hardstaff.split(",")).trigger("change");
+        }
+        $('#hardstaffSelect').on('changed.bs.select', function (e) {
+            $('#position').val($('#hardstaffSelect').val())
+        });
+    })
+
+</script>

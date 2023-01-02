@@ -368,6 +368,34 @@ public class XdEmployeeService{
 			//XdOperUtil.queryLastVersion(oldEmp.getId());
 			XdOperUtil.insertEmpoloyeeSteps(newEmp,"","1","","","U","WA");
 		}
+
+		if(rs){
+
+			XdOperUtil.updateEdu(newEmp.getId());
+			/*XdEmployee employee = XdEmployee.dao.findById(newEmp.getId());
+			boolean arz=true;
+			boolean uarz=true;
+
+
+			List<XdEdutrain> xdEdutrainList = XdEdutrain.dao.find("select * from xd_edutrain where eid='" + newEmp.getId() + "' order by grade, edubg desc");
+			for (XdEdutrain edutrain : xdEdutrainList) {
+				if(arz && edutrain.getGrade().equals("0")){//全日制
+					employee.setEdubg2(edutrain.getEdubg());
+					employee.setSchool2(edutrain.getTrainOrgname());
+					employee.setMajor2(edutrain.getMajor());
+					arz=false;
+				}
+
+				if(uarz && edutrain.getGrade().equals("1")){//非全日制
+					employee.setEdubg1(edutrain.getEdubg());
+					employee.setSchool1(edutrain.getTrainOrgname());
+					employee.setMajor1(edutrain.getMajor());
+					uarz=false;
+				}
+			}
+			employee.update();
+*/
+		}
 	}
 
 
@@ -473,6 +501,9 @@ public class XdEmployeeService{
 		first.add("薪资");//3
 		first.add("薪资变动状况");//3
 		first.add("调职记录");//3
+		first.add("上家工作时间");
+		first.add("上家单位名称");
+		first.add("上家职位");
 
 
 		rows.add(first);
@@ -534,6 +565,19 @@ public class XdEmployeeService{
 			row.add(emp.getSalary()==null?"":emp.getSalary().toString());
 			row.add(emp.getSaladjrecord()==null?"":emp.getSaladjrecord());//薪资变动
 			row.add(emp.getChrecord()==null?"":emp.getChrecord());//调职记录
+			XdWorkExper firstWork = XdWorkExper.dao.findFirst("select * from  xd_work_exper where eid='" + emp.getId() + "' order by entrydate desc,departdate desc ");
+			if(firstWork==null){
+				row.add("");
+				row.add("");
+				row.add("");
+			}else{
+				String startDate = firstWork.getEntrydate() == null ? "" : firstWork.getEntrydate();
+				String departDate = firstWork.getDepartdate() == null ? "" : firstWork.getDepartdate();
+				row.add(startDate+"至"+departDate);
+				row.add(firstWork.getServiceunit());
+				row.add(firstWork.getJob());
+			}
+
 			rows.add(row);
 		}
 		File file = ExcelUtil.listToFile(path,rows);

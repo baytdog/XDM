@@ -2,6 +2,7 @@ package com.pointlion.plugin.quartz.task;
 
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Record;
+import com.pointlion.mvc.common.model.XdEmployee;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -58,6 +59,7 @@ public class CalAgeWorkAge implements Job {
             i++;
         }
 //       **************************计算开始******************
+
     }
 
 
