@@ -101,7 +101,7 @@
 							</div>-->
 							<input type="hidden" id="edubg1" name="#(formModelName).edubg1" value="#(o?o.edubg1:'')">
 							<div class="col-md-3">
-								<select id="edubg1Select"   title="请选择"  class="selectpicker show-tick form-control" actionsBox="true"  disable  data-live-search="false">
+								<select id="edubg1Select"   title="请选择"  class="selectpicker show-tick form-control" actionsBox="true"  disabled="disabled"  data-live-search="false">
 									#for(edu:edus)
 									<option value="#(edu.value)">#(edu.name)</option>
 									#end
@@ -109,11 +109,11 @@
 							</div>
 							<label class="col-md-1 control-label">学校</label>
 							<div class="col-md-3">
-								<input type="text"  name="#(formModelName).school1" class="form-control"  value="#(o?o.school1:'')"  >
+								<input type="text"  name="#(formModelName).school1" class="form-control"  value="#(o?o.school1:'')" readonly="readonly" >
 							</div>
 							<label class="col-md-1 control-label">专业</label>
 							<div class="col-md-3">
-								<input type="text"  name="#(formModelName).major1" class="form-control"  value="#(o?o.major1:'')"  >
+								<input type="text"  name="#(formModelName).major1" class="form-control"  value="#(o?o.major1:'')" readonly="readonly" >
 							</div>
 						</div>
 						<div class="form-group">
@@ -123,7 +123,7 @@
 							</div>-->
 							<input type="hidden" id="edubg2" name="#(formModelName).edubg2" value="#(o?o.edubg2:'')">
 							<div class="col-md-3">
-								<select id="edubg2Select"   title="请选择"  class="selectpicker show-tick form-control" actionsBox="true"  disable  data-live-search="false">
+								<select id="edubg2Select"   title="请选择"  class="selectpicker show-tick form-control" actionsBox="true"  disabled="disabled"  data-live-search="false">
 									#for(edu:edus)
 									<option value="#(edu.value)">#(edu.name)</option>
 									#end
@@ -131,11 +131,11 @@
 							</div>
 							<label class="col-md-1 control-label">学校</label>
 							<div class="col-md-3">
-								<input type="text"  name="#(formModelName).school2" class="form-control"  value="#(o?o.school2:'')"  >
+								<input type="text"  name="#(formModelName).school2" class="form-control"  value="#(o?o.school2:'')" readonly="readonly" >
 							</div>
 							<label class="col-md-1 control-label">专业</label>
 							<div class="col-md-3">
-								<input type="text"  name="#(formModelName).major2" class="form-control"  value="#(o?o.major2:'')"  >
+								<input type="text"  name="#(formModelName).major2" class="form-control"  value="#(o?o.major2:'')"  readonly="readonly">
 							</div>
 						</div>
 						<div class="form-group">
@@ -268,10 +268,16 @@
 										<input property="editor" class="mini-textbox" style="width:100%;" _minWidth="200" />
 									</editor>
 								</column>
-								<column name="edubg"  field="edubg" headerAlign="center"  width="150" >
+								<column type="comboboxcolumn"  name="edubg"  field="edubg" headerAlign="center"  width="150" >
 									学历
 									<editor>
-										<input property="editor" class="mini-textbox" style="width:100%;" _minWidth="200" />
+										<input property="editor" class="mini-combobox" style="width:100%;" _minWidth="200"  data="xl"/>
+									</editor>
+								</column>
+								<column type="comboboxcolumn" name="grade"  field="grade" headerAlign="center"  width="150" >
+									日制
+									<editor>
+										<input property="editor" class="mini-combobox" style="width:100%;" _minWidth="200"  data="grade"/>
 									</editor>
 								</column>
 							</columns>

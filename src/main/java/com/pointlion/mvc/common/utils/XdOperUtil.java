@@ -205,7 +205,7 @@ public class XdOperUtil {
             for (Method declaredMethod : declaredMethods) {
                 declaredMethod.setAccessible(true);
                 String name = declaredMethod.getName();
-                if(name.toLowerCase().startsWith("set")&& name.toLowerCase().replaceAll("set","").equals(fieldName)){
+                if(name.toLowerCase().startsWith("set")&& name.toLowerCase().replaceAll("set","").equalsIgnoreCase(fieldName)){
                     Object invoke = declaredMethod.invoke(obj, newValue);
 
                 }

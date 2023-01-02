@@ -72,6 +72,13 @@ public abstract class BaseXdEdutrain<M extends BaseXdEdutrain<M>> extends Model<
 		return getStr("edubg");
 	}
 
+	public void setGrade(java.lang.String grade) {
+		set("grade", grade);
+	}
+	@ChangeFields(value="grade",desc = "日制")
+	public java.lang.String getGrade() {
+		return getStr("grade");
+	}
 	public void setCtime(String ctime) {
 		set("ctime", ctime);
 	}

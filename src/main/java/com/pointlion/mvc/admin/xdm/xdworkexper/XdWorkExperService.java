@@ -80,7 +80,7 @@ public class XdWorkExperService{
 
     public List<XdWorkExper> getWorkExperList(String employeeId) {
 //		String sql="select * from "+TABLE_NAME;
- 		String sql="select * from "+TABLE_NAME+" where eid='"+employeeId+"'";
+ 		String sql="select * from "+TABLE_NAME+" where eid='"+employeeId+"' order by entrydate desc";
 		List<XdWorkExper> list = XdWorkExper.dao.find(sql);
 		return  list;
     }

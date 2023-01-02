@@ -588,8 +588,9 @@ public class XdEmployeeController extends BaseController {
 					logDetail.update();
 					XdOplogSummary summay = XdOplogSummary.dao.findById(rsid);
 					if(emp==null){
-						String changeb = summay.getChangeb();
-						emp= JSONUtil.jsonToBean(changeb, XdEmployee.class);
+						//String changeb = summay.getChangeb();
+						emp = XdEmployee.dao.findById(summay.getTid());
+						//emp= JSONUtil.jsonToBean(changeb, XdEmployee.class);
 					}
 					XdOperUtil.setChangeValue(emp,logDetail.getFieldName(),logDetail.getNewValue());
 
