@@ -1,41 +1,82 @@
 <form id="editForm" class="panel-body form-horizontal form-padding">
 	<input type="hidden"  name="#(formModelName).id" class="form-control" value="#(o?o.id:'')">
 	<div class="form-group">
-		<label class="col-md-2 control-label">申请人</label>
+		<!--<label class="col-md-2 control-label">姓名</label>
 		<div class="col-md-4">
 			<input type="hidden"  name="#(formModelName).userid" class="form-control"  value="#(o?o.user_id:'')">
 			<input type="text"  name="#(formModelName).applyer_name" class="form-control"  value="#(o?o.applyer_name:'')" readonly>
-		</div>
-		<label class="col-md-1 control-label">部门</label>
-		<div class="col-md-4">
-			<input type="hidden"  name="#(formModelName).org_id" class="form-control"  value="#(o?o.org_id:'')">
-			<input type="text"  name="#(formModelName).org_name" class="form-control"  value="#(o?o.org_name:'')" readonly>
+		</div>-->
+		<label class="col-md-2 control-label">姓名</label>
+		<div class="col-md-10">
+			<input type="text"  name="#(formModelName).ename" class="form-control"  value="#(o?o.ename:'')" >
 		</div>
 	</div>
 		<div class="form-group">
-			<label class="col-md-2 control-label"></label>
-			<div class="col-md-9">
-				<input type="text"  name="#(formModelName)." class="form-control"  value="#(o?o.:'')" #if(view=='detail') readonly #end>
-				<small class="help-block">请输入</small>
+			<label class="col-md-2 control-label">入学日期</label>
+			<div class="input-group date form_datetime col-md-10" style="float:left">
+				<input type="text" id="enrolldate" name="#(formModelName).enrolldate" class="form-control"  value="#(o?o.enrolldate:'')"    >
+				<span class="input-group-addon"> <span class="glyphicon glyphicon-th"></span>
+									</span>
 			</div>
 		</div>
 	<div class="form-group">
-		<label class="col-md-2 control-label">备注</label>
-		<div class="col-md-9">
-			<textarea rows="8" name="#(formModelName).des" class="form-control" #if(view=='detail') readonly #end></textarea>
-			<small class="help-block">请输入备注</small>
+		<label class="col-md-2 control-label">毕业日期</label>
+		<div class="input-group date form_datetime col-md-10" style="float:left">
+			<input type="text" id="graduatdate" name="#(formModelName).graduatdate" class="form-control"  value="#(o?o.graduatdate:'')"    >
+			<span class="input-group-addon"> <span class="glyphicon glyphicon-th"></span>
+									</span>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-2 control-label">学校/培训机构名称</label>
+		<div class="col-md-10">
+			<input type="text"  name="#(formModelName).trainOrgname" class="form-control"  value="#(o?o.trainOrgname:'')" >
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-2 control-label">专业</label>
+		<div class="col-md-10">
+			<input type="text"  name="#(formModelName).major" class="form-control"  value="#(o?o.major:'')" >
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-2 control-label">学历</label>
+		<input type="hidden" id="edubg" name="#(formModelName).edubg" value="#(o?o.edubg:'')">
+		<div class="col-md-10">
+			<select id="edubgSelect"   title="请选择"  class="selectpicker show-tick form-control" actionsBox="true"    data-live-search="false">
+				#for(edu:edus)
+				<option value="#(edu.value)">#(edu.name)</option>
+				#end
+			</select>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-2 control-label">日制</label>
+		<input type="hidden" id="grade" name="#(formModelName).grade" value="#(o?o.grade:'')">
+		<div class="col-md-10">
+			<select id="gradeSelect"   title="请选择"  class="selectpicker show-tick form-control" actionsBox="true"   data-live-search="false">
+				<option value="1">非全日制</option>
+				<option value="0">全日制</option>
+			</select>
 		</div>
 	</div>
 	#if(view=='edit')
 	<div class="panel-footer">
 		<div class="row">
-			<div class="col-sm-8 col-sm-offset-3">
+			<div class="col-sm-12 " style="text-align: center">
 				<button class="btn btn-warning" type="reset" #if(view=='detail') disabled #end>重置</button>
 				<button class="btn btn-primary" type="submit" #if(view=='detail') disabled #end>保存</button>
+				<button class="btn btn-primary" type="button" onclick="window.history.back();" >返回</button>
 			</div>
 		</div>
 	</div>
 	#else
-
+	<div class="panel-footer">
+		<div class="row">
+			<div class="col-sm-12 " style="text-align: center">
+				<button class="btn btn-primary" type="button" onclick="window.history.back();" >返回</button>
+			</div>
+		</div>
+	</div>
 	#end
 </form>

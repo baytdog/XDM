@@ -93,9 +93,9 @@ public class ExcelUtil {
 
         writer.merge(0,1,0,0,rows.get(0).get(0),false);
         List<String> secondRow = rows.get(1);
-        int secondColumnSize = secondRow.size() / 5;
+        int secondColumnSize = secondRow.size() / 6;
         for (int i = 0; i < secondColumnSize; i++) {
-            writer.merge(0,0,i*5+1,(i+1)*5,rows.get(0).get(i+1),false);
+            writer.merge(0,0,i*6+1,(i+1)*6,rows.get(0).get(i+1),false);
         }
 
         //关闭writer，释放内存

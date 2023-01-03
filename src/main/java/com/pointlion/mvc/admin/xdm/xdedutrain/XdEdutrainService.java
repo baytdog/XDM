@@ -3,14 +3,24 @@ package com.pointlion.mvc.admin.xdm.xdedutrain;
 import com.jfinal.aop.Before;
 import com.jfinal.kit.StrKit;
 import com.jfinal.plugin.activerecord.Db;
+import com.jfinal.plugin.activerecord.IAtom;
 import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.plugin.activerecord.Record;
 import com.jfinal.plugin.activerecord.tx.Tx;
+import com.pointlion.enums.XdOperEnum;
 import com.pointlion.mvc.common.model.XdEdutrain;
+import com.pointlion.mvc.common.model.XdEmployee;
+import com.pointlion.mvc.common.utils.DateUtil;
+import com.pointlion.mvc.common.utils.UuidUtil;
+import com.pointlion.mvc.common.utils.XdOperUtil;
 import com.pointlion.mvc.common.utils.office.excel.ExcelUtil;
 import com.pointlion.plugin.shiro.ShiroKit;
+import com.pointlion.plugin.shiro.ext.SimpleUser;
+import com.pointlion.util.DictMapping;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
+import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Stream;
 
@@ -50,7 +60,7 @@ public class XdEdutrainService{
 		if(StrKit.notBlank(graduatdate)){
 			sql = sql + " and o.graduatdate = '"+graduatdate+"'";
 		}
-		sql = sql + " order by o.ctime desc,o.eid";
+		sql = sql + " order by o.ctime desc,o.eid,enrolldate desc";
 		return Db.paginate(pnum, psize, " select * ", sql);
 	}
 	
@@ -61,10 +71,15 @@ public class XdEdutrainService{
 	@Before(Tx.class)
 	public void deleteByIds(String ids){
     	String idarr[] = ids.split(",");
+    	String empid="";
     	for(String id : idarr){
     		XdEdutrain o = me.getById(id);
+			empid=o.getEid();
     		o.delete();
+			XdOperUtil.logSummary(id,o, XdOperEnum.D.name(),XdOperEnum.UNAPPRO.name(),0);
     	}
+
+    	XdOperUtil.updateEdu(empid);
 	}
 
 	public List<XdEdutrain> getEduTrainList(String  employeeId){
@@ -97,12 +112,14 @@ public class XdEdutrainService{
 		if(StrKit.notBlank(graduatdate)){
 			sql = sql + " and o.graduatdate = '"+graduatdate+"'";
 		}
-		sql = sql + " order by o.ctime desc,o.eid";
+		sql = sql + " order by o.ctime desc,o.eid,o.enrolldate desc";
 
 
 		List<XdEdutrain> list = XdEdutrain.dao.find(" select * "+sql);//查询全部
 		Map<String,Integer> mapCount=new HashMap<>();
 		Map<String,List<XdEdutrain>> mapObje=new HashMap<>();
+		Map<String, Map<String, String>> dictMapping= DictMapping.dictMappingValueToName();
+		Map<String, String> eudMap = dictMapping.get("edu");
 		for (XdEdutrain xdEdutrain : list) {
 			if(mapCount.get(xdEdutrain.getEid())==null){
 				mapCount.put(xdEdutrain.getEid(),1);
@@ -134,6 +151,7 @@ public class XdEdutrainService{
 			second.add("学校/培训机构名称");
 			second.add("专业");
 			second.add("学历");
+			second.add("日制");
 		}
 
 		rows.add(first);
@@ -152,9 +170,11 @@ public class XdEdutrainService{
 					row.add(edutrain.getGraduatdate());
 					row.add(edutrain.getTrainOrgname());
 					row.add(edutrain.getMajor());
-					row.add(edutrain.getEdubg());
+					row.add(edutrain.getEdubg()==null?"":eudMap.get(edutrain.getEdubg()));
+					row.add(edutrain.getGraduatdate()==null?"":(edutrain.getGraduatdate().equals("0")?"全日制":"非全日制"));
 				}
 				for (int i = 0; i < (maxLen - xdWorkExpers.size()); i++) {
+					row.add("");
 					row.add("");
 					row.add("");
 					row.add("");
@@ -172,4 +192,62 @@ public class XdEdutrainService{
 		return file;
 	}
 
+
+
+	public Map<String,Object> importExcel(List<List<String>> list) throws SQLException {
+		final List<String> message = new ArrayList<String>();
+		final Map<String,Object> result = new HashMap<String,Object>();
+		Map<String,String> orgMap= DictMapping.orgMapping("1");
+		Map<String,String> projectsMap=DictMapping.projectsMapping();
+		Map<String, Map<String, String>> dictMapping= DictMapping.dictMapping();
+		Map<String, String> eudMap = dictMapping.get("edu");
+		Db.tx(new IAtom() {
+			@Override
+			public boolean run() throws SQLException {
+				try{
+					if(list.size()>1){
+						SimpleUser user = ShiroKit.getLoginUser();
+						String time = DateUtil.getCurrentTime();
+						for(int i = 1;i<list.size();i++){//从第二行开始取
+							List<String> eduStr = list.get(i);
+							XdEdutrain edutrain=new XdEdutrain();
+							edutrain.setId(UuidUtil.getUUID());
+							edutrain.setCtime(time);
+							edutrain.setCuser(user.getId());
+							if(eduStr.get(1)==null ||"".equals(eduStr.get(1).trim())){
+								continue;
+							}
+							XdEmployee employee = XdEmployee.dao.findFirst("select * from xd_employee where name ='" + eduStr.get(1) + "'");
+							edutrain.setEid(employee.getId());
+							edutrain.setEname(eduStr.get(1));
+							edutrain.setEnrolldate(eduStr.get(2)==null?"":eduStr.get(2));
+							edutrain.setGraduatdate(eduStr.get(3)==null?"":eduStr.get(3));
+							edutrain.setTrainOrgname(eduStr.get(4)==null?"":eduStr.get(4));
+							edutrain.setMajor(eduStr.get(5)==null?"":eduStr.get(5));
+							edutrain.setEdubg(eduStr.get(6)==null?"":eudMap.get(eduStr.get(6)));
+							edutrain.setGrade(eduStr.get(6)==null?"":(eduStr.get(6).equals("全日制")==true?"0":"1"));
+							edutrain.save();
+
+						}
+						if(result.get("success")==null){
+							result.put("success",true);//正常执行完毕
+						}
+					}else{
+						result.put("success",false);//正常执行完毕
+						message.add("excel中无内容");
+						result.put("message", StringUtils.join(message," "));
+					}
+					result.put("message",StringUtils.join(message," "));
+					if((Boolean) result.get("success")){//正常执行完毕
+						return true;
+					}else{//回滚
+						return false;
+					}
+				}catch(Exception e){
+					return false;
+				}
+			}
+		});
+		return result;
+	}
 }

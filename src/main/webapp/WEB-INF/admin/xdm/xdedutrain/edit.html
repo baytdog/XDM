@@ -1,24 +1,16 @@
 	<div id="page-content">
 			<div class="col-lg-12">
 		        <div class="panel">
-		            <div class="panel-heading">
-		                <h3 class="panel-title" style="text-align: right;">
-		                	#@installPJaxGoBackBtn()
-							#@installFlowHisBtn(defId,procInsId)
-							#@installAttachment(o?o.id:'')
-		                </h3>
-		            </div>
-					#@buildFormPanelContainer("名片印刷申请单","/WEB-INF/admin/oa/apply/businesscard/editForm.html")
-					#@buildWorkFlowHisTable(procInsId,hislist)
+					#@buildFormPanelContainer("教育培训经历管理","/WEB-INF/admin/xdm/xdedutrain/editForm.html")
 		        </div>
 		    </div>
 	</div>
 	<script>
 		function save(){
-			var data = common_ajax.ajaxFunc("/admin/xdedutrain/save", $('#editForm').serialize(), "json", null);
+			var data = common_ajax.ajaxFunc("/admin/xd/xdedutrain/save", $('#editForm').serialize(), "json", null);
 			if(data.success){
 				pointLion.alertMsg("保存成功!" , "success" , "small" , function(){
-					location.href = ctx+'/admin/xdedutrain/getListPage';//跳转到列表页
+					location.href = ctx+'/admin/xd/xdedutrain/getListPage';//跳转到列表页
 				},data);
 			}else{
 				pointLion.alertMsg(data.message , "danger" , "small" , function(){
@@ -29,10 +21,62 @@
 		$(document).ready(function() {
 			$('#editForm').bootstrapValidator({
 	            fields: {
+					"#(formModelName).name": {
+						trigger: 'change',
+						validators: {
+							notEmpty: {
+								message: '*姓名不能为空'
+							}
+						}
+					},
+					"#(formModelName).Idnum": {
+						validators: {
+							notEmpty: {
+								message: '*身份证号不能为空'
+							},
+							regexp: {
+								regexp: /^(^[1-9]\d{7}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}$)|(^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])((\d{4})|\d{3}[Xx])$)$/,
+								message: '身份证号码格式不正确，为15位和18位身份证号码！'
+							},
+						}
+					}
 	            }
 	        }).on("success.form.bv", function (e) {
 	            save();
 	            return false;//阻止表单跳转
 	        });
 		});
+		$('.form_datetime').datepicker({format: 'yyyy-mm-dd',weekStart: 1,todayBtn:  1,autoclose: 1,language:  'zh-CN',todayHighlight: 1,forceParse: 0,showMeridian: 1}).on('changeDate',function(){
+			//resetVali();
+		});
+
+
+		$(".selectpicker").selectpicker({});
+		$(".bootstrap-select").attr("style","width:100%;");
+
+	</script>
+
+
+	<script>
+		$(function(){
+			var edubg=$("#edubg").val();
+			if(edubg){
+				$('#edubgSelect').selectpicker('val',edubg.split(",")).trigger("change");
+			};
+
+			$('#edubgSelect').on('changed.bs.select', function (e) {
+				$('#edubg').val($('#edubgSelect').val())
+			});
+
+			var grade=$("#grade").val();
+			if(grade){
+				$('#gradeSelect').selectpicker('val',grade.split(",")).trigger("change");
+			};
+
+			$('#gradeSelect').on('changed.bs.select', function (e) {
+				$('#grade').val($('#gradeSelect').val())
+			});
+		})
+
+
 	</script>

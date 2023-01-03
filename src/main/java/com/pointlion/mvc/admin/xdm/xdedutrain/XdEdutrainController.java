@@ -1,26 +1,25 @@
 package com.pointlion.mvc.admin.xdm.xdedutrain;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.sql.SQLException;
+import java.time.LocalDate;
+import java.util.*;
 
+import com.fasterxml.uuid.impl.UUIDUtil;
 import com.jfinal.aop.Before;
 import com.jfinal.kit.StrKit;
 import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.plugin.activerecord.Record;
+import com.jfinal.upload.UploadFile;
+import com.pointlion.enums.XdOperEnum;
 import com.pointlion.mvc.common.base.BaseController;
 import com.pointlion.mvc.admin.oa.workflow.WorkFlowService;
-import com.pointlion.mvc.common.utils.StringUtil;
-import com.pointlion.mvc.common.model.XdEdutrain;
-import com.pointlion.mvc.common.model.SysUser;
-import com.pointlion.mvc.common.model.SysOrg;
-import com.pointlion.mvc.common.utils.UuidUtil;
-import com.pointlion.mvc.common.utils.Constants;
+import com.pointlion.mvc.common.model.*;
+import com.pointlion.mvc.common.utils.*;
 import com.pointlion.mvc.admin.oa.common.OAConstants;
-import com.pointlion.mvc.common.utils.DateUtil;
+import com.pointlion.mvc.common.utils.office.excel.ExcelUtil;
 import com.pointlion.plugin.shiro.ShiroKit;
 import net.sf.json.JSON;
 import net.sf.json.JSONArray;
@@ -55,13 +54,44 @@ public class XdEdutrainController extends BaseController {
      */
     public void save(){
     	XdEdutrain o = getModel(XdEdutrain.class);
-//    	if(StrKit.notBlank(o.getId())){
-//    		o.update();
-//    	}else{
-//    		o.setId(UuidUtil.getUUID());
-//    		o.setCreateTime(DateUtil.getCurrentTime());
-//    		o.save();
-//    	}
+		XdEdutrain xdEdutrain = XdEdutrain.dao.findById(o.getId());
+		String ename = o.getEname();
+		XdEmployee employee = XdEmployee.dao.findFirst("select * from xd_employee where name ='" + ename + "'");
+		if(xdEdutrain==null){
+			o.setEid(employee.getId());
+			o.save();
+			XdOperUtil.logSummary(o.getId(),o, XdOperEnum.C.name(),XdOperEnum.UNAPPRO.name(),0);
+		}else{
+			String eduChanges = XdOperUtil.getChangedMetheds(o, xdEdutrain);
+			eduChanges = eduChanges.replaceAll("--$","");
+			List<XdOplogSummary> summaryList =new ArrayList<>();
+			List<XdOplogDetail> list =new ArrayList<>();
+			if(!"".equals(eduChanges)){
+				String lid=UuidUtil.getUUID();
+				String[] eduCArray = eduChanges.split("--");
+				for (String change : eduCArray) {
+					change="{"+change+"}";
+					XdOplogDetail logDetail = JSONUtil.jsonToBean(change, XdOplogDetail.class);
+					logDetail.setRsid(lid);
+					list.add(logDetail);
+				}
+				summaryList.add(XdOperUtil.logSummary(lid,o.getId(),o,xdEdutrain,XdOperEnum.U.name(),XdOperEnum.UNAPPRO.name()));
+			}
+
+			if (summaryList.size() > 0) {
+				XdOperUtil.queryLastVersion(o.getId());
+			}
+			for (XdOplogSummary xdOplogSummary : summaryList) {
+				xdOplogSummary.save();
+			}
+			for (XdOplogDetail detail : list) {
+				detail.setId(UuidUtil.getUUID());
+				detail.save();
+			}
+			o.setEid(employee.getId());
+			o.update();
+		}
+		XdOperUtil.updateEdu(employee.getId());
     	renderSuccess();
     }
     /***
@@ -74,20 +104,13 @@ public class XdEdutrainController extends BaseController {
 		XdEdutrain o = new XdEdutrain();
 		if(StrKit.notBlank(id)){
     		o = service.getById(id);
-    		if("detail".equals(view)){
-//    			if(StrKit.notBlank(o.getProcInsId())){
-//    				setAttr("procInsId", o.getProcInsId());
-//    				setAttr("defId", wfservice.getDefIdByInsId(o.getProcInsId()));
-//    			}
-    		}
     	}else{
-    		SysUser user = SysUser.dao.findById(ShiroKit.getUserId());
-    		SysOrg org = SysOrg.dao.findById(user.getOrgid());
-//			o.setOrgId(org.getId());
-//			o.setOrgName(org.getName());
-//			o.setUserid(user.getId());
-//			o.setApplyerName(user.getName());
+			o.setId(UuidUtil.getUUID());
     	}
+
+		List<XdDict> edus = XdDict.dao.find("select * from xd_dict where type ='edu' order by sortnum");
+		setAttr("edus",edus);
+
 		setAttr("o", o);
     	setAttr("formModelName",StringUtil.toLowerCaseFirstOne(XdEdutrain.class.getSimpleName()));
 		renderIframe("edit.html");
@@ -125,5 +148,28 @@ public class XdEdutrainController extends BaseController {
 		String path = this.getSession().getServletContext().getRealPath("")+"/upload/export/"+ DateUtil.format(new Date(),21)+".xlsx";
 		File file = service.exportExcel(path,name,serviceUnit,job,addr,entryDate,departDate);
 		renderFile(file);
+	}
+
+
+
+	/**
+	 * @Method importExcel
+	 * @param :
+	 * @Date 2023/1/3 14:05
+	 * @Exception
+	 * @Description 导入数据
+	 * @Author king
+	 * @Version  1.0
+	 * @Return void
+	 */
+	public void importExcel() throws IOException, SQLException {
+		UploadFile file = getFile("file","/content");
+		List<List<String>> list = ExcelUtil.excelToStringList(file.getFile().getAbsolutePath());
+		Map<String,Object> result = service.importExcel(list);
+		if((Boolean)result.get("success")){
+			renderSuccess((String)result.get("message"));
+		}else{
+			renderError((String)result.get("message"));
+		}
 	}
 }

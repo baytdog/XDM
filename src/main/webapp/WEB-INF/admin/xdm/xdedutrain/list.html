@@ -1,3 +1,10 @@
+<style>
+	.webuploader-pick{
+		padding: 0px 15px;
+		height: 33px;
+		line-height: 33px;
+	}
+</style>
                 <div id="page-content">
 			        <div class="col-sm-12 eq-box-sm">
 						<div class="panel">
@@ -38,10 +45,11 @@
 							</div>
 							<div class="panel ">
 								<div class="panel-body">
-									<!--<a id="add" class="btn btn-primary data-toolbar" href="#(ctx)/admin/xdedutrain/getEditPage?view=edit"><i class="demo-pli-add"></i> 添加</a>
-									<a id="del" class="btn btn-danger data-toolbar" onclick="delSel()" href="javascript:void(0);"><i class="demo-pli-cross"></i> 批量删除</a>-->
+									<a id="add" class="btn btn-primary data-toolbar" href="#(ctx)/admin/xd/xdedutrain/getEditPage?view=edit"><i class="demo-pli-add"></i> 添加</a>
+									<a id="del" class="btn btn-danger data-toolbar" onclick="delSel()" href="javascript:void(0);"><i class="demo-pli-cross"></i> 批量删除</a>
 									<a id="export" class="btn btn-primary data-toolbar" onclick="exportExcel()" target="_blank"><i class="demo-pli-download-from-cloud"></i> 导出</a>
-									<table id="pageTable" class="demo-add-niftycheck" data-toolbar="#del,#export"
+									<a id="filePicker"  href="javascript:void(0);" ><i class="demo-pli-add"></i> 导入</a>
+									<table id="pageTable" class="demo-add-niftycheck" data-toolbar="#add,#del,#export,#filePicker"
 										   data-search="true"
 										   data-show-refresh="true"
 										   data-show-toggle="true"
@@ -64,20 +72,38 @@
 		{field: 'graduatdate', title: '毕业日期', align: 'center'},
 		{field: 'trainOrgname', title: '学校/培训机构名称', align: 'center'},
 		{field: 'major', title: '专业', align: 'center'},
-		{field: 'edubg', title: '学历', align: 'center'},
-
-	   
-	 /*  {field: 'control', title: '操作', align: 'left', width:'200',
+		{field: 'edubg', title: '学历', align: 'center', formatter:function(value,row,index){
+				if(value=='1'){
+					return "技工";
+				}else if(value=='2'){
+					return "职高";
+				}else if(value=='3'){
+					return "中专";
+				}else if(value=='4'){
+					return "高中";
+				}else if(value=='5'){
+					return "大专";
+				}else if(value=='6'){
+					return "本科";
+				}
+			}},
+		{field: 'grade', title: '日制', align: 'center', formatter:function(value,row,index){
+				if(value=='0'){
+					return "全日制";
+				}else if(value=='1'){
+					return "非全日制";
+				}else {
+					return "-";
+				}
+			}},
+	   {field: 'control', title: '操作', align: 'left', width:'200',
 	       formatter:function(value,row,index){
-	           	//通过formatter可以自定义列显示的内容
-	           	//value：当前field的值，即id
-	           	//row：当前行的数据
-	           	var a = '<a class="label label-table label-success" href="'+ctx+'/admin/xdedutrain/getEditPage?id='+row.id+'&view=detail" >查看</a>&nbsp;';
-	           	a = a + '<a class="label label-table label-success" href="'+ctx+'/admin/xdedutrain/getEditPage?id='+row.id+'&view=edit" >编辑</a>&nbsp;';
+	           	var a = '<a class="label label-table label-success" href="'+ctx+'/admin/xd/xdedutrain/getEditPage?id='+row.id+'&view=detail" >查看</a>&nbsp;';
+	           	a = a + '<a class="label label-table label-success" href="'+ctx+'/admin/xd/xdedutrain/getEditPage?id='+row.id+'&view=edit" >编辑</a>&nbsp;';
 				a = a + '<a class="label label-table label-danger" onclick="del(\''+row.id+'\')" href="javascript:void(0);" >删除</a>';
 	           	return a;
 	       }
-	   }*/];
+	   }];
 	var opt = {
 		    //请求方法
 			   method: 'get',
@@ -148,11 +174,11 @@
 	function del(ids){
 		pointLion.confimMsg("您是否要删除所选信息 ?<br/> 点击确认进行删除 , 点击取消取消该操作",null,function(){
 			//执行删除
-			var data = common_ajax.ajaxFunc("/admin/xdedutrain/delete",{"ids":ids}, "json", null);
+			var data = common_ajax.ajaxFunc("/admin/xd/xdedutrain/delete",{"ids":ids}, "json", null);
 			//删除结果
 			if(data.success){
 				pointLion.alertMsg(data.message,"success",null,function(){
-					location.href = ctx+'/admin/xdedutrain/getListPage';//跳转到列表页
+					location.href = ctx+'/admin/xd/xdedutrain/getListPage';//跳转到列表页
 				});
 			}else{
 				pointLion.alertMsg(data.message,"success",null,null);
@@ -201,5 +227,14 @@
 	$(document).ready(function(){
 		$('.form_datetime').datepicker({format: 'yyyy-mm-dd',weekStart: 1,todayBtn:  1,autoclose: 1,language:  'zh-CN',todayHighlight: 1,forceParse: 0,clearBtn: true }).on('changeDate',null);
 		initTable();//初始化
+
+		pointLion.initUploader("/admin/xd/xdedutrain/importExcel",function(data){
+			if(data.success){
+				pointLion.alertMsg("导入成功！","success",null,null);
+				searchTable();
+			}else{
+				pointLion.alertMsg(data.message,"danger",null,null);
+			}
+		});
 	});
 </script>
