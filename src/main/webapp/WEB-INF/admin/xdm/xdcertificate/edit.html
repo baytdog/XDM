@@ -66,6 +66,17 @@
 		$('#continuEduSelect').on('changed.bs.select', function (e) {
 			$('#continuEdu').val($('#continuEduSelect').val())
 		});
+
+		let pid=$("#pid").val();
+		if(pid){
+			$('#certSelect').selectpicker('val',pid.split(",")).trigger("change");
+		};
+
+		$('#certSelect').on('changed.bs.select', function (e) {
+			$('#pid').val($('#certSelect').val())
+			$('#pcertificateTitle').val($('#certSelect option:selected').text())
+
+		});
 	})
 </script>
 

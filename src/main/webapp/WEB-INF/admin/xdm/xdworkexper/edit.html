@@ -42,3 +42,21 @@
 		$(".selectpicker").selectpicker({});
 		$(".bootstrap-select").attr("style","width:100%;");
 	</script>
+
+	<script>
+
+		$(function () {
+
+			let eid=$("#eid").val();
+			if(eid){
+				$('#enameSelect').selectpicker('val',eid.split(",")).trigger("change");
+			};
+
+			$('#enameSelect').on('changed.bs.select', function (e) {
+				$('#eid').val($('#enameSelect').val())
+				$('#ename').val($('#enameSelect option:selected').text())
+
+			});
+		})
+
+	</script>

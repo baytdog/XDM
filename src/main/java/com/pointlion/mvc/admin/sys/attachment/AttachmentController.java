@@ -5,9 +5,13 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Consumer;
 
 import javax.servlet.http.HttpServletResponse;
 
+import com.pointlion.mvc.common.model.*;
 import org.apache.commons.io.FileUtils;
 
 import com.jfinal.plugin.activerecord.Db;
@@ -15,10 +19,6 @@ import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.plugin.activerecord.Record;
 import com.jfinal.upload.UploadFile;
 import com.pointlion.mvc.common.base.BaseController;
-import com.pointlion.mvc.common.model.OaDepartmentsFiles;
-import com.pointlion.mvc.common.model.SysAttachment;
-import com.pointlion.mvc.common.model.SysOrg;
-import com.pointlion.mvc.common.model.SysUser;
 import com.pointlion.mvc.common.utils.DateUtil;
 import com.pointlion.mvc.common.utils.RzUtils;
 import com.pointlion.mvc.common.utils.UuidUtil;
@@ -412,5 +412,28 @@ public class AttachmentController extends BaseController {
 		renderNull();
 
 		}
+
+	/**
+	 * @Method getCertListPage
+	 * @param :
+	 * @Date 2023/1/3 16:28
+	 * @Description 获取人员证书列表
+	 * @Author king
+	 * @Version  1.0
+	 * @Return void
+	 */
+	public void getCertListPage(){
+		String curr = getPara("pageNumber");
+		String pageSize = getPara("pageSize");
+		String busid = getPara("busid","");
+		XdEmployee employee = XdEmployee.dao.findById(busid);
+
+		List<XdEmpCert> xdEmpCerts = XdEmpCert.dao.find("select * from  xd_emp_cert where ename='" + employee.getName() + "'");
+		List<String> busiList=new ArrayList<>();
+		xdEmpCerts.stream().forEach(xdEmpCert->  busiList.add(xdEmpCert.getId()));
+
+		Page<Record> page = service.getPage(busiList,Integer.valueOf(curr),Integer.valueOf(pageSize));
+		renderPage(page.getList(),"",page.getTotalRow());
+	}
 	
 }

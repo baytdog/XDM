@@ -209,7 +209,7 @@
 
 
 	</script>
-<script>
+	<script>
 	$(function () {
 		//性别
 		let gender=$("#gender").val();
@@ -327,5 +327,126 @@
 			$('#position').val($('#hardstaffSelect').val())
 		});
 	})
+
+</script>
+
+
+	<script type="text/javascript">
+	$(function (){
+
+		initTable();//初始化
+
+		pointLion.initUploader("/admin/sys/attachment/attachmentUpload?busid="+$("#employeeId").val(),function(data){
+			pointLion.alertMsg(data.message,"success",null,null);
+			refreshTable();
+
+		});
+	});
+
+	var busid = $("#employeeId").val();//可能是业务ID，也可能是TEMP_UUID
+	var col = [
+
+		{
+			field: 'id',
+			title: '主键',
+			align: 'center'
+		},
+		{
+			field: 'create_user_name',
+			title: '上传人',
+			align: 'center'
+		},
+		{
+			field: 'create_time',
+			title: '上传时间',
+			align: 'center'
+		},
+		{
+			field: 'file_name',
+			title: '文件名',
+			align: 'center'
+		},
+
+		{
+			field: 'control',
+			title: '操作',
+			align: 'left',
+			width:'120',
+			formatter:function(value,row,index){
+				var a = '<a class="label label-table label-success" href="'+ctx+'/admin/sys/attachment/downloadFile?id='+row.id+'&view=detail" target="_blank">下载</a>&nbsp;';
+				a=a+'<a class="label label-table label-success" href="'+ctx+'/admin/sys/attachment/lookFile?id='+row.id+'&view=detail" target="_blank" title="附件查看">查看</a>&nbsp;'
+				#if(view=='detail')
+				#else
+				#end
+				return a;
+			}
+		}];
+	var opt = {
+		//请求方法
+		method: 'get',
+		//是否显示行间隔色
+		striped: true,
+		//是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+		cache: false,
+		//data-toolbar: "#demo-delete-row",
+		//是否显示分页（*）
+		pagination: true,
+		//是否启用排序
+		sortable: false,
+		//排序方式
+		sortOrder: "asc",
+		pageSize: 50,
+		//可供选择的每页的行数（*）
+		pageList: [5, 10, 15, 20,50,100],
+		url: ctx+"/admin/sys/attachment/getCertListPage?busid="+busid,
+		//默认值为 'limit',传给服务端的参数为：limit, offset, search, sort, order Else
+		//queryParamsType:'',
+		////查询参数,每次调用是会带上这个参数，可自定义
+		queryParams : function(params) {
+			return {
+				pageNumber: (params.offset/params.limit)+1,
+				pageSize: params.limit
+			};
+		},
+		//分页方式：client客户端分页，server服务端分页（*）
+		sidePagination: "server",
+		//是否显示搜索
+		search: false,
+		//Enable the strict search.
+		strictSearch: true,
+		paginationDetailHAlign:' hidden',
+		//Indicate which field is an identity field.
+		idField : "id",
+		columns: col,
+		pagination:true,paginationShowPageGo: false
+	};
+
+	//表格
+	function initTable(){
+		$('#pageTable').bootstrapTable(opt);
+		$('#pageTable').bootstrapTable('hideColumn', 'id');
+	}
+	function refreshTable(){
+
+		$("#pageTable").bootstrapTable('refresh', opt);
+		$('#pageTable').bootstrapTable('hideColumn', 'id');
+	}
+
+
+	//删除
+	function del(ids){
+		pointLion.confimMsg("您是否要删除所选信息 ?<br/> 点击确认进行删除 , 点击取消取消该操作",null,function(){
+			//执行删除
+			var data = common_ajax.ajaxFunc("/admin/sys/attachment/delete",{"ids":ids}, "json", null);
+			//删除结果
+			if(data.success){
+				pointLion.alertMsg(data.message,"success",null,function(){
+					refreshTable();
+				});
+			}else{
+				pointLion.alertMsg(data.message,"success",null,null);
+			}
+		});
+	};
 
 </script>

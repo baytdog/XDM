@@ -22,8 +22,8 @@
 <div class="con_left f_l">
 <!-- 7个图标开始 -->
 	<!-- <div class="con_bg1 f_l" onclick="receiveDoc()"><p>收文<span>#(receiveSize)</span>份 可办<span >#(receiveCanDo)</span>份</p></div> -->
-	<div class="con_bg1 f_l"  ><p><a href="javascript:void(0);" onclick="receiveDoc()">排班<span >0</span>份</a>　</p></div>
-	<div class="con_bg2 f_l" onclick="employee()"><p>员工<span>#(empSize)</span>份</p></div>
+	<div class="con_bg1 f_l" onclick="employee()"><p>员工<span>#(empSize)</span>份</p></div>
+	<div class="con_bg2 f_l" onclick="retireTip()" ><p>退休到期 <span>#(retireEmpEndSize)</span> 人 </p></div>
 	<div class="con_bg3 f_l" onclick="contractExpired()"><p>合同到期<span>#(contractEndSize)</span>人</p></div>
 	<div class="con_bg4 f_l" onclick="tryExpired()"><p>试用到期<span>#(tryEmpEndSize)</span>人</p></div>
 <!--
@@ -32,10 +32,12 @@
 -->
     <div class="f_clear"></div>
 
-
-	<div class="con_bg5 f_l" onclick="history()"><p>历史<!-- <span>1</span>个 --></p></div>
-	<div class="con_bg6 f_l" onclick="plan()"><p>rcp补贴申请<!-- <span>1</span>份 --></p></div>
-	<div class="con_bg7 f_l" onclick="email()"><p>请假<span>#(emailSize)</span>份</p></div>
+<!--
+	<div class="con_bg5 f_l" onclick="history()"><p>历史&lt;!&ndash; <span>1</span>个 &ndash;&gt;</p></div>-->
+	<div class="con_bg5 f_l" onclick="plan()"><p>rcp补贴申请<!-- <span>1</span>份 --></p></div>
+	<div class="con_bg6 f_l" onclick="email()"><p>请假<span>#(emailSize)</span>份</p></div>
+	<div class="con_bg3 f_l" onclick="contractExpired()"><p>排班</p></div>
+	<div class="con_bg4 f_l" onclick="tryExpired()"><p></p></div>
     <div class="f_clear"></div>
 
 </div>
@@ -65,6 +67,11 @@
  	function  tryExpired(){
  		 window.location.href="#(ctx)/admin/xd/xdemployee/getWarningEmpList?warnType=2";
  	}
+ 	// 退休到期提醒
+ 	function retireTip(){
+		window.location.href="#(ctx)/admin/xd/xdemployee/getWarningEmpList?warnType=3";
+
+	}
  	//信访
  	function  letter(){
  		 window.location.href="#(ctx)/admin/oa/letter/getPLetterListPage";

@@ -89,7 +89,7 @@ public class HomeController extends BaseController {
 						return false;
 					}else{
 
-						LocalDate parse = LocalDate.parse(contractenddate, dtf).minusDays(7);
+						LocalDate parse = LocalDate.parse(contractenddate, dtf).minusDays(30);
 						LocalDate now = LocalDate.now();
 						 return  now.isAfter(parse);
 					}
@@ -106,13 +106,24 @@ public class HomeController extends BaseController {
 						if (positivedate == null||"".equals(positivedate)) {
 							return false;
 						}
-						LocalDate bsposiDate = LocalDate.parse(positivedate, dtf).minusDays(7);
+						LocalDate bsposiDate = LocalDate.parse(positivedate, dtf).minusDays(30);
 						LocalDate now = LocalDate.now();
 						return  now.isAfter(bsposiDate);
 					}
 			});
 			setAttr("tryEmpEndSize",tryEmpStream.count());
 
+			//退休到期
+			Stream<XdEmployee> retireStream = xdEmployees.stream().filter( employee->{
+					String retiretime = employee.getRetiretime();
+					if (retiretime == null||"".equals(retiretime)) {
+						return false;
+					}
+					LocalDate bsRetireDate = LocalDate.parse(retiretime, dtf).minusDays(60);
+					LocalDate now = LocalDate.now();
+					return  now.isAfter(bsRetireDate);
+			});
+			setAttr("retireEmpEndSize",retireStream.count());
 
 			 renderIframe("/common/include/content.html");
 		}

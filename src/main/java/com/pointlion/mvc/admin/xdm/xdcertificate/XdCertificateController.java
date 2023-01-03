@@ -2,6 +2,7 @@ package com.pointlion.mvc.admin.xdm.xdcertificate;
 
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.jfinal.aop.Before;
@@ -70,6 +71,11 @@ public class XdCertificateController extends BaseController {
     	}else{
 			o.setId(UuidUtil.getUUID());
     	}
+
+		List<XdCertificate> xdCertificates = XdCertificate.dao.find("select  * from  xd_certificate");
+		setAttr("xdCertificates",xdCertificates);
+
+
 		setAttr("o", o);
     	setAttr("formModelName",StringUtil.toLowerCaseFirstOne(XdCertificate.class.getSimpleName()));
 		renderIframe("edit.html");

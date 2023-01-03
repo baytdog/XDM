@@ -86,14 +86,18 @@ public class XdEmployeeService{
 	public Page<Record> getPage(int pnum,int psize,String warnType){
 		String sql  ="";
 		if(warnType.equals("1")){
-			sql  = " from "+TABLE_NAME+" o  where o.contractenddate  is not null and (TO_DAYS(str_to_date(o.contractenddate, '%Y-%m-%d')) - TO_DAYS(now()))<7";
+			sql  = " from "+TABLE_NAME+" o  where o.contractenddate  is not null and (TO_DAYS(str_to_date(o.contractenddate, '%Y-%m-%d')) - TO_DAYS(now()))<30";
 			sql = sql + " order by o.ctime desc";
 			return Db.paginate(pnum, psize, " select o.*, TO_DAYS(str_to_date(o.contractenddate, '%Y-%m-%d')) - TO_DAYS(now()) diffdate,o.contractenddate endtime", sql);
-		}else{
-			sql  = " from "+TABLE_NAME+" o  where o.contractenddate  is  null and (TO_DAYS(str_to_date(o.positivedate, '%Y-%m-%d')) - TO_DAYS(now()))<7";
+		}else if(warnType.equals("2")){
+			sql  = " from "+TABLE_NAME+" o  where o.contractenddate  is  null and (TO_DAYS(str_to_date(o.positivedate, '%Y-%m-%d')) - TO_DAYS(now()))<30";
 			sql = sql + " order by o.ctime desc";
 			return Db.paginate(pnum, psize, " select o.*, TO_DAYS(str_to_date(o.positivedate, '%Y-%m-%d')) - TO_DAYS(now()) diffdate ,o.positivedate endtime", sql);
 
+		}else{
+			sql  = " from "+TABLE_NAME+" o  where o.retiretime  is not null and (TO_DAYS(str_to_date(o.retiretime, '%Y-%m-%d')) - TO_DAYS(now()))<60";
+			sql = sql + " order by o.ctime desc";
+			return Db.paginate(pnum, psize, " select o.*, TO_DAYS(str_to_date(o.retiretime, '%Y-%m-%d')) - TO_DAYS(now()) diffdate ,o.retiretime endtime", sql);
 		}
 
 

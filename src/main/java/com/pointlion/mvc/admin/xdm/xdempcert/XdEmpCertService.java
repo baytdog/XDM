@@ -98,11 +98,12 @@ public class XdEmpCertService{
 							SysOrg sysOrg = SysOrg.dao.findFirst("select * from sys_org where name='" + orgName + "'");
 							empCert.setDepartment(sysOrg.getId());
 							String name = empCertStr.get(2);
-							SysUser sysUser = SysUser.dao.findFirst("select * from sys_user  where name='" + name + "'");
-							if(sysUser==null){
+//							SysUser sysUser = SysUser.dao.findFirst("select * from sys_user  where name='" + name + "'");
+							XdEmployee emp = XdEmployee.dao.findFirst("select * from  xd_employee where name='" + name + "'");
+							if(emp==null){
 								empCert.setEname(name);
 							}else{
-								empCert.setEid(sysUser.getId());
+								empCert.setEid(emp.getId());
 								empCert.setEname(name);
 							}
 							String certName = empCertStr.get(3);

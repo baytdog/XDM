@@ -103,6 +103,8 @@ public class XdWorkExperController extends BaseController {
 		}else{
 			o.setId(UuidUtil.getUUID());
 		}
+		List<XdEmployee> emps = XdEmployee.dao.find("select * from  xd_employee");
+		setAttr("emps",emps);
 		setAttr("o", o);
     	setAttr("formModelName",StringUtil.toLowerCaseFirstOne(XdWorkExper.class.getSimpleName()));
 		renderIframe("edit.html");

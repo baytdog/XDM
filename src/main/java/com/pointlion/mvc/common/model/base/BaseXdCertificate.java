@@ -33,6 +33,22 @@ public abstract class BaseXdCertificate<M extends BaseXdCertificate<M>> extends 
 		return getStr("num");
 	}
 
+	public void setPid(java.lang.String pid) {
+		set("pid", pid);
+	}
+
+	public java.lang.String getPid() {
+		return getStr("pid");
+	}
+
+	public void setPcertificateTitle(java.lang.String pcertificateTitle) {
+		set("pcertificateTitle", pcertificateTitle);
+	}
+
+	public java.lang.String getPcertificateTitle() {
+		return getStr("pcertificateTitle");
+	}
+
 	public void setHaveCertificate(Integer haveCertificate) {
 		set("haveCertificate", haveCertificate);
 	}

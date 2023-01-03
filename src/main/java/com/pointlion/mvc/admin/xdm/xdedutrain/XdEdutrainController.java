@@ -111,6 +111,9 @@ public class XdEdutrainController extends BaseController {
 		List<XdDict> edus = XdDict.dao.find("select * from xd_dict where type ='edu' order by sortnum");
 		setAttr("edus",edus);
 
+		List<XdEmployee> emps = XdEmployee.dao.find("select * from  xd_employee");
+		setAttr("emps",emps);
+
 		setAttr("o", o);
     	setAttr("formModelName",StringUtil.toLowerCaseFirstOne(XdEdutrain.class.getSimpleName()));
 		renderIframe("edit.html");

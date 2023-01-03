@@ -8,6 +8,9 @@ import com.jfinal.plugin.activerecord.Record;
 import com.jfinal.plugin.activerecord.tx.Tx;
 import com.pointlion.mvc.common.model.SysAttachment;
 
+import java.util.List;
+import java.util.function.Consumer;
+
 public class AttachmentService{
 	public static final AttachmentService me = new AttachmentService();
 	public static final String TABLE_NAME = SysAttachment.tableName;
@@ -29,7 +32,34 @@ public class AttachmentService{
 		}
 		return Db.paginate(pnum, psize, " select * ", sql);
 	}
-	
+
+	/**
+	 * @Method getPage
+	 * @param busids:
+	 * @param pnum:
+	 * @param psize:
+	 * @Date 2023/1/3 16:36
+	 * @Description  员工获取证件信息
+	 * @Author king
+	 * @Version  1.0
+	 * @Return com.jfinal.plugin.activerecord.Page<com.jfinal.plugin.activerecord.Record>
+	 */
+	public Page<Record> getPage(List<String> busids, int pnum, int psize){
+		String sql  = " from "+TABLE_NAME+" o where 1=1 ";
+		if(busids.size()>0){
+			String inIds="";
+			for (String busid : busids) {
+				inIds+="'"+busid+"',";
+			}
+			String in = inIds.replaceAll(",$", "");
+			sql=sql+" and  o.business_id in ("+in+") order by o.create_time desc";
+		}else{
+			sql = sql + " and 1=2";
+		}
+		return Db.paginate(pnum, psize, " select * ", sql);
+	}
+
+
 	/***
 	 * 删除
 	 * @param ids

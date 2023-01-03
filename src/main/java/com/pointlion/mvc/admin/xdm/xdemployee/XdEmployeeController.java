@@ -80,6 +80,10 @@ public class XdEmployeeController extends BaseController {
 			o.setCtime(employee.getCtime());
 			o.setCuser(employee.getCuser());
 			service.modifyObj(o,employee,gridList1,gridList2);
+
+//			员工信息修改更新教育、工作经历、证书表相关字段
+			XdOperUtil.updateEmpRelationInfos(o);
+
 		}else{
 			String operName = XdOperEnum.C.name();
 			String operStatus = XdOperEnum.WAITAPPRO.name();

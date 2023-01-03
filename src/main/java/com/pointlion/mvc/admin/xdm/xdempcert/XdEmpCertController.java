@@ -108,6 +108,8 @@ public class XdEmpCertController extends BaseController {
 			o.setId(UuidUtil.getUUID());
     	}
 
+		List<XdEmployee> emps = XdEmployee.dao.find("select * from  xd_employee");
+		setAttr("emps",emps);
 		List<SysOrg> sysOrgs = SysOrg.dao.find("select * from sys_org where id <> 'root'");
 		setAttr("departs",sysOrgs);
 

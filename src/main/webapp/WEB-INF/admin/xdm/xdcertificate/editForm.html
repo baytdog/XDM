@@ -17,6 +17,34 @@
 							</div>
 						</div>
 						<div class="form-group">
+							<label class="col-md-2 control-label">编号</label>
+							<div class="col-md-9">
+								<input type="text"  name="#(formModelName).num" class="form-control"  value="#(o?o.num:'')"  >
+							</div>
+						</div>
+						<div class="form-group">
+						<!--	<label class="col-md-2 control-label">有无职称/职业职格证书</label>
+							<input type="hidden" id="haveCertificate" name="#(formModelName).haveCertificate" value="#(o?o.haveCertificate:'')">
+							<div class="col-md-9">
+								<select id="haveCertificateSelect"   title="请选择"  class="selectpicker show-tick form-control" actionsBox="true"  disable  data-live-search="false">
+									<option value=" ">  </option>
+									<option value="1">有</option>
+									<option value="0">无</option>
+								</select>
+							</div>-->
+
+							<label class="col-md-2 control-label">上级证书</label>
+							<input type="hidden" id="pid" name="#(formModelName).pid" value="#(o?o.pid:'')">
+							<input type="hidden" id="pcertificateTitle" name="#(formModelName).pcertificateTitle" value="#(o?o.pcertificateTitle:'')">
+							<div class="col-md-9">
+								<select id="certSelect"   title="请选择员工"  class="selectpicker show-tick form-control" actionsBox="true"  disable  data-live-search="true">
+									#for(cert:xdCertificates)
+									<option value="#(cert.id)">#(cert.certificateTitle)</option>
+									#end
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
 							<label class="col-md-2 control-label">有无职称/职业职格证书</label>
 							<input type="hidden" id="haveCertificate" name="#(formModelName).haveCertificate" value="#(o?o.haveCertificate:'')">
 							<div class="col-md-9">
@@ -51,12 +79,7 @@
 							</div>
 
 						</div>
-						<div class="form-group">
-							<label class="col-md-2 control-label">编号</label>
-							<div class="col-md-9">
-								<input type="text"  name="#(formModelName).num" class="form-control"  value="#(o?o.num:'')"  >
-							</div>
-						</div>
+
 						<br/>
 						<br/>
 						<br/>

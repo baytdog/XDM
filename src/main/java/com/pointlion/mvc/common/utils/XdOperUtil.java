@@ -2,10 +2,7 @@ package com.pointlion.mvc.common.utils;
 
 import com.jfinal.plugin.activerecord.Db;
 import com.pointlion.annotation.ChangeFields;
-import com.pointlion.mvc.common.model.XdEdutrain;
-import com.pointlion.mvc.common.model.XdEmployee;
-import com.pointlion.mvc.common.model.XdOplogSummary;
-import com.pointlion.mvc.common.model.XdSteps;
+import com.pointlion.mvc.common.model.*;
 import com.pointlion.plugin.shiro.ShiroKit;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -17,6 +14,7 @@ import java.lang.reflect.Method;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Consumer;
 
 /**
  * @Author: king
@@ -304,6 +302,35 @@ public class XdOperUtil {
 
     }
 
+
+
+    public static void updateEmpRelationInfos(XdEmployee emp){
+        String name =emp.getName();
+        String id = emp.getId();
+        List<XdEdutrain> xdEdutrainList = XdEdutrain.dao.find("select * from  xd_edutrain where eid ='" + id + "'");
+        xdEdutrainList.forEach(xdEdutrain-> {
+            if(!xdEdutrain.getEname().equals(name)){
+                xdEdutrain.setEname(name);
+                xdEdutrain.update();
+            }
+        });
+
+        List<XdWorkExper> workExperList = XdWorkExper.dao.find("select * from xd_work_exper where eid ='" + id + "'");
+        workExperList.forEach(xdWorkExper-> {
+                if(!xdWorkExper.getEname().equals(name)){
+                    xdWorkExper.setEname(name);
+                    xdWorkExper.update();
+                }
+        });
+
+        List<XdEmpCert> xdEmpCerts = XdEmpCert.dao.find("select * from  xd_emp_cert where eid='" + id + "'");
+        xdEmpCerts.forEach(xdEmpCert-> {
+                if(!xdEmpCert.getEname().equals(name)){
+                    xdEmpCert.setEname(name);
+                    xdEmpCert.update();
+                }
+        });
+    }
 
 
 }
