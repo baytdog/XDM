@@ -1,3 +1,10 @@
+<style>
+	.webuploader-pick{
+		padding: 0px 15px;
+		height: 33px;
+		line-height: 33px;
+	}
+</style>
                 <div id="page-content">
 			        <div class="col-sm-12 eq-box-sm">
 						<div class="panel">
@@ -36,10 +43,12 @@
 							</div>
 							<div class="panel ">
 								<div class="panel-body">
-									<!--<a id="add" class="btn btn-primary data-toolbar" href="#(ctx)/admin/xdworkexper/getEditPage?view=edit"><i class="demo-pli-add"></i> 添加</a>
-									<a id="del" class="btn btn-danger data-toolbar" onclick="delSel()" href="javascript:void(0);"><i class="demo-pli-cross"></i> 批量删除</a>-->
+									<a id="add" class="btn btn-primary data-toolbar" href="#(ctx)/admin/xd/xdworkexper/getEditPage?view=edit"><i class="demo-pli-add"></i> 添加</a>
+									<a id="del" class="btn btn-danger data-toolbar" onclick="delSel()" href="javascript:void(0);"><i class="demo-pli-cross"></i> 批量删除</a>
 									<a id="export" class="btn btn-primary data-toolbar" onclick="exportExcel()" target="_blank"><i class="demo-pli-download-from-cloud"></i> 导出</a>
-									<table id="pageTable" class="demo-add-niftycheck" data-toolbar="#del,#add,#export"
+									<a id="filePicker"  href="javascript:void(0);" ><i class="demo-pli-add"></i> 导入</a>
+									<table id="pageTable" class="demo-add-niftycheck" data-toolbar="#del,#add,#export,#filePicker"
+
 										   data-search="true"
 										   data-show-refresh="true"
 										   data-show-toggle="true"
@@ -56,15 +65,14 @@
 <script>
 	
 	var col = [
-			/*{field: 'checked', checkbox : true, align: 'center'},
-	   */
+			{field: 'checked', checkbox : true, align: 'center'},
 		   {field: 'ename', title: '姓名', align: 'center'},
 		   {field: 'serviceunit', title: '服务单位', align: 'center'},
 		   {field: 'job', title: '职务', align: 'center'},
 		   {field: 'addr', title: '地点', align: 'center'},
 			{field: 'entrydate', title: '入职时间', align: 'center'},
 			{field: 'departdate', title: '离职时间', align: 'center'},
-		  /* {field: 'control', title: '操作', align: 'left', width:'200',
+		   {field: 'control', title: '操作', align: 'left', width:'200',
 			   formatter:function(value,row,index){
 					//通过formatter可以自定义列显示的内容
 					//value：当前field的值，即id
@@ -74,7 +82,7 @@
 					a = a + '<a class="label label-table label-danger" onclick="del(\''+row.id+'\')" href="javascript:void(0);" >删除</a>';
 					return a;
 			   }
-		   }*/];
+		   }];
 	var opt = {
 		    //请求方法
 			   method: 'get',
@@ -198,5 +206,14 @@
 	$(document).ready(function(){
 		$('.form_datetime').datepicker({format: 'yyyy-mm-dd',weekStart: 1,todayBtn:  1,autoclose: 1,language:  'zh-CN',todayHighlight: 1,forceParse: 0,clearBtn: true }).on('changeDate',null);
 		initTable();//初始化
+
+		pointLion.initUploader("/admin/xd/xdworkexper/importExcel",function(data){
+			if(data.success){
+				pointLion.alertMsg("导入成功！","success",null,null);
+				searchTable();
+			}else{
+				pointLion.alertMsg(data.message,"danger",null,null);
+			}
+		});
 	});
 </script>

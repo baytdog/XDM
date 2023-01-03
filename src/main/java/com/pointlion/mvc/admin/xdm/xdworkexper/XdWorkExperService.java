@@ -3,15 +3,23 @@ package com.pointlion.mvc.admin.xdm.xdworkexper;
 import com.jfinal.aop.Before;
 import com.jfinal.kit.StrKit;
 import com.jfinal.plugin.activerecord.Db;
+import com.jfinal.plugin.activerecord.IAtom;
 import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.plugin.activerecord.Record;
 import com.jfinal.plugin.activerecord.tx.Tx;
+import com.pointlion.enums.XdOperEnum;
 import com.pointlion.mvc.common.model.*;
 import com.pointlion.mvc.common.utils.DateUtil;
+import com.pointlion.mvc.common.utils.UuidUtil;
+import com.pointlion.mvc.common.utils.XdOperUtil;
 import com.pointlion.mvc.common.utils.office.excel.ExcelUtil;
 import com.pointlion.plugin.shiro.ShiroKit;
+import com.pointlion.plugin.shiro.ext.SimpleUser;
+import com.pointlion.util.DictMapping;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
+import java.sql.SQLException;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
@@ -58,7 +66,7 @@ public class XdWorkExperService{
 		if (StrKit.notBlank(dimissionDate)) {
 			sql = sql + " and o.departdate='"+dimissionDate+"'";
 		}
-		sql = sql + " order by o.ctime desc";
+		sql = sql + " order by o.ctime desc,ename,entrydate desc";
 		return Db.paginate(pnum, psize, " select * ", sql);
 	}
 	
@@ -72,6 +80,7 @@ public class XdWorkExperService{
     	for(String id : idarr){
     		XdWorkExper o = me.getById(id);
     		o.delete();
+			XdOperUtil.logSummary(id,o, XdOperEnum.D.name(),XdOperEnum.UNAPPRO.name(),0);
     	}
 	}
 
@@ -309,7 +318,57 @@ public class XdWorkExperService{
 		File file = ExcelUtil.workExperFile(path,rows);
 		return file;
 	}
+	public Map<String,Object> importExcel(List<List<String>> list) throws SQLException {
+		final List<String> message = new ArrayList<String>();
+		final Map<String,Object> result = new HashMap<String,Object>();
+		Db.tx(new IAtom() {
+			@Override
+			public boolean run() throws SQLException {
+				try{
+					if(list.size()>1){
+						SimpleUser user = ShiroKit.getLoginUser();
+						String time = DateUtil.getCurrentTime();
+						for(int i = 1;i<list.size();i++){//从第二行开始取
+							List<String> workStr = list.get(i);
+							XdWorkExper workExper=new XdWorkExper();
+							workExper.setId(UuidUtil.getUUID());
+							workExper.setCtime(time);
+							workExper.setCuser(user.getId());
+							if(workStr.get(1)==null ||"".equals(workStr.get(1).trim())){
+								continue;
+							}
+							XdEmployee employee = XdEmployee.dao.findFirst("select * from xd_employee where name ='" + workStr.get(1) + "'");
+							workExper.setEid(employee.getId());
+							workExper.setEname(workStr.get(1));
+							workExper.setServiceunit(workStr.get(2)==null?"":workStr.get(2));
+							workExper.setJob(workStr.get(3)==null?"":workStr.get(3));
+							workExper.setAddr(workStr.get(4)==null?"":workStr.get(4));
+							workExper.setEntrydate(workStr.get(5)==null?"":workStr.get(5));
+							workExper.setDepartdate(workStr.get(5)==null?"":workStr.get(5));
+							workExper.save();
 
+						}
+						if(result.get("success")==null){
+							result.put("success",true);//正常执行完毕
+						}
+					}else{
+						result.put("success",false);//正常执行完毕
+						message.add("excel中无内容");
+						result.put("message", StringUtils.join(message," "));
+					}
+					result.put("message",StringUtils.join(message," "));
+					if((Boolean) result.get("success")){//正常执行完毕
+						return true;
+					}else{//回滚
+						return false;
+					}
+				}catch(Exception e){
+					return false;
+				}
+			}
+		});
+		return result;
+	}
 
 
 }
