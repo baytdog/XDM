@@ -90,29 +90,98 @@
 				</div>
 <script>
 	var selectRows=[];
+
+
+	let projects='#(projects)';
+	/*$('#costitem option').text()*/
+
+
+	//console.log($('#costitem option'))
+	let ops=$('#costitem option')
+	var projectMap = new Map();
+	for(let item of ops) {
+		if(item.value!=''){
+			projectMap.set(item.value, item.text);
+		}
+	}
+
+
+
+
 	var col = [{field: 'checked', checkbox : true, align: 'center'},
-		   {field: 'name', title: '姓名', align: 'center'},
-		   {field: 'empnum', title: '员工编号', align: 'center'},
-		   {field: 'emprelation', title: '员工关系', align: 'center'},
-		   {field: 'gender', title: '性别', align: 'center', formatter:function(value,row,index){
-		   				if(value=='1'){
-		   					return "男";
-						}else{
-		   					return "女";
-				   }
+		{field: 'empnum', title: '员工编号', align: 'center'},
+		{field: 'name', title: '姓名', align: 'center'},
+		{field: 'gender', title: '性别', align: 'center', formatter:function(value,row,index){
+				if(value=='1'){
+					return "男";
+				}else{
+					return "女";
+				}
 
 
-			   }},
-		   {field: 'married', title: '婚姻状况', align: 'center', formatter:function(value,row,index){
+			}},
+		{field: 'department', title: '部门', align: 'center', formatter:function(value,row,index){
+				if(value=='1'){
+					return "人力资源部";
+				}else if(value=='2'){
+					return "外场单元部";
+				}else if(value=='3'){
+					return "设施一部";
+				}else if(value=='4'){
+					return "内场单元部";
+				}else if(value=='5'){
+					return "工程/设施二部";
+				}else if(value=='887163179b6c4eaabd06c44e47e41f92'){
+					return "职能部门";
+				}else{
+					return "";
+				}
+
+
+			}},
+		{field: 'costitem', title: '项目', align: 'center', formatter:function(value,row,index){
+			/*	if(value=='1'){
+					return "男";
+				}else{
+					return "女";
+				}*/
+
+			return projectMap.get(value);
+			// 	return value;
+
+
+			}},
+		{field: 'entrytime', title: '入职日期', align: 'center'},
+		{field: 'age', title: '年龄', align: 'center'},
+		{field: 'emprelation', title: '员工关系', align: 'center'},
+		{field: 'position', title: '职位', align: 'center', formatter:function(value,row,index){
 				   if(value=='1'){
-					   return "未婚";
+					   return "主管";
 				   }else if(value=='2'){
-					   return "已婚未育";
-				   }else if(value=='3'){
-					   return "已婚已育";
+					   return "综合管家";
+				   }else {
+					   return "";
 				   }
 			   }},
-	   {field: 'control', title: '操作', align: 'left', width:'200',
+		{field: 'workstation', title: '岗位', align: 'center'},
+		{field: 'topedu', title: '最高学历', align: 'center', formatter:function(value,row,index){
+				   if(value=='1'){
+					   return "技工";
+				   }else if(value=='2'){
+					   return "职高";
+				   }else if(value=='3'){
+					   return "中专";
+				   }else if(value=='4'){
+					   return "高中";
+				   }else if(value=='5'){
+					   return "大专";
+				   }else if(value=='6'){
+					   return "本科";
+				   }else {
+					   return "";
+				   }
+			   }},
+	    {field: 'control', title: '操作', align: 'left', width:'200',
 	       formatter:function(value,row,index){
 	           	//通过formatter可以自定义列显示的内容
 	           	//value：当前field的值，即id
