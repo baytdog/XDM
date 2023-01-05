@@ -9,6 +9,7 @@
 					</h4>
 				</div>
 				<div class="panel-collapse collapse in" id="collapseOne">
+
 					<div class="panel-body">
 						<div class="form-group">
 							<label class="col-md-1 control-label">姓      名</label>
@@ -23,25 +24,10 @@
 							<div class="col-md-3">
 								<input type="text"  name="#(formModelName).emprelation" class="form-control"  value="#(o?o.emprelation:'')"  >
 							</div>
-
 						</div>
-						<div class="form-group">
-							<label class="col-md-1 control-label">性      别</label>
-							<!--<div class="col-md-3">
-								<input type="text"  name="#(formModelName).gender" class="form-control"  value="#(o?o.gender:'')"  >
 
-							</div>-->
-							<input type="hidden" id="gender" name="#(formModelName).gender" value="#(o?o.gender:'')">
-							<div class="col-md-3">
-								<select id="genderSelect"   title="请选择"  class="selectpicker show-tick form-control" actionsBox="true"  data-live-search="false" disabled="disabled">
-									<option value="1">男</option>
-									<option value="0">女</option>
-								</select>
-							</div>
+						<div class="form-group">
 							<label class="col-md-1 control-label">婚姻状况</label>
-							<!--<div class="col-md-3">
-								<input type="text"  name="#(formModelName).married" class="form-control"  value="#(o?o.married:'')"  >
-							</div>-->
 							<input type="hidden" id="married" name="#(formModelName).married" value="#(o?o.married:'')">
 							<div class="col-md-3">
 								<select id="marriedSelect"   title="请选择"  class="selectpicker show-tick form-control" actionsBox="true"  disable  data-live-search="false">
@@ -50,17 +36,23 @@
 									#end
 								</select>
 							</div>
+							<label class="col-md-1 control-label">性      别</label>
+							<input type="hidden" id="gender" name="#(formModelName).gender" value="#(o?o.gender:'')">
+							<div class="col-md-3">
+								<select id="genderSelect"   title="请选择"  class="selectpicker show-tick form-control" actionsBox="true"  data-live-search="false" disabled="disabled">
+									<option value="1">男</option>
+									<option value="0">女</option>
+								</select>
+							</div>
 
 							<label class="col-md-1 control-label">年龄</label>
 							<div class="col-md-3">
 								<input type="text"  name="#(formModelName).age" class="form-control"  value="#(o?o.age:'')" readonly="readonly" >
 							</div>
+
 						</div>
 						<div class="form-group">
 							<label class="col-md-1 control-label">民      族</label>
-							<!--<div class="col-md-3">
-								<input type="text"  name="#(formModelName).national" class="form-control"  value="#(o?o.national:'')"  >
-							</div>-->
 							<input type="hidden" id="national" name="#(formModelName).national" value="#(o?o.national:'')">
 							<div class="col-md-3">
 								<select id="nationalSelect"   title="请选择"  class="selectpicker show-tick form-control" actionsBox="true"  disable  data-live-search="false">
@@ -70,9 +62,6 @@
 								</select>
 							</div>
 							<label class="col-md-1 control-label">政治面貌</label>
-							<!--<div class="col-md-3">
-								<input type="text"  name="#(formModelName).politicsstatus" class="form-control"  value="#(o?o.politicsstatus:'')"  >
-							</div>-->
 							<input type="hidden" id="politicsstatus" name="#(formModelName).politicsstatus" value="#(o?o.politicsstatus:'')">
 							<div class="col-md-3">
 								<select id="politSelect"   title="请选择"  class="selectpicker show-tick form-control" actionsBox="true"  disable  data-live-search="false">
@@ -81,24 +70,20 @@
 									#end
 								</select>
 							</div>
+
 							<label class="col-md-1 control-label">最高学历</label>
-						<!--	<div class="col-md-3">
-								<input type="text"  name="#(formModelName).topedu" class="form-control"  value="#(o?o.topedu:'')"  >
-							</div>-->
 							<input type="hidden" id="topedu" name="#(formModelName).topedu" value="#(o?o.topedu:'')">
 							<div class="col-md-3">
-								<select id="topeduSelect"   title="请选择"  class="selectpicker show-tick form-control" actionsBox="true"  disable  data-live-search="false">
+								<select id="topeduSelect"   title="请选择"  class="selectpicker show-tick form-control" actionsBox="true"   data-live-search="false" disabled="disabled">
 									#for(edu:edus)
 									<option value="#(edu.value)">#(edu.name)</option>
 									#end
 								</select>
 							</div>
+
 						</div>
 						<div class="form-group">
 							<label class="col-md-1 control-label">学历(非全日制)</label>
-							<!--<div class="col-md-3">
-								<input type="text"  name="#(formModelName).edubg1" class="form-control"  value="#(o?o.edubg1:'')"  >
-							</div>-->
 							<input type="hidden" id="edubg1" name="#(formModelName).edubg1" value="#(o?o.edubg1:'')">
 							<div class="col-md-3">
 								<select id="edubg1Select"   title="请选择"  class="selectpicker show-tick form-control" actionsBox="true"  disabled="disabled"  data-live-search="false">
@@ -139,6 +124,7 @@
 							</div>
 						</div>
 						<div class="form-group">
+
 							<label class="col-md-1 control-label">特      长</label>
 							<div class="col-md-7">
 								<input type="text"  name="#(formModelName).specialty" class="form-control"  value="#(o?o.specialty:'')"  >
@@ -201,7 +187,7 @@
 								<input type="text"  name="#(formModelName).retiretime" class="form-control"  value="#(o?o.retiretime:'')"  >
 							</div>-->
 							<div class="input-group date form_datetime col-md-3" style="float:left">
-								<input type="text" id="retiretime" name="#(formModelName).retiretime" class="form-control"  value="#(o?o.retiretime:'')"    >
+								<input type="text" id="retiretime" name="#(formModelName).retiretime" class="form-control"  value="#(o?o.retiretime:'')">
 								<span class="input-group-addon"> <span class="glyphicon glyphicon-th"></span>
 									</span>
 							</div>
@@ -217,6 +203,19 @@
 								</select>
 							</div>
 						</div>
+						<div class="form-group">
+							<label class="col-md-1 control-label">证件照</label>
+							<div class="col-md-3">
+
+								<input type="hidden" id="cert_pic_id" name="#(formModelName).cert_pic_id" class="form-control"  value="#(o?o.cert_pic_id:'')">
+                       		<!-- <img id="" src="http://localhost:8080/XDM/common/img/profile-photos/1.png" class="img-responsive img-rounded" alt="Responsive image">-->
+								<a id="filePicker"  class="btn"  href="javascript:void(0);" style="text-align: right;">
+									<img id="pic" src="http://localhost:8080/XDM/common/img/profile-photos/1.png"
+										  class="img-responsive img-rounded" style="width: 180px;height: 180px;" alt="Responsive image" >
+								</a>
+							</div>
+						</div>
+
 					</div>
 				</div>
 			</div>

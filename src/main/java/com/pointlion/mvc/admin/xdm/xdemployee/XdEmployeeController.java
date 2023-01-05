@@ -12,9 +12,7 @@ import com.pointlion.mvc.common.utils.office.excel.ExcelUtil;
 import com.pointlion.plugin.shiro.ShiroKit;
 import com.pointlion.util.DictMapping;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.SQLException;
@@ -59,10 +57,12 @@ public class XdEmployeeController extends BaseController {
 		String department =getPara("department","");
 		String unitname = getPara("unitname","");
 		String costitem = getPara("costitem","");
+		String inductionstatus = getPara("inductionstatus","");
+		String departime = getPara("departime","");
 		String checked = getPara("checked","");
 		String selectedName = java.net.URLDecoder.decode(getPara("selectedName",""),"UTF-8");
 
-    	Page<Record> page = service.getPage(Integer.valueOf(curr),Integer.valueOf(pageSize),name,empnum,emprelation,department,unitname,costitem,checked,selectedName);
+    	Page<Record> page = service.getPage(Integer.valueOf(curr),Integer.valueOf(pageSize),name,empnum,emprelation,department,unitname,costitem,inductionstatus,departime,checked,selectedName);
     	renderPage(page.getList(),"",page.getTotalRow());
     }
     /***
@@ -139,27 +139,6 @@ public class XdEmployeeController extends BaseController {
 						xdEdutrain.save(xdEdutrain);
 						XdOperUtil.logSummary(oid,xdEdutrain,operName,XdOperEnum.UNAPPRO.name(),0);
 						XdOperUtil.updateEdu(o.getId());
-						/*boolean arz=true;
-						boolean uarz=true;
-
-
-						List<XdEdutrain> xdEdutrainList = XdEdutrain.dao.find("select * from xd_edutrain where eid='" + o.getId() + "' order by grade, edubg desc");
-						for (XdEdutrain edutrain : xdEdutrainList) {
-							if(arz && edutrain.getGrade().equals("0")){//全日制
-								o.setEdubg2(edutrain.getEdubg());
-								o.setSchool2(edutrain.getTrainOrgname());
-								o.setMajor2(edutrain.getMajor());
-								arz=false;
-							}
-
-							if(uarz && edutrain.getGrade().equals("1")){//非全日制
-								o.setEdubg1(edutrain.getEdubg());
-								o.setSchool1(edutrain.getTrainOrgname());
-								o.setMajor1(edutrain.getMajor());
-								uarz=false;
-							}
-						}
-						o.update();*/
 					}else{
 						xdEdutrain.loadObj(xdEdutrain);
 						XdOperUtil.logSummary(oid,xdEdutrain,operName,operStatus,0);
@@ -576,6 +555,10 @@ public class XdEmployeeController extends BaseController {
 										emp.setAge(age);
 									}
 								}
+
+								if("inductionstatus".equals(logDetail.getFieldName())){
+									XdOperUtil.updateEmpCert(emp);
+								}
 								logDetail.setStatus(1);
 								logDetail.setReason(comment);
 								logDetail.update();
@@ -687,6 +670,10 @@ public class XdEmployeeController extends BaseController {
 							int age = (int) (minusDays / 365);
 							emp.setAge(age);
 						}
+					}
+
+					if("inductionstatus".equals(logDetail.getFieldName())){
+						XdOperUtil.updateEmpCert(emp);
 					}
 				}
 				emp.update();
@@ -1004,8 +991,12 @@ public class XdEmployeeController extends BaseController {
 		String department=getPara("department","");
 		String unitname=getPara("unitname","");
 		String costitem=getPara("costitem","");
+		String inductionstatus = getPara("inductionstatus","");
+		String departime = getPara("departime","");
+		String checked = getPara("checked","");
+		String selectedName = new String(getPara("selectedName","").getBytes("ISO-8859-1"), "utf-8");
 		String path = this.getSession().getServletContext().getRealPath("")+"/upload/export/"+DateUtil.format(new Date(),21)+".xlsx";
-		File file = service.exportExcel(path,name,empnum,emprelation,department,unitname,costitem);
+		File file = service.exportExcel(path,name,empnum,emprelation,department,unitname,costitem,inductionstatus,departime,checked,selectedName);
 		renderFile(file);
 	}
 	/**
@@ -1025,8 +1016,12 @@ public class XdEmployeeController extends BaseController {
 		String department=getPara("department","");
 		String unitname=getPara("unitname","");
 		String costitem=getPara("costitem","");
+		String inductionstatus = getPara("inductionstatus","");
+		String departime = getPara("departime","");
+		String checked = getPara("checked","");
+		String selectedName = new String(getPara("selectedName","").getBytes("ISO-8859-1"), "utf-8");
 		String path = this.getSession().getServletContext().getRealPath("")+"/upload/export/"+DateUtil.format(new Date(),21)+".xlsx";
-		File file = service.exportContractExcel(path,"","","","","","");
+		File file = service.exportContractExcel(path,"","","","","","",inductionstatus,departime,checked,selectedName);
 		renderFile(file);
 	}
 
@@ -1068,7 +1063,12 @@ public class XdEmployeeController extends BaseController {
 		String emprelation = java.net.URLDecoder.decode(getPara("emprelation",""),"UTF-8");
 		String unitname=java.net.URLDecoder.decode(getPara("unitname",""),"UTF-8");
 		String costitem=java.net.URLDecoder.decode(getPara("costitem",""),"UTF-8");
-		List<XdEmployee> employees = service.getPrintInfos(name, empnum, department, emprelation, unitname, costitem);
+		String checked=java.net.URLDecoder.decode(getPara("checked",""),"UTF-8");
+		String selectedName=java.net.URLDecoder.decode(getPara("selectedName",""),"UTF-8");
+		String inductionstatus=java.net.URLDecoder.decode(getPara("inductionstatus",""),"UTF-8");
+		String departime=java.net.URLDecoder.decode(getPara("departime",""),"UTF-8");
+
+		List<XdEmployee> employees = service.getPrintInfos(name, empnum, department, emprelation, unitname, costitem,inductionstatus,departime,checked,selectedName);
 		Map<String, String> orgMap = DictMapping.orgMapping("0");
 		Map<String, String> projectMap = DictMapping.projectsMappingValueToName();
 		Map<String, Map<String, String>> dictMap = DictMapping.dictMappingValueToName();
@@ -1083,6 +1083,59 @@ public class XdEmployeeController extends BaseController {
 		List<PrintInfoVo> list=new ArrayList<>();
 		for (XdEmployee emp : employees) {
 			PrintInfoVo printInfoVo = new PrintInfoVo();
+
+
+			String id = emp.getCertPicId();
+			SysAttachment attachment = SysAttachment.dao.getById(id);
+			if(attachment!=null){
+				String fileUrl = attachment.getUrl();
+
+				String baseUrl ="D:\\apache-tomcat-7.0.82";
+				//String baseUrl ="D:\\apache-tomcat-8.5.83";
+				System.out.println(baseUrl+"/upload"+fileUrl);
+				File f = new File(baseUrl+"/upload"+fileUrl);
+				String fileName = f.getName();
+				String newFileName=emp.getId()+"."+fileName.substring(fileName.lastIndexOf(".") + 1);
+				FileInputStream fis=null;
+				FileOutputStream fos=null;
+				try {
+					 fis =new FileInputStream(baseUrl+"/upload"+fileUrl);
+//					 fos =new FileOutputStream("D:\\apache-tomcat-8.5.83\\webapps\\XDM\\common\\"+newFileName);
+					 fos =new FileOutputStream("D:\\apache-tomcat-7.0.82\\webapps\\XDM\\common\\"+newFileName);
+					int len=0;
+					byte[] bytes=new byte[1024];
+						while ((len=fis.read(bytes))!=-1){
+
+							fos.write(bytes,0,len);
+						}
+
+
+				} catch (Exception e) {
+					e.printStackTrace();
+				}finally {
+					if(fos!=null){
+						try {
+							fos.close();
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+					}
+
+					if(fis!=null){
+						try {
+							fis.close();
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+					}
+				}
+				System.out.println("http://localhost:8080/XDM/common/img/"+newFileName);
+				emp.setCertPicId("http://localhost:8080/XDM/common/"+newFileName);
+			}else{
+
+				emp.setCertPicId("http://localhost:8080/XDM/common/img/profile-photos/1.png");
+			}
+
 			printInfoVo.setEmp(emp);
 			List<XdEdutrain> xdEdutrainList = XdEdutrain.dao.find("select * from xd_edutrain where eid='"+emp.getId()+"'");
 			printInfoVo.setEdutrainList(xdEdutrainList);

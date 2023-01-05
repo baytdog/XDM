@@ -39,7 +39,7 @@ public class XdEmpCertService{
 	 */
 	public Page<Record> getPage(int pnum,int psize,String dept,String name,String certTitle,String certAuth,String sny){
 		String userId = ShiroKit.getUserId();
-		String sql  = " from "+TABLE_NAME+" o where 1=1";
+		String sql  = " from "+TABLE_NAME+" o where status='1'";
 		if(StrKit.notBlank(dept)){
 			sql = sql + " and o.department = '"+dept+"'";
 		}

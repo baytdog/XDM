@@ -388,6 +388,7 @@ public class AttachmentController extends BaseController {
 		System.out.println("fileUrl="+fileUrl);
 		//String baseUrl = this.getRequest().getSession().getServletContext().getRealPath("");
 		String baseUrl ="D:\\apache-tomcat-7.0.82";
+//		String baseUrl ="D:\\apache-tomcat-8.5.83";
 		System.out.println("baseUrl"+baseUrl);
 		
 		File f = new File(baseUrl+"/upload"+fileUrl);
@@ -435,5 +436,51 @@ public class AttachmentController extends BaseController {
 		Page<Record> page = service.getPage(busiList,Integer.valueOf(curr),Integer.valueOf(pageSize));
 		renderPage(page.getList(),"",page.getTotalRow());
 	}
-	
+	/**
+	 * @Method attachmentCertUpload
+	 * @Date 2023/1/5 14:27
+	 * @Description 上传头像照片
+	 * @Author king
+	 * @Version  1.0
+	 * @Return void
+	 */
+	public void attachmentCertUpload(){
+		String busid = getPara("busid","");
+		String moduelFrom = getPara("moduelFrom","notknowfrom");//来源
+		String key = getPara("key","notknowkey");
+		String path = "/attachment/"+moduelFrom+"/"+key+"/"+DateUtil.getCurrentYear()+"/"+DateUtil.getCurrentMonth()+"/"+DateUtil.getCurrentDay();//保存路径
+		UploadFile file = getFile("file",path);
+		String savePath = file.getUploadPath();//实际保存的路径
+		String bathPath = savePath.replace(path, "");//根路径upload目录
+		String filename = file.getOriginalFileName();//文件实际名字
+		String stuf = filename.substring(filename.lastIndexOf(".")+1);//扩展名
+		String newUrl = path+"/"+UuidUtil.getUUID()+"."+stuf;//新文件相对路径
+		String newRealFileUrl = bathPath+newUrl;//文件实际存储路径
+		file.getFile().renameTo(new File(newRealFileUrl));//文件重命名
+		SysAttachment attachment = new SysAttachment();
+		String id = UuidUtil.getUUID();
+		attachment.setId(id);
+		attachment.setUrl(newUrl);
+		attachment.setRealUrl(newRealFileUrl);
+		SysUser user = SysUser.dao.getById(ShiroKit.getUserId());
+		SysOrg org = SysOrg.dao.getById(user.getOrgid());
+		attachment.setCreateUserId(user.getId());
+		attachment.setCreateUserName(user.getName());
+		attachment.setCreateOrgId(org.getId());
+		attachment.setCreateOrgName(org.getName());
+		attachment.setCreateTime(DateUtil.getCurrentTime());
+		attachment.setSuffix(stuf);
+		attachment.setFileName(filename);
+		attachment.setBusinessId(busid);
+		attachment.setDes("1");
+		attachment.save();
+		XdEmployee employee = XdEmployee.dao.findById(busid);
+		employee.setCertPicId(id);
+		employee.update();
+		renderSuccess(id);
+
+
+	}
+
+
 }

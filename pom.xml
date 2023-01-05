@@ -277,7 +277,7 @@
 				</includes>
 			</resource>
 		</resources>
-		<finalName>JPointLion</finalName>
+		<finalName>XDM</finalName>
 		<pluginManagement>
 			<plugins>
 				<plugin>

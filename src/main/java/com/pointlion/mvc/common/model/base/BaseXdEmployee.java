@@ -86,7 +86,7 @@ public abstract class BaseXdEmployee<M extends BaseXdEmployee<M>> extends Model<
 	public void setTopedu(String topedu) {
 		set("topedu", topedu);
 	}
-	@ChangeFields(value = "topedu",desc = "最高学历")
+	/*@ChangeFields(value = "topedu",desc = "最高学历")*/
 	public String getTopedu() {
 		return getStr("topedu");
 	}
@@ -514,5 +514,14 @@ public abstract class BaseXdEmployee<M extends BaseXdEmployee<M>> extends Model<
 	public java.lang.String getLeaveReason() {
 		return getStr("leave_reason");
 	}
+
+	public void setCertPicId(java.lang.String certPicId) {
+		set("cert_pic_id", certPicId);
+	}
+
+	public java.lang.String getCertPicId() {
+		return getStr("cert_pic_id");
+	}
+
 
 }

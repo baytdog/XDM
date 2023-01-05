@@ -42,13 +42,26 @@
 											</select>
 										</div>
 										<div class="form-group">
-										<!--	<input id="costitem" placeholder="成本项目" class="form-control">-->
 											<select class="selectpicker form-control"  id="costitem"  data-live-search="true" >
 												<option value="">------请选择项目------</option>
 												#for(pro:projects)
 												<option value="#(pro.id)">#(pro.project_name)</option>
 												#end
 											</select>
+										</div>
+										<div class="form-group">
+											<select class="selectpicker form-control"  id="inductionstatus"  data-live-search="false" >
+												<option value="">------请选择在职状态------</option>
+												<option value="1">在职</option>
+												<option value="2">离职</option>
+											</select>
+										</div>
+
+										<div class="form-group">
+											<div class="input-group date form_datetime">
+												<input id="departime" placeholder="离职年月" class="form-control">
+												<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+											</div>
 										</div>
 										<div class="form-group">
 											<button class="btn btn-primary" type="button" onclick="searchTable()">搜索</button>
@@ -90,13 +103,7 @@
 				</div>
 <script>
 	var selectRows=[];
-
-
 	let projects='#(projects)';
-	/*$('#costitem option').text()*/
-
-
-	//console.log($('#costitem option'))
 	let ops=$('#costitem option')
 	var projectMap = new Map();
 	for(let item of ops) {
@@ -104,10 +111,6 @@
 			projectMap.set(item.value, item.text);
 		}
 	}
-
-
-
-
 	var col = [{field: 'checked', checkbox : true, align: 'center'},
 		{field: 'empnum', title: '员工编号', align: 'center'},
 		{field: 'name', title: '姓名', align: 'center'},
@@ -140,16 +143,7 @@
 
 			}},
 		{field: 'costitem', title: '项目', align: 'center', formatter:function(value,row,index){
-			/*	if(value=='1'){
-					return "男";
-				}else{
-					return "女";
-				}*/
-
 			return projectMap.get(value);
-			// 	return value;
-
-
 			}},
 		{field: 'entrytime', title: '入职日期', align: 'center'},
 		{field: 'age', title: '年龄', align: 'center'},
@@ -229,7 +223,9 @@
 						   "emprelation":encodeURIComponent($("#emprelation").val()),
 						   "department":$("#department").val(),
 						   "unitname":$("#unitname").val(),
-						   "costitem":$("#costitem").val()
+						   "costitem":$("#costitem").val(),
+						   "inductionstatus":$("#inductionstatus").val(),
+						   "departime":$("#departime").val()
 			           };
 			   },
 				onCheck:function(row){
@@ -351,6 +347,8 @@
 		var costitem = $("#costitem").val();
 		var checked = $("#demo-checkbox-addons").is(":checked");
 		let selectedName = encodeURIComponent($("#selectEd").val());
+		let inductionstatus=$("#inductionstatus").val();
+		let	departime=$("#departime").val();
 
 		var param = {
 			pageNumber: 1,
@@ -362,7 +360,9 @@
 				"unitname":unitname,
 				"costitem":costitem,
 				"checked":checked,
-				"selectedName":selectedName
+				"selectedName":selectedName,
+				"inductionstatus":inductionstatus,
+				"departime":departime
 			}
 		}
 		// 刷新表格
@@ -380,7 +380,12 @@
 		var department = $("#department").val();
 		var unitname = $("#unitname").val();
 		var costitem = $("#costitem").val();
-		location.href = "#(ctx)/admin/xd/xdemployee/exportExcel?name="+name+"&empnum="+empnum+"&emprelation="+emprelation+"&department="+department+"&unitname="+unitname+"&costitem="+costitem;
+		var checked = $("#demo-checkbox-addons").is(":checked");
+		let selectedName = encodeURIComponent($("#selectEd").val());
+		let inductionstatus=$("#inductionstatus").val();
+		let	departime=$("#departime").val();
+		location.href = "#(ctx)/admin/xd/xdemployee/exportExcel?name="+name+"&empnum="+empnum+"&emprelation="+emprelation+"&department="+department+"&unitname="+unitname+"&costitem="+costitem
+				+"&checked="+checked+"&selectedName="+selectedName+"&inductionstatus="+inductionstatus+"&departime="+departime;
 	}
 	/***
 	 * 导出合同信息
@@ -392,12 +397,17 @@
 		var department = $("#department").val();
 		var unitname = $("#unitname").val();
 		var costitem = $("#costitem").val();
-		location.href = "#(ctx)/admin/xd/xdemployee/exportContractExcel?name="+name+"&empnum="+empnum+"&emprelation="+emprelation+"&department="+department+"&unitname="+unitname+"&costitem="+costitem;
+		var checked = $("#demo-checkbox-addons").is(":checked");
+		let selectedName = encodeURIComponent($("#selectEd").val());
+		let inductionstatus=$("#inductionstatus").val();
+		let	departime=$("#departime").val();
+		location.href = "#(ctx)/admin/xd/xdemployee/exportContractExcel?name="+name+"&empnum="+empnum+"&emprelation="+emprelation+"&department="+department+"&unitname="+unitname+"&costitem="+costitem
+				+"&checked="+checked+"&selectedName="+selectedName+"&inductionstatus="+inductionstatus+"&departime="+departime;
 	}
 
 
 	$(document).ready(function(){
-		$('.form_datetime').datepicker({format: 'yyyy-mm-dd',weekStart: 1,todayBtn:  1,autoclose: 1,language:  'zh-CN',todayHighlight: 1,forceParse: 0,clearBtn: true }).on('changeDate',null);
+		$('.form_datetime').datepicker({format: 'yyyy-mm',weekStart: 1,todayBtn:  1,autoclose: 1,language:  'zh-CN',todayHighlight: 1,forceParse: 0,clearBtn: true }).on('changeDate',null);
 		initTable();//初始化
 
 
@@ -421,7 +431,12 @@
 		var department = encodeURIComponent($("#department").val());
 		var unitname = encodeURIComponent($("#unitname").val());
 		var costitem = encodeURIComponent($("#costitem").val());
-		var data = common_ajax.ajaxFunc("/admin/xd/xdemployee/getPrintInfo",{"name":name,"empnum":empnum,"emprelation":emprelation,"department":department,"unitname":unitname,"costitem":costitem,}, "json", null);
+		var checked = $("#demo-checkbox-addons").is(":checked");
+		let selectedName = encodeURIComponent($("#selectEd").val());
+		let inductionstatus=$("#inductionstatus").val();
+		let	departime=$("#departime").val();
+		var data = common_ajax.ajaxFunc("/admin/xd/xdemployee/getPrintInfo",{"name":name,"empnum":empnum,"emprelation":emprelation,"department":department,"unitname":unitname,
+			"costitem":costitem,"checked":checked,"selectedName":selectedName,"inductionstatus":inductionstatus,"departime":departime}, "json", null);
 		//删除结果
 
 		//console.log(data);
@@ -549,13 +564,17 @@
 		let edutrainList=item.edutrainList;
 
 		let workExperList=item.workExperList;
-
+/*		http://localhost:8080/XDM/admin/sys/attachment/lookFile?id=7e497badbe024c9ead49fe5ae51b9d97*/
 	var infos=	`
   <style>
      table, td, th { border: 1px solid black; border-style: solid; border-collapse: collapse; text-align: center; font-size: 15px; }
     .inner table, .inner td, .inner th { text-align: left; border: none; }
   </style>
   <table border="1" style="width:100%;">
+  	<tr>
+
+   <td><img id="" src="`+emp.cert_pic_id+`" ></td>
+    </tr>
     <tr>
     <td rowspan="9" style="width:2%;">个人基本资料</td>
       <td>姓      名</td> <td>`+emp.name+`</td>

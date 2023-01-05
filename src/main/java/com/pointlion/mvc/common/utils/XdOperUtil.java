@@ -233,8 +233,6 @@ public class XdOperUtil {
         XdEmployee employee = XdEmployee.dao.findById(oid);
         boolean arz=true;
         boolean uarz=true;
-
-
         List<XdEdutrain> xdEdutrainList = XdEdutrain.dao.find("select * from xd_edutrain where eid='" + oid + "' order by grade, edubg desc");
         for (XdEdutrain edutrain : xdEdutrainList) {
             if(arz && edutrain.getGrade().equals("0")){//全日制
@@ -252,6 +250,17 @@ public class XdOperUtil {
             }
         }
 
+
+
+        xdEdutrainList.stream().forEach( xdEdutrain-> {
+            String edubg = xdEdutrain.getEdubg();
+            String topedu = employee.getTopedu();
+            if(edubg!=null){
+                if(topedu==null || (Integer.valueOf(edubg)>Integer.valueOf(topedu))){
+                    employee.setTopedu(edubg);
+                }
+            }
+        });
         if(arz){
 
             employee.setEdubg2("");
@@ -267,6 +276,28 @@ public class XdOperUtil {
 
 
         employee.update();
+    }
+
+
+
+
+    public static void updateEmpCert(XdEmployee emp){
+        String inductionstatus = emp.getInductionstatus();
+        List<XdEmpCert> xdEmpCerts = XdEmpCert.dao.find("select * from  xd_emp_cert where ename='" + emp.getName() + "'");
+        if(inductionstatus.equals("2")){
+            xdEmpCerts.forEach(xdEmpCert ->{
+                    xdEmpCert.setStatus("0");
+                    xdEmpCert.setBackup1("在职->离职");
+                    xdEmpCert.update();
+            });
+        }
+        if(inductionstatus.equals("1")){
+            xdEmpCerts.forEach(xdEmpCert ->{
+                xdEmpCert.setStatus("1");
+                xdEmpCert.setBackup1("离职->在职");
+                xdEmpCert.update();
+            });
+        }
     }
 
 

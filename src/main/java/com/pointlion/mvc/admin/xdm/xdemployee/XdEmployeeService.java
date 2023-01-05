@@ -1,6 +1,5 @@
 package com.pointlion.mvc.admin.xdm.xdemployee;
 
-import com.itextpdf.text.log.SysoCounter;
 import com.jfinal.aop.Before;
 import com.jfinal.kit.StrKit;
 import com.jfinal.plugin.activerecord.Db;
@@ -10,21 +9,20 @@ import com.jfinal.plugin.activerecord.Record;
 import com.jfinal.plugin.activerecord.tx.Tx;
 import com.pointlion.enums.XdOperEnum;
 import com.pointlion.mvc.common.model.*;
-import com.pointlion.mvc.common.utils.*;
+import com.pointlion.mvc.common.utils.DateUtil;
+import com.pointlion.mvc.common.utils.JSONUtil;
+import com.pointlion.mvc.common.utils.UuidUtil;
+import com.pointlion.mvc.common.utils.XdOperUtil;
 import com.pointlion.mvc.common.utils.office.excel.ExcelUtil;
 import com.pointlion.plugin.shiro.ShiroKit;
 import com.pointlion.plugin.shiro.ext.SimpleUser;
 import com.pointlion.util.DictMapping;
 import org.apache.commons.lang3.StringUtils;
-import org.flowable.cmmn.model.Case;
 
-import javax.jnlp.ServiceManagerStub;
 import java.io.File;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.*;
-import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.stream.Stream;
 
 public class XdEmployeeService{
@@ -42,7 +40,7 @@ public class XdEmployeeService{
 	 * get page
 	 */
 	public Page<Record> getPage(int pnum,int psize,String name,String empnum,String emprelation
-			,String department,String unitname,String costitem,String checked,String selectedName){
+			,String department,String unitname,String costitem,String inductionstatus,String departime,String checked,String selectedName){
 		String userOrgId = ShiroKit.getUserOrgId();
 
 		String sql  = " from "+TABLE_NAME+" o where 1=1";
@@ -68,6 +66,14 @@ public class XdEmployeeService{
 		if(StrKit.notBlank(costitem)){
 			sql = sql + " and o.costitem = '"+ costitem+"'";
 		}
+		if(StrKit.notBlank(inductionstatus)){
+			sql=sql+ " and o.inductionstatus='"+inductionstatus+"'";
+		}
+		if(StrKit.notBlank(departime)){
+			sql=sql+ " and o.departime like '"+departime+"%'";
+		}
+
+
 		if("true".equals(checked) && !"".equals(selectedName)){
 			String[] namesArr = selectedName.split(",");
 			String insql="";
@@ -78,9 +84,13 @@ public class XdEmployeeService{
 					insql.replaceAll(",$","")
 					+")";
 		}
+		if(StrKit.notBlank(inductionstatus)||StrKit.notBlank(departime)){
+			sql = sql + " order by o.departime desc";
+		}else{
+			sql = sql + " order by o.empnum desc";
+		}
 
 
-		sql = sql + " order by o.ctime desc";
 		return Db.paginate(pnum, psize, " select * ", sql);
 	}
 	public Page<Record> getPage(int pnum,int psize,String warnType){
@@ -186,7 +196,9 @@ public class XdEmployeeService{
 						//workRecord.replaceAll("^\n","");
 						newEmp.setChrecord(workRecord);
 					}
-
+					if("inductionstatus".equals(logDetail.getFieldName())){
+						XdOperUtil.updateEmpCert(newEmp);
+					}
 				}
 			}
 			flag=true;
@@ -418,7 +430,8 @@ public class XdEmployeeService{
 	 * @Version  1.0
 	 * @Return java.io.File
 	 */
-	public File exportExcel(String path, String name, String empnum, String emprelation, String department, String unitname, String costitem){
+	public File exportExcel(String path, String name, String empnum, String emprelation, String department, String unitname, String costitem
+		,String inductionstatus,String departime,String checked,String selectedName){
 		String sql  = " from "+TABLE_NAME+" o   where 1=1";
 		if (StrKit.notBlank(name)) {
 			sql = sql + " and o.name like '%"+name +"%'";
@@ -440,7 +453,31 @@ public class XdEmployeeService{
 		if (StrKit.notBlank(costitem)) {
 			sql = sql + " and o.costitem='"+costitem+"'";
 		}
-		sql = sql + " order by o.ctime desc";
+
+		if(StrKit.notBlank(inductionstatus)){
+			sql=sql+ " and o.inductionstatus='"+inductionstatus+"'";
+		}
+		if(StrKit.notBlank(departime)){
+			sql=sql+ " and o.departime like '"+departime+"%'";
+		}
+
+
+		if("true".equals(checked) && !"".equals(selectedName)){
+			String[] namesArr = selectedName.split(",");
+			String insql="";
+			for (String names : namesArr) {
+				insql+="'"+names+"',";
+			}
+			sql  = " from "+TABLE_NAME+" o where 1=1 and name in ("+
+					insql.replaceAll(",$","")
+					+")";
+		}
+		if(StrKit.notBlank(inductionstatus)||StrKit.notBlank(departime)){
+			sql = sql + " order by o.departime desc";
+		}else{
+			sql = sql + " order by o.empnum desc";
+		}
+
 
 
 		List<XdEmployee> list = XdEmployee.dao.find(" select * "+sql);//查询全部
@@ -505,7 +542,8 @@ public class XdEmployeeService{
 		first.add("薪资");//3
 		first.add("薪资变动状况");//3
 		first.add("调职记录");//3
-		first.add("上家工作时间");
+		first.add("上家工作起日");
+		first.add("上家工作止日");
 		first.add("上家单位名称");
 		first.add("上家职位");
 
@@ -574,10 +612,12 @@ public class XdEmployeeService{
 				row.add("");
 				row.add("");
 				row.add("");
+				row.add("");
 			}else{
 				String startDate = firstWork.getEntrydate() == null ? "" : firstWork.getEntrydate();
 				String departDate = firstWork.getDepartdate() == null ? "" : firstWork.getDepartdate();
-				row.add(startDate+"至"+departDate);
+				row.add(startDate);
+				row.add(departDate);
 				row.add(firstWork.getServiceunit());
 				row.add(firstWork.getJob());
 			}
@@ -602,7 +642,9 @@ public class XdEmployeeService{
 	 * @Version  1.0
 	 * @Return java.io.File
 	 */
-	public File exportContractExcel(String path, String name, String empnum, String emprelation, String department, String unitname, String costitem){
+	public File exportContractExcel(String path, String name, String empnum, String emprelation, String department, String unitname, String costitem
+			,String inductionstatus,String departime,String checked,String selectedName
+	){
 		String sql  = " from "+TABLE_NAME+" o   where 1=1";
 
 		if (StrKit.notBlank(name)) {
@@ -624,19 +666,44 @@ public class XdEmployeeService{
 		if (StrKit.notBlank(costitem)) {
 			sql = sql + " and o.costitem='"+costitem+"'";
 		}
-		sql = sql + " order by o.ctime desc";
+		if(StrKit.notBlank(inductionstatus)){
+			sql=sql+ " and o.inductionstatus='"+inductionstatus+"'";
+		}
+		if(StrKit.notBlank(departime)){
+			sql=sql+ " and o.departime like '"+departime+"%'";
+		}
+
+
+		if("true".equals(checked) && !"".equals(selectedName)){
+			String[] namesArr = selectedName.split(",");
+			String insql="";
+			for (String names : namesArr) {
+				insql+="'"+names+"',";
+			}
+			sql  = " from "+TABLE_NAME+" o where 1=1 and name in ("+
+					insql.replaceAll(",$","")
+					+")";
+		}
+		if(StrKit.notBlank(inductionstatus)||StrKit.notBlank(departime)){
+			sql = sql + " order by o.departime desc";
+		}else{
+			sql = sql + " order by o.empnum desc";
+		}
+
 
 
 		List<XdEmployee> list = XdEmployee.dao.find(" select * "+sql);//查询全部
 		List<XdContractInfo> listContract =new ArrayList<>();
 		Map<String,XdEmployee> mapObj=new HashMap<>();
-		if("".equals(name)&&"".equals(empnum)&&"".equals(emprelation)&&"".equals(unitname)&&"".equals(costitem)){
+		if(!"true".equals(checked)&&"".equals(name)&&"".equals(empnum)
+				&&"".equals(emprelation)&&"".equals(unitname)&&"".equals(costitem)
+		&&"".equals(inductionstatus)&&"".equals(departime)){
 		  listContract = XdContractInfo.dao.find("select * from xd_contract_info  order by eid,contractclauses ");
 			for (XdEmployee xdEmployee : list) {
 				mapObj.put(xdEmployee.getId(),xdEmployee);
 			}
 		}else{
-			String inSql="'0'";
+			String inSql="'0',";
 			for (XdEmployee xdEmployee : list) {
 				inSql=inSql+"'"+xdEmployee.getId()+"'"+",";
 				mapObj.put(xdEmployee.getId(),xdEmployee);
@@ -978,7 +1045,9 @@ public class XdEmployeeService{
 
 
 	public List<XdEmployee> getPrintInfos(String name,String empnum,String department
-	,String emprelation,String unitname,String costitem){
+	,String emprelation,String unitname,String costitem
+	,String inductionstatus,String departime,String checked,String selectedName
+	){
 		String userId = ShiroKit.getUserId();
 		String sql  = "select * from "+TABLE_NAME+" o where 1=1";
 		if(StrKit.notBlank(name)){
@@ -999,7 +1068,30 @@ public class XdEmployeeService{
 		if(StrKit.notBlank(costitem)){
 			sql = sql + " and o.costitem = '"+ costitem+"'";
 		}
-		sql = sql + " order by o.ctime desc";
+		if(StrKit.notBlank(inductionstatus)){
+			sql=sql+ " and o.inductionstatus='"+inductionstatus+"'";
+		}
+		if(StrKit.notBlank(departime)){
+			sql=sql+ " and o.departime like '"+departime+"%'";
+		}
+
+
+		if("true".equals(checked) && !"".equals(selectedName)){
+			String[] namesArr = selectedName.split(",");
+			String insql="";
+			for (String names : namesArr) {
+				insql+="'"+names+"',";
+			}
+			sql  = "select * from "+TABLE_NAME+" o where 1=1 and name in ("+
+					insql.replaceAll(",$","")
+					+")";
+		}
+		if(StrKit.notBlank(inductionstatus)||StrKit.notBlank(departime)){
+			sql = sql + " order by o.departime desc";
+		}else{
+			sql = sql + " order by o.empnum desc";
+		}
+
 
 		return  XdEmployee.dao.find(sql);
 	}

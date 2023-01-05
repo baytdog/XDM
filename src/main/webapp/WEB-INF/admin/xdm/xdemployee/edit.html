@@ -1,4 +1,11 @@
 <link href="#(ctx)/common/plugins/jquery-ui/scripts/miniui/themes/default/miniui.css" rel="stylesheet"/>
+<style>
+	.webuploader-pick{
+		padding: 0px 0px;
+	/*	height: 33px;
+		line-height: 33px;*/
+	}
+</style>
 <div id="page-content">
 			<div class="col-lg-12">
 		        <div class="panel">
@@ -333,13 +340,21 @@
 
 	<script type="text/javascript">
 	$(function (){
-
 		initTable();//初始化
+		let picUrl = $("#cert_pic_id").val();
+		if(picUrl){
+			$("#pic").attr("src","http://localhost:8080/XDM/admin/sys/attachment/lookFile?id="+picUrl+"&view=detail");
+		}else{
+			$("#pic").attr("src","http://localhost:8080/XDM/common/img/profile-photos/1.png");
+		}
 
-		pointLion.initUploader("/admin/sys/attachment/attachmentUpload?busid="+$("#employeeId").val(),function(data){
-			pointLion.alertMsg(data.message,"success",null,null);
-			refreshTable();
 
+
+
+		pointLion.initUploader("/admin/sys/attachment/attachmentCertUpload?busid="+$("#employeeId").val(),function(data){
+			//pointLion.alertMsg(data.message,"success",null,null);
+			 http://localhost:8080/XDM/admin/sys/attachment/lookFile?id=56568497bbe948c0955c4ac9ff2f1a2d&view=detail
+			$("#pic").attr("src","http://localhost:8080/XDM/admin/sys/attachment/lookFile?id="+data.message+"&view=detail");
 		});
 	});
 
@@ -352,6 +367,11 @@
 			align: 'center'
 		},
 		{
+			field: 'file_name',
+			title: '文件名',
+			align: 'center'
+		},
+		{
 			field: 'create_user_name',
 			title: '上传人',
 			align: 'center'
@@ -361,12 +381,6 @@
 			title: '上传时间',
 			align: 'center'
 		},
-		{
-			field: 'file_name',
-			title: '文件名',
-			align: 'center'
-		},
-
 		{
 			field: 'control',
 			title: '操作',
