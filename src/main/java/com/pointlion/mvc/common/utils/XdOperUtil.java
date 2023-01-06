@@ -363,5 +363,28 @@ public class XdOperUtil {
         });
     }
 
+    /**
+     * @Method updateEmpCert
+     * @param cert:
+     * @Date 2023/1/6 10:35
+     * @Exception
+     * @Description  证书调整更新员工证书
+     * @Author king
+     * @Version  1.0
+     * @Return void
+     */
+    public  static void updateEmpCert(XdEmpCert cert){
+        String eid = cert.getEid();
+        XdEmployee emp = XdEmployee.dao.findById(eid);
+
+        List<XdEmpCert> xdEmpCerts = XdEmpCert.dao.find("select * from  xd_emp_cert where status='1' and ename='" + cert.getEname() + "'");
+        String certStr="";
+        for (XdEmpCert xdEmpCert : xdEmpCerts) {
+            certStr=certStr+xdEmpCert.getCertTile()+"、";
+        }
+        String certs = certStr.replaceAll("、$", "");
+        emp.setCertificates(certs);
+        emp.update();
+    }
 
 }

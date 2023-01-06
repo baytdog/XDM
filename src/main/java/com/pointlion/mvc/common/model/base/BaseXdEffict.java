@@ -57,6 +57,13 @@ public abstract class BaseXdEffict<M extends BaseXdEffict<M>> extends Model<M> i
 		return getStr("status");
 	}
 
+	public void setRemarks(java.lang.String remarks) {
+		set("remarks", remarks);
+	}
+
+	public java.lang.String getRemarks() {
+		return getStr("remarks");
+	}
 	public void setCuser(String cuser) {
 		set("cuser", cuser);
 	}

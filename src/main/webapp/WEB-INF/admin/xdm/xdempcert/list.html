@@ -41,6 +41,13 @@
 								#end
 							</select>
 						</div>
+
+						<div class="form-group">
+							<div class="input-group date form_datetime">
+								<input id="ctime" placeholder="新增日期" class="form-control">
+								<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+							</div>
+						</div>
 						<!-- <div class="form-group">
                              <div class="input-group date form_datetime">
                                  <input id="searchStartTime" placeholder="开始时间" class="form-control">
@@ -145,8 +152,6 @@
 				}
 			}
 		},
-
-
 		{field: 'control', title: '操作', align: 'left', width:'200',
 			formatter:function(value,row,index){
 				//通过formatter可以自定义列显示的内容
@@ -243,18 +248,19 @@
 	//查询
 	function searchTable(){
 		let dept = $("#dept").val();
-
 		let name =encodeURIComponent($("#name").val());
 		let certTitle =encodeURIComponent($("#certTitle").val());
 		let certAuth =encodeURIComponent($("#certAuth").val());
 		let sny = encodeURIComponent($("#sny").val());
+		let ctime = encodeURIComponent($("#ctime").val());
 		var param = {
 			query: {
 				"dept":dept,
 				"name":name,
 				"certTitle":certTitle,
 				"certAuth":certAuth,
-				"sny":sny
+				"sny":sny,
+				"ctime":ctime
 			}
 		}
 		// 刷新表格

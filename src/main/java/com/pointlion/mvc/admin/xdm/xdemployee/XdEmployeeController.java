@@ -1181,9 +1181,11 @@ public class XdEmployeeController extends BaseController {
 				if(xdEffict.getFieldtype()==1){
 					o.setWorkstation(xdEffict.getValues());
 					setAttr("workEffectDate",xdEffict.getEffectDate());
+					setAttr("workRemarks",xdEffict.getRemarks());
 				}else if(xdEffict.getFieldtype()==2){
 					o.setSalary(Integer.valueOf(xdEffict.getValues()));
 					setAttr("salaryEffectDate",xdEffict.getEffectDate());
+					setAttr("salaryRemarks",xdEffict.getRemarks());
 				}
 			}
 
@@ -1232,8 +1234,14 @@ public class XdEmployeeController extends BaseController {
 		XdEmployee employee = XdEmployee.dao.findById(id);
 		String salaryEffectDate = getPara("salaryEffectDate");
 		String workEffectDate = getPara("workEffectDate");
+		String workRemarks = getPara("workRemarks");
+		String salaryRemarks = getPara("salaryRemarks");
+		String gridData1 = getPara("gridData1");
+		String gridData2 = getPara("gridData2");
+		List<XdRecords> gridList1 = JSONUtil.jsonToBeanList(gridData1, XdRecords.class);
+		List<XdRecords> gridList2 = JSONUtil.jsonToBeanList(gridData2, XdRecords.class);
 
-		List<XdEffict> xdEfficts = XdEffict.dao.find("select * from  xd_effict where status='0' and eid='" + id + "'");
+		/*List<XdEffict> xdEfficts = XdEffict.dao.find("select * from  xd_effict where status='0' and eid='" + id + "'");
 		xdEfficts.stream().forEach(new Consumer<XdEffict>() {
 			@Override
 			public void accept(XdEffict xdEffict) {
@@ -1242,14 +1250,22 @@ public class XdEmployeeController extends BaseController {
 				xdEffict.setOveruser(ShiroKit.getUserId());
 				xdEffict.update();
 			}
-		});
+		});*/
 
 		if(workEffectDate!=null&&!workEffectDate.trim().equals("")) {
+			List<XdEffict> xdEfficts = XdEffict.dao.find("select * from  xd_effict where fieldtype='1' and status='0' and eid='" + id + "'");
+			xdEfficts.stream().forEach( xdEffict-> {
+				xdEffict.setOvertime(DateUtil.getCurrentTime());
+				xdEffict.setStatus("2");
+				xdEffict.setOveruser(ShiroKit.getUserId());
+				xdEffict.update();
+			});
 			XdEffict xde = new XdEffict();
 			xde.setEid(id);
 			xde.setValues(o.getWorkstation());
 			xde.setFieldtype(1);
 			xde.setEffectDate(workEffectDate);
+			xde.setRemarks(workRemarks);
 			xde.setCtime(DateUtil.getCurrentTime());
 			xde.setCuser(ShiroKit.getUserId());
 			xde.setStatus("0");
@@ -1257,6 +1273,106 @@ public class XdEmployeeController extends BaseController {
 		}
 
 		if(salaryEffectDate!=null&&!salaryEffectDate.trim().equals("")) {
+			List<XdEffict> xdEfficts = XdEffict.dao.find("select * from  xd_effict where fieldtype='2' and status='0' and eid='" + id + "'");
+			xdEfficts.stream().forEach( xdEffict-> {
+				xdEffict.setOvertime(DateUtil.getCurrentTime());
+				xdEffict.setStatus("2");
+				xdEffict.setOveruser(ShiroKit.getUserId());
+				xdEffict.update();
+			});
+			XdEffict xdsalary = new XdEffict();
+			xdsalary.setEid(id);
+			xdsalary.setValues(String.valueOf(o.getSalary()));
+			xdsalary.setFieldtype(2);
+			xdsalary.setEffectDate(salaryEffectDate);
+			xdsalary.setRemarks(salaryRemarks);
+			xdsalary.setCtime(DateUtil.getCurrentTime());
+			xdsalary.setCuser(ShiroKit.getUserId());
+			xdsalary.setStatus("0");
+			xdsalary.save();
+		}
+
+		if(gridList1.size()!=0){
+			for (int i = 0; i < gridList1.size(); i++) {
+				XdRecords records = gridList1.get(i);
+				records.update();
+			}
+		}
+		if(gridList2.size()!=0){
+			for (int i = 0; i < gridList2.size(); i++) {
+				XdRecords records = gridList2.get(i);
+				records.update();
+			}
+		}
+		renderSuccess();
+	}
+
+
+	/**
+	 * @Method immediateEffect
+	 * @Date 2023/1/6 16:00
+	 * @Description 员工薪资岗位立即生效
+	 * @Author king
+	 * @Version  1.0
+	 * @Return void
+	 */
+	public void immediateEffect(){
+		XdEmployee o = getModel(XdEmployee.class);
+		String id = o.getId();
+		XdEmployee employee = XdEmployee.dao.findById(id);
+		String salaryEffectDate = getPara("salaryEffectDate");
+		String workEffectDate = getPara("workEffectDate");
+		String workRemarks = getPara("workRemarks");
+		String salaryRemarks = getPara("salaryRemarks");
+		String gridData1 = getPara("gridData1");
+		String gridData2 = getPara("gridData2");
+		List<XdRecords> gridList1 = JSONUtil.jsonToBeanList(gridData1, XdRecords.class);
+		List<XdRecords> gridList2 = JSONUtil.jsonToBeanList(gridData2, XdRecords.class);
+
+		if(workEffectDate!=null&&!workEffectDate.trim().equals("")) {
+
+			List<XdEffict> xdEfficts = XdEffict.dao.find("select * from  xd_effict where fieldtype='1' and status='0' and eid='" + id + "'");
+			xdEfficts.stream().forEach( xdEffict-> {
+					xdEffict.setOvertime(DateUtil.getCurrentTime());
+					xdEffict.setStatus("2");
+					xdEffict.setOveruser(ShiroKit.getUserId());
+					xdEffict.update();
+			});
+			XdEffict xde = new XdEffict();
+			xde.setEid(id);
+			xde.setValues(o.getWorkstation());
+			xde.setFieldtype(1);
+			xde.setEffectDate(workEffectDate);
+			xde.setCtime(DateUtil.getCurrentTime());
+			xde.setCuser(ShiroKit.getUserId());
+			xde.setStatus("1");
+			xde.setRemarks(workRemarks);
+
+
+			XdRecords records=new XdRecords();
+			records.setEffictDate(workEffectDate);
+			records.setEid(id);
+			records.setFieldType(2);
+			records.setOldValue(employee.getWorkstation());
+			records.setNewValue(o.getWorkstation());
+			records.setRemarks(workRemarks);
+			records.setCtime(DateUtil.getCurrentTime());
+			records.setCuser(ShiroKit.getUserId());
+			records.save();
+
+			employee.setWorkstation(o.getWorkstation());
+			employee.update();
+			xde.save();
+		}
+
+		if(salaryEffectDate!=null&&!salaryEffectDate.trim().equals("")) {
+			List<XdEffict> xdEfficts = XdEffict.dao.find("select * from  xd_effict where fieldtype='2' and status='0' and eid='" + id + "'");
+			xdEfficts.stream().forEach( xdEffict-> {
+				xdEffict.setOvertime(DateUtil.getCurrentTime());
+				xdEffict.setStatus("2");
+				xdEffict.setOveruser(ShiroKit.getUserId());
+				xdEffict.update();
+			});
 			XdEffict xdsalary = new XdEffict();
 			xdsalary.setEid(id);
 			xdsalary.setValues(String.valueOf(o.getSalary()));
@@ -1264,9 +1380,39 @@ public class XdEmployeeController extends BaseController {
 			xdsalary.setEffectDate(salaryEffectDate);
 			xdsalary.setCtime(DateUtil.getCurrentTime());
 			xdsalary.setCuser(ShiroKit.getUserId());
-			xdsalary.setStatus("0");
+			xdsalary.setStatus("1");
+			xdsalary.setRemarks(salaryRemarks);
+
+			XdRecords records=new XdRecords();
+			records.setEid(id);
+			records.setEffictDate(workEffectDate);
+			records.setFieldType(1);
+			records.setOldValue(String.valueOf(employee.getSalary()));
+			records.setNewValue(String.valueOf(o.getSalary()));
+			records.setRemarks(salaryRemarks);
+			records.setCtime(DateUtil.getCurrentTime());
+			records.setCuser(ShiroKit.getUserId());
+			records.save();
+
+			employee.setSalary(o.getSalary());
+			employee.update();
 			xdsalary.save();
 		}
+
+
+		if(gridList1.size()!=0){
+			for (int i = 0; i < gridList1.size(); i++) {
+				XdRecords records = gridList1.get(i);
+				records.update();
+			}
+		}
+		if(gridList2.size()!=0){
+			for (int i = 0; i < gridList2.size(); i++) {
+				XdRecords records = gridList2.get(i);
+				records.update();
+			}
+		}
 		renderSuccess();
+
 	}
 }

@@ -9,6 +9,7 @@ import com.jfinal.plugin.activerecord.Record;
 import com.jfinal.plugin.activerecord.tx.Tx;
 import com.pointlion.mvc.common.model.*;
 import com.pointlion.mvc.common.utils.UuidUtil;
+import com.pointlion.mvc.common.utils.XdOperUtil;
 import com.pointlion.mvc.common.utils.office.excel.ExcelUtil;
 import com.pointlion.plugin.shiro.ShiroKit;
 import com.pointlion.mvc.common.utils.DateUtil;
@@ -37,7 +38,7 @@ public class XdEmpCertService{
 	/***
 	 * get page
 	 */
-	public Page<Record> getPage(int pnum,int psize,String dept,String name,String certTitle,String certAuth,String sny){
+	public Page<Record> getPage(int pnum,int psize,String dept,String name,String certTitle,String certAuth,String sny,String ctime){
 		String userId = ShiroKit.getUserId();
 		String sql  = " from "+TABLE_NAME+" o where status='1'";
 		if(StrKit.notBlank(dept)){
@@ -55,10 +56,29 @@ public class XdEmpCertService{
 		if(StrKit.notBlank(sny)){
 			sql = sql + " and o.sny ='"+sny+"'";
 		}
+		if(StrKit.notBlank(ctime)){
+			sql = sql + " and o.ctime  like '"+ctime+"%'";
+		}
 		sql = sql + " order by o.ctime desc";
 		return Db.paginate(pnum, psize, " select * ", sql);
 	}
-	
+
+
+	public Page<Record> getPage(int pnum,int psize,String dept,String sny){
+		String userId = ShiroKit.getUserId();
+		String sql  = " from "+TABLE_NAME+" o  where status='1' and o.closeDate  is not null and (TO_DAYS(str_to_date(o.closeDate, '%Y-%m-%d')) - TO_DAYS(now()))<180";
+
+		if(StrKit.notBlank(dept)){
+			sql = sql + " and o.department = '"+dept+"'";
+		}
+		if(StrKit.notBlank(sny)){
+			sql = sql + " and o.sny ='"+sny+"'";
+		}
+
+		sql = sql + " order by o.closeDate ";
+		return Db.paginate(pnum, psize, "  select o.*, TO_DAYS(str_to_date(o.closeDate, '%Y-%m-%d')) - TO_DAYS(now()) diffdate ,o.closeDate endtime", sql);
+	}
+
 	/***
 	 * del
 	 * @param ids
@@ -69,6 +89,7 @@ public class XdEmpCertService{
     	for(String id : idarr){
     		XdEmpCert o = me.getById(id);
     		o.delete();
+			XdOperUtil.updateEmpCert(o);
     	}
 	}
 

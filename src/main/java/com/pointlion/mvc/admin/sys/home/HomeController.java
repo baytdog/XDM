@@ -125,7 +125,22 @@ public class HomeController extends BaseController {
 			});
 			setAttr("retireEmpEndSize",retireStream.count());
 
-			 renderIframe("/common/include/content.html");
+			String certSql="select * from  xd_emp_cert where status='1'";
+			List<XdEmpCert> xdEmpCerts = XdEmpCert.dao.find(certSql);
+			Stream<XdEmpCert> xdEmpCertStream = xdEmpCerts.stream().filter(cert -> {
+				String closeDate = cert.getCloseDate();
+				if (closeDate == null || "".equals(closeDate)||"长期".equals(closeDate)) {
+					return false;
+				}
+				LocalDate bsRetireDate = LocalDate.parse(closeDate, dtf).minusDays(180);
+				LocalDate now = LocalDate.now();
+				return now.isAfter(bsRetireDate);
+			});
+
+
+			setAttr("certExpiredSize",xdEmpCertStream.count());
+
+			renderIframe("/common/include/content.html");
 		}
     }
 	

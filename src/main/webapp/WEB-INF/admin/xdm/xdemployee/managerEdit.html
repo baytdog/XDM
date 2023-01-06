@@ -10,8 +10,9 @@
 
 <script>
     function save(){
-
-        var data = common_ajax.ajaxFunc("/admin/xd/xdemployee/saveManager",$('#editForm').serialize(), "json", null);
+        let gridData1 = grid1.getData();
+        let gridData2 = grid2.getData();
+        var data = common_ajax.ajaxFunc("/admin/xd/xdemployee/saveManager",$('#editForm').serialize()+"&gridData1="+mini.encode(gridData1)+"&gridData2="+mini.encode(gridData2), "json", null);
         if(data.success){
             pointLion.alertMsg("操作成功!" , "success" , "small" , function(){
                 location.href = ctx+'/admin/xd/xdemployee/getManagerListPage';//跳转到列表页
@@ -22,6 +23,23 @@
             },data);
         }
     }
+    function immEffect(){
+
+        let gridData1 = grid1.getData();
+        let gridData2 = grid2.getData();
+
+        var data = common_ajax.ajaxFunc("/admin/xd/xdemployee/immediateEffect",$('#editForm').serialize()+"&gridData1="+mini.encode(gridData1)+"&gridData2="+mini.encode(gridData2), "json", null);
+        if(data.success){
+            pointLion.alertMsg("操作成功!" , "success" , "small" , function(){
+                location.href = ctx+'/admin/xd/xdemployee/getManagerListPage';//跳转到列表页
+            },data);
+        }else{
+            pointLion.alertMsg(data.message , "danger" , "small" , function(){
+                $(".btn").removeAttr("disabled");
+            },data);
+        }
+    }
+
     $(document).ready(function() {
         $('#editForm').bootstrapValidator({
             excluded:[":disabled"],
@@ -67,11 +85,24 @@
 
 
 <script type="text/javascript">
+    mini.parse();
+
+    var grid1 = mini.get("datagrid1");
+    var grid2 = mini.get("datagrid2");
 
     // var Genders = [{ id: 1, text: '男' }, { id: 2, text: '女'}];
-    var grade= [{id:0,text:'全日制'}, { id:1, text:'非全日制'}];
-    var xl= [{id:1,text:'技工'}, { id:2, text:'职高'}, { id:3, text:'中专'}, { id:4, text:'高中'}, { id:5, text:'大专'}, { id:6, text:'本科'}];
+    // var grade= [{id:0,text:'全日制'}, { id:1, text:'非全日制'}];
+    // var xl= [{id:1,text:'技工'}, { id:2, text:'职高'}, { id:3, text:'中专'}, { id:4, text:'高中'}, { id:5, text:'大专'}, { id:6, text:'本科'}];
+    $(function(){
 
+        let employeeId=$("#employeeId").val();
+        let data = common_ajax.ajaxFunc("/admin/xd/records/getRecordsList", {"employeeId":employeeId,"filedType":"1"}, "json", null);
+
+        grid1.setData(data);
+        data = common_ajax.ajaxFunc("/admin/xd/records/getRecordsList", {"employeeId":employeeId,"filedType":"2"}, "json", null);
+
+        grid2.setData(data);
+    });
 
 </script>
 <script>
@@ -81,12 +112,6 @@
             $(".btn").removeAttr("disabled");
         }
     }
-
-    $(function(){
-
-    });
-
-
 
     $('.form_datetime').datepicker({format: 'yyyy-mm-dd',weekStart: 1,todayBtn:  1,autoclose: 1,language:  'zh-CN',todayHighlight: 1,forceParse: 0,showMeridian: 1}).on('changeDate',function(){
         resetVali();

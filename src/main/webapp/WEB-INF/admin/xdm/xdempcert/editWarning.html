@@ -1,0 +1,276 @@
+<link href="#(ctx)/common/plugins/jquery-ui/scripts/miniui/themes/default/miniui.css" rel="stylesheet"/>
+<div id="page-content">
+    <div class="col-lg-12">
+        <div class="panel">
+            #include("editWarningForm.html")
+        </div>
+    </div>
+</div>
+
+
+<script>
+    function save(){
+
+        let data = common_ajax.ajaxFunc("/admin/xd/xdempcert/save",$('#editForm').serialize(), "json", null);
+        if(data.success){
+            pointLion.alertMsg("操作成功!" , "success" , "small" , function(){
+                location.href = ctx+'/admin/xd/xdempcert/getListPage';//跳转到列表页
+            },data);
+        }else{
+            pointLion.alertMsg(data.message , "danger" , "small" , function(){
+                $(".btn").removeAttr("disabled");
+            },data);
+        }
+    }
+    $(document).ready(function() {
+        $('#editForm').bootstrapValidator({
+            fields: {
+            }
+        }).on("success.form.bv", function (e) {
+            save();
+            return false;//阻止表单跳转
+        });
+    });
+</script>
+
+<script>
+
+    function chooseEmployees(){
+        pointLion.selectManyUser1("orgid="+encodeURIComponent("root"),$("#eid").val(),function(data){
+            $("#eid").val(data.idData);
+            $("#ename").val(data.nameData);
+        });
+    }
+
+    function resetVali(){
+        if(!$("#editForm").data('bootstrapValidator').isValid()) {
+            $("#editForm").data('bootstrapValidator').resetForm();
+            $(".btn").removeAttr("disabled");
+        }
+    }
+    $(function(){
+
+        $('.form_datetime').datepicker({format: 'yyyy-mm-dd',weekStart: 1,todayBtn:  1,autoclose: 1,language:  'zh-CN',todayHighlight: 1,forceParse: 0,showMeridian: 1}).on('changeDate',function(){
+            let startTime = $("#startTime").val();
+            let endTime = $("#endTime").val();
+            /*if(startTime&&endTime){
+                if(!dateUtil.compareCalendar(startTime,endTime)){
+                }else{
+
+                }
+            }*/
+            resetVali();
+        });
+
+
+        $(".selectpicker").selectpicker({});
+        $(".bootstrap-select").attr("style","width:100%;");
+
+        // 下拉框处理 start
+
+        let department=$("#department").val();
+        if(department){
+            $('#departmentSelect').selectpicker('val',department.split(",")).trigger("change");
+        }
+
+        $('#departmentSelect').on('changed.bs.select', function (e) {
+            $('#department').val($('#departmentSelect').val())
+        });
+
+        let certId=$("#certId").val();
+        if(certId){
+            $('#certIdSelect').selectpicker('val',certId.split(",")).trigger("change");
+        }
+
+        $('#certIdSelect').on('changed.bs.select', function (e) {
+            $('#certId').val($('#certIdSelect').val())
+            $('#certTile').val($('#certIdSelect option:selected').text())
+
+        });
+
+        let certAuthValue=$("#certAuthValue").val();
+        if(certAuthValue){
+            $('#certAuthSelect').selectpicker('val',certAuthValue.split(",")).trigger("change");
+        }
+
+        $('#certAuthSelect').on('changed.bs.select', function (e) {
+            $('#certAuthValue').val($('#certAuthSelect').val())
+            $('#certAuthName').val($('#certAuthSelect option:selected').text())
+        });
+
+
+        let certLevel=$("#certLevel").val();
+        if(certLevel){
+            $('#certLevelSelect').selectpicker('val',certLevel.split(",")).trigger("change");
+        }
+
+        $('#certLevelSelect').on('changed.bs.select', function (e) {
+            $('#certLevel').val($('#certLevelSelect').val())
+        });
+
+
+
+
+
+        let certstatus=$("#certstatus").val();
+        if(certstatus){
+            $('#certstatusSelect').selectpicker('val',certstatus.split(",")).trigger("change");
+        }
+
+        $('#certstatusSelect').on('changed.bs.select', function (e) {
+            $('#certstatus').val($('#certstatusSelect').val())
+        });
+
+
+
+
+        let eid=$("#eid").val();
+        if(eid){
+            $('#enameSelect').selectpicker('val',eid.split(",")).trigger("change");
+        }
+
+        $('#enameSelect').on('changed.bs.select', function (e) {
+            $('#eid').val($('#enameSelect').val())
+            $('#ename').val($('#enameSelect option:selected').text())
+
+        });
+    })
+</script>
+
+
+<script type="text/javascript">
+    $(function (){
+
+        initTable();//初始化
+
+        pointLion.initUploader("/admin/sys/attachment/attachmentUpload?busid="+$("#employeeId").val(),function(data){
+            pointLion.alertMsg(data.message,"success",null,null);
+            refreshTable();
+
+        });
+    });
+
+    var busid = $("#employeeId").val();//可能是业务ID，也可能是TEMP_UUID
+    var col = [
+
+        {
+            field: 'id',
+            title: '主键',
+            align: 'center'
+        },
+        {
+            field: 'file_name',
+            title: '文件名',
+            align: 'center'
+        },
+        {
+            field: 'create_user_name',
+            title: '上传人',
+            align: 'center'
+        },
+        {
+            field: 'create_time',
+            title: '上传时间',
+            align: 'center'
+        },
+        {
+            field: 'control',
+            title: '操作',
+            align: 'left',
+            width:'120',
+            formatter:function(value,row,index){
+                var a = '<a class="label label-table label-success" href="'+ctx+'/admin/sys/attachment/downloadFile?id='+row.id+'&view=detail" target="_blank">下载</a>&nbsp;';
+                a=a+'<a class="label label-table label-success" href="'+ctx+'/admin/sys/attachment/lookFile?id='+row.id+'&view=detail" target="_blank" title="附件查看">查看</a>&nbsp;'
+                #if(view=='detail')
+                #else
+
+                if(row.create_user_id=="#(currentUserId)"){
+
+                    a = a + '<a class="label label-table label-danger" onclick="del(\''+row.id+'\')" href="javascript:void(0);" >删除</a>';
+
+                }
+
+
+
+                #end
+                return a;
+            }
+        }];
+    var opt = {
+        //请求方法
+        method: 'get',
+        //是否显示行间隔色
+        striped: true,
+        //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+        cache: false,
+        //data-toolbar: "#demo-delete-row",
+        //是否显示分页（*）
+        pagination: true,
+        //是否启用排序
+        sortable: false,
+        //排序方式
+        sortOrder: "asc",
+        //初始化加载第一页，默认第一页
+        //我设置了这一项，但是貌似没起作用，而且我这默认是0,- -
+        //pageNumber:1,
+        //每页的记录行数（*）
+        pageSize: 50,
+        //可供选择的每页的行数（*）
+        pageList: [5, 10, 15, 20,50,100],
+        //这个接口需要处理bootstrap table传递的固定参数,并返回特定格式的json数据
+        url: ctx+"/admin/sys/attachment/getBusinessUploadList?busid="+busid,
+        //默认值为 'limit',传给服务端的参数为：limit, offset, search, sort, order Else
+        //queryParamsType:'',
+        ////查询参数,每次调用是会带上这个参数，可自定义
+        queryParams : function(params) {
+            return {
+                pageNumber: (params.offset/params.limit)+1,
+                pageSize: params.limit
+            };
+        },
+        //分页方式：client客户端分页，server服务端分页（*）
+        sidePagination: "server",
+        //是否显示搜索
+        search: false,
+        //Enable the strict search.
+        strictSearch: true,
+        paginationDetailHAlign:' hidden',
+        //Indicate which field is an identity field.
+        idField : "id",
+        columns: col,
+        pagination:true,paginationShowPageGo: false
+    };
+
+    //表格
+    function initTable(){
+        $('#pageTable').bootstrapTable(opt);
+        $('#pageTable').bootstrapTable('hideColumn', 'id');
+    }
+    function refreshTable(){
+
+        $("#pageTable").bootstrapTable('refresh', opt);
+        $('#pageTable').bootstrapTable('hideColumn', 'id');
+    }
+
+
+    //删除
+    function del(ids){
+        pointLion.confimMsg("您是否要删除所选信息 ?<br/> 点击确认进行删除 , 点击取消取消该操作",null,function(){
+            //执行删除
+            var data = common_ajax.ajaxFunc("/admin/sys/attachment/delete",{"ids":ids}, "json", null);
+            //删除结果
+            if(data.success){
+                pointLion.alertMsg(data.message,"success",null,function(){
+                    refreshTable();
+                });
+            }else{
+                pointLion.alertMsg(data.message,"success",null,null);
+            }
+        });
+    };
+
+</script>
+
+
+
+

@@ -455,49 +455,108 @@
                         <div class="form-group">
 
                             <label class="col-md-1 control-label">工作岗位</label>
-                            <div class="col-md-5">
+                            <div class="col-md-3">
                                 <input type="text"  name="#(formModelName).workstation" class="form-control"  value="#(o?o.workstation:'')"  >
                             </div>
                           <label class="col-md-1 control-label">岗位生效日期</label>
-                            <!--  <div class="col-md-5">
-                                <input type="text"  name="#(formModelName).workstation" class="form-control"  value="#(o?o.workstation:'')"  >
-                            </div>-->
-                            <div class="input-group date form_datetime col-md-5" style="float:left">
+                            <div class="input-group date form_datetime col-md-3" style="float:left">
                                 <input type="text" id="workEffectDate" name="workEffectDate" class="form-control"  value="#(workEffectDate)"    >
                                 <span class="input-group-addon"> <span class="glyphicon glyphicon-th"></span>
 								</span>
                             </div>
+
+                            <label class="col-md-1 control-label">岗位备注</label>
+                            <div class="col-md-3">
+                                <input type="text"  id="workRemarks" name="workRemarks"  class="form-control"  value="#(workRemarks)"  >
+                            </div>
                         </div>
                         <div class="form-group">
                             <label class="col-md-1 control-label">薪资</label>
-                            <div class="col-md-5">
+                            <div class="col-md-3">
                                 <input type="text"  name="#(formModelName).salary" class="form-control"  value="#(o?o.salary:'')"  >
                             </div>
 
 
                             <label class="col-md-1 control-label">薪资生效日期</label>
-                          <!--  <div class="col-md-5">
-                                <input type="text"  name="#(formModelName).salary" class="form-control"  value="#(o?o.salary:'')"  >
-                            </div>-->
-                            <div class="input-group date form_datetime col-md-5" style="float:left">
+                            <div class="input-group date form_datetime col-md-3" style="float:left">
                                 <input type="text" id="salaryEffectDate" name="salaryEffectDate" class="form-control"  value="#(salaryEffectDate)"    >
                                 <span class="input-group-addon"> <span class="glyphicon glyphicon-th"></span>
 								</span>
                             </div>
+
+                            <label class="col-md-1 control-label">薪资备注</label>
+                            <div class="col-md-3">
+                                <input type="text"  id="salaryRemarks" name="salaryRemarks"  class="form-control"  value="#(salaryRemarks)"  >
+                            </div>
                         </div>
 
-                        <div class="form-group">
+                        <!--<div class="form-group">
                             <label class="col-md-1 control-label">调薪记录</label>
                             <div class="col-md-11">
                                 <textarea rows="5" name="#(formModelName).saladjrecord" class="form-control"   readonly >#(o.saladjrecord)</textarea>
                             </div>
-                        </div>
-                        <div class="form-group">
+                        </div>-->
+
+                        <mini-datagrid id="datagrid1" class="mini-datagrid" style="width:100%;"
+                                        idField="id"  allowResize="true"
+                                       allowCellEdit="true" allowCellSelect="true" multiSelect="false"
+                                       editNextOnEnterKey="true"  editNextRowCell="true"
+                                       showSortIcon="true"  _dataField="data"  showPager="false" allowSortColumn="false"
+
+                        >
+                            <columns>
+                                <column type="indexcolumn"></column>
+                                <column name="effict_date" field="effict_date" width="100"  headerAlign="center"  dateFormat="yyyy-MM-dd" >生效日期
+                                </column>
+                                <column name="old_value"  field="old_value" headerAlign="center"   width="150" >
+                                        原薪资
+                                </column>
+                                <column name="new_value"  field="new_value" headerAlign="center"   width="150" >
+                                    现薪资
+                                </column>
+                                <column name="remarks"  field="remarks" headerAlign="center"   width="150" >
+                                    备注
+                                    <editor>
+                                        <input property="editor" class="mini-textbox" style="width:100%;" _minWidth="200" />
+                                    </editor>
+                                </column>
+                            </columns>
+                        </mini-datagrid>
+                        <br/>
+                        <br/>
+                        <mini-datagrid id="datagrid2" class="mini-datagrid" style="width:100%;"
+                                       url="" idField="id"  allowResize="true" pageSize="15"
+                                       allowCellEdit="true" allowCellSelect="true" multiSelect="false"
+                                       editNextOnEnterKey="true"  editNextRowCell="true"
+                                       showSortIcon="true"  _dataField="data"  showPager="false" allowSortColumn="false"
+                        >
+                            <columns>
+                                <column type="indexcolumn"></column>
+                                <column name="effict_date" field="effict_date" width="100"  headerAlign="center" dateFormat="yyyy-MM-dd">生效日期
+                                </column>
+
+
+                                <column name="old_value"  field="old_value" headerAlign="center"   width="150" >
+                                    原岗位
+                                </column>
+                                <column name="new_value"  field="new_value" headerAlign="center"   width="150" >
+                                    现岗位
+                                </column>
+                                <column name="remarks"  field="remarks" headerAlign="center"   width="150" >
+                                    备注
+                                    <editor>
+                                        <input property="editor" class="mini-textbox" style="width:100%;" _minWidth="200" />
+                                    </editor>
+                                </column>
+                            </columns>
+                        </mini-datagrid>
+
+                        <!--<div class="form-group">
                             <label class="col-md-1 control-label">异动记录</label>
                             <div class="col-md-11">
                                 <textarea rows="5" name="#(formModelName).chrecord" class="form-control"   readonly>#(o.chrecord)</textarea>
                             </div>
-                        </div>
+                        </div>-->
                     </div>
                 </div>
             </div>
@@ -509,6 +568,7 @@
 
         <!--<button class="btn btn-warning" type="reset" #if(view=='detail') disabled #end>重置</button>-->
         <button id="submitBtn" class="btn btn-primary" type="submit" #if(view=='detail') disabled #end>保存 </button>
+        <button class="btn btn-primary"  type="button" onclick="immEffect()" #if(view=='detail') disabled #end>立即生效</button>
         <button class="btn btn-primary" type="button" onclick="window.history.back();" >返回</button>
         #else
         <button class="btn btn-primary" type="button" onclick="window.history.back();" >返回</button>

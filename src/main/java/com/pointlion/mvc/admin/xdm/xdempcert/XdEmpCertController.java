@@ -2,26 +2,24 @@ package com.pointlion.mvc.admin.xdm.xdempcert;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.SyncFailedException;
 import java.io.UnsupportedEncodingException;
 import java.sql.SQLException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.time.LocalDate;
+import java.util.*;
+import java.util.function.Consumer;
 
 import com.jfinal.aop.Before;
 import com.jfinal.kit.StrKit;
 import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.plugin.activerecord.Record;
 import com.jfinal.upload.UploadFile;
+import com.pointlion.enums.XdOperEnum;
 import com.pointlion.mvc.common.base.BaseController;
 import com.pointlion.mvc.admin.oa.workflow.WorkFlowService;
 import com.pointlion.mvc.common.model.*;
-import com.pointlion.mvc.common.utils.StringUtil;
-import com.pointlion.mvc.common.utils.UuidUtil;
-import com.pointlion.mvc.common.utils.Constants;
+import com.pointlion.mvc.common.utils.*;
 import com.pointlion.mvc.admin.oa.common.OAConstants;
-import com.pointlion.mvc.common.utils.DateUtil;
 import com.pointlion.mvc.common.utils.office.excel.ExcelUtil;
 import com.pointlion.plugin.shiro.ShiroKit;
 
@@ -51,7 +49,8 @@ public class XdEmpCertController extends BaseController {
 		String certTitle = java.net.URLDecoder.decode(getPara("certTitle",""),"UTF-8");
 		String certAuth = java.net.URLDecoder.decode(getPara("certAuth",""),"UTF-8");
 		String sny = java.net.URLDecoder.decode(getPara("sny",""),"UTF-8");
-    	Page<Record> page = service.getPage(Integer.valueOf(curr),Integer.valueOf(pageSize),dept,name,certTitle,certAuth,sny);
+		String ctime = java.net.URLDecoder.decode(getPara("ctime",""),"UTF-8");
+    	Page<Record> page = service.getPage(Integer.valueOf(curr),Integer.valueOf(pageSize),dept,name,certTitle,certAuth,sny,ctime);
     	renderPage(page.getList(),"",page.getTotalRow());
     }
     /***
@@ -73,11 +72,10 @@ public class XdEmpCertController extends BaseController {
 				o.setSny(ny);
 				o.setSn(n);
 			}
-
-
-
 			o.update();
-    	}else{
+			XdOplogSummary summary = XdOperUtil.logSummary(UuidUtil.getUUID(), cert.getId(), o, cert, XdOperEnum.U.name(), XdOperEnum.UNAPPRO.name());
+			summary.save();
+		}else{
 			String closeDate = o.getCloseDate();
 			if("长期".equals(closeDate)){
 				o.setSny("长期");
@@ -90,10 +88,18 @@ public class XdEmpCertController extends BaseController {
 				o.setSny(ny);
 				o.setSn(n);
 			}
+			o.setStatus("1");
 			o.save();
+			XdOperUtil.logSummary(o.getId(),o, XdOperEnum.C.name(),XdOperEnum.UNAPPRO.name(),0);
     	}
+
+		XdOperUtil.updateEmpCert(o);
     	renderSuccess();
     }
+
+
+
+
     /***
      * edit page
      */
@@ -179,6 +185,72 @@ public class XdEmpCertController extends BaseController {
 		String path = this.getSession().getServletContext().getRealPath("")+"/upload/export/"+ DateUtil.format(new Date(),21)+".xlsx";
 		File file = service.exportExcel(path,certTitle);
 		renderFile(file);
+	}
+
+
+
+	/**
+	 * @Method getWarningCertList
+	 * @Date 2023/1/6 11:20
+	 * @Description 证书到期提醒列表
+	 * @Author king
+	 * @Version  1.0
+	 * @Return void
+	 */
+	public void getWarningCertList(){
+
+		List<XdEmpCert> snyList = XdEmpCert.dao.find("select  DISTINCT sny from xd_emp_cert where status='1' and closeDate  is not null and (TO_DAYS(str_to_date(closeDate, '%Y-%m-%d')) - TO_DAYS(now()))<180 order by sny");
+		setAttr("snyList",snyList);
+		renderIframe("pWarningList.html");
+	}
+	 /**
+	  * @Method listWaringData
+	  * @Date 2023/1/6 11:21
+	  * @Description  证书到期列表数据
+	  * @Author king
+	  * @Version  1.0
+	  * @Return void
+	  */
+	public void listWaringData() throws UnsupportedEncodingException {
+		String curr = getPara("pageNumber");
+		String pageSize = getPara("pageSize");
+		String dept =  getPara("dept","");
+		String sny = java.net.URLDecoder.decode(getPara("sny",""),"UTF-8");
+		Page<Record> page = service.getPage(Integer.valueOf(curr),Integer.valueOf(pageSize),dept, sny);
+		renderPage(page.getList(),"",page.getTotalRow());
+	}
+
+	/**
+	 * @Method openWarningCertPage
+	 * @Date 2023/1/6 13:56
+	 * @Description 打开证件到期提醒详情页面
+	 * @Author king
+	 * @Version  1.0
+	 * @Return void
+	 */
+	public void openWarningCertPage(){
+		String id = getPara("id");
+		String view = getPara("view");
+		setAttr("view", view);
+		XdEmpCert o = new XdEmpCert();
+		o = service.getById(id);
+
+		List<XdEmployee> emps = XdEmployee.dao.find("select * from  xd_employee");
+		setAttr("emps",emps);
+		List<SysOrg> sysOrgs = SysOrg.dao.find("select * from sys_org where id <> 'root'");
+		setAttr("departs",sysOrgs);
+
+		List<XdCertificate> xdCertificates = XdCertificate.dao.find("select * from xd_certificate");
+		setAttr("certs",xdCertificates);
+
+		List<XdDict> certLevels = XdDict.dao.find("select * from xd_dict where  type='certLevel' order by sortnum");
+		setAttr("certLevels",certLevels);
+
+		List<XdDict> licenseAuths = XdDict.dao.find("select * from xd_dict where  type='licenseauth' order by sortnum");
+		setAttr("licenseAuths",licenseAuths);
+		setAttr("o", o);
+		setAttr("formModelName",StringUtil.toLowerCaseFirstOne(XdEmpCert.class.getSimpleName()));
+		renderIframe("editWarning.html");
 	}
 
 }

@@ -158,6 +158,7 @@ public class _MappingKit {
 		arp.addMapping("xd_contract_info","id",XdContractInfo.class);
 		arp.addMapping("xd_projects","id",XdProjects.class);
 		arp.addMapping("xd_effict","id",XdEffict.class);
+		arp.addMapping("xd_records","id",XdRecords.class);
 	}
 }
 
