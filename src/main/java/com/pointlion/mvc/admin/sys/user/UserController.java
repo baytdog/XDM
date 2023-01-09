@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.pointlion.mvc.common.model.*;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.credential.DefaultPasswordService;
@@ -18,10 +19,6 @@ import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.plugin.activerecord.Record;
 import com.pointlion.mvc.admin.oa.workflow.WorkFlowIdentityService;
 import com.pointlion.mvc.common.base.BaseController;
-import com.pointlion.mvc.common.model.OaDict;
-import com.pointlion.mvc.common.model.SysOrg;
-import com.pointlion.mvc.common.model.SysRole;
-import com.pointlion.mvc.common.model.SysUser;
 import com.pointlion.mvc.common.utils.UuidUtil;
 import com.pointlion.plugin.shiro.ShiroKit;
 import com.pointlion.plugin.shiro.ext.SimpleUser;
@@ -200,6 +197,11 @@ public class UserController extends BaseController {
     			setAttr("org", org);
     		}
     	}
+		List<XdDict> units = XdDict.dao.find("select * from xd_dict where type ='unit' order by sortnum");
+		setAttr("units",units);
+
+		List<XdEmployee> emps = XdEmployee.dao.find("select * from  xd_employee");
+		setAttr("emps",emps);
     	renderIframe("edit.html");
     }
     

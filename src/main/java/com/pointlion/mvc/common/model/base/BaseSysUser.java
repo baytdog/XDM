@@ -200,6 +200,29 @@ public abstract class BaseSysUser<M extends BaseSysUser<M>> extends Model<M> imp
 	public java.lang.String getPosition() {
 		return get("position");
 	}
+	public void setUnitValue(java.lang.String unitValue) {
+		set("unit_value", unitValue);
+	}
+
+	public java.lang.String getUnitValue() {
+		return getStr("unit_value");
+	}
+
+	public void setUnitName(java.lang.String unitName) {
+		set("unit_name", unitName);
+	}
+
+	public java.lang.String getUnitName() {
+		return getStr("unit_name");
+	}
+
+	public void setEmpId(java.lang.String empId) {
+		set("emp_id", empId);
+	}
+
+	public java.lang.String getEmpId() {
+		return getStr("emp_id");
+	}
 	
 }
 
