@@ -28,6 +28,7 @@ import com.pointlion.util.MyPicRender;
 
 public class AttachmentController extends BaseController {
 	public static final AttachmentService service = AttachmentService.me;
+	private static  final String baseUrl ="D:\\apache-tomcat-8.5.83";
 	/***
 	 * 列表页面
 	 */
@@ -330,8 +331,7 @@ public class AttachmentController extends BaseController {
 		
 		System.out.println("fileUrl="+fileUrl);
 		//String baseUrl = this.getRequest().getSession().getServletContext().getRealPath("");
-		String baseUrl ="D:\\apache-tomcat-7.0.82";
-		System.out.println("baseUrl"+baseUrl);
+		//String baseUrl ="D:\\apache-tomcat-7.0.82";
 		String[] arry = fileUrl.split("/");
 		
 	 	System.out.println(arry[arry.length-1]);
@@ -360,8 +360,8 @@ public class AttachmentController extends BaseController {
 		
 		System.out.println("fileUrl="+fileUrl);
 		//String baseUrl = this.getRequest().getSession().getServletContext().getRealPath("");
-		String baseUrl ="D:\\apache-tomcat-7.0.82";
-		System.out.println("baseUrl"+baseUrl);
+		//String baseUrl ="D:\\apache-tomcat-7.0.82";
+		//System.out.println("baseUrl"+baseUrl);
 		
 		File file = new File(baseUrl+"/upload"+fileUrl);
 		
@@ -387,9 +387,9 @@ public class AttachmentController extends BaseController {
 		
 		System.out.println("fileUrl="+fileUrl);
 		//String baseUrl = this.getRequest().getSession().getServletContext().getRealPath("");
-		String baseUrl ="D:\\apache-tomcat-7.0.82";
+		//String baseUrl ="D:\\apache-tomcat-7.0.82";
 //		String baseUrl ="D:\\apache-tomcat-8.5.83";
-		System.out.println("baseUrl"+baseUrl);
+		//System.out.println("baseUrl"+baseUrl);
 		
 		File f = new File(baseUrl+"/upload"+fileUrl);
 		

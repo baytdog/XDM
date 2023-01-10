@@ -364,6 +364,14 @@ public abstract class BaseXdEmployee<M extends BaseXdEmployee<M>> extends Model<
 		return getInt("salary");
 	}
 
+	public void setSalaryLevel(java.lang.String salaryLevel) {
+		set("salary_level", salaryLevel);
+	}
+	@ChangeFields(value = "salary",desc = "薪资星级")
+	public java.lang.String getSalaryLevel() {
+		return getStr("salary_level");
+	}
+
 	public void setCtime(String ctime) {
 		set("ctime", ctime);
 	}

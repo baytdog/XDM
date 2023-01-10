@@ -475,7 +475,10 @@
                             <div class="col-md-3">
                                 <input type="text"  name="#(formModelName).salary" class="form-control"  value="#(o?o.salary:'')"  >
                             </div>
-
+                            <label class="col-md-1 control-label">薪资星级</label>
+                            <div class="col-md-3">
+                                <input type="text"  name="#(formModelName).salary_level" class="form-control"  value="#(o?o.salary_level:'')"  >
+                            </div>
 
                             <label class="col-md-1 control-label">薪资生效日期</label>
                             <div class="input-group date form_datetime col-md-3" style="float:left">
@@ -484,8 +487,11 @@
 								</span>
                             </div>
 
+
+                        </div>
+                        <div class="form-group">
                             <label class="col-md-1 control-label">薪资备注</label>
-                            <div class="col-md-3">
+                            <div class="col-md-11">
                                 <input type="text"  id="salaryRemarks" name="salaryRemarks"  class="form-control"  value="#(salaryRemarks)"  >
                             </div>
                         </div>
@@ -511,8 +517,14 @@
                                 <column name="old_value"  field="old_value" headerAlign="center"   width="150" >
                                         原薪资
                                 </column>
+                                <column name="oldsallevel"  field="oldsallevel" headerAlign="center"   width="150" >
+                                    原星级
+                                </column>
                                 <column name="new_value"  field="new_value" headerAlign="center"   width="150" >
                                     现薪资
+                                </column>
+                                <column name="newsallevel"  field="newsallevel" headerAlign="center"   width="150" >
+                                    现星级
                                 </column>
                                 <column name="remarks"  field="remarks" headerAlign="center"   width="150" >
                                     备注
@@ -547,6 +559,12 @@
                                     <editor>
                                         <input property="editor" class="mini-textbox" style="width:100%;" _minWidth="200" />
                                     </editor>
+                                </column>
+                                <column name="oldsallevel"  field="oldsallevel" headerAlign="center"   width="150" visible="false">
+                                    原星级
+                                </column>
+                                <column name="newsallevel"  field="newsallevel" headerAlign="center"   width="150" visible="false" >
+                                    现星级
                                 </column>
                             </columns>
                         </mini-datagrid>

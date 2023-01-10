@@ -159,6 +159,10 @@ public class _MappingKit {
 		arp.addMapping("xd_projects","id",XdProjects.class);
 		arp.addMapping("xd_effict","id",XdEffict.class);
 		arp.addMapping("xd_records","id",XdRecords.class);
+		arp.addMapping("xd_day_model","id",XdDayModel.class);
+		arp.addMapping("xd_schedule","id",XdSchedule.class);
+		arp.addMapping("xd_schedule_summary","id",XdScheduleSummary.class);
+		arp.addMapping("xd_schedule_detail","id",XdScheduleDetail.class);
 	}
 }
 

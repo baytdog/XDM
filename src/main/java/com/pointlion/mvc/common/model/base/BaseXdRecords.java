@@ -57,6 +57,22 @@ public abstract class BaseXdRecords<M extends BaseXdRecords<M>> extends Model<M>
 		return getStr("new_value");
 	}
 
+	public void setOldsallevel(String oldsallevel) {
+		set("oldsallevel", oldsallevel);
+	}
+	
+	public String getOldsallevel() {
+		return getStr("oldsallevel");
+	}
+
+	public void setNewsallevel(String newsallevel) {
+		set("newsallevel", newsallevel);
+	}
+	
+	public String getNewsallevel() {
+		return getStr("newsallevel");
+	}
+
 	public void setRemarks(String remarks) {
 		set("remarks", remarks);
 	}

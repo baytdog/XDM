@@ -1090,8 +1090,8 @@ public class XdEmployeeController extends BaseController {
 			if(attachment!=null){
 				String fileUrl = attachment.getUrl();
 
-				String baseUrl ="D:\\apache-tomcat-7.0.82";
-				//String baseUrl ="D:\\apache-tomcat-8.5.83";
+				//String baseUrl ="D:\\apache-tomcat-7.0.82";
+				String baseUrl ="D:\\apache-tomcat-8.5.83";
 				System.out.println(baseUrl+"/upload"+fileUrl);
 				File f = new File(baseUrl+"/upload"+fileUrl);
 				String fileName = f.getName();
@@ -1100,8 +1100,8 @@ public class XdEmployeeController extends BaseController {
 				FileOutputStream fos=null;
 				try {
 					 fis =new FileInputStream(baseUrl+"/upload"+fileUrl);
-//					 fos =new FileOutputStream("D:\\apache-tomcat-8.5.83\\webapps\\XDM\\common\\"+newFileName);
-					 fos =new FileOutputStream("D:\\apache-tomcat-7.0.82\\webapps\\XDM\\common\\"+newFileName);
+					 fos =new FileOutputStream("D:\\apache-tomcat-8.5.83\\webapps\\XDM\\common\\"+newFileName);
+					 //fos =new FileOutputStream("D:\\apache-tomcat-7.0.82\\webapps\\XDM\\common\\"+newFileName);
 					int len=0;
 					byte[] bytes=new byte[1024];
 						while ((len=fis.read(bytes))!=-1){
@@ -1353,7 +1353,7 @@ public class XdEmployeeController extends BaseController {
 			records.setEffictDate(workEffectDate);
 			records.setEid(id);
 			records.setFieldType(2);
-			records.setOldValue(employee.getWorkstation());
+			records.setOldValue(employee.getWorkstation()==null?"":employee.getWorkstation());
 			records.setNewValue(o.getWorkstation());
 			records.setRemarks(workRemarks);
 			records.setCtime(DateUtil.getCurrentTime());
@@ -1385,16 +1385,19 @@ public class XdEmployeeController extends BaseController {
 
 			XdRecords records=new XdRecords();
 			records.setEid(id);
-			records.setEffictDate(workEffectDate);
+			records.setEffictDate(salaryEffectDate);
 			records.setFieldType(1);
 			records.setOldValue(String.valueOf(employee.getSalary()));
 			records.setNewValue(String.valueOf(o.getSalary()));
+			records.setOldsallevel(employee.getSalaryLevel()==null?"":employee.getSalaryLevel());
+			records.setNewsallevel(o.getSalaryLevel()==null?"":o.getSalaryLevel());
 			records.setRemarks(salaryRemarks);
 			records.setCtime(DateUtil.getCurrentTime());
 			records.setCuser(ShiroKit.getUserId());
 			records.save();
 
 			employee.setSalary(o.getSalary());
+			employee.setSalaryLevel(o.getSalaryLevel());
 			employee.update();
 			xdsalary.save();
 		}

@@ -9,6 +9,8 @@ import com.pointlion.mvc.admin.xdm.xdempcert.XdEmpCertController;
 import com.pointlion.mvc.admin.xdm.xdemployee.XdEmployeeController;
 import com.pointlion.mvc.admin.xdm.xdprojects.XdProjectsController;
 import com.pointlion.mvc.admin.xdm.xdrecords.XdRecordsController;
+import com.pointlion.mvc.admin.xdm.xdschedule.XdScheduleController;
+import com.pointlion.mvc.admin.xdm.xdschedulesummary.XdScheduleSummaryController;
 import com.pointlion.mvc.admin.xdm.xdschoolinfo.XdSchoolinfoController;
 import com.pointlion.mvc.admin.xdm.xdshift.XdShiftController;
 import com.pointlion.mvc.admin.xdm.xdsteps.XdStepsController;
@@ -37,6 +39,8 @@ public class XDRoutes extends Routes {
         add("/admin/xd/xdempcert", XdEmpCertController.class,"/xdempcert");
         add("/admin/xd/xdprojects", XdProjectsController.class,"/xdprojects");
         add("/admin/xd/records", XdRecordsController.class,"/records");
+        add("/admin/xd/xdschedule", XdScheduleController.class,"/xdschedule");
+        add("/admin/xd/schedulesummary", XdScheduleSummaryController.class,"/schedulesummary");
 
 
     }
