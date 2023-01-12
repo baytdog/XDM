@@ -1,3 +1,10 @@
+<style>
+	.webuploader-pick{
+		padding: 0px 15px;
+		height: 33px;
+		line-height: 33px;
+	}
+</style>
 <div id="page-content">
 	<div class="col-sm-12 eq-box-sm">
 		<div class="panel">
@@ -5,17 +12,26 @@
 				<div class="panel-body">
 					<div class="form-inline">
 						<div class="form-group">
-							<input id="applyUser" placeholder="制单人" class="form-control">
+							<input id="name" placeholder="姓名" class="form-control">
+						</div>
+						<div class="form-group">
+							<input id="serviceUnit" placeholder="服务单位" class="form-control">
+						</div>
+						<div class="form-group">
+							<input id="job" placeholder="职位" class="form-control">
+						</div>
+						<div class="form-group">
+							<input id="addr" placeholder="地点" class="form-control">
 						</div>
 						<div class="form-group">
 							<div class="input-group date form_datetime">
-								<input id="searchStartTime" placeholder="开始时间" class="form-control">
+								<input id="entryDate" placeholder="入职时间" class="form-control">
 								<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
 							</div>
 						</div>
 						<div class="form-group">
 							<div class="input-group date form_datetime">
-								<input id="searchEndTime" placeholder="结束时间" class="form-control">
+								<input id="departDate" placeholder="离职时间" class="form-control">
 								<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
 							</div>
 						</div>
@@ -27,9 +43,10 @@
 			</div>
 			<div class="panel ">
 				<div class="panel-body">
-					<a id="add" class="btn btn-primary data-toolbar" href="#(ctx)/admin/xdschedule/getEditPage?view=edit"><i class="demo-pli-add"></i> 添加</a>
+					<a id="add" class="btn btn-primary data-toolbar" href="#(ctx)/admin/xd/xdschedule/getEditPage?view=edit"><i class="demo-pli-add"></i> 添加</a>
 					<a id="del" class="btn btn-danger data-toolbar" onclick="delSel()" href="javascript:void(0);"><i class="demo-pli-cross"></i> 批量删除</a>
 					<table id="pageTable" class="demo-add-niftycheck" data-toolbar="#del,#add"
+
 						   data-search="true"
 						   data-show-refresh="true"
 						   data-show-toggle="true"
@@ -45,18 +62,31 @@
 </div>
 <script>
 
-	var col = [{field: 'checked', checkbox : true, align: 'center'},
-
-		{field: '', title: '', align: 'center'},
-
-
+	var col = [
+		{field: 'checked', checkbox : true, align: 'center'},
+		{field: 'dept_name', title: '部门', align: 'center'},
+		{field: 'shedule_year_month', title: '年月', align: 'center'},
+		{field: 'status', title: '状态', align: 'center',
+			formatter:function(value,row,index){
+				if(value=="0"){
+					return '待部门领导审批';
+				}else if(value=="1"){
+					return '部门领导审批通过'
+				}else if(value=="2"){
+					return '完成';
+				}else if(value=="3"){
+					return '部门领导审批不通过';
+				}else if(value=="4"){
+					return '人事部审批不通过';
+				}
+			}},
 		{field: 'control', title: '操作', align: 'left', width:'200',
 			formatter:function(value,row,index){
 				//通过formatter可以自定义列显示的内容
 				//value：当前field的值，即id
 				//row：当前行的数据
-				var a = '<a class="label label-table label-success" href="'+ctx+'/admin/xdschedule/getEditPage?id='+row.id+'&view=detail" >查看</a>&nbsp;';
-				a = a + '<a class="label label-table label-success" href="'+ctx+'/admin/xdschedule/getEditPage?id='+row.id+'&view=edit" >编辑</a>&nbsp;';
+				var a = '<a class="label label-table label-success" href="'+ctx+'/admin/xd/xdschedule/getEditPage?id='+row.id+'&view=detail" >查看</a>&nbsp;';
+				a = a + '<a class="label label-table label-success" href="'+ctx+'/admin/xd/xdschedule/getEditPage?id='+row.id+'&view=edit" >编辑</a>&nbsp;';
 				a = a + '<a class="label label-table label-danger" onclick="del(\''+row.id+'\')" href="javascript:void(0);" >删除</a>';
 				return a;
 			}
@@ -83,7 +113,7 @@
 		//可供选择的每页的行数（*）
 		pageList: [10, 25, 50, 100],
 		//这个接口需要处理bootstrap table传递的固定参数,并返回特定格式的json数据
-		url: ctx+"/admin/xdschedule/listData",
+		url: ctx+"/admin/xd/xdschedule/listData",
 		//默认值为 'limit',传给服务端的参数为：limit, offset, search, sort, order Else
 		//queryParamsType:'',
 		////查询参数,每次调用是会带上这个参数，可自定义
@@ -131,64 +161,67 @@
 	function del(ids){
 		pointLion.confimMsg("您是否要删除所选信息 ?<br/> 点击确认进行删除 , 点击取消取消该操作",null,function(){
 			//执行删除
-			var data = common_ajax.ajaxFunc("/admin/xdschedule/delete",{"ids":ids}, "json", null);
+			var data = common_ajax.ajaxFunc("/admin/xd/xdschedule/delete",{"ids":ids}, "json", null);
 			//删除结果
 			if(data.success){
 				pointLion.alertMsg(data.message,"success",null,function(){
-					location.href = ctx+'/admin/xdschedule/getListPage';//跳转到列表页
+					location.href = ctx+'/admin/xd/xdschedule/getListPage';//跳转到列表页
 				});
 			}else{
 				pointLion.alertMsg(data.message,"success",null,null);
 			}
 		});
 	};
-	//提交，启动流程
-	function startProcess(id){
-		pointLion.confimMsg("您将要提交该单据！并且启动流程<br/><span style='color:green;'>您将无法进行修改和删除！！！</span> <br/>点击确认进行提交 , 点击取消取消该操作",null,function(){
-			var data = common_ajax.ajaxFunc("/admin/xdschedule/startProcess",{"id":id}, "json", null);
-			if(data.success){
-				pointLion.alertMsg(data.message,"success",null,function(){
-					location.href = ctx+'/admin/xdschedule/getListPage';//跳转到列表页
-				});
-			}else{
-				pointLion.alertMsg(data.message,"danger",null,null);
-			}
-		});
-	}
-	//撤回
-	function callBack(id){
-		pointLion.confimMsg("您将要撤回该单据流程！<br/><span style='color:red;'>该操作将取回单据，您将可以对单据进行修改，并可将单据重新送交审批。</span> <br/>点击确认进行撤回单据 , 点击取消取消该操作",null,function(){
-			//执行删除
-			var data = common_ajax.ajaxFunc("/admin/xdschedule/callBack",{"id":id}, "json", null);
-			//删除结果
-			if(data.success){
-				pointLion.alertMsg(data.message,"success",null,function(){
-					location.href = ctx+'/admin/xdschedule/getListPage';//跳转到列表页
-				});
-			}else{
-				pointLion.alertMsg(data.message,"danger",null,null);
-			}
-		});
-	}
 
 	//查询
 	function searchTable(){
-		var startTime = $("#searchStartTime").val();
-		var endTime = $("#searchEndTime").val();
-		var applyUser = $("#applyUser").val();
+
+		var name = encodeURIComponent($("#name").val());
+		var serviceUnit = encodeURIComponent($("#serviceUnit").val());
+		var job = encodeURIComponent($("#job").val());
+		var addr = encodeURIComponent($("#addr").val());
+		var entryDate = $("#entryDate").val();
+		var departDate = $("#departDate").val();
 		var param = {
 			query: {
-				"startTime":startTime,
-				"endTime":endTime,
-				"applyUser":applyUser
+				"name":name,
+				"serviceUnit":serviceUnit,
+				"job":job,
+				"addr":addr,
+				"entryDate":entryDate,
+				"departDate":departDate
 			}
 		}
 		// 刷新表格
 		$('#pageTable').bootstrapTable('refresh',param);
 	}
 
+
+	/***
+	 * 导出
+	 */
+	function exportExcel(){
+
+		var name = encodeURIComponent($("#name").val());
+		var serviceUnit = encodeURIComponent($("#serviceUnit").val());
+		var job = encodeURIComponent($("#job").val());
+		var addr = encodeURIComponent($("#addr").val());
+		var entryDate = $("#entryDate").val();
+		var departDate = $("#departDate").val();
+		location.href = "#(ctx)/admin/xd/xdschedule/exportExcel?name="+name+"&serviceUnit="+serviceUnit+"&job="+job+"&addr="+addr+"&entryDate="+entryDate+"&departDate="+departDate;
+	}
+
 	$(document).ready(function(){
 		$('.form_datetime').datepicker({format: 'yyyy-mm-dd',weekStart: 1,todayBtn:  1,autoclose: 1,language:  'zh-CN',todayHighlight: 1,forceParse: 0,clearBtn: true }).on('changeDate',null);
 		initTable();//初始化
+
+		pointLion.initUploader("/admin/xd/xdschedule/importExcel",function(data){
+			if(data.success){
+				pointLion.alertMsg("导入成功！","success",null,null);
+				searchTable();
+			}else{
+				pointLion.alertMsg(data.message,"danger",null,null);
+			}
+		});
 	});
 </script>

@@ -136,9 +136,22 @@ public class HomeController extends BaseController {
 				LocalDate now = LocalDate.now();
 				return now.isAfter(bsRetireDate);
 			});
-
-
 			setAttr("certExpiredSize",xdEmpCertStream.count());
+
+			//排班
+			String userId = ShiroKit.getUserId();
+			SysUser sysUser = SysUser.dao.findById(userId);
+			String scheduleSql="";
+			if(sysUser.getUnitValue()!=null && sysUser.getUnitValue().equals("22")){
+				scheduleSql = " select * from   xd_steps s where  s.orgid ='"+ShiroKit.getUserOrgId()+"' and  s.finished='N'";
+			}else{
+				scheduleSql = " select * from   xd_steps s where  s.userid ='"+ShiroKit.getUserId()+"' and  s.finished='N'";
+			}
+
+
+			int scheduleSize = Db.find(scheduleSql).size();
+			setAttr("scheduleSize",scheduleSize);
+
 
 			renderIframe("/common/include/content.html");
 		}

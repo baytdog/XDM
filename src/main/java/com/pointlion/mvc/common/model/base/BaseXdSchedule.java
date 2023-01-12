@@ -57,6 +57,30 @@ public abstract class BaseXdSchedule<M extends BaseXdSchedule<M>> extends Model<
 		return getStr("shedule_year_month");
 	}
 
+	public void setApproverId(String approverId) {
+		set("approver_id", approverId);
+	}
+	
+	public String getApproverId() {
+		return getStr("approver_id");
+	}
+
+	public void setApproverName(String approverName) {
+		set("approver_name", approverName);
+	}
+	
+	public String getApproverName() {
+		return getStr("approver_name");
+	}
+
+	public void setRemarks(String remarks) {
+		set("remarks", remarks);
+	}
+	
+	public String getRemarks() {
+		return getStr("remarks");
+	}
+
 	public void setStatus(String status) {
 		set("status", status);
 	}

@@ -4,7 +4,6 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <link href="#(ctx)/common/css/content.css" rel="stylesheet" type="text/css" />
 <script type="text/javascript" src="#(ctx)/common/js/jquery-2.2.4.min.js"></script>
-<!-- <script type="text/javascript" src="https://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script> -->
 <script type="text/javascript" src="#(ctx)/common/js/hdm01.js"></script>
 <script type="text/javascript" src="#(ctx)/common/js/hdm02.js"></script>
 <title>欣迪首页内容部分</title>
@@ -25,7 +24,7 @@
 	<div class="con_bg1 f_l" onclick="contractExpired()"><p>合同到期<span>#(contractEndSize)</span>人</p></div>
 	<div class="con_bg2 f_l" onclick="tryExpired()" ><p>试用到期<span>#(tryEmpEndSize)</span>人</p></div>
 	<div class="con_bg3 f_l" onclick="employee()"><p>员工<span>#(empSize)</span>份</p></div>
-	<div class="con_bg4 f_l" onclick=""><p>排班</p></div>
+	<div class="con_bg4 f_l" onclick="scheduleList()"><p>排班<span>#(scheduleSize)</span>份</p></div>
 <!--
 	<div class="con_bg3 f_l" onclick="hotline()"><p>加班申请<span>#(hotSize)</span>份</p></div>
 	<div class="con_bg4 f_l" onclick="letter()"><p>加班结算<span>#(letterSize)</span>份</p></div>
@@ -75,6 +74,10 @@
 
 	function certExpiredTip(){
 		window.location.href="#(ctx)/admin/xd/xdempcert/getWarningCertList";
+	}
+	//排班
+	function scheduleList(){
+		window.location.href="#(ctx)/admin/xd/xdschedule/getHomeScheduleListPage";
 	}
  	//信访
  	function  letter(){
