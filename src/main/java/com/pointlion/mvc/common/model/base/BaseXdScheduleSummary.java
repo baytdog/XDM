@@ -9,12 +9,12 @@ import com.jfinal.plugin.activerecord.IBean;
 @SuppressWarnings("serial")
 public abstract class BaseXdScheduleSummary<M extends BaseXdScheduleSummary<M>> extends Model<M> implements IBean {
 
-	public void setId(Long id) {
+	public void setId(String id) {
 		set("id", id);
 	}
 	
-	public Long getId() {
-		return getLong("id");
+	public String getId() {
+		return getStr("id");
 	}
 
 	public void setDeptValue(String deptValue) {
@@ -47,6 +47,22 @@ public abstract class BaseXdScheduleSummary<M extends BaseXdScheduleSummary<M>> 
 	
 	public String getUnitName() {
 		return getStr("unit_name");
+	}
+
+	public void setProjectValue(String projectValue) {
+		set("project_value", projectValue);
+	}
+	
+	public String getProjectValue() {
+		return getStr("project_value");
+	}
+
+	public void setProjectName(String projectName) {
+		set("project_name", projectName);
+	}
+	
+	public String getProjectName() {
+		return getStr("project_name");
 	}
 
 	public void setEmpNum(String empNum) {

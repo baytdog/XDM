@@ -17,12 +17,12 @@ public abstract class BaseXdScheduleDetail<M extends BaseXdScheduleDetail<M>> ex
 		return getLong("id");
 	}
 
-	public void setScheduleId(Long scheduleId) {
+	public void setScheduleId(String scheduleId) {
 		set("schedule_id", scheduleId);
 	}
 	
-	public Long getScheduleId() {
-		return getLong("schedule_id");
+	public String getScheduleId() {
+		return getStr("schedule_id");
 	}
 
 	public void setShiftName(String shiftName) {

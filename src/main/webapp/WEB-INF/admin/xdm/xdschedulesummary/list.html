@@ -1,110 +1,201 @@
-                <div id="page-content">
-			        <div class="col-sm-12 eq-box-sm">
-						<div class="panel">
-							<div class="panel panel-search">
-								<div class="panel-body">
-									<div class="form-inline">
-										<div class="form-group">
-											<input id="applyUser" placeholder="制单人" class="form-control">
-										</div>
-										<div class="form-group">
-											<div class="input-group date form_datetime">
-												<input id="searchStartTime" placeholder="开始时间" class="form-control">
-												<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
-											</div>
-										</div>
-										<div class="form-group">
-											<div class="input-group date form_datetime">
-												<input id="searchEndTime" placeholder="结束时间" class="form-control">
-												<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
-											</div>
-										</div>
-										<div class="form-group">
-											<button class="btn btn-primary" type="button" onclick="searchTable()">搜索</button>
-										</div>
-									</div>
-								</div>
+<style>
+	.webuploader-pick{
+		padding: 0px 15px;
+		height: 33px;
+		line-height: 33px;
+	}
+</style>
+<div id="page-content">
+	<div class="col-sm-12 eq-box-sm">
+		<div class="panel">
+			<div class="panel panel-search">
+				<div class="panel-body">
+					<div class="form-inline">
+
+						<div class="form-group">
+							<select class="selectpicker form-control"  id="dept"  >
+								<option value="">------请选择部门------</option>
+								<option value="1">人力资源部</option>
+								<option value="2">外场单元部</option>
+								<option value="3">设施一部</option>
+								<option value="4">内场单元部</option>
+								<option value="5">工程/设施二部</option>
+								<option value="887163179b6c4eaabd06c44e47e41f92">职能部门</option>
+							</select>
+						</div>
+						<div class="form-group">
+							<input id="name" placeholder="姓名" class="form-control">
+						</div>
+						<div class="form-group">
+							<input id="certTitle" placeholder="证书名称" class="form-control">
+						</div>
+						<div class="form-group">
+							<input id="certAuth" placeholder="发证机关" class="form-control">
+						</div>
+
+						<div class="form-group">
+							<select class="selectpicker form-control"  id="sny"  data-live-search="true">
+								<option value="">------请选择到期日期------</option>
+								#for(sny:snyList)
+								<option value="#(sny.sny)">#(sny.sny)</option>
+								#end
+							</select>
+						</div>
+
+						<div class="form-group">
+							<div class="input-group date form_datetime">
+								<input id="ctime" placeholder="新增日期" class="form-control">
+								<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
 							</div>
-							<div class="panel ">
-								<div class="panel-body">
-									<a id="add" class="btn btn-primary data-toolbar" href="#(ctx)/admin/xdschedulesummary/getEditPage?view=edit"><i class="demo-pli-add"></i> 添加</a>
-									<a id="del" class="btn btn-danger data-toolbar" onclick="delSel()" href="javascript:void(0);"><i class="demo-pli-cross"></i> 批量删除</a>
-									<table id="pageTable" class="demo-add-niftycheck" data-toolbar="#del,#add"
-										   data-search="true"
-										   data-show-refresh="true"
-										   data-show-toggle="true"
-										   data-show-columns="true"
-										   data-sort-name="id"
-										   data-page-list="[5, 10, 20]"
-										   data-page-size="5"
-										   data-pagination="true" data-show-pagination-switch="true" ></table>
-								</div>
-							</div>
-			        	</div>
-                	</div>
+						</div>
+						<div class="form-group">
+							<button class="btn btn-primary" type="button" onclick="searchTable()">搜索</button>
+						</div>
+					</div>
 				</div>
+			</div>
+			<div class="panel ">
+				<div class="panel-body">
+					<a id="add" class="btn btn-primary data-toolbar" href="#(ctx)/admin/xd/xdschedulesummary/getEditPage?view=edit"><i class="demo-pli-add"></i> 添加</a>
+					<a id="del" class="btn btn-danger data-toolbar" onclick="delSel()" href="javascript:void(0);"><i class="demo-pli-cross"></i> 批量删除</a>
+					<a id="filePicker"  href="javascript:void(0);" ><i class="demo-pli-add"></i> 导入</a>
+
+					<table id="pageTable" class="demo-add-niftycheck table table-bordered" data-toolbar="#del,#add,#filePicker,#export,#export2"
+						   data-search="true"
+						   data-show-refresh="true"
+						   data-show-toggle="true"
+						   data-show-columns="true"
+						   data-sort-name="id"
+						   data-page-list="[5, 10, 20]"
+						   data-page-size="5"
+						   data-pagination="true" data-show-pagination-switch="true" ></table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
 <script>
-	
+
 	var col = [{field: 'checked', checkbox : true, align: 'center'},
-	   
-		   {field: '', title: '', align: 'center'},
-	   
-	   
-	   {field: 'control', title: '操作', align: 'left', width:'200',
-	       formatter:function(value,row,index){
-	           	//通过formatter可以自定义列显示的内容
-	           	//value：当前field的值，即id
-	           	//row：当前行的数据
-	           	var a = '<a class="label label-table label-success" href="'+ctx+'/admin/xdschedulesummary/getEditPage?id='+row.id+'&view=detail" >查看</a>&nbsp;';
-	           	a = a + '<a class="label label-table label-success" href="'+ctx+'/admin/xdschedulesummary/getEditPage?id='+row.id+'&view=edit" >编辑</a>&nbsp;';
+
+		{field: 'dept_name', title: '部门', align: 'center',
+			/*formatter:function(value,row,index){
+				if(value=='1'){
+					return "人力资源部";
+				}else if(value=='2'){
+					return "外场单元部";
+				}else if(value=='3'){
+					return "设施一部";
+				}else if(value=='4'){
+					return "内场单元部";
+				}else if(value=='5'){
+					return "工程/设施二部";
+				}else if(value=='887163179b6c4eaabd06c44e47e41f92'){
+					return "职能部门";
+				}else{
+					return "";
+				}
+			}*/
+		},
+		{field: 'unit_name', title: '单元', align: 'center'},
+		{field: 'project_name', title: '项目', align: 'center'},
+		{field: 'emp_num', title: '工号', align: 'center'},
+		{field: 'emp_name', title: '姓名', align: 'center'},
+		{field: 'work_station', title: '岗位', align: 'center'},
+		/*{field: 'certLevel', title: '证书等级', align: 'center',
+			formatter:function(value,row,index){
+				if(value=='1'){
+					return "A1";
+				}else if(value=='2'){
+					return "A2";
+				}else if(value=='3'){
+					return "B1";
+				}else if(value=='4'){
+					return "B2";
+				}else if(value=='5'){
+					return "D";
+				}else if(value=='6'){
+					return "E";
+				}else if(value=='6'){
+					return "F";
+				}else{
+					return "";
+				}
+			}
+		},
+		{field: 'certAuthName', title: '发证机关', align: 'center'},
+		{field: 'openDate', title: '发证日期', align: 'center'},
+		{field: 'validity', title: '有效期/年', align: 'center'},
+		{field: 'closeDate', title: '到期日', align: 'center'},
+		{field: 'idnum', title: '身份证号', align: 'center'},
+		{field: 'certnum', title: '证书编号', align: 'center'},
+		{field: 'remak', title: '备注', align: 'center'},
+		{field: 'certstatus', title: '证件说明', align: 'center',
+			formatter:function(value,row,index){
+				if(value=='1'){
+					return "原件";
+				}else if(value=='0'){
+					return "复印件";
+				}else{
+					return "";
+				}
+			}
+		},*/
+		{field: 'control', title: '操作', align: 'left', width:'200',
+			formatter:function(value,row,index){
+				//通过formatter可以自定义列显示的内容
+				//value：当前field的值，即id
+				//row：当前行的数据
+				var a = '<a class="label label-table label-success" href="'+ctx+'/admin/xd/xdschedulesummary/getEditPage?id='+row.id+'&view=detail" >查看</a>&nbsp;';
+				a = a + '<a class="label label-table label-success" href="'+ctx+'/admin/xd/xdschedulesummary/getEditPage?id='+row.id+'&view=edit" >编辑</a>&nbsp;';
 				a = a + '<a class="label label-table label-danger" onclick="del(\''+row.id+'\')" href="javascript:void(0);" >删除</a>';
-	           	return a;
-	       }
-	   }];
+				return a;
+			}
+		}];
 	var opt = {
-		    //请求方法
-			   method: 'get',
-			    //是否显示行间隔色
-			   striped: true,
-			   //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）     
-			   cache: false,  
-			   //data-toolbar: "#demo-delete-row",
-			   //是否显示分页（*）  
-			   pagination: true,   
-			    //是否启用排序  
-			   sortable: false,    
-			    //排序方式 
-			   sortOrder: "asc",    
-			   //初始化加载第一页，默认第一页
-			   //我设置了这一项，但是貌似没起作用，而且我这默认是0,- -
-			   //pageNumber:1,   
-			   //每页的记录行数（*）   
-			   pageSize: 10,  
-			   //可供选择的每页的行数（*）    
-			   pageList: [10, 25, 50, 100],
-			   //这个接口需要处理bootstrap table传递的固定参数,并返回特定格式的json数据  
-			   url: ctx+"/admin/xdschedulesummary/listData",
-			   //默认值为 'limit',传给服务端的参数为：limit, offset, search, sort, order Else
-			   //queryParamsType:'',   
-			   ////查询参数,每次调用是会带上这个参数，可自定义                         
-			   queryParams : function(params) {
-			       return {
-			             pageNumber: (params.offset/params.limit)+1,
-			             pageSize: params.limit
-			           };
-			   },
-			   //分页方式：client客户端分页，server服务端分页（*）
-			   sidePagination: "server",
-			   //是否显示搜索
-			   search: false,  
-			   //Enable the strict search.    
-			   strictSearch: true,
-			   //Indicate which field is an identity field.
-			   idField : "id",
-			   columns: col,
-			   pagination:true,paginationShowPageGo: true
-			}; 
-		
+		//请求方法
+		method: 'get',
+		//是否显示行间隔色
+		striped: true,
+		//是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+		cache: false,
+		//data-toolbar: "#demo-delete-row",
+		//是否显示分页（*）
+		pagination: true,
+		//是否启用排序
+		sortable: false,
+		//排序方式
+		sortOrder: "asc",
+		//初始化加载第一页，默认第一页
+		//我设置了这一项，但是貌似没起作用，而且我这默认是0,- -
+		//pageNumber:1,
+		//每页的记录行数（*）
+		pageSize: 10,
+		//可供选择的每页的行数（*）
+		pageList: [10, 25, 50, 100],
+		//这个接口需要处理bootstrap table传递的固定参数,并返回特定格式的json数据
+		url: ctx+"/admin/xd/xdschedulesummary/listData",
+		//默认值为 'limit',传给服务端的参数为：limit, offset, search, sort, order Else
+		//queryParamsType:'',
+		////查询参数,每次调用是会带上这个参数，可自定义
+		queryParams : function(params) {
+			return {
+				pageNumber: (params.offset/params.limit)+1,
+				pageSize: params.limit
+			};
+		},
+		//分页方式：client客户端分页，server服务端分页（*）
+		sidePagination: "server",
+		//是否显示搜索
+		search: false,
+		//Enable the strict search.
+		strictSearch: true,
+		//Indicate which field is an identity field.
+		idField : "id",
+		columns: col,
+		pagination:true,paginationShowPageGo: true
+	};
+
 	//表格
 	function initTable(){
 		$('#pageTable').bootstrapTable(opt);
@@ -114,7 +205,7 @@
 		$("#pageTable").bootstrapTable('refresh', opt);
 		$('#pageTable').bootstrapTable('hideColumn', 'id');
 	}
-	
+
 	//批量删除
 	function delSel(){
 		var data = [];
@@ -131,56 +222,34 @@
 	function del(ids){
 		pointLion.confimMsg("您是否要删除所选信息 ?<br/> 点击确认进行删除 , 点击取消取消该操作",null,function(){
 			//执行删除
-			var data = common_ajax.ajaxFunc("/admin/xdschedulesummary/delete",{"ids":ids}, "json", null);
+			var data = common_ajax.ajaxFunc("/admin/xd/xdschedulesummary/delete",{"ids":ids}, "json", null);
 			//删除结果
 			if(data.success){
 				pointLion.alertMsg(data.message,"success",null,function(){
-					location.href = ctx+'/admin/xdschedulesummary/getListPage';//跳转到列表页
+					location.href = ctx+'/admin/xd/xdschedulesummary/getListPage';//跳转到列表页
 				});
 			}else{
 				pointLion.alertMsg(data.message,"success",null,null);
 			}
 		});
 	};
-	//提交，启动流程
-	function startProcess(id){
-			pointLion.confimMsg("您将要提交该单据！并且启动流程<br/><span style='color:green;'>您将无法进行修改和删除！！！</span> <br/>点击确认进行提交 , 点击取消取消该操作",null,function(){
-				var data = common_ajax.ajaxFunc("/admin/xdschedulesummary/startProcess",{"id":id}, "json", null);
-				if(data.success){
-					pointLion.alertMsg(data.message,"success",null,function(){
-						location.href = ctx+'/admin/xdschedulesummary/getListPage';//跳转到列表页
-					});
-				}else{
-					pointLion.alertMsg(data.message,"danger",null,null);
-				}
-			});
-	}
-	//撤回
-	function callBack(id){
-		pointLion.confimMsg("您将要撤回该单据流程！<br/><span style='color:red;'>该操作将取回单据，您将可以对单据进行修改，并可将单据重新送交审批。</span> <br/>点击确认进行撤回单据 , 点击取消取消该操作",null,function(){
-			//执行删除
-			var data = common_ajax.ajaxFunc("/admin/xdschedulesummary/callBack",{"id":id}, "json", null);
-			//删除结果
-			if(data.success){
-				pointLion.alertMsg(data.message,"success",null,function(){
-					location.href = ctx+'/admin/xdschedulesummary/getListPage';//跳转到列表页
-				});
-			}else{
-				pointLion.alertMsg(data.message,"danger",null,null);
-			}
-		});
-	}
 
 	//查询
 	function searchTable(){
-		var startTime = $("#searchStartTime").val();
-		var endTime = $("#searchEndTime").val();
-		var applyUser = $("#applyUser").val();
+		let dept = $("#dept").val();
+		let name =encodeURIComponent($("#name").val());
+		let certTitle =encodeURIComponent($("#certTitle").val());
+		let certAuth =encodeURIComponent($("#certAuth").val());
+		let sny = encodeURIComponent($("#sny").val());
+		let ctime = encodeURIComponent($("#ctime").val());
 		var param = {
 			query: {
-				"startTime":startTime,
-				"endTime":endTime,
-				"applyUser":applyUser
+				"dept":dept,
+				"name":name,
+				"certTitle":certTitle,
+				"certAuth":certAuth,
+				"sny":sny,
+				"ctime":ctime
 			}
 		}
 		// 刷新表格
@@ -190,5 +259,32 @@
 	$(document).ready(function(){
 		$('.form_datetime').datepicker({format: 'yyyy-mm-dd',weekStart: 1,todayBtn:  1,autoclose: 1,language:  'zh-CN',todayHighlight: 1,forceParse: 0,clearBtn: true }).on('changeDate',null);
 		initTable();//初始化
+
+		pointLion.initUploader("/admin/xd/xdschedulesummary/importExcel",function(data){
+			if(data.success){
+				pointLion.alertMsg("导入成功！","success",null,null);
+				searchTable();
+			}else{
+				pointLion.alertMsg(data.message,"danger",null,null);
+			}
+		});
 	});
+
+
+	function exportExcel(){
+
+		var name = encodeURIComponent($("#name").val());
+		var trainOrgname = encodeURIComponent($("#trainOrgname").val());
+		var major = encodeURIComponent($("#major").val());
+		var edubg = encodeURIComponent($("#edubg").val());
+		var enrolldate = $("#enrolldate").val();
+		var graduatdate = $("#graduatdate").val();
+		location.href = "#(ctx)/admin/xd/xdschedulesummary/exportExcel?name="+name+"&trainOrgname="+trainOrgname+"&major="+major+"&edubg="+edubg+"&enrolldate="+enrolldate+"&graduatdate="+graduatdate;
+	}
+	function exportExcel2(){
+
+		var certTitle = $("#certTitle").val();
+		location.href = "#(ctx)/admin/xd/xdschedulesummary/exportExcel2?certTitle="+certTitle;
+	}
+
 </script>

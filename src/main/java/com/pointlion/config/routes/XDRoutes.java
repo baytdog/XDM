@@ -40,7 +40,7 @@ public class XDRoutes extends Routes {
         add("/admin/xd/xdprojects", XdProjectsController.class,"/xdprojects");
         add("/admin/xd/records", XdRecordsController.class,"/records");
         add("/admin/xd/xdschedule", XdScheduleController.class,"/xdschedule");
-        add("/admin/xd/schedulesummary", XdScheduleSummaryController.class,"/schedulesummary");
+        add("/admin/xd/xdschedulesummary", XdScheduleSummaryController.class,"/xdschedulesummary");
 
 
     }
