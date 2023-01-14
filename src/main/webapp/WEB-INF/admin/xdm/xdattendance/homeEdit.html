@@ -1,17 +1,16 @@
-<link href="#(ctx)/common/plugins/jquery-ui/scripts/miniui/themes/default/miniui.css" rel="stylesheet"/>
 <div id="page-content">
     <div class="col-lg-12">
         <div class="panel">
-            #@buildFormPanelContainer("下月排班","/WEB-INF/admin/xdm/xdschedulesummary/editForm.html")
+            #@buildFormPanelContainer("下月排班审批","/WEB-INF/admin/xdm/xdschedule/homeEidtForm.html")
         </div>
     </div>
 </div>
 <script>
     function save(){
-        var data = common_ajax.ajaxFunc("/admin/xd/xdschedule/save", $('#editForm').serialize(), "json", null);
+        var data = common_ajax.ajaxFunc("/admin/xd/xdattendance/save", $('#editForm').serialize(), "json", null);
         if(data.success){
             pointLion.alertMsg("保存成功!" , "success" , "small" , function(){
-                location.href = ctx+'/admin/xd/xdschedule/getListPage';//跳转到列表页
+                location.href = ctx+'/admin/xd/xdattendance/getListPage';//跳转到列表页
             },data);
         }else{
             pointLion.alertMsg(data.message , "danger" , "small" , function(){
@@ -19,6 +18,53 @@
             },data);
         }
     }
+    function pass(){
+        var data = common_ajax.ajaxFunc("/admin/xd/xdattendance/apprPass", $('#editForm').serialize(), "json", null);
+        if(data.success){
+            pointLion.alertMsg("操作成功!" , "success" , "small" , function(){
+                location.href = ctx+'/admin/xd/xdattendance/getHomeAttendanceListPage';//跳转到列表页
+            },data);
+        }else{
+            pointLion.alertMsg(data.message , "danger" , "small" , function(){
+                $(".btn").removeAttr("disabled");
+            },data);
+        }
+    }
+    function sendAppr(){
+        var data = common_ajax.ajaxFunc("/admin/xd/xdattendance/sendAppr", $('#editForm').serialize(), "json", null);
+        if(data.success){
+            pointLion.alertMsg("操作成功!" , "success" , "small" , function(){
+                location.href = ctx+'/admin/xd/xdattendance/getHomeAttendanceListPage';//跳转到列表页
+            },data);
+        }else{
+            pointLion.alertMsg(data.message , "danger" , "small" , function(){
+                $(".btn").removeAttr("disabled");
+            },data);
+        }
+    }
+    function noPass(){
+        let suggestions = $("#suggestions").val();
+        if(suggestions){
+        }else{
+            pointLion.alertMsg("不通过请填写意见!" , "danger" , "small" , function(){
+            },data);
+            return  ;
+        }
+
+
+        var data = common_ajax.ajaxFunc("/admin/xd/xdattendance/apprrNoPass", $('#editForm').serialize(), "json", null);
+        if(data.success){
+            pointLion.alertMsg("操作成功!" , "success" , "small" , function(){
+                location.href = ctx+'/admin/xd/xdattendance/getHomeAttendanceListPage';//跳转到列表页
+            },data);
+        }else{
+            pointLion.alertMsg(data.message , "danger" , "small" , function(){
+                $(".btn").removeAttr("disabled");
+            },data);
+        }
+    }
+
+
     $(document).ready(function() {
         $('#editForm').bootstrapValidator({
             excluded:[":disabled"],
@@ -81,11 +127,47 @@
 <script>
 
     $(function () {
-        mini.parse();
-        let id=$("#summaryId").val();
-        let data = common_ajax.ajaxFunc("/admin/xd/xdscheduledeital/getDetailList", {"id":id}, "json", null);
-        var grid1 = mini.get("datagrid1");
-        grid1.setData(data);
+        //部门
+        let dept_value=$("#dept_value").val();
+        if(dept_value){
+            $('#departmentSelect').selectpicker('val',dept_value.split(",")).trigger("change");
+        };
+
+        $('#departmentSelect').on('changed.bs.select', function (e) {
+            $('#dept_value').val($('#departmentSelect').val())
+            $('#dept_name').val($('#departmentSelect option:selected').text())
+
+        });
+        //年份
+        let shedule_year=$("#shedule_year").val();
+        if(shedule_year){
+            $('#yearSelect').selectpicker('val',shedule_year.split(",")).trigger("change");
+        };
+
+        $('#yearSelect').on('changed.bs.select', function (e) {
+            $('#shedule_year').val($('#yearSelect').val())
+        });
+        //月份
+        let shedule_month=$("#shedule_month").val();
+        if(shedule_month){
+            $('#monthSelect').selectpicker('val',shedule_month.split(",")).trigger("change");
+        };
+
+        $('#monthSelect').on('changed.bs.select', function (e) {
+            $('#shedule_month').val($('#monthSelect').val())
+        });
+        //审批人
+        let approver_id=$("#approver_id").val();
+        if(approver_id){
+            $('#approverSelect').selectpicker('val',approver_id.split(",")).trigger("change");
+        };
+
+        $('#approverSelect').on('changed.bs.select', function (e) {
+            $('#approver_id').val($('#approverSelect').val())
+            $('#approver_name').val($('#approverSelect option:selected').text())
+            resetVali();
+
+        });
 
     })
 

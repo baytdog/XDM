@@ -12,6 +12,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class ExcelUtil {
@@ -200,4 +201,66 @@ public class ExcelUtil {
         return new File(path);
     }
 
+
+    public static File scheduletFile(String path,List<List<String>> rows){
+        //通过工具类创建writer
+        ExcelWriter writer = cn.hutool.poi.excel.ExcelUtil.getWriter(path);
+
+        writer.write(rows, true);
+        /*for (int i = 0; i < 7; i++) {
+            writer.merge(0,1,i,i,rows.get(0).get(i),false);
+        }*/
+        int size = rows.get(1).size();
+       // writer.merge(0,1,i,i,rows.get(0).get(i),false);
+        writer.merge(0,0,0,size-1,rows.get(0).get(0),false);
+        for (int i = 0; i <7 ; i++) {
+            writer.merge(1,3,i,i,rows.get(1).get(i),false);
+        }
+        writer.merge(1,3,size-1,size-1,rows.get(1).get(size-1),false);
+        List<String> secondRow = rows.get(1);
+      /*  int secondColumnSize = (secondRow.size()-7) / 4;
+        for (int i = 0; i < secondColumnSize; i++) {
+            writer.merge(0,0,i*4+7,(i+1)*4+6,rows.get(0).get(i+7),false);
+        }*/
+
+        //关闭writer，释放内存
+        writer.close();
+        return new File(path);
+    }
+
+    public static File attendanceFile(String path,List<List<String>> rows,int dayNum){
+        //通过工具类创建writer
+        ExcelWriter writer = cn.hutool.poi.excel.ExcelUtil.getWriter(path);
+
+        writer.write(rows, true);
+        /*for (int i = 0; i < 7; i++) {
+            writer.merge(0,1,i,i,rows.get(0).get(i),false);
+        }*/
+        int size = rows.get(1).size();
+        // writer.merge(0,1,i,i,rows.get(0).get(i),false);
+        writer.merge(0,0,0,size-1,rows.get(0).get(0),false);
+        for (int i = 0; i <7 ; i++) {
+            writer.merge(1,3,i,i,rows.get(1).get(i),false);
+        }
+//        writer.merge(1,3,size-1,size-1,rows.get(1).get(size-1),false);
+        List<String> secondRow = rows.get(1);
+
+      int merColStart=7+dayNum*3;
+        for (int i = merColStart; i <merColStart+10 ; i++) {
+            writer.merge(1,3,i,i,rows.get(1).get(i),false);
+        }
+        for (int i = merColStart+10; i <merColStart+13 ; i++) {
+            writer.merge(1,2,i,i,rows.get(1).get(i),false);
+        }
+        for (int i = merColStart+13; i <merColStart+56 ; i++) {
+            System.out.println(rows.get(1).get(i));
+            writer.merge(1,3,i,i,rows.get(1).get(i),false);
+        }
+
+        //writer.merge(1,3,size-1,size-1,rows.get(1).get(size-1),false);
+
+        //关闭writer，释放内存
+        writer.close();
+        return new File(path);
+    }
 }

@@ -1,41 +1,74 @@
 <form id="editForm" class="panel-body form-horizontal form-padding">
-	<input type="hidden"  name="#(formModelName).id" class="form-control" value="#(o?o.id:'')">
+	<input id="summaryId" type="hidden"  name="#(formModelName).id" class="form-control" value="#(o?o.id:'')">
 	<div class="form-group">
-		<label class="col-md-2 control-label">申请人</label>
-		<div class="col-md-4">
-			<input type="hidden"  name="#(formModelName).userid" class="form-control"  value="#(o?o.user_id:'')">
-			<input type="text"  name="#(formModelName).applyer_name" class="form-control"  value="#(o?o.applyer_name:'')" readonly>
-		</div>
 		<label class="col-md-1 control-label">部门</label>
-		<div class="col-md-4">
-			<input type="hidden"  name="#(formModelName).org_id" class="form-control"  value="#(o?o.org_id:'')">
-			<input type="text"  name="#(formModelName).org_name" class="form-control"  value="#(o?o.org_name:'')" readonly>
+		<div class="col-md-5">
+			<input type="text"  name="#(formModelName).name" class="form-control"  value="#(o?o.dept_name:'')"  >
+		</div>
+		<label class="col-md-1 control-label">单元</label>
+		<div class="col-md-5">
+			<input type="text"  name="#(formModelName).unit_name" class="form-control"  value="#(o?o.unit_name:'')"  >
 		</div>
 	</div>
-		<div class="form-group">
-			<label class="col-md-2 control-label"></label>
-			<div class="col-md-9">
-				<input type="text"  name="#(formModelName)." class="form-control"  value="#(o?o.:'')" #if(view=='detail') readonly #end>
-				<small class="help-block">请输入</small>
-			</div>
-		</div>
 	<div class="form-group">
-		<label class="col-md-2 control-label">备注</label>
-		<div class="col-md-9">
-			<textarea rows="8" name="#(formModelName).des" class="form-control" #if(view=='detail') readonly #end></textarea>
-			<small class="help-block">请输入备注</small>
+		<label class="col-md-1 control-label">项目</label>
+		<div class="col-md-5">
+			<input type="text"  name="#(formModelName).project_name" class="form-control"  value="#(o?o.project_name:'')"  >
+		</div>
+		<label class="col-md-1 control-label">岗位</label>
+		<div class="col-md-5">
+			<input type="text"  name="#(formModelName).work_station" class="form-control"  value="#(o?o.work_station:'')"  >
 		</div>
 	</div>
+	<div class="form-group">
+		<label class="col-md-1 control-label">工号</label>
+		<div class="col-md-5">
+			<input type="text"  name="#(formModelName).emp_num" class="form-control"  value="#(o?o.emp_num:'')"  >
+		</div>
+		<label class="col-md-1 control-label">姓名</label>
+		<div class="col-md-5">
+			<input type="text"  name="#(formModelName).emp_name" class="form-control"  value="#(o?o.emp_name:'')"  >
+		</div>
+	</div>
+
+	<mini-datagrid id="datagrid1" class="mini-datagrid" style="width:100%;height:480px;"
+				   url="" idField="id"  allowResize="true" pageSize="31"
+				   allowCellEdit="true" allowCellSelect="true" multiSelect="false"
+				   editNextOnEnterKey="true"  editNextRowCell="true"
+				   showSortIcon="true"  _dataField="data"  showPager="false" allowSortColumn="false"
+	>
+		<columns>
+			<column type="indexcolumn"></column>
+			<column name="shift_name"  field="shift_name" headerAlign="center"   width="150" >
+				班次名称
+			</column>
+			<column name="schedule_ymd"  field="schedule_ymd" headerAlign="center"   width="150" >
+				日期
+			</column>
+			<column name="week_day"  field="week_day" headerAlign="center"   width="150" >
+				星期
+			</column>
+
+
+		</columns>
+	</mini-datagrid>
+
 	#if(view=='edit')
 	<div class="panel-footer">
 		<div class="row">
-			<div class="col-sm-8 col-sm-offset-3">
-				<button class="btn btn-warning" type="reset" #if(view=='detail') disabled #end>重置</button>
+			<div class="col-sm-12 " style="text-align: center">
 				<button class="btn btn-primary" type="submit" #if(view=='detail') disabled #end>保存</button>
+				<button class="btn btn-primary" type="button" onclick="window.history.back();" >返回</button>
 			</div>
 		</div>
 	</div>
 	#else
-
+	<div class="panel-footer">
+		<div class="row">
+			<div class="col-sm-12 " style="text-align: center">
+				<button class="btn btn-primary" type="button" onclick="window.history.back();" >返回</button>
+			</div>
+		</div>
+	</div>
 	#end
 </form>

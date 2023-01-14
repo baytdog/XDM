@@ -72,7 +72,7 @@
 			</div>
 			<div class="panel ">
 				<div class="panel-body">
-	<!--				<a id="add" class="btn btn-primary data-toolbar" href="#(ctx)/admin/xd/xdschedulesummary/getEditPage?view=edit"><i class="demo-pli-add"></i> 添加</a>-->
+					<!--				<a id="add" class="btn btn-primary data-toolbar" href="#(ctx)/admin/xd/xdattendancesummary/getEditPage?view=edit"><i class="demo-pli-add"></i> 添加</a>-->
 					<a id="del" class="btn btn-danger data-toolbar" onclick="delSel()" href="javascript:void(0);"><i class="demo-pli-cross"></i> 批量删除</a>
 					<a id="filePicker"  href="javascript:void(0);" ><i class="demo-pli-add"></i> 导入</a>
 					<a id="export" class="btn btn-primary data-toolbar" onclick="exportExcel()" target="_blank"><i class="demo-pli-download-from-cloud"></i> 导出</a>
@@ -125,9 +125,9 @@
 				//通过formatter可以自定义列显示的内容
 				//value：当前field的值，即id
 				//row：当前行的数据
-				var a = '<a class="label label-table label-success" href="'+ctx+'/admin/xd/xdschedulesummary/getEditPage?id='+row.id+'&view=detail" >查看</a>&nbsp;';
-/*				a = a + '<a class="label label-table label-success" href="'+ctx+'/admin/xd/xdschedulesummary/getEditPage?id='+row.id+'&view=edit" >编辑</a>&nbsp;';
-				a = a + '<a class="label label-table label-danger" onclick="del(\''+row.id+'\')" href="javascript:void(0);" >删除</a>';*/
+				var a = '<a class="label label-table label-success" href="'+ctx+'/admin/xd/xdattendancesummary/getEditPage?id='+row.id+'&view=detail" >查看</a>&nbsp;';
+				/*				a = a + '<a class="label label-table label-success" href="'+ctx+'/admin/xd/xdattendancesummary/getEditPage?id='+row.id+'&view=edit" >编辑</a>&nbsp;';
+                                a = a + '<a class="label label-table label-danger" onclick="del(\''+row.id+'\')" href="javascript:void(0);" >删除</a>';*/
 				return a;
 			}
 		}];
@@ -153,7 +153,7 @@
 		//可供选择的每页的行数（*）
 		pageList: [10, 25, 50, 100],
 		//这个接口需要处理bootstrap table传递的固定参数,并返回特定格式的json数据
-		url: ctx+"/admin/xd/xdschedulesummary/listData",
+		url: ctx+"/admin/xd/xdattendancesummary/listData",
 		//默认值为 'limit',传给服务端的参数为：limit, offset, search, sort, order Else
 		//queryParamsType:'',
 		////查询参数,每次调用是会带上这个参数，可自定义
@@ -206,11 +206,11 @@
 	function del(ids){
 		pointLion.confimMsg("您是否要删除所选信息 ?<br/> 点击确认进行删除 , 点击取消取消该操作",null,function(){
 			//执行删除
-			var data = common_ajax.ajaxFunc("/admin/xd/xdschedulesummary/delete",{"ids":ids}, "json", null);
+			var data = common_ajax.ajaxFunc("/admin/xd/xdattendancesummary/delete",{"ids":ids}, "json", null);
 			//删除结果
 			if(data.success){
 				pointLion.alertMsg(data.message,"success",null,function(){
-					location.href = ctx+'/admin/xd/xdschedulesummary/getListPage';//跳转到列表页
+					location.href = ctx+'/admin/xd/xdattendancesummary/getListPage';//跳转到列表页
 				});
 			}else{
 				pointLion.alertMsg(data.message,"success",null,null);
@@ -242,7 +242,7 @@
 		$('.form_datetime').datepicker({format: 'yyyy-mm-dd',weekStart: 1,todayBtn:  1,autoclose: 1,language:  'zh-CN',todayHighlight: 1,forceParse: 0,clearBtn: true }).on('changeDate',null);
 		initTable();//初始化
 
-		pointLion.initUploader("/admin/xd/xdschedulesummary/importExcel",function(data){
+		pointLion.initUploader("/admin/xd/xdattendancesummary/importExcel",function(data){
 			if(data.success){
 				pointLion.alertMsg("导入成功！","success",null,null);
 				searchTable();
@@ -266,12 +266,12 @@
 			pointLion.alertMsg("请选择年月！","success",null,null);
 			return;
 		}
-		location.href = "#(ctx)/admin/xd/xdschedulesummary/exportExcel?dept="+dept+"&emp_name="+emp_name+"&unitname="+unitname+"&year="+year+"&month="+month;
+		location.href = "#(ctx)/admin/xd/xdattendancesummary/exportExcel?dept="+dept+"&emp_name="+emp_name+"&unitname="+unitname+"&year="+year+"&month="+month;
 	}
 	function exportExcel2(){
 
 		var certTitle = $("#certTitle").val();
-		location.href = "#(ctx)/admin/xd/xdschedulesummary/exportExcel2?certTitle="+certTitle;
+		location.href = "#(ctx)/admin/xd/xdattendancesummary/exportExcel2?certTitle="+certTitle;
 	}
 
 </script>

@@ -2,6 +2,9 @@ package com.pointlion.config.routes;
 
 import com.jfinal.config.Routes;
 import com.pointlion.mvc.admin.oa.dict.OaDictController;
+import com.pointlion.mvc.admin.xdm.xdattendance.XdAttendanceController;
+import com.pointlion.mvc.admin.xdm.xdattendancedetail.XdAttendanceDetailController;
+import com.pointlion.mvc.admin.xdm.xdattendancesummary.XdAttendanceSummaryController;
 import com.pointlion.mvc.admin.xdm.xdcertificate.XdCertificateController;
 import com.pointlion.mvc.admin.xdm.xddict.XdDictController;
 import com.pointlion.mvc.admin.xdm.xdedutrain.XdEdutrainController;
@@ -10,12 +13,14 @@ import com.pointlion.mvc.admin.xdm.xdemployee.XdEmployeeController;
 import com.pointlion.mvc.admin.xdm.xdprojects.XdProjectsController;
 import com.pointlion.mvc.admin.xdm.xdrecords.XdRecordsController;
 import com.pointlion.mvc.admin.xdm.xdschedule.XdScheduleController;
+import com.pointlion.mvc.admin.xdm.xdscheduledetail.XdScheduleDetailController;
 import com.pointlion.mvc.admin.xdm.xdschedulesummary.XdScheduleSummaryController;
 import com.pointlion.mvc.admin.xdm.xdschoolinfo.XdSchoolinfoController;
 import com.pointlion.mvc.admin.xdm.xdshift.XdShiftController;
 import com.pointlion.mvc.admin.xdm.xdsteps.XdStepsController;
 import com.pointlion.mvc.admin.xdm.xdworkexper.XdWorkExperController;
 import com.pointlion.mvc.common.model.XdRecords;
+import com.pointlion.mvc.common.model.XdScheduleDetail;
 
 /**
  * @author thunoerobot
@@ -41,6 +46,12 @@ public class XDRoutes extends Routes {
         add("/admin/xd/records", XdRecordsController.class,"/records");
         add("/admin/xd/xdschedule", XdScheduleController.class,"/xdschedule");
         add("/admin/xd/xdschedulesummary", XdScheduleSummaryController.class,"/xdschedulesummary");
+        add("/admin/xd/xdscheduledeital", XdScheduleDetailController.class,"/xdscheduledeital");
+
+
+        add("/admin/xd/xdattendance", XdAttendanceController.class,"/xdattendance");
+        add("/admin/xd/xdattendancesummary", XdAttendanceSummaryController.class,"/xdattendancesummary");
+        add("/admin/xd/xdattendancedeital", XdAttendanceDetailController.class,"/xdscheduledeital");
 
 
     }

@@ -143,14 +143,28 @@ public class HomeController extends BaseController {
 			SysUser sysUser = SysUser.dao.findById(userId);
 			String scheduleSql="";
 			if(sysUser.getUnitValue()!=null && sysUser.getUnitValue().equals("22")){
-				scheduleSql = " select * from   xd_steps s where  s.orgid ='"+ShiroKit.getUserOrgId()+"' and  s.finished='N'";
+				scheduleSql = " select * from   xd_steps s where s.stype='2'  and s.orgid ='"+ShiroKit.getUserOrgId()+"' and  s.finished='N'";
 			}else{
-				scheduleSql = " select * from   xd_steps s where  s.userid ='"+ShiroKit.getUserId()+"' and  s.finished='N'";
+				scheduleSql = " select * from   xd_steps s where s.stype='2'  and s.userid ='"+ShiroKit.getUserId()+"' and  s.finished='N'";
 			}
 
 
 			int scheduleSize = Db.find(scheduleSql).size();
 			setAttr("scheduleSize",scheduleSize);
+
+
+			//出勤
+			String attendanceSql="";
+			if(sysUser.getUnitValue()!=null && sysUser.getUnitValue().equals("22")){
+				attendanceSql = " select * from   xd_steps s where s.stype='3'  and s.orgid ='"+ShiroKit.getUserOrgId()+"' and  s.finished='N'";
+			}else{
+				attendanceSql = " select * from   xd_steps s where s.stype='3'  and s.userid ='"+ShiroKit.getUserId()+"' and  s.finished='N'";
+			}
+
+
+			int attendanceSize = Db.find(attendanceSql).size();
+			setAttr("attendanceSize",attendanceSize);
+
 
 
 			renderIframe("/common/include/content.html");

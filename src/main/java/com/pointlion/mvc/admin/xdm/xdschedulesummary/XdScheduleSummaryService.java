@@ -10,11 +10,13 @@ import com.jfinal.plugin.activerecord.tx.Tx;
 import com.pointlion.mvc.common.model.*;
 import com.pointlion.mvc.common.utils.DateUtil;
 import com.pointlion.mvc.common.utils.UuidUtil;
+import com.pointlion.mvc.common.utils.office.excel.ExcelUtil;
 import com.pointlion.plugin.shiro.ShiroKit;
 import com.pointlion.plugin.shiro.ext.SimpleUser;
 import com.pointlion.util.DictMapping;
 import org.apache.commons.lang3.StringUtils;
 
+import java.io.File;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,20 +37,25 @@ public class XdScheduleSummaryService{
 	/***
 	 * get page
 	 */
-	public Page<Record> getPage(int pnum,int psize,String startTime,String endTime,String applyUser){
-		//String userId = ShiroKit.getUserId();
+	public Page<Record> getPage(int pnum,int psize,String dept,String emp_name,String unitname,String year,String month){
 		String sql  = " from "+TABLE_NAME+" o where 1=1";
-		//sql = sql + SysRoleOrg.dao.getRoleOrgSql(userId) ;
-		if(StrKit.notBlank(startTime)){
-			sql = sql + " and o.create_time>='"+ DateUtil.formatSearchTime(startTime,"0")+"'";
+		if(StrKit.notBlank(dept)){
+			sql = sql + " and o.dept_value='"+ dept+"'";
 		}
-		if(StrKit.notBlank(endTime)){
-			sql = sql + " and o.create_time<='"+DateUtil.formatSearchTime(endTime,"1")+"'";
+		if(StrKit.notBlank(unitname)){
+			sql = sql + " and o.unit_value='"+ unitname+"'";
 		}
-		if(StrKit.notBlank(applyUser)){
-			sql = sql + " and o.applyer_name like '%"+applyUser+"%'";
+		if(StrKit.notBlank(year)){
+			sql = sql + " and o.schedule_year='"+ year+"'";
 		}
-		sql = sql + " order by o.create_date desc";
+		if(StrKit.notBlank(month)){
+			sql = sql + " and o.schedule_month='"+ month+"'";
+		}
+		if(StrKit.notBlank(emp_name)){
+			sql = sql + " and o.emp_name like'%"+emp_name+"%'";
+		}
+
+		sql = sql + " order by o.create_date desc,emp_num";
 		return Db.paginate(pnum, psize, " select * ", sql);
 	}
 	
@@ -126,6 +133,9 @@ public class XdScheduleSummaryService{
 							String workStation = summaryList.get(6);
 							scheduleSummary.setWorkStation(workStation);
 							scheduleSummary.setRemarks(summaryList.get(38));
+							scheduleSummary.setScheduleMonth(month);
+							scheduleSummary.setScheduleYear(year);
+							scheduleSummary.setScheduleYearMonth(yearMonth);
 							scheduleSummary.save();
 							for (int j = 1; j <=daysNum ; j++) {
 								XdScheduleDetail schDetail =new XdScheduleDetail();
@@ -260,6 +270,102 @@ public class XdScheduleSummaryService{
 			}
 		});
 		return result;
+	}
+
+
+
+	public File exportExcel(String path, String dept, String unitname, String year, String month, String emp_name){
+		String sql  = " from "+TABLE_NAME+" o   where 1=1";
+		if(StrKit.notBlank(dept)){
+			sql = sql + " and o.dept_value='"+ dept+"'";
+		}
+		if(StrKit.notBlank(unitname)){
+			sql = sql + " and o.unit_value='"+ unitname+"'";
+		}
+		if(StrKit.notBlank(year)){
+			sql = sql + " and o.schedule_year='"+ year+"'";
+		}
+		if(StrKit.notBlank(month)){
+			sql = sql + " and o.schedule_month='"+ month+"'";
+		}
+		if(StrKit.notBlank(emp_name)){
+			sql = sql + " and o.emp_name like'%"+emp_name+"%'";
+		}
+
+		sql = sql + " order by o.create_date desc,emp_num";
+
+
+		List<XdScheduleSummary> list = XdScheduleSummary.dao.find(" select * "+sql);//查询全部
+
+
+		Map<String, Map<String, String>> dictMap = DictMapping.dictMappingValueToName();
+		Map<String, String> projectMap = DictMapping.projectsMappingValueToName();
+		Map<String, String> orgMap = DictMapping.orgMapping("0");
+		String departName = orgMap.get(dept)==null?"":orgMap.get(dept);
+		Map<String, String> unit = dictMap.get("unit");
+		String unitName = unit.get(unitname)==null?"":unit.get(unitname);
+		String years="";
+		String months="";
+		String title="排班表";
+		if(StrKit.notBlank(year)){
+			 years=year+"年";
+		}
+		if(StrKit.notBlank(month)){
+			months=month+"月";
+		}
+		title=departName+unitName+years+months+title;
+		List<XdDayModel> xdDayModels = XdDayModel.dao.find("select * from  xd_day_model where id like'" + year + month + "%' order by id");
+		List<List<String>> rows = new ArrayList<List<String>>();
+		List<String> titleRow=new ArrayList<String>();
+		titleRow.add(title);
+		rows.add(titleRow);
+
+		List<String> first = new ArrayList<String>();
+		List<String> second = new ArrayList<String>();
+		List<String> third = new ArrayList<String>();
+		first.add("序号");
+		first.add("部门");//0
+		first.add("单元");
+		first.add("项目");//1
+		first.add("工号");//2
+		first.add("姓名");//3
+		first.add("岗位");//3
+		for (int i = 0; i <7 ; i++) {
+			second.add("");
+			third.add("");
+		}
+		for (int i = 0; i < xdDayModels.size(); i++) {
+			XdDayModel dayModel = xdDayModels.get(i);
+			first.add(String.valueOf(i+1));
+			second.add(dayModel.getWeeks());
+			third.add(dayModel.getHolidays());
+		}
+		first.add("备注");
+		second.add("");
+		third.add("");
+		rows.add(first);
+		rows.add(second);
+		rows.add(third);
+		for(int j = 0; j < list.size(); j++){
+			List<String> row = new ArrayList<String>();
+			//DictMapping.fieldValueToName(emp,orgMap,projectMap,dictMap);
+			row.add(String.valueOf(j+1));
+			XdScheduleSummary summary = list.get(j);
+			List<XdScheduleDetail> xdScheduleDetails = XdScheduleDetail.dao.find("select * from  xd_schedule_detail where schedule_id='"+summary.getId()+"' order by schedule_ymd");
+			row.add(summary.getDeptName());//0
+			row.add(summary.getUnitName());//0
+			row.add(summary.getProjectName());//0
+			row.add(summary.getEmpNum());
+			row.add(summary.getEmpName());
+			row.add(summary.getWorkStation());
+			for (XdScheduleDetail detail : xdScheduleDetails) {
+				row.add(detail.getShiftName());
+			}
+			row.add(summary.getRemarks());
+			rows.add(row);
+		}
+		File file = ExcelUtil.scheduletFile(path,rows);
+		return file;
 	}
 	
 }

@@ -163,6 +163,11 @@ public class _MappingKit {
 		arp.addMapping("xd_schedule","id",XdSchedule.class);
 		arp.addMapping("xd_schedule_summary","id",XdScheduleSummary.class);
 		arp.addMapping("xd_schedule_detail","id",XdScheduleDetail.class);
+		arp.addMapping("xd_attendance","id",XdAttendance.class);
+		arp.addMapping("xd_attendance_days","id",XdAttendanceDays.class);
+		arp.addMapping("xd_attendance_rcp","id",XdAttendanceRcp.class);
+		arp.addMapping("xd_attendance_summary","id",XdAttendanceSummary.class);
+		arp.addMapping("xd_attendance_detail","id",XdAttendanceDetail.class);
 	}
 }
 

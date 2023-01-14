@@ -1,0 +1,260 @@
+<div id="page-content">
+	<div class="col-lg-12">
+		<div class="panel">
+			#@buildFormPanelContainer("出勤核算","/WEB-INF/admin/xdm/xdattendance/editForm.html")
+		</div>
+	</div>
+</div>
+<script>
+	function save(){
+		var data = common_ajax.ajaxFunc("/admin/xd/xdattendance/save", $('#editForm').serialize(), "json", null);
+		if(data.success){
+			pointLion.alertMsg("保存成功!" , "success" , "small" , function(){
+				location.href = ctx+'/admin/xd/xdattendance/getListPage';//跳转到列表页
+			},data);
+		}else{
+			pointLion.alertMsg(data.message , "danger" , "small" , function(){
+				$(".btn").removeAttr("disabled");
+			},data);
+		}
+	}
+	$(document).ready(function() {
+		$('#editForm').bootstrapValidator({
+			excluded:[":disabled"],
+			live: 'enabled',
+			fields: {
+				"#(formModelName).dept_value": {
+					trigger: 'change',
+					validators: {
+						notEmpty: {
+							message: '*姓名不能为空'
+						}
+					}
+				},
+				"#(formModelName).shedule_year": {
+					trigger: 'change',
+					validators: {
+						notEmpty: {
+							message: '*年份不能为空'
+						}
+					}
+				},
+				"#(formModelName).shedule_month": {
+					trigger: 'change',
+					validators: {
+						notEmpty: {
+							message: '*月份不能为空'
+						}
+					}
+				},
+				"#(formModelName).approver_id": {
+					validators: {
+						notEmpty: {
+							message: '*审批人不能为空'
+						}
+					}
+				},
+			}
+		}).on("success.form.bv", function (e) {
+			save();
+			return false;//阻止表单跳转
+		});
+	});
+
+	function resetVali(){
+		if(!$("#editForm").data('bootstrapValidator').isValid()) {
+			$("#editForm").data('bootstrapValidator').resetForm();
+			$(".btn").removeAttr("disabled");
+		}
+	}
+	$('.form_datetime').datepicker({format: 'yyyy-mm-dd',weekStart: 1,todayBtn:  1,autoclose: 1,language:  'zh-CN',todayHighlight: 1,forceParse: 0,showMeridian: 1}).on('changeDate',function(){
+		//resetVali();
+	});
+
+
+
+	$(".selectpicker").selectpicker({});
+	$(".bootstrap-select").attr("style","width:100%;");
+</script>
+
+<script>
+
+	$(function () {
+		//部门
+		let dept_value=$("#dept_value").val();
+		if(dept_value){
+			$('#departmentSelect').selectpicker('val',dept_value.split(",")).trigger("change");
+		};
+
+		$('#departmentSelect').on('changed.bs.select', function (e) {
+			$('#dept_value').val($('#departmentSelect').val())
+			$('#dept_name').val($('#departmentSelect option:selected').text())
+
+		});
+		//年份
+		let shedule_year=$("#shedule_year").val();
+		if(shedule_year){
+			$('#yearSelect').selectpicker('val',shedule_year.split(",")).trigger("change");
+		};
+
+		$('#yearSelect').on('changed.bs.select', function (e) {
+			$('#shedule_year').val($('#yearSelect').val())
+		});
+		//月份
+		let shedule_month=$("#shedule_month").val();
+		if(shedule_month){
+			$('#monthSelect').selectpicker('val',shedule_month.split(",")).trigger("change");
+		};
+
+		$('#monthSelect').on('changed.bs.select', function (e) {
+			$('#shedule_month').val($('#monthSelect').val())
+		});
+		//审批人
+		let approver_id=$("#approver_id").val();
+		if(approver_id){
+			$('#approverSelect').selectpicker('val',approver_id.split(",")).trigger("change");
+		};
+
+		$('#approverSelect').on('changed.bs.select', function (e) {
+			$('#approver_id').val($('#approverSelect').val())
+			$('#approver_name').val($('#approverSelect option:selected').text())
+			resetVali();
+
+		});
+
+	})
+
+</script>
+
+<script type="text/javascript">
+	$(function (){
+
+		initTable();//初始化
+
+		pointLion.initUploader("/admin/sys/attachment/attachmentUpload?busid="+$("#scheduleId").val(),function(data){
+			pointLion.alertMsg(data.message,"success",null,null);
+			refreshTable();
+
+		});
+	});
+
+	var busid = $("#scheduleId").val();//可能是业务ID，也可能是TEMP_UUID
+	var col = [
+
+		{
+			field: 'id',
+			title: '主键',
+			align: 'center'
+		},
+		{
+			field: 'file_name',
+			title: '文件名',
+			align: 'center'
+		},
+		{
+			field: 'create_user_name',
+			title: '上传人',
+			align: 'center'
+		},
+		{
+			field: 'create_time',
+			title: '上传时间',
+			align: 'center'
+		},
+		{
+			field: 'control',
+			title: '操作',
+			align: 'left',
+			width:'120',
+			formatter:function(value,row,index){
+				var a = '<a class="label label-table label-success" href="'+ctx+'/admin/sys/attachment/downloadFile?id='+row.id+'&view=detail" target="_blank">下载</a>&nbsp;';
+				a=a+'<a class="label label-table label-success" href="'+ctx+'/admin/sys/attachment/lookFile?id='+row.id+'&view=detail" target="_blank" title="附件查看">查看</a>&nbsp;'
+				#if(view=='detail')
+				#else
+
+				if(row.create_user_id=="#(currentUserId)"){
+
+					a = a + '<a class="label label-table label-danger" onclick="del(\''+row.id+'\')" href="javascript:void(0);" >删除</a>';
+
+				}
+
+
+
+				#end
+				return a;
+			}
+		}];
+	var opt = {
+		//请求方法
+		method: 'get',
+		//是否显示行间隔色
+		striped: true,
+		//是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+		cache: false,
+		//data-toolbar: "#demo-delete-row",
+		//是否显示分页（*）
+		pagination: true,
+		//是否启用排序
+		sortable: false,
+		//排序方式
+		sortOrder: "asc",
+		//初始化加载第一页，默认第一页
+		//我设置了这一项，但是貌似没起作用，而且我这默认是0,- -
+		//pageNumber:1,
+		//每页的记录行数（*）
+		pageSize: 50,
+		//可供选择的每页的行数（*）
+		pageList: [5, 10, 15, 20,50,100],
+		//这个接口需要处理bootstrap table传递的固定参数,并返回特定格式的json数据
+		url: ctx+"/admin/sys/attachment/getBusinessUploadList?busid="+busid,
+		//默认值为 'limit',传给服务端的参数为：limit, offset, search, sort, order Else
+		//queryParamsType:'',
+		////查询参数,每次调用是会带上这个参数，可自定义
+		queryParams : function(params) {
+			return {
+				pageNumber: (params.offset/params.limit)+1,
+				pageSize: params.limit
+			};
+		},
+		//分页方式：client客户端分页，server服务端分页（*）
+		sidePagination: "server",
+		//是否显示搜索
+		search: false,
+		//Enable the strict search.
+		strictSearch: true,
+		paginationDetailHAlign:' hidden',
+		//Indicate which field is an identity field.
+		idField : "id",
+		columns: col,
+		pagination:true,paginationShowPageGo: false
+	};
+
+	//表格
+	function initTable(){
+		$('#pageTable').bootstrapTable(opt);
+		$('#pageTable').bootstrapTable('hideColumn', 'id');
+	}
+	function refreshTable(){
+
+		$("#pageTable").bootstrapTable('refresh', opt);
+		$('#pageTable').bootstrapTable('hideColumn', 'id');
+	}
+
+
+	//删除
+	function del(ids){
+		pointLion.confimMsg("您是否要删除所选信息 ?<br/> 点击确认进行删除 , 点击取消取消该操作",null,function(){
+			//执行删除
+			var data = common_ajax.ajaxFunc("/admin/sys/attachment/delete",{"ids":ids}, "json", null);
+			//删除结果
+			if(data.success){
+				pointLion.alertMsg(data.message,"success",null,function(){
+					refreshTable();
+				});
+			}else{
+				pointLion.alertMsg(data.message,"success",null,null);
+			}
+		});
+	};
+
+</script>
