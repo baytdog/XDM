@@ -33,7 +33,7 @@
 
 	<div class="con_bg5 f_l" onclick="retireTip()"><p>退休到期 <span>#(retireEmpEndSize)</span> 人 </p></div>
 	<div class="con_bg6 f_l" onclick="certExpiredTip()"><p>证书到期<span>#(certExpiredSize)</span>条</p></div>
-	<div class="con_bg3 f_l" onclick=""><p>rcp补贴申请<!-- <span>1</span>份 --></p></div>
+	<div class="con_bg3 f_l" onclick="rcpTip()"><p>rcp补贴申请<span>#(rcpSize)</span>份</p></div>
 	<div class="con_bg4 f_l" onclick="attendanceTip()"><p>出勤<span>#(attendanceSize)</span>份</p></div>
     <div class="f_clear"></div>
 
@@ -93,6 +93,10 @@
 	//加班结算
 	function settleOvertimeTip(){
 		window.location.href="#(ctx)/admin/xd/xdsettleovertime/getHomeSettleOvertimeListPage";
+	}
+	//rcp
+	function rcpTip(){
+		window.location.href="#(ctx)/admin/xd/xdrcp/getHomeRcpListPage";
 	}
 
 

@@ -185,6 +185,15 @@ public class HomeController extends BaseController {
 			setAttr("settleOvertimeSize",settleOvertimeSize);
 
 
+			//rcp
+			String rcpSql="";
+			if(sysUser.getUnitValue()!=null && sysUser.getUnitValue().equals("22")){
+				rcpSql = " select * from   xd_steps s where s.stype='6'  and s.orgid ='"+ShiroKit.getUserOrgId()+"' and  s.finished='N'";
+			}else{
+				rcpSql = " select * from   xd_steps s where s.stype='6'  and s.userid ='"+ShiroKit.getUserId()+"' and  s.finished='N'";
+			}
+			int rcpSize = Db.find(rcpSql).size();
+			setAttr("rcpSize",rcpSize);
 
 			renderIframe("/common/include/content.html");
 		}
