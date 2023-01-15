@@ -1,0 +1,110 @@
+
+<div id="page-content">
+    <div class="col-sm-12 eq-box-sm">
+        <div class="panel ">
+            <div class="panel-body">
+                <a id="add" class="btn btn-primary data-toolbar" href="#(ctx)/admin/home/getPersonalHomePage?action=openPage"></i>返回</a>
+                <!--                <a id="add" class="btn btn-primary data-toolbar" href="#(ctx)/admin/oa/bumph/listHistory?action=openPage"></i>收文历史</a>-->
+                <!--   <a id="add" class="btn btn-primary data-toolbar" href="#(ctx)/admin/oa/bumph/printtest?type=#(type)&view=edit"></i>打印测试</a>
+                  -->
+
+                <table id="pageTable" class="demo-add-niftycheck" data-toolbar="#del,#add"
+                       data-search="true"
+                       data-show-refresh="true"
+                       data-show-toggle="true"
+                       data-show-columns="true"
+                       data-sort-name="id"
+                       data-page-list="[5, 10, 20]"
+                       data-page-size="5"
+                       data-pagination="true" data-show-pagination-switch="true" ></table>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    var type = "#(type)";
+
+    var col = [{field: 'id', title: 'id', align: 'center'},
+        {field: 'dept_name', title: '部门', align: 'center'},
+        {field: 'overtime_year_month', title: '年月', align: 'center'},
+        {field: 'status', title: '状态', align: 'center',
+            formatter:function(value,row,index){
+                if(value=="0"){
+                    return '待部门领导审批';
+                }else if(value=="1"){
+                    return '部门领导审批通过'
+                }else if(value=="2"){
+                    return '完成';
+                }else if(value=="3"){
+                    return '部门领导审批不通过';
+                }else if(value=="4"){
+                    return '人事部审批不通过';
+                }
+            }},
+
+    ];
+    var opt = {
+        //请求方法
+        method: 'get',
+        //是否显示行间隔色
+        striped: true,
+        //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+        cache: false,
+        //data-toolbar: "#demo-delete-row",
+        //是否显示分页（*）
+        pagination: true,
+        //是否启用排序
+        sortable: false,
+        //排序方式
+        sortOrder: "asc",
+        pageSize: 10,
+        //可供选择的每页的行数（*）
+        pageList: [10, 25, 50, 100],
+        //这个接口需要处理bootstrap table传递的固定参数,并返回特定格式的json数据
+        url: ctx+"/admin/xd/xdovertime/getHomeOvertimeList",
+        //默认值为 'limit',传给服务端的参数为：limit, offset, search, sort, order Else
+        //queryParamsType:'',
+        ////查询参数,每次调用是会带上这个参数，可自定义
+        queryParams : function(params) {
+            return {
+                pageNumber: (params.offset/params.limit)+1,
+                pageSize: params.limit,
+                type : type
+            };
+        },
+
+        onClickRow:function (row) {  window.location.href='#(ctx)/admin/xd/xdovertime/openHomeOvertimePage?id='+row.id},
+
+
+
+        //分页方式：client客户端分页，server服务端分页（*）
+        sidePagination: "server",
+        //是否显示搜索
+        search: false,
+        //Enable the strict search.
+        strictSearch: true,
+        //Indicate which field is an identity field.
+        idField : "id",
+        columns: col,
+        pagination:true,paginationShowPageGo: true
+    };
+
+    //表格
+    function initTable(){
+        $('#pageTable').bootstrapTable(opt);
+        $('#pageTable').bootstrapTable('hideColumn', 'id');
+        $('#pageTable').bootstrapTable('hideColumn', 'proc_ins_id');
+        $('#pageTable').bootstrapTable('hideColumn', 'defid');
+
+    }
+    function refreshTable(){
+        $("#pageTable").bootstrapTable('refresh', opt);
+        $('#pageTable').bootstrapTable('hideColumn', 'id');
+        $('#pageTable').bootstrapTable('hideColumn', 'proc_ins_id');
+        $('#pageTable').bootstrapTable('hideColumn', 'defid');
+    }
+    $(document).ready(function(){
+
+        initTable();//初始化表格
+    });
+</script>

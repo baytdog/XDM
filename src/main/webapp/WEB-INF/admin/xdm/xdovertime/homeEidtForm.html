@@ -1,0 +1,120 @@
+<form id="editForm" class="panel-body form-horizontal form-padding">
+    <input id="scheduleId" type="hidden"  name="#(formModelName).id" class="form-control" value="#(o?o.id:'')">
+    <input  id="stepsId" type="hidden"  name="stepsId" class="form-control" value="#(id)">
+    <div class="form-group">
+        <label class="col-md-2 control-label">部门</label>
+        <input type="hidden" id="dept_value" name="#(formModelName).dept_value" value="#(o?o.dept_value:'')">
+        <input type="hidden" id="dept_name" name="#(formModelName).dept_name" value="#(o?o.dept_name:'')">
+        <div class="col-md-10">
+            <select id="departmentSelect"   title="请选择"  class="selectpicker show-tick form-control" actionsBox="true"   data-live-search="false" disabled="disabled">
+                #for(sysOrg:sysOrgs)
+                <option value="#(sysOrg.id)">#(sysOrg.name)</option>
+                #end
+            </select>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-md-2 control-label">年份</label>
+        <div class="col-md-10">
+            <input type="hidden"  id="overtime_year" name="#(formModelName).overtime_year" class="form-control"  value="#(o?o.overtime_year:'')" >
+            <select id="yearSelect"   title="请选择"  class="selectpicker show-tick form-control" actionsBox="true"  disable  data-live-search="false" disabled="disabled">
+                <option value="2023">2023</option>
+                <option value="2024">2024</option>
+                <option value="2025">2025</option>
+                <option value="2026">2026</option>
+                <option value="2027">2027</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-md-2 control-label">月份</label>
+        <div class="col-md-10">
+            <input type="hidden" id="overtime_month"  name="#(formModelName).overtime_month" class="form-control"  value="#(o?o.overtime_month:'')" >
+            <select id="monthSelect"   title="请选择"  class="selectpicker show-tick form-control" actionsBox="true"  disable  data-live-search="false" disabled="disabled">
+                <option value="01">01</option>
+                <option value="02">02</option>
+                <option value="03">03</option>
+                <option value="04">04</option>
+                <option value="06">06</option>
+                <option value="07">07</option>
+                <option value="08">08</option>
+                <option value="09">09</option>
+                <option value="10">10</option>
+                <option value="11">11</option>
+                <option value="12">12</option>
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-2 control-label">发起人</label>
+        <div class="col-md-10">
+            <input type="text"    class="form-control"  value="#(creatUser)" readonly >
+        </div>
+    </div>
+
+    #if(o!=null && o.remarks!=null)
+    <div class="form-group">
+        <label class="col-md-2 control-label">审批意见</label>
+        <div class="col-md-10">
+            <textarea name="#(formModelName).remarks" rows="6" class="form-control"   readonly="readonly" >#(o?o.remarks:'')</textarea>
+        </div>
+    </div>
+    #end
+
+
+    <div  class="form-group"  style="text-align: right;">
+
+        <label class="col-md-2 control-label">附件列表</label>
+
+        <div class="col-md-10">
+
+            <table id="pageTable" class="demo-add-niftycheck" data-toolbar="#del,#add"
+                   data-search="false"
+                   data-show-refresh="false"
+                   data-show-toggle="false"
+                   data-show-columns="false"
+                   data-sort-name="id"
+                   data-page-list="[5, 10, 20]"
+                   data-page-size="10"
+                   data-pagination="true" data-show-pagination-switch="false" >
+            </table>
+            <a id="filePicker"  class="btn"  href="javascript:void(0);" style="text-align: right;"><i class="demo-pli-add"></i> 添加附件</a>
+        </div>
+    </div>
+    #if(o.status=='0'||o.status=='1')
+    <div class="form-group">
+        <label class="col-md-2 control-label">意见</label>
+        <div class="col-md-10">
+            <textarea   id="suggestions" name="suggestions" rows="3" class="form-control"  ></textarea>
+        </div>
+    </div>
+    #end
+
+    #if(view=='edit')
+    <div class="panel-footer">
+        <div class="row">
+            <div class="col-sm-12 " style="text-align: center">
+                <button class="btn btn-primary" type="submit" #if(view=='detail') disabled #end>保存</button>
+                <button class="btn btn-primary" type="button" onclick="window.history.back();" >返回</button>
+            </div>
+        </div>
+    </div>
+    #else
+    <div class="panel-footer">
+        <div class="row">
+            <div class="col-sm-12 " style="text-align: center">
+                #if(o.status=='0'||o.status=='1')
+                <button class="btn btn-primary" type="button" onclick="pass()" >通过</button>
+                <button class="btn btn-warning" type="button" onclick="noPass()" >不通过</button>
+
+                #else if(o.status=='3'|| o.status=='4')
+                <button class="btn btn-warning" type="button" onclick="sendAppr()" >送审批</button>
+                #end
+                <button class="btn btn-primary" type="button" onclick="window.history.back();" >返回</button>
+            </div>
+        </div>
+    </div>
+    #end
+</form>

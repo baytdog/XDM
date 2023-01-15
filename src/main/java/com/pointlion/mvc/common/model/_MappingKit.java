@@ -168,6 +168,8 @@ public class _MappingKit {
 		arp.addMapping("xd_attendance_rcp","id",XdAttendanceRcp.class);
 		arp.addMapping("xd_attendance_summary","id",XdAttendanceSummary.class);
 		arp.addMapping("xd_attendance_detail","id",XdAttendanceDetail.class);
+		arp.addMapping("xd_overtime","id",XdOvertime.class);
+		arp.addMapping("xd_overtime_summary","id",XdOvertimeSummary.class);
 	}
 }
 

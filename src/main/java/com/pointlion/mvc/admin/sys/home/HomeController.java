@@ -161,9 +161,19 @@ public class HomeController extends BaseController {
 				attendanceSql = " select * from   xd_steps s where s.stype='3'  and s.userid ='"+ShiroKit.getUserId()+"' and  s.finished='N'";
 			}
 
-
 			int attendanceSize = Db.find(attendanceSql).size();
 			setAttr("attendanceSize",attendanceSize);
+
+			//加班申请
+			String overTimeSql="";
+			if(sysUser.getUnitValue()!=null && sysUser.getUnitValue().equals("22")){
+				overTimeSql = " select * from   xd_steps s where s.stype='4'  and s.orgid ='"+ShiroKit.getUserOrgId()+"' and  s.finished='N'";
+			}else{
+				overTimeSql = " select * from   xd_steps s where s.stype='4'  and s.userid ='"+ShiroKit.getUserId()+"' and  s.finished='N'";
+			}
+			int overtimeSize = Db.find(overTimeSql).size();
+			setAttr("overtimeSize",overtimeSize);
+
 
 
 

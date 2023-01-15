@@ -10,6 +10,8 @@ import com.pointlion.mvc.admin.xdm.xddict.XdDictController;
 import com.pointlion.mvc.admin.xdm.xdedutrain.XdEdutrainController;
 import com.pointlion.mvc.admin.xdm.xdempcert.XdEmpCertController;
 import com.pointlion.mvc.admin.xdm.xdemployee.XdEmployeeController;
+import com.pointlion.mvc.admin.xdm.xdovertime.XdOvertimeController;
+import com.pointlion.mvc.admin.xdm.xdovertimesummary.XdOvertimeSummaryController;
 import com.pointlion.mvc.admin.xdm.xdprojects.XdProjectsController;
 import com.pointlion.mvc.admin.xdm.xdrecords.XdRecordsController;
 import com.pointlion.mvc.admin.xdm.xdschedule.XdScheduleController;
@@ -52,6 +54,10 @@ public class XDRoutes extends Routes {
         add("/admin/xd/xdattendance", XdAttendanceController.class,"/xdattendance");
         add("/admin/xd/xdattendancesummary", XdAttendanceSummaryController.class,"/xdattendancesummary");
         add("/admin/xd/xdattendancedeital", XdAttendanceDetailController.class,"/xdscheduledeital");
+
+
+        add("/admin/xd/xdovertime", XdOvertimeController.class,"/xdovertime");
+        add("/admin/xd/xdovertimesummary", XdOvertimeSummaryController.class,"/xdovertimesummary");
 
 
     }
