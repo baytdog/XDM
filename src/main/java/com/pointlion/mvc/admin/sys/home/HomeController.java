@@ -174,6 +174,15 @@ public class HomeController extends BaseController {
 			int overtimeSize = Db.find(overTimeSql).size();
 			setAttr("overtimeSize",overtimeSize);
 
+			//加班结算
+			String settleoverTimeSql="";
+			if(sysUser.getUnitValue()!=null && sysUser.getUnitValue().equals("22")){
+				settleoverTimeSql = " select * from   xd_steps s where s.stype='5'  and s.orgid ='"+ShiroKit.getUserOrgId()+"' and  s.finished='N'";
+			}else{
+				settleoverTimeSql = " select * from   xd_steps s where s.stype='5'  and s.userid ='"+ShiroKit.getUserId()+"' and  s.finished='N'";
+			}
+			int settleOvertimeSize = Db.find(settleoverTimeSql).size();
+			setAttr("settleOvertimeSize",settleOvertimeSize);
 
 
 

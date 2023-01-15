@@ -1,0 +1,264 @@
+<style>
+	.webuploader-pick{
+		padding: 0px 15px;
+		height: 33px;
+		line-height: 33px;
+	}
+</style>
+<div id="page-content">
+	<div class="col-sm-12 eq-box-sm">
+		<div class="panel">
+			<div class="panel panel-search">
+				<div class="panel-body">
+					<div class="form-inline">
+
+						<div class="form-group">
+							<select class="selectpicker form-control"  id="dept"  >
+								<option value="">------请选择部门------</option>
+								<option value="1">人力资源部</option>
+								<option value="2">外场单元部</option>
+								<option value="3">设施一部</option>
+								<option value="4">内场单元部</option>
+								<option value="5">工程/设施二部</option>
+								<option value="887163179b6c4eaabd06c44e47e41f92">职能部门</option>
+							</select>
+						</div>
+						<div class="form-group">
+							<select class="selectpicker form-control"  id="unitname"  data-live-search="true" >
+								<option value="">------请选择单元------</option>
+								#for(unit:units)
+								<option value="#(unit.value)">#(unit.name)</option>
+								#end
+							</select>
+						</div>
+						<div class="form-group">
+							<input id="emp_name" placeholder="姓名" class="form-control">
+						</div>
+						<div class="form-group">
+							<select class="selectpicker form-control"  id="year"  >
+								<option value="">------请选择年份------</option>
+								<option value="2023">2023年</option>
+								<option value="2024">2024年</option>
+								<option value="2025">2025年</option>
+								<option value="2026">2026年</option>
+								<option value="2027">2027年</option>
+								<option value="2028">2028年</option>
+							</select>
+						</div>
+						<div class="form-group">
+							<select class="selectpicker form-control"  id="month"  >
+								<option value="">------请选择月份------</option>
+								<option value="01">1月</option>
+								<option value="02">2月</option>
+								<option value="03">3月</option>
+								<option value="04">4月</option>
+								<option value="05">5月</option>
+								<option value="06">6月</option>
+								<option value="07">7月</option>
+								<option value="08">8月</option>
+								<option value="09">9月</option>
+								<option value="10">10月</option>
+								<option value="11">11月</option>
+								<option value="12">12月</option>
+							</select>
+						</div>
+
+
+						<div class="form-group">
+							<button class="btn btn-primary" type="button" onclick="searchTable()">搜索</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="panel ">
+				<div class="panel-body">
+					<!--				<a id="add" class="btn btn-primary data-toolbar" href="#(ctx)/admin/xd/xdsettleovertimesummary/getEditPage?view=edit"><i class="demo-pli-add"></i> 添加</a>-->
+					<a id="del" class="btn btn-danger data-toolbar" onclick="delSel()" href="javascript:void(0);"><i class="demo-pli-cross"></i> 批量删除</a>
+					<a id="filePicker"  href="javascript:void(0);" ><i class="demo-pli-add"></i> 导入</a>
+					<a id="export" class="btn btn-primary data-toolbar" onclick="exportExcel()" target="_blank"><i class="demo-pli-download-from-cloud"></i> 导出</a>
+
+					<table id="pageTable" class="demo-add-niftycheck table table-bordered" data-toolbar="#del,#add,#filePicker,#export"
+						   data-search="true"
+						   data-show-refresh="true"
+						   data-show-toggle="true"
+						   data-show-columns="true"
+						   data-sort-name="id"
+						   data-page-list="[5, 10, 20]"
+						   data-page-size="5"
+						   data-pagination="true" data-show-pagination-switch="true" ></table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+
+	var col = [{field: 'checked', checkbox : true, align: 'center'},
+
+		{field: 'dept_name', title: '部门', align: 'center'},
+		{field: 'project_name', title: '项目', align: 'center'},
+		{field: 'emp_num', title: '工号', align: 'center'},
+		{field: 'emp_name', title: '姓名', align: 'center'},
+		{field: 'emp_idnum', title: '身份证', align: 'center'},
+		{field: 'apply_date', title: '申请日期', align: 'center'},
+		{field: 'apply_start', title: '申请开始时间', align: 'center'},
+		{field: 'apply_end', title: '申请结束时间', align: 'center'},
+		{field: 'apply_type', title: '类别', align: 'center',
+			formatter:function(value,row,index){
+				if(value=='1'){
+					return "非国定节假日加班";
+				}else if(value=='0'){
+					return "国定节假日加班";
+				}
+			}},
+		{field: 'remarks', title: '备注', align: 'center'},
+		{field: 'control', title: '操作', align: 'left', width:'200',
+			formatter:function(value,row,index){
+				//通过formatter可以自定义列显示的内容
+				//value：当前field的值，即id
+				//row：当前行的数据
+				var a = '<a class="label label-table label-success" href="'+ctx+'/admin/xd/xdsettleovertimesummary/getEditPage?id='+row.id+'&view=detail" >查看</a>&nbsp;';
+				/*				a = a + '<a class="label label-table label-success" href="'+ctx+'/admin/xd/xdsettleovertimesummary/getEditPage?id='+row.id+'&view=edit" >编辑</a>&nbsp;';
+                                a = a + '<a class="label label-table label-danger" onclick="del(\''+row.id+'\')" href="javascript:void(0);" >删除</a>';*/
+				return a;
+			}
+		}];
+	var opt = {
+		//请求方法
+		method: 'get',
+		//是否显示行间隔色
+		striped: true,
+		//是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+		cache: false,
+		//data-toolbar: "#demo-delete-row",
+		//是否显示分页（*）
+		pagination: true,
+		//是否启用排序
+		sortable: false,
+		//排序方式
+		sortOrder: "asc",
+		//初始化加载第一页，默认第一页
+		//我设置了这一项，但是貌似没起作用，而且我这默认是0,- -
+		//pageNumber:1,
+		//每页的记录行数（*）
+		pageSize: 10,
+		//可供选择的每页的行数（*）
+		pageList: [10, 25, 50, 100],
+		//这个接口需要处理bootstrap table传递的固定参数,并返回特定格式的json数据
+		url: ctx+"/admin/xd/xdsettleovertimesummary/listData",
+		//默认值为 'limit',传给服务端的参数为：limit, offset, search, sort, order Else
+		//queryParamsType:'',
+		////查询参数,每次调用是会带上这个参数，可自定义
+		queryParams : function(params) {
+			return {
+				pageNumber: (params.offset/params.limit)+1,
+				pageSize: params.limit,
+				"emp_name":encodeURIComponent($("#emp_name").val()),
+				"dept":$("#dept").val(),
+				"unitname":$("#unitname").val(),
+				"year":$("#year").val(),
+				"month":$("#month").val(),
+			};
+		},
+		//分页方式：client客户端分页，server服务端分页（*）
+		sidePagination: "server",
+		//是否显示搜索
+		search: false,
+		//Enable the strict search.
+		strictSearch: true,
+		//Indicate which field is an identity field.
+		idField : "id",
+		columns: col,
+		pagination:true,paginationShowPageGo: true
+	};
+
+	//表格
+	function initTable(){
+		$('#pageTable').bootstrapTable(opt);
+		$('#pageTable').bootstrapTable('hideColumn', 'id');
+	}
+	function refreshTable(){
+		$("#pageTable").bootstrapTable('refresh', opt);
+		$('#pageTable').bootstrapTable('hideColumn', 'id');
+	}
+
+	//批量删除
+	function delSel(){
+		var data = [];
+		$("#pageTable input[type='checkbox'][name!='btSelectAll']:checked").each(function(){
+			data.push($(this).val());
+		});
+		if(data.length==0){
+			pointLion.alertMsg("请选择要删除的数据!","danger",null,null);
+			return;
+		}
+		del(data.join(","));//执行删除
+	}
+	//删除
+	function del(ids){
+		pointLion.confimMsg("您是否要删除所选信息 ?<br/> 点击确认进行删除 , 点击取消取消该操作",null,function(){
+			//执行删除
+			var data = common_ajax.ajaxFunc("/admin/xd/xdsettleovertimesummary/delete",{"ids":ids}, "json", null);
+			//删除结果
+			if(data.success){
+				pointLion.alertMsg(data.message,"success",null,function(){
+					location.href = ctx+'/admin/xd/xdsettleovertimesummary/getListPage';//跳转到列表页
+				});
+			}else{
+				pointLion.alertMsg(data.message,"success",null,null);
+			}
+		});
+	};
+
+	//查询
+	function searchTable(){
+		let dept = $("#dept").val();
+		let emp_name =encodeURIComponent($("#emp_name").val());
+		let unitname = $("#unitname").val();
+		let year =$("#year").val();
+		let month =	$("#month").val();
+		var param = {
+			query: {
+				"dept":dept,
+				"emp_name":emp_name,
+				"unitname":unitname,
+				"year":year,
+				"month":month
+			}
+		}
+		// 刷新表格
+		$('#pageTable').bootstrapTable('refresh',param);
+	}
+
+	$(document).ready(function(){
+		$('.form_datetime').datepicker({format: 'yyyy-mm-dd',weekStart: 1,todayBtn:  1,autoclose: 1,language:  'zh-CN',todayHighlight: 1,forceParse: 0,clearBtn: true }).on('changeDate',null);
+		initTable();//初始化
+
+		pointLion.initUploader("/admin/xd/xdsettleovertimesummary/importExcel",function(data){
+			if(data.success){
+				pointLion.alertMsg("导入成功！","success",null,null);
+				searchTable();
+			}else{
+				pointLion.alertMsg(data.message,"danger",null,null);
+			}
+		});
+	});
+	/***
+	 * 导出
+	 */
+
+	function exportExcel(){
+
+		let dept = $("#dept").val();
+		let emp_name =encodeURIComponent($("#emp_name").val());
+		let unitname = $("#unitname").val();
+		let year =$("#year").val();
+		let month =	$("#month").val();
+		/*	if(year==''||month==''){
+                pointLion.alertMsg("请选择年月！","success",null,null);
+                return;
+            }*/
+		location.href = "#(ctx)/admin/xd/xdsettleovertimesummary/exportExcel?dept="+dept+"&emp_name="+emp_name+"&unitname="+unitname+"&year="+year+"&month="+month;
+	}
+
+</script>
