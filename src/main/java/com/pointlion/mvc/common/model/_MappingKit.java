@@ -176,6 +176,11 @@ public class _MappingKit {
 
 		arp.addMapping("xd_rcp","id",XdRcp.class);
 		arp.addMapping("xd_rcp_summary","id",XdRcpSummary.class);
+
+		arp.addMapping("xd_anleave","id",XdAnleave.class);
+		arp.addMapping("xd_anleave_summary","id",XdAnleaveSummary.class);
+		arp.addMapping("xd_leave","id",XdLeave.class);
+
 	}
 }
 

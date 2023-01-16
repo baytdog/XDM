@@ -1,0 +1,129 @@
+<div id="page-content">
+	<div class="col-lg-12">
+		<div class="panel">
+			#@buildFormPanelContainer("员工年假","/WEB-INF/admin/xdm/xdanleavesummary/editForm.html")
+		</div>
+	</div>
+</div>
+<script>
+	function save(){
+		var data = common_ajax.ajaxFunc("/admin/xd/xdanleavesummary/save", $('#editForm').serialize(), "json", null);
+		if(data.success){
+			pointLion.alertMsg("保存成功!" , "success" , "small" , function(){
+				location.href = ctx+'/admin/xd/xdanleavesummary/getListPage';//跳转到列表页
+			},data);
+		}else{
+			pointLion.alertMsg(data.message , "danger" , "small" , function(){
+				$(".btn").removeAttr("disabled");
+			},data);
+		}
+	}
+	$(document).ready(function() {
+		$('#editForm').bootstrapValidator({
+			excluded:[":disabled"],
+			live: 'enabled',
+			fields: {
+				"#(formModelName).dept_value": {
+					trigger: 'change',
+					validators: {
+						notEmpty: {
+							message: '*姓名不能为空'
+						}
+					}
+				},
+				"#(formModelName).shedule_year": {
+					trigger: 'change',
+					validators: {
+						notEmpty: {
+							message: '*年份不能为空'
+						}
+					}
+				},
+				"#(formModelName).shedule_month": {
+					trigger: 'change',
+					validators: {
+						notEmpty: {
+							message: '*月份不能为空'
+						}
+					}
+				},
+				"#(formModelName).approver_id": {
+					validators: {
+						notEmpty: {
+							message: '*审批人不能为空'
+						}
+					}
+				},
+			}
+		}).on("success.form.bv", function (e) {
+			save();
+			return false;//阻止表单跳转
+		});
+	});
+
+	function resetVali(){
+		if(!$("#editForm").data('bootstrapValidator').isValid()) {
+			$("#editForm").data('bootstrapValidator').resetForm();
+			$(".btn").removeAttr("disabled");
+		}
+	}
+	$('.form_datetime').datepicker({format: 'yyyy-mm-dd',weekStart: 1,todayBtn:  1,autoclose: 1,language:  'zh-CN',todayHighlight: 1,forceParse: 0,showMeridian: 1}).on('changeDate',function(){
+		//resetVali();
+	});
+
+
+
+	$(".selectpicker").selectpicker({});
+	$(".bootstrap-select").attr("style","width:100%;");
+</script>
+
+<script>
+
+	$(function () {
+		//部门
+		let dept_id=$("#dept_id").val();
+		if(dept_id){
+			$('#departmentSelect').selectpicker('val',dept_id.split(",")).trigger("change");
+		};
+
+		$('#departmentSelect').on('changed.bs.select', function (e) {
+			$('#dept_id').val($('#departmentSelect').val())
+			$('#dept_name').val($('#departmentSelect option:selected').text())
+
+		});
+		//员工选择
+		let emp_id=$("#emp_id").val();
+		if(emp_id){
+			$('#empSelect').selectpicker('val',emp_id.split(",")).trigger("change");
+		};
+
+		$('#empSelect').on('changed.bs.select', function (e) {
+			$('#emp_id').val($('#empSelect').val())
+			$('#emp_name').val($('#empSelect option:selected').text())
+		});
+		//月份
+		let shedule_month=$("#shedule_month").val();
+		if(shedule_month){
+			$('#monthSelect').selectpicker('val',shedule_month.split(",")).trigger("change");
+		};
+
+		$('#monthSelect').on('changed.bs.select', function (e) {
+			$('#shedule_month').val($('#monthSelect').val())
+		});
+		//审批人
+		let approver_id=$("#approver_id").val();
+		if(approver_id){
+			$('#approverSelect').selectpicker('val',approver_id.split(",")).trigger("change");
+		};
+
+		$('#approverSelect').on('changed.bs.select', function (e) {
+			$('#approver_id').val($('#approverSelect').val())
+			$('#approver_name').val($('#approverSelect option:selected').text())
+			resetVali();
+
+		});
+
+	})
+
+</script>
+

@@ -1,0 +1,66 @@
+<form id="editForm" class="panel-body form-horizontal form-padding">
+	<input id="scheduleId" type="hidden"  name="#(formModelName).id" class="form-control" value="#(o?o.id:'')">
+	<div class="form-group">
+		<label class="col-md-2 control-label">部门</label>
+		<input type="hidden" id="dept_id" name="#(formModelName).dept_id" value="#(o?o.dept_id:'')">
+		<input type="hidden" id="dept_name" name="#(formModelName).dept_name" value="#(o?o.dept_name:'')">
+		<div class="col-md-10">
+			<select id="departmentSelect"   title="请选择"  class="selectpicker show-tick form-control" actionsBox="true"  disable  data-live-search="false">
+				#for(sysOrg:sysOrgs)
+				<option value="#(sysOrg.id)">#(sysOrg.name)</option>
+				#end
+			</select>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-2 control-label">员工</label>
+		<input type="hidden" id="emp_id" name="#(formModelName).emp_id" value="#(o?o.emp_id:'')">
+		<input type="hidden" id="emp_name" name="#(formModelName).emp_name" value="#(o?o.emp_name:'')">
+		<div class="col-md-10">
+			<select id="empSelect"   title="请选择"  class="selectpicker show-tick form-control" actionsBox="true"  disable  data-live-search="true">
+				#for(emp:emps)
+				<option value="#(emp.id)">#(emp.name)</option>
+				#end
+			</select>
+		</div>
+	</div>
+
+
+	<div class="form-group">
+		<label class="col-md-2 control-label">年假天数</label>
+		<div class="col-md-10">
+			<input type="text"  name="#(formModelName).leave_days" class="form-control"  value="#(o?o.leave_days:'')"  >
+		</div>
+	</div>
+
+	<!--<div class="form-group">
+		<label class="col-md-2 control-label">审批人</label>
+		<div class="col-md-10">
+			<input type="hidden" id="approver_id"  name="#(formModelName).approver_id" class="form-control"  value="#(o?o.approver_id:'')" >
+			<input type="hidden" id="approver_name" name="#(formModelName).approver_name" class="form-control"  value="#(o?o.approver_name:'')" >
+			<select id="approverSelect"   title="请选择"  class="selectpicker show-tick form-control" actionsBox="true"  disable  data-live-search="false">
+				#for(sysUser:sysUsers)
+				<option value="#(sysUser.id)">#(sysUser.name)</option>
+				#end
+			</select>
+		</div>
+	</div>-->
+	#if(view=='edit')
+	<div class="panel-footer">
+		<div class="row">
+			<div class="col-sm-12 " style="text-align: center">
+				<button class="btn btn-primary" type="submit" #if(view=='detail') disabled #end>保存</button>
+				<button class="btn btn-primary" type="button" onclick="window.history.back();" >返回</button>
+			</div>
+		</div>
+	</div>
+	#else
+	<div class="panel-footer">
+		<div class="row">
+			<div class="col-sm-12 " style="text-align: center">
+				<button class="btn btn-primary" type="button" onclick="window.history.back();" >返回</button>
+			</div>
+		</div>
+	</div>
+	#end
+</form>

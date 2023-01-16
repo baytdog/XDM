@@ -2,6 +2,8 @@ package com.pointlion.config.routes;
 
 import com.jfinal.config.Routes;
 import com.pointlion.mvc.admin.oa.dict.OaDictController;
+import com.pointlion.mvc.admin.xdm.xdanleave.XdAnleaveController;
+import com.pointlion.mvc.admin.xdm.xdanleavesummary.XdAnleaveSummaryController;
 import com.pointlion.mvc.admin.xdm.xdattendance.XdAttendanceController;
 import com.pointlion.mvc.admin.xdm.xdattendancedetail.XdAttendanceDetailController;
 import com.pointlion.mvc.admin.xdm.xdattendancesummary.XdAttendanceSummaryController;
@@ -10,6 +12,7 @@ import com.pointlion.mvc.admin.xdm.xddict.XdDictController;
 import com.pointlion.mvc.admin.xdm.xdedutrain.XdEdutrainController;
 import com.pointlion.mvc.admin.xdm.xdempcert.XdEmpCertController;
 import com.pointlion.mvc.admin.xdm.xdemployee.XdEmployeeController;
+import com.pointlion.mvc.admin.xdm.xdleave.XdLeaveController;
 import com.pointlion.mvc.admin.xdm.xdovertime.XdOvertimeController;
 import com.pointlion.mvc.admin.xdm.xdovertimesummary.XdOvertimeSummaryController;
 import com.pointlion.mvc.admin.xdm.xdprojects.XdProjectsController;
@@ -25,6 +28,7 @@ import com.pointlion.mvc.admin.xdm.xdsettleovertimesummary.XdSettleOvertimeSumma
 import com.pointlion.mvc.admin.xdm.xdshift.XdShiftController;
 import com.pointlion.mvc.admin.xdm.xdsteps.XdStepsController;
 import com.pointlion.mvc.admin.xdm.xdworkexper.XdWorkExperController;
+import com.pointlion.mvc.common.model.XdAnleave;
 import com.pointlion.mvc.common.model.XdRecords;
 import com.pointlion.mvc.common.model.XdScheduleDetail;
 
@@ -68,6 +72,10 @@ public class XDRoutes extends Routes {
 
         add("/admin/xd/xdrcp", XdRcpController.class,"/xdrcp");
         add("/admin/xd/xdrcpsummary", XdRcpSummaryController.class,"/xdrcpsummary");
+
+        add("/admin/xd/xdanleave", XdAnleaveController.class,"/xdanleave");
+        add("/admin/xd/xdanleavesummary", XdAnleaveSummaryController.class,"/xdanleavesummary");
+        add("/admin/xd/xdleave", XdLeaveController.class,"/xdleave");
 
 
     }
