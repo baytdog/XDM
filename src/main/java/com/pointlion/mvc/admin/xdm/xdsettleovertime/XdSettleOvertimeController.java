@@ -37,10 +37,10 @@ public class XdSettleOvertimeController extends BaseController {
     public void listData(){
     	String curr = getPara("pageNumber");
     	String pageSize = getPara("pageSize");
-		String endTime = getPara("endTime","");
-		String startTime = getPara("startTime","");
-		String applyUser = getPara("applyUser","");
-    	Page<Record> page = service.getPage(Integer.valueOf(curr),Integer.valueOf(pageSize),startTime,endTime,applyUser);
+		String dept = getPara("dept","");
+		String year = getPara("year","");
+		String month = getPara("month","");
+    	Page<Record> page = service.getPage(Integer.valueOf(curr),Integer.valueOf(pageSize),dept,year,month);
     	renderPage(page.getList(),"",page.getTotalRow());
     }
     /***

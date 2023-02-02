@@ -5,9 +5,7 @@ import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.plugin.activerecord.Record;
 import com.jfinal.upload.UploadFile;
 import com.pointlion.mvc.common.base.BaseController;
-import com.pointlion.mvc.common.model.SysOrg;
-import com.pointlion.mvc.common.model.SysUser;
-import com.pointlion.mvc.common.model.XdRcpSummary;
+import com.pointlion.mvc.common.model.*;
 import com.pointlion.mvc.common.utils.DateUtil;
 import com.pointlion.mvc.common.utils.StringUtil;
 import com.pointlion.mvc.common.utils.office.excel.DbImportExcelUtils;
@@ -37,18 +35,27 @@ public class XdRcpSummaryController extends BaseController {
 	 * get list page
 	 */
 	public void getListPage(){
+
+		List<XdDict> units = XdDict.dao.find("select * from  xd_dict where  type='unit'");
+		setAttr("units",units);
+		List<XdProjects> projects = XdProjects.dao.findAll();
+		setAttr("projects",projects);
+
+
 		renderIframe("list.html");
     }
 	/***
      * list page data
      **/
-    public void listData(){
+    public void listData() throws UnsupportedEncodingException {
     	String curr = getPara("pageNumber");
     	String pageSize = getPara("pageSize");
-		String endTime = getPara("endTime","");
-		String startTime = getPara("startTime","");
-		String applyUser = getPara("applyUser","");
-    	Page<Record> page = service.getPage(Integer.valueOf(curr),Integer.valueOf(pageSize),startTime,endTime,applyUser);
+		String dept = getPara("dept","");
+		String unit = getPara("unit","");
+		String project = getPara("project","");
+		String empName = java.net.URLDecoder.decode(getPara("emp_name",""),"UTF-8");
+		String workstation = java.net.URLDecoder.decode(getPara("workstation",""),"UTF-8");
+    	Page<Record> page = service.getPage(Integer.valueOf(curr),Integer.valueOf(pageSize),dept,unit,project,empName,workstation);
     	renderPage(page.getList(),"",page.getTotalRow());
     }
     /***

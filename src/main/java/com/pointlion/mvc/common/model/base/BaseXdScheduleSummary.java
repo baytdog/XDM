@@ -121,6 +121,254 @@ public abstract class BaseXdScheduleSummary<M extends BaseXdScheduleSummary<M>> 
 		return getStr("schedule_year_month");
 	}
 
+	public void setDay01(String day01) {
+		set("day01", day01);
+	}
+	
+	public String getDay01() {
+		return getStr("day01");
+	}
+
+	public void setDay02(String day02) {
+		set("day02", day02);
+	}
+	
+	public String getDay02() {
+		return getStr("day02");
+	}
+
+	public void setDay03(String day03) {
+		set("day03", day03);
+	}
+	
+	public String getDay03() {
+		return getStr("day03");
+	}
+
+	public void setDay04(String day04) {
+		set("day04", day04);
+	}
+	
+	public String getDay04() {
+		return getStr("day04");
+	}
+
+	public void setDay05(String day05) {
+		set("day05", day05);
+	}
+	
+	public String getDay05() {
+		return getStr("day05");
+	}
+
+	public void setDay06(String day06) {
+		set("day06", day06);
+	}
+	
+	public String getDay06() {
+		return getStr("day06");
+	}
+
+	public void setDay07(String day07) {
+		set("day07", day07);
+	}
+	
+	public String getDay07() {
+		return getStr("day07");
+	}
+
+	public void setDay08(String day08) {
+		set("day08", day08);
+	}
+	
+	public String getDay08() {
+		return getStr("day08");
+	}
+
+	public void setDay09(String day09) {
+		set("day09", day09);
+	}
+	
+	public String getDay09() {
+		return getStr("day09");
+	}
+
+	public void setDay10(String day10) {
+		set("day10", day10);
+	}
+	
+	public String getDay10() {
+		return getStr("day10");
+	}
+
+	public void setDay11(String day11) {
+		set("day11", day11);
+	}
+	
+	public String getDay11() {
+		return getStr("day11");
+	}
+
+	public void setDay12(String day12) {
+		set("day12", day12);
+	}
+	
+	public String getDay12() {
+		return getStr("day12");
+	}
+
+	public void setDay13(String day13) {
+		set("day13", day13);
+	}
+	
+	public String getDay13() {
+		return getStr("day13");
+	}
+
+	public void setDay14(String day14) {
+		set("day14", day14);
+	}
+	
+	public String getDay14() {
+		return getStr("day14");
+	}
+
+	public void setDay15(String day15) {
+		set("day15", day15);
+	}
+	
+	public String getDay15() {
+		return getStr("day15");
+	}
+
+	public void setDay16(String day16) {
+		set("day16", day16);
+	}
+	
+	public String getDay16() {
+		return getStr("day16");
+	}
+
+	public void setDay17(String day17) {
+		set("day17", day17);
+	}
+	
+	public String getDay17() {
+		return getStr("day17");
+	}
+
+	public void setDay18(String day18) {
+		set("day18", day18);
+	}
+	
+	public String getDay18() {
+		return getStr("day18");
+	}
+
+	public void setDay19(String day19) {
+		set("day19", day19);
+	}
+	
+	public String getDay19() {
+		return getStr("day19");
+	}
+
+	public void setDay20(String day20) {
+		set("day20", day20);
+	}
+	
+	public String getDay20() {
+		return getStr("day20");
+	}
+
+	public void setDay21(String day21) {
+		set("day21", day21);
+	}
+	
+	public String getDay21() {
+		return getStr("day21");
+	}
+
+	public void setDay22(String day22) {
+		set("day22", day22);
+	}
+	
+	public String getDay22() {
+		return getStr("day22");
+	}
+
+	public void setDay23(String day23) {
+		set("day23", day23);
+	}
+	
+	public String getDay23() {
+		return getStr("day23");
+	}
+
+	public void setDay24(String day24) {
+		set("day24", day24);
+	}
+	
+	public String getDay24() {
+		return getStr("day24");
+	}
+
+	public void setDay25(String day25) {
+		set("day25", day25);
+	}
+	
+	public String getDay25() {
+		return getStr("day25");
+	}
+
+	public void setDay26(String day26) {
+		set("day26", day26);
+	}
+	
+	public String getDay26() {
+		return getStr("day26");
+	}
+
+	public void setDay27(String day27) {
+		set("day27", day27);
+	}
+	
+	public String getDay27() {
+		return getStr("day27");
+	}
+
+	public void setDay28(String day28) {
+		set("day28", day28);
+	}
+	
+	public String getDay28() {
+		return getStr("day28");
+	}
+
+	public void setDay29(String day29) {
+		set("day29", day29);
+	}
+	
+	public String getDay29() {
+		return getStr("day29");
+	}
+
+	public void setDay30(String day30) {
+		set("day30", day30);
+	}
+	
+	public String getDay30() {
+		return getStr("day30");
+	}
+
+	public void setDay31(String day31) {
+		set("day31", day31);
+	}
+	
+	public String getDay31() {
+		return getStr("day31");
+	}
+
 	public void setRemarks(String remarks) {
 		set("remarks", remarks);
 	}

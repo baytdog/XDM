@@ -40,16 +40,22 @@ public class XdRcpSummaryService{
 	/***
 	 * get page
 	 */
-	public Page<Record> getPage(int pnum,int psize,String startTime,String endTime,String applyUser){
+	public Page<Record> getPage(int pnum,int psize,String dept,String unit,String project,String empName,String workstation){
 		String sql  = " from "+TABLE_NAME+" o    where 1=1";
-		if(StrKit.notBlank(startTime)){
-			sql = sql + " and o.create_time>='"+ DateUtil.formatSearchTime(startTime,"0")+"'";
+		if(StrKit.notBlank(dept)){
+			sql = sql + " and o.dept_value='"+dept+"'";
 		}
-		if(StrKit.notBlank(endTime)){
-			sql = sql + " and o.create_time<='"+DateUtil.formatSearchTime(endTime,"1")+"'";
+		if(StrKit.notBlank(unit)){
+			sql = sql + " and o.unit_value='"+unit+"'";
 		}
-		if(StrKit.notBlank(applyUser)){
-			sql = sql + " and o.applyer_name like '%"+applyUser+"%'";
+		if(StrKit.notBlank(project)){
+			sql = sql + " and o.project_value='"+project+"'";
+		}
+		if(StrKit.notBlank(empName)){
+			sql = sql + " and o.emp_name like '%"+empName+"%'";
+		}
+		if(StrKit.notBlank(workstation)){
+			sql = sql + " and o.wor_station like '%"+workstation.trim()+"%'";
 		}
 		sql = sql + " order by o.create_date desc";
 		return Db.paginate(pnum, psize, " select * ", sql);

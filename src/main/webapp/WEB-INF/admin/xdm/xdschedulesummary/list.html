@@ -4,6 +4,9 @@
 		height: 33px;
 		line-height: 33px;
 	}
+	.table{
+		table-layout: fixed;
+	}
 </style>
 <div id="page-content">
 	<div class="col-sm-12 eq-box-sm">
@@ -71,21 +74,16 @@
 				</div>
 			</div>
 			<div class="panel ">
-				<div class="panel-body">
+				<div class="panel-body table-responsive">
 	<!--				<a id="add" class="btn btn-primary data-toolbar" href="#(ctx)/admin/xd/xdschedulesummary/getEditPage?view=edit"><i class="demo-pli-add"></i> 添加</a>-->
 					<a id="del" class="btn btn-danger data-toolbar" onclick="delSel()" href="javascript:void(0);"><i class="demo-pli-cross"></i> 批量删除</a>
 					<a id="filePicker"  href="javascript:void(0);" ><i class="demo-pli-add"></i> 导入</a>
 					<a id="export" class="btn btn-primary data-toolbar" onclick="exportExcel()" target="_blank"><i class="demo-pli-download-from-cloud"></i> 导出</a>
 
-					<table id="pageTable" class="demo-add-niftycheck table table-bordered" data-toolbar="#del,#add,#filePicker,#export"
-						   data-search="true"
-						   data-show-refresh="true"
-						   data-show-toggle="true"
-						   data-show-columns="true"
-						   data-sort-name="id"
-						   data-page-list="[5, 10, 20]"
-						   data-page-size="5"
-						   data-pagination="true" data-show-pagination-switch="true" ></table>
+					<table id="pageTable" class="demo-add-niftycheck table"
+						   data-toolbar="#del,#add,#filePicker,#export"
+						   data-width="90px"
+						    ></table>
 				</div>
 			</div>
 		</div>
@@ -95,42 +93,57 @@
 
 	var col = [{field: 'checked', checkbox : true, align: 'center'},
 
-		{field: 'dept_name', title: '部门', align: 'center',
-			/*formatter:function(value,row,index){
-				if(value=='1'){
-					return "人力资源部";
-				}else if(value=='2'){
-					return "外场单元部";
-				}else if(value=='3'){
-					return "设施一部";
-				}else if(value=='4'){
-					return "内场单元部";
-				}else if(value=='5'){
-					return "工程/设施二部";
-				}else if(value=='887163179b6c4eaabd06c44e47e41f92'){
-					return "职能部门";
-				}else{
-					return "";
-				}
-			}*/
-		},
-		{field: 'unit_name', title: '单元', align: 'center'},
-		{field: 'project_name', title: '项目', align: 'center'},
-		{field: 'emp_num', title: '工号', align: 'center'},
-		{field: 'emp_name', title: '姓名', align: 'center'},
-		{field: 'work_station', title: '岗位', align: 'center'},
-		{field: 'remarks', title: '备注', align: 'center'},
-		{field: 'control', title: '操作', align: 'left', width:'200',
+		{field: 'dept_name', title: '部门', align: 'center',width:'120'},
+		{field: 'unit_name', title: '单元', align: 'center',width:'120'},
+		{field: 'project_name', title: '项目', align: 'center',width:'120'},
+		{field: 'emp_num', title: '工号', align: 'center',width:'120'},
+		{field: 'emp_name', title: '姓名', align: 'center',width:'120'},
+		{field: 'work_station', title: '岗位', align: 'center',width:'120'},
+
+		{field: 'day01', title: '1', align: 'center',width:'120'},
+		{field: 'day02', title: '2', align: 'center',width:'120'},
+		{field: 'day03', title: '3', align: 'center',width:'120'},
+		{field: 'day04', title: '4', align: 'center',width:'120'},
+		{field: 'day05', title: '5', align: 'center',width:'120'},
+		{field: 'day06', title: '6', align: 'center',width:'120'},
+		{field: 'day07', title: '7', align: 'center',width:'120'},
+		{field: 'day08', title: '8', align: 'center',width:'120'},
+		{field: 'day09', title: '9', align: 'center',width:'120'},
+		{field: 'day10', title: '10', align: 'center',width:'120'},
+		{field: 'day11', title: '11', align: 'center',width:'120'},
+		{field: 'day12', title: '12', align: 'center',width:'120'},
+		{field: 'day13', title: '13', align: 'center',width:'120'},
+		{field: 'day14', title: '14', align: 'center',width:'120'},
+		{field: 'day15', title: '15', align: 'center',width:'120'},
+		{field: 'day16', title: '16', align: 'center',width:'120'},
+		{field: 'day17', title: '17', align: 'center',width:'120'},
+		{field: 'day18', title: '18', align: 'center',width:'120'},
+		{field: 'day19', title: '19', align: 'center',width:'120'},
+		{field: 'day20', title: '20', align: 'center',width:'120'},
+		{field: 'day21', title: '21', align: 'center',width:'120'},
+		{field: 'day22', title: '22', align: 'center',width:'120'},
+		{field: 'day23', title: '23', align: 'center',width:'120'},
+		{field: 'day24', title: '24', align: 'center',width:'120'},
+		{field: 'day25', title: '25', align: 'center',width:'120'},
+		{field: 'day26', title: '26', align: 'center',width:'120'},
+		{field: 'day27', title: '27', align: 'center',width:'120'},
+		{field: 'day28', title: '28', align: 'center',width:'120'},
+		{field: 'day29', title: '29', align: 'center',width:'120'},
+		{field: 'day30', title: '30', align: 'center',width:'120'},
+		{field: 'day31', title: '31', align: 'center',width:'120'},
+
+		{field: 'remarks', title: '备注', align: 'center',width:'150'},
+		{field: 'control', title: '操作', align: 'left', width:'100',
+
 			formatter:function(value,row,index){
 				//通过formatter可以自定义列显示的内容
 				//value：当前field的值，即id
 				//row：当前行的数据
 				var a = '<a class="label label-table label-success" href="'+ctx+'/admin/xd/xdschedulesummary/getEditPage?id='+row.id+'&view=detail" >查看</a>&nbsp;';
-/*				a = a + '<a class="label label-table label-success" href="'+ctx+'/admin/xd/xdschedulesummary/getEditPage?id='+row.id+'&view=edit" >编辑</a>&nbsp;';
-				a = a + '<a class="label label-table label-danger" onclick="del(\''+row.id+'\')" href="javascript:void(0);" >删除</a>';*/
 				return a;
 			}
-		}];
+		}
+		];
 	var opt = {
 		//请求方法
 		method: 'get',
@@ -177,16 +190,25 @@
 		//Indicate which field is an identity field.
 		idField : "id",
 		columns: col,
-		pagination:true,paginationShowPageGo: true
+		pagination:true,
+		paginationShowPageGo: true,
+	//	fixedColumns: true,        //固定列
+		//fixedNumber:3,			  //固定右侧列
+	//	fixedRightNumber:5,
+		leftFixedColumns:true,
+		leftFixedNumber:7,
+		rightFixedColumns:true,
+		rightFixedNumber:2,
 	};
 
 	//表格
 	function initTable(){
-		$('#pageTable').bootstrapTable(opt);
+		//$('#pageTable').bootstrapTable('destroy');
+		$('#pageTable').bootstrapTable('destroy').bootstrapTable(opt);
 		$('#pageTable').bootstrapTable('hideColumn', 'id');
 	}
 	function refreshTable(){
-		$("#pageTable").bootstrapTable('refresh', opt);
+		$("#pageTable").bootstrapTable('destroy').bootstrapTable('refresh', opt);
 		$('#pageTable').bootstrapTable('hideColumn', 'id');
 	}
 

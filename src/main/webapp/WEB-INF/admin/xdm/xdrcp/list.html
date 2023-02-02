@@ -12,28 +12,43 @@
 				<div class="panel-body">
 					<div class="form-inline">
 						<div class="form-group">
-							<input id="name" placeholder="姓名" class="form-control">
+							<select class="selectpicker form-control"  id="dept"  >
+								<option value="">------请选择部门------</option>
+								<option value="1">人力资源部</option>
+								<option value="2">外场单元部</option>
+								<option value="3">设施一部</option>
+								<option value="4">内场单元部</option>
+								<option value="5">工程/设施二部</option>
+								<option value="887163179b6c4eaabd06c44e47e41f92">职能部门</option>
+							</select>
 						</div>
 						<div class="form-group">
-							<input id="serviceUnit" placeholder="服务单位" class="form-control">
+							<select class="selectpicker form-control"  id="year"  >
+								<option value="">------请选择年份------</option>
+								<option value="2022">2022</option>
+								<option value="2023">2023</option>
+								<option value="2024">2024</option>
+								<option value="2025">2025</option>
+								<option value="2026">2026</option>
+								<option value="2027">2027</option>
+							</select>
 						</div>
 						<div class="form-group">
-							<input id="job" placeholder="职位" class="form-control">
-						</div>
-						<div class="form-group">
-							<input id="addr" placeholder="地点" class="form-control">
-						</div>
-						<div class="form-group">
-							<div class="input-group date form_datetime">
-								<input id="entryDate" placeholder="入职时间" class="form-control">
-								<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
-							</div>
-						</div>
-						<div class="form-group">
-							<div class="input-group date form_datetime">
-								<input id="departDate" placeholder="离职时间" class="form-control">
-								<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
-							</div>
+							<select class="selectpicker form-control"  id="month"  >
+								<option value="">------请选择月份------</option>
+								<option value="01">1月</option>
+								<option value="02">2月</option>
+								<option value="03">3月</option>
+								<option value="04">4月</option>
+								<option value="05">5月</option>
+								<option value="06">6月</option>
+								<option value="07">7月</option>
+								<option value="08">8月</option>
+								<option value="09">9月</option>
+								<option value="10">10月</option>
+								<option value="11">11月</option>
+								<option value="12">12月</option>
+							</select>
 						</div>
 						<div class="form-group">
 							<button class="btn btn-primary" type="button" onclick="searchTable()">搜索</button>
@@ -120,7 +135,10 @@
 		queryParams : function(params) {
 			return {
 				pageNumber: (params.offset/params.limit)+1,
-				pageSize: params.limit
+				pageSize: params.limit,
+				dept:$("#dept").val(),
+				year:$("#year").val(),
+				month:$("#month").val()
 			};
 		},
 		//分页方式：client客户端分页，server服务端分页（*）
@@ -176,20 +194,14 @@
 	//查询
 	function searchTable(){
 
-		var name = encodeURIComponent($("#name").val());
-		var serviceUnit = encodeURIComponent($("#serviceUnit").val());
-		var job = encodeURIComponent($("#job").val());
-		var addr = encodeURIComponent($("#addr").val());
-		var entryDate = $("#entryDate").val();
-		var departDate = $("#departDate").val();
+		let dept=$("#dept").val();
+		let	year=$("#year").val();
+		let	month=$("#month").val();
 		var param = {
 			query: {
-				"name":name,
-				"serviceUnit":serviceUnit,
-				"job":job,
-				"addr":addr,
-				"entryDate":entryDate,
-				"departDate":departDate
+				"dept":dept,
+				"year":year,
+				"month":month,
 			}
 		}
 		// 刷新表格

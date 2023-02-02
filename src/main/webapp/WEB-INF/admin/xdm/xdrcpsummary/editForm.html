@@ -1,30 +1,16 @@
 <form id="editForm" class="panel-body form-horizontal form-padding">
 	<input id="summaryId" type="hidden"  name="#(formModelName).id" class="form-control" value="#(o?o.id:'')">
-
-	<div class="form-group">
-		<label class="col-md-1 control-label">工号</label>
-		<div class="col-md-11">
-			<input type="text"  name="#(formModelName).emp_num" class="form-control"  value="#(o?o.emp_num:'')"  >
-		</div>
-
-	</div>
-	<div class="form-group">
-		<label class="col-md-1 control-label">姓名</label>
-		<div class="col-md-11">
-			<input type="text"  name="#(formModelName).emp_name" class="form-control"  value="#(o?o.emp_name:'')"  >
-		</div>
-	</div>
-	<div class="form-group">
-		<label class="col-md-1 control-label">身份证</label>
-		<div class="col-md-11">
-			<input type="text"  name="#(formModelName).emp_idnum" class="form-control"  value="#(o?o.emp_idnum:'')"  >
-		</div>
-	</div>
-
 	<div class="form-group">
 		<label class="col-md-1 control-label">部门</label>
 		<div class="col-md-11">
 			<input type="text"  name="#(formModelName).dept_name" class="form-control"  value="#(o?o.dept_name:'')"  >
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="col-md-1 control-label">单元</label>
+		<div class="col-md-11">
+			<input type="text"  name="#(formModelName).unit_name" class="form-control"  value="#(o?o.unit_name:'')"  >
 		</div>
 	</div>
 	<div class="form-group">
@@ -34,52 +20,54 @@
 		</div>
 	</div>
 	<div class="form-group">
-		<label class="col-md-1 control-label">加班申请日期</label>
+		<label class="col-md-1 control-label">姓名</label>
 		<div class="col-md-11">
-			<input type="text"  name="#(formModelName).apply_date" class="form-control"  value="#(o?o.apply_date:'')"  >
+			<input type="text"  name="#(formModelName).emp_name" class="form-control"  value="#(o?o.emp_name:'')"  >
 		</div>
 	</div>
 	<div class="form-group">
-		<label class="col-md-1 control-label">加班申请开始时间</label>
+		<label class="col-md-1 control-label">岗位</label>
 		<div class="col-md-11">
-			<input type="text"  name="#(formModelName).apply_start" class="form-control"  value="#(o?o.apply_start:'')"  >
-		</div>
-	</div>
-	<div class="form-group">
-		<label class="col-md-1 control-label">加班申请结束时间</label>
-		<div class="col-md-11">
-			<input type="text"  name="#(formModelName).apply_end" class="form-control"  value="#(o?o.apply_end:'')"  >
-		</div>
-	</div>
-	<div class="form-group">
-		<label class="col-md-1 control-label">加班申请时长</label>
-		<div class="col-md-11">
-			<input type="text"  name="#(formModelName).apply_hours" class="form-control"  value="#(o?o.apply_hours:'')"  >
+			<input type="text"  name="#(formModelName).wor_station" class="form-control"  value="#(o?o.wor_station:'')"  >
 		</div>
 	</div>
 
 	<div class="form-group">
-		<label class="col-md-1 control-label">加班申请类别</label>
+		<label class="col-md-1 control-label">班次</label>
 		<div class="col-md-11">
-			<input type="text"  name="#(formModelName).apply_type" class="form-control"  value="#(o?o.apply_type:'')"  >
+			<input type="text"  name="#(formModelName).shfit_name" class="form-control"  value="#(o?o.shfit_name:'')"  >
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="col-md-1 control-label">时间</label>
+		<div class="col-md-11">
+			<input type="text"  name="#(formModelName).work_hours" class="form-control"  value="#(o?o.work_hours:'')"  >
 		</div>
 	</div>
 	<div class="form-group">
-		<label class="col-md-1 control-label">实际加班开始时间</label>
+		<label class="col-md-1 control-label">津贴天数</label>
 		<div class="col-md-11">
-			<input type="text"  name="#(formModelName).act_start" class="form-control"  value="#(o?o.act_start:'')"  >
+			<input type="text"  name="#(formModelName).rcp_days" class="form-control"  value="#(o?o.rcp_days:'')"  >
 		</div>
 	</div>
 	<div class="form-group">
-		<label class="col-md-1 control-label">实际加班结束时间</label>
+		<label class="col-md-1 control-label">上班天数</label>
 		<div class="col-md-11">
-			<input type="text"  name="#(formModelName).act_end" class="form-control"  value="#(o?o.act_end:'')"  >
+			<input type="text"  name="#(formModelName).work_days" class="form-control"  value="#(o?o.work_days:'')"  >
 		</div>
 	</div>
 	<div class="form-group">
-		<label class="col-md-1 control-label">实际加班时长</label>
+		<label class="col-md-1 control-label">津贴标准</label>
 		<div class="col-md-11">
-			<input type="text"  name="#(formModelName).act_hours" class="form-control"  value="#(o?o.act_hours:'')"  >
+			<input type="text"  name="#(formModelName).rcp_standard" class="form-control"  value="#(o?o.rcp_standard:'')"  >
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="col-md-1 control-label">总额</label>
+		<div class="col-md-11">
+			<input type="text"  name="#(formModelName).rental" class="form-control"  value="#(o?o.rental:'')"  >
 		</div>
 	</div>
 	<div class="form-group">

@@ -39,17 +39,35 @@ public class XdOvertimeSummaryService{
 	/***
 	 * get page
 	 */
-	public Page<Record> getPage(int pnum,int psize,String startTime,String endTime,String applyUser){
+	public Page<Record> getPage(int pnum,int psize,String dept,String project,String emp_name,String emp_num,String apply_date){
 		String sql  = " from "+TABLE_NAME+" o   where 1=1";
-		if(StrKit.notBlank(startTime)){
-			sql = sql + " and o.create_time>='"+ DateUtil.formatSearchTime(startTime,"0")+"'";
+		if(StrKit.notBlank(dept)){
+			sql = sql + " and o.dept_id='"+dept+"'";
 		}
-		if(StrKit.notBlank(endTime)){
-			sql = sql + " and o.create_time<='"+DateUtil.formatSearchTime(endTime,"1")+"'";
+		if(StrKit.notBlank(project)){
+			sql = sql + " and o.project_id='"+project+"'";
 		}
-		if(StrKit.notBlank(applyUser)){
-			sql = sql + " and o.applyer_name like '%"+applyUser+"%'";
+		if(StrKit.notBlank(emp_name)){
+			sql = sql + " and o.emp_name like '%"+emp_name+"%'";
 		}
+		if(StrKit.notBlank(emp_num)){
+			sql = sql + " and o.emp_num like '%"+emp_num+"%'";
+		}
+
+		if(StrKit.notBlank(apply_date)){
+			String[] split = apply_date.split("-");
+			String month=split[1];
+			String day=split[2];
+			if(month.startsWith("0")){
+				month=month.replaceAll("0","");
+			}
+			if(day.startsWith("0")){
+				day=day.replaceAll("0","");
+			}
+			String ymd=split[0]+"/"+month+"/"+day;
+			sql = sql + " and o.apply_date='"+ymd+"'";
+		}
+
 		sql = sql + " order by o.create_date desc";
 		return Db.paginate(pnum, psize, " select * ", sql);
 	}

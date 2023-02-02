@@ -79,7 +79,16 @@
 </script>
 
 <script>
+$(function () {
+	let apply_type=$("#apply_type").val();
+	if(apply_type){
+		$('#applyTypeSelect').selectpicker('val',apply_type.split(",")).trigger("change");
+	}
 
+	$('#applyTypeSelect').on('changed.bs.select', function (e) {
+		$('#apply_type').val($('#applyTypeSelect').val())
+	});
+})
 
 </script>
 

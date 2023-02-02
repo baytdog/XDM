@@ -24,7 +24,7 @@
 							</select>
 						</div>
 						<div class="form-group">
-							<select class="selectpicker form-control"  id="unitname"  data-live-search="true" >
+							<select class="selectpicker form-control"  id="unit"  data-live-search="true" >
 								<option value="">------请选择单元------</option>
 								#for(unit:units)
 								<option value="#(unit.value)">#(unit.name)</option>
@@ -32,35 +32,18 @@
 							</select>
 						</div>
 						<div class="form-group">
+							<select class="selectpicker form-control"  id="project"  data-live-search="true" >
+								<option value="">------请选择项目------</option>
+								#for(project:projects)
+								<option value="#(project.id)">#(project.project_name)</option>
+								#end
+							</select>
+						</div>
+						<div class="form-group">
 							<input id="emp_name" placeholder="姓名" class="form-control">
 						</div>
 						<div class="form-group">
-							<select class="selectpicker form-control"  id="year"  >
-								<option value="">------请选择年份------</option>
-								<option value="2023">2023年</option>
-								<option value="2024">2024年</option>
-								<option value="2025">2025年</option>
-								<option value="2026">2026年</option>
-								<option value="2027">2027年</option>
-								<option value="2028">2028年</option>
-							</select>
-						</div>
-						<div class="form-group">
-							<select class="selectpicker form-control"  id="month"  >
-								<option value="">------请选择月份------</option>
-								<option value="01">1月</option>
-								<option value="02">2月</option>
-								<option value="03">3月</option>
-								<option value="04">4月</option>
-								<option value="05">5月</option>
-								<option value="06">6月</option>
-								<option value="07">7月</option>
-								<option value="08">8月</option>
-								<option value="09">9月</option>
-								<option value="10">10月</option>
-								<option value="11">11月</option>
-								<option value="12">12月</option>
-							</select>
+							<input id="workstation" placeholder="岗位" class="form-control">
 						</div>
 
 
@@ -156,11 +139,11 @@
 			return {
 				pageNumber: (params.offset/params.limit)+1,
 				pageSize: params.limit,
-				"emp_name":encodeURIComponent($("#emp_name").val()),
 				"dept":$("#dept").val(),
-				"unitname":$("#unitname").val(),
-				"year":$("#year").val(),
-				"month":$("#month").val(),
+				"unit":$("#unit").val(),
+				"project":$("#project").val(),
+				"emp_name":encodeURIComponent($("#emp_name").val()),
+				"workstation":encodeURIComponent($("#workstation").val()),
 			};
 		},
 		//分页方式：client客户端分页，server服务端分页（*）
@@ -216,17 +199,17 @@
 	//查询
 	function searchTable(){
 		let dept = $("#dept").val();
+		let unit = $("#unit").val();
+		let project = $("#project").val();
 		let emp_name =encodeURIComponent($("#emp_name").val());
-		let unitname = $("#unitname").val();
-		let year =$("#year").val();
-		let month =	$("#month").val();
+		let workstation =encodeURIComponent($("#workstation").val());
 		var param = {
 			query: {
 				"dept":dept,
+				"unit":unit,
+				"project":project,
 				"emp_name":emp_name,
-				"unitname":unitname,
-				"year":year,
-				"month":month
+				"workstation":workstation
 			}
 		}
 		// 刷新表格

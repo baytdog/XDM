@@ -16,11 +16,8 @@ import com.jfinal.plugin.activerecord.Record;
 import com.jfinal.upload.UploadFile;
 import com.pointlion.mvc.common.base.BaseController;
 import com.pointlion.mvc.admin.oa.workflow.WorkFlowService;
-import com.pointlion.mvc.common.model.XdAttendanceSummary;
+import com.pointlion.mvc.common.model.*;
 import com.pointlion.mvc.common.utils.StringUtil;
-import com.pointlion.mvc.common.model.XdOvertimeSummary;
-import com.pointlion.mvc.common.model.SysUser;
-import com.pointlion.mvc.common.model.SysOrg;
 import com.pointlion.mvc.common.utils.UuidUtil;
 import com.pointlion.mvc.common.utils.Constants;
 import com.pointlion.mvc.admin.oa.common.OAConstants;
@@ -32,23 +29,29 @@ import com.pointlion.plugin.shiro.ShiroKit;
 
 public class XdOvertimeSummaryController extends BaseController {
 	public static final XdOvertimeSummaryService service = XdOvertimeSummaryService.me;
-	public static WorkFlowService wfservice = WorkFlowService.me;
 	/***
 	 * get list page
 	 */
 	public void getListPage(){
+
+		List<XdProjects> projects = XdProjects.dao.find("select * from  xd_projects");
+		setAttr("projects",projects);
+
+
 		renderIframe("list.html");
     }
 	/***
      * list page data
      **/
-    public void listData(){
+    public void listData() throws UnsupportedEncodingException {
     	String curr = getPara("pageNumber");
     	String pageSize = getPara("pageSize");
-		String endTime = getPara("endTime","");
-		String startTime = getPara("startTime","");
-		String applyUser = getPara("applyUser","");
-    	Page<Record> page = service.getPage(Integer.valueOf(curr),Integer.valueOf(pageSize),startTime,endTime,applyUser);
+		String dept = getPara("dept","");
+		String project = getPara("project","");
+		String emp_name = java.net.URLDecoder.decode(getPara("emp_name",""),"UTF-8");
+		String emp_num = getPara("emp_num","");
+		String apply_date = getPara("apply_date","");
+    	Page<Record> page = service.getPage(Integer.valueOf(curr),Integer.valueOf(pageSize),dept,project,emp_name,emp_num,apply_date);
     	renderPage(page.getList(),"",page.getTotalRow());
     }
     /***

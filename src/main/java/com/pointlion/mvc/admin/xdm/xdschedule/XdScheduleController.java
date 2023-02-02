@@ -3,24 +3,20 @@ package com.pointlion.mvc.admin.xdm.xdschedule;
 import com.jfinal.kit.StrKit;
 import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.plugin.activerecord.Record;
-import com.pointlion.mvc.admin.oa.workflow.WorkFlowService;
 import com.pointlion.mvc.common.base.BaseController;
 import com.pointlion.mvc.common.model.*;
-import com.pointlion.mvc.common.utils.*;
+import com.pointlion.mvc.common.utils.DateUtil;
+import com.pointlion.mvc.common.utils.StringUtil;
+import com.pointlion.mvc.common.utils.UuidUtil;
 import com.pointlion.plugin.shiro.ShiroKit;
-import com.pointlion.util.DictMapping;
-import org.joda.time.format.DateTimeFormat;
 
 import java.time.LocalDate;
-import java.time.Month;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 
 
 public class XdScheduleController extends BaseController {
 	public static final XdScheduleService service = XdScheduleService.me;
-	public static WorkFlowService wfservice = WorkFlowService.me;
 	/***
 	 * get list page
 	 */
@@ -33,10 +29,10 @@ public class XdScheduleController extends BaseController {
     public void listData(){
     	String curr = getPara("pageNumber");
     	String pageSize = getPara("pageSize");
-		String endTime = getPara("endTime","");
-		String startTime = getPara("startTime","");
-		String applyUser = getPara("applyUser","");
-    	Page<Record> page = service.getPage(Integer.valueOf(curr),Integer.valueOf(pageSize),startTime,endTime,applyUser);
+		String dept = getPara("dept","");
+		String year = getPara("year","");
+		String month = getPara("month","");
+    	Page<Record> page = service.getPage(Integer.valueOf(curr),Integer.valueOf(pageSize),dept,year,month);
     	renderPage(page.getList(),"",page.getTotalRow());
     }
     /***

@@ -26,16 +26,22 @@ public class XdRcpService{
 	/***
 	 * get page
 	 */
-	public Page<Record> getPage(int pnum,int psize,String startTime,String endTime,String applyUser){
+	public Page<Record> getPage(int pnum,int psize,String dept,String year,String month){
 		String sql  = " from "+TABLE_NAME+" o   where 1=1";
-		if(StrKit.notBlank(startTime)){
-			sql = sql + " and o.create_time>='"+ DateUtil.formatSearchTime(startTime,"0")+"'";
+		String userId = ShiroKit.getUserId();
+		SysUser user = SysUser.dao.findById(userId);
+		String unitValue = (user.getUnitValue()==null?"":user.getUnitValue());
+		if(!"22".equals(unitValue)){
+			sql=sql+" and o.dept_value='"+ShiroKit.getUserOrgId()+"'";
 		}
-		if(StrKit.notBlank(endTime)){
-			sql = sql + " and o.create_time<='"+DateUtil.formatSearchTime(endTime,"1")+"'";
+		if(StrKit.notBlank(dept)){
+			sql = sql + " and o.dept_value='"+dept+"'";
 		}
-		if(StrKit.notBlank(applyUser)){
-			sql = sql + " and o.applyer_name like '%"+applyUser+"%'";
+		if(StrKit.notBlank(year)){
+			sql = sql + " and o.overtime_year='"+year+"'";
+		}
+		if(StrKit.notBlank(month)){
+			sql = sql + " and o.overtime_month='"+month+"'";
 		}
 		sql = sql + " order by o.create_date desc";
 		return Db.paginate(pnum, psize, " select * ", sql);
