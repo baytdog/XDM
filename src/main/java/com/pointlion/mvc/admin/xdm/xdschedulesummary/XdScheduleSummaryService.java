@@ -2,6 +2,7 @@ package com.pointlion.mvc.admin.xdm.xdschedulesummary;
 
 import com.jfinal.aop.Before;
 import com.jfinal.kit.StrKit;
+import com.jfinal.log.Log4jLog;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.IAtom;
 import com.jfinal.plugin.activerecord.Page;
@@ -18,15 +19,14 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class XdScheduleSummaryService{
 	public static final XdScheduleSummaryService me = new XdScheduleSummaryService();
 	public static final String TABLE_NAME = XdScheduleSummary.tableName;
-	
+
 	/***
 	 * query by id
 	 */
@@ -68,7 +68,11 @@ public class XdScheduleSummaryService{
     	String idarr[] = ids.split(",");
     	for(String id : idarr){
     		XdScheduleSummary o = me.getById(id);
-    		o.delete();
+			Db.delete("delete  from  xd_schedule_detail where schedule_id='" + id + "'");
+			String yearMonth = o.getScheduleYear() + "-" + o.getScheduleMonth();
+			Db.delete("delete  from xd_overtime_summary where emp_num='"+o.getEmpNum()+"' and apply_date like '"+yearMonth+"%'");
+
+			o.delete();
     	}
 	}
 
@@ -107,6 +111,15 @@ public class XdScheduleSummaryService{
 						String yearMonth=year+month;
 						List<XdDayModel> xdDayModels = XdDayModel.dao.find("select * from  xd_day_model where id like '" + yearMonth + "%' order by id");
 						int daysNum=xdDayModels.size();
+						Map<String, String> holidaysMap = xdDayModels.stream().collect(Collectors.toMap(XdDayModel::getId, XdDayModel::getHolidays));
+						List<XdShift> xdShifts = XdShift.dao.find("select * from  xd_shift");
+						Map<String, XdShift> nameShiftObjMap = xdShifts.stream().collect(Collectors.toMap(XdShift::getShiftname, xdShift -> xdShift));
+
+						List <XdOvertimeSummary>overTimeList =new ArrayList();
+						List <XdScheduleSummary>scheduleSummaryList =new ArrayList();
+						List <XdScheduleDetail>scheduleDetailList =new ArrayList();
+
+
 						for(int i = 4;i<list.size();i++){//从第四行开始取
 							List<String> summaryList = list.get(i);
 							XdScheduleSummary scheduleSummary=new XdScheduleSummary();
@@ -129,14 +142,88 @@ public class XdScheduleSummaryService{
 							String empName = summaryList.get(5);
 							XdEmployee emp = XdEmployee.dao.findFirst("select * from  xd_employee where name='" + empName + "'");
 							scheduleSummary.setEmpName(empName);
-							scheduleSummary.setEmpId(emp.getId());
+							scheduleSummary.setEmpId(emp==null?"":emp.getId());
 							String workStation = summaryList.get(6);
 							scheduleSummary.setWorkStation(workStation);
+							scheduleSummary.setDay01(summaryList.get(7));
+							scheduleSummary.setDay02(summaryList.get(8));
+							scheduleSummary.setDay03(summaryList.get(9));
+							scheduleSummary.setDay04(summaryList.get(10));
+							scheduleSummary.setDay05(summaryList.get(11));
+							scheduleSummary.setDay06(summaryList.get(12));
+							scheduleSummary.setDay07(summaryList.get(13));
+							scheduleSummary.setDay08(summaryList.get(14));
+							scheduleSummary.setDay09(summaryList.get(15));
+							scheduleSummary.setDay10(summaryList.get(16));
+							scheduleSummary.setDay11(summaryList.get(17));
+							scheduleSummary.setDay12(summaryList.get(18));
+							scheduleSummary.setDay13(summaryList.get(19));
+							scheduleSummary.setDay14(summaryList.get(20));
+							scheduleSummary.setDay15(summaryList.get(21));
+							scheduleSummary.setDay16(summaryList.get(22));
+							scheduleSummary.setDay17(summaryList.get(23));
+							scheduleSummary.setDay18(summaryList.get(24));
+							scheduleSummary.setDay19(summaryList.get(25));
+							scheduleSummary.setDay20(summaryList.get(26));
+							scheduleSummary.setDay21(summaryList.get(27));
+							scheduleSummary.setDay22(summaryList.get(28));
+							scheduleSummary.setDay23(summaryList.get(29));
+							scheduleSummary.setDay24(summaryList.get(30));
+							scheduleSummary.setDay25(summaryList.get(31));
+							scheduleSummary.setDay26(summaryList.get(32));
+							scheduleSummary.setDay27(summaryList.get(33));
+							scheduleSummary.setDay28(summaryList.get(34));
+							scheduleSummary.setDay29(summaryList.get(35));
+							scheduleSummary.setDay30(summaryList.get(36));
+							scheduleSummary.setDay31(summaryList.get(37));
+
 							scheduleSummary.setRemarks(summaryList.get(38));
 							scheduleSummary.setScheduleMonth(month);
 							scheduleSummary.setScheduleYear(year);
 							scheduleSummary.setScheduleYearMonth(yearMonth);
-							scheduleSummary.save();
+							scheduleSummary.setCreateDate(time);
+							scheduleSummary.setCreateUser(user.getId());
+							//scheduleSummary.save();
+							scheduleSummaryList.add(scheduleSummary);
+							String ymd="";
+							String ymr="";
+							for (int j = 1; j <= daysNum; j++) {
+								if(j<10){
+									ymd = yearMonth + '0' + j;
+									ymr=year+"-"+month+"-"+'0' + j;
+								}else {
+									ymd = yearMonth  + j;
+									ymr=year+"-"+month+"-"+j;
+								}
+								String cellValue = summaryList.get(6 + j);
+							    if(holidaysMap.get(ymd)!=null && !"".equals(holidaysMap.get(ymd)) && !cellValue.equals("")){
+							    	XdOvertimeSummary xdOvertimeSummary=new XdOvertimeSummary();
+									xdOvertimeSummary.setEmpNum(scheduleSummary.getEmpNum());
+									xdOvertimeSummary.setEmpName(scheduleSummary.getEmpName());
+									xdOvertimeSummary.setEmpIdnum(emp==null?"":emp.getIdnum());
+									xdOvertimeSummary.setProjectName(projectName);
+									xdOvertimeSummary.setProjectId(projectValue);
+									xdOvertimeSummary.setDeptName(scheduleSummary.getDeptName());
+									xdOvertimeSummary.setDeptId(scheduleSummary.getDeptValue());
+									xdOvertimeSummary.setApplyDate(ymr);
+
+									//XdShift shif = XdShift.dao.findFirst("select * from  xd_shift where shiftname='" + cellValue + "'");
+									XdShift xdShift = nameShiftObjMap.get(cellValue);
+									xdOvertimeSummary.setApplyStart(xdShift==null?"":xdShift.getBusitime());
+									xdOvertimeSummary.setApplyEnd(xdShift==null?"":xdShift.getUnbusitime());
+									xdOvertimeSummary.setApplyHours(xdShift==null?"":xdShift.getHours());
+									xdOvertimeSummary.setApplyType("0");
+									xdOvertimeSummary.setCreateUser(ShiroKit.getUserId());
+									xdOvertimeSummary.setCreateDate(DateUtil.getCurrentTime());
+//									xdOvertimeSummary.save();
+									overTimeList.add(xdOvertimeSummary);
+								}
+
+
+							}
+
+
+
 							for (int j = 1; j <=daysNum ; j++) {
 								XdScheduleDetail schDetail =new XdScheduleDetail();
 								schDetail.setScheduleId(summaryId);
@@ -146,7 +233,8 @@ public class XdScheduleSummaryService{
 									schDetail.setWorkHours("");
 									schDetail.setMiddleNightShift("");
 								}else{
-									XdShift shif = XdShift.dao.findFirst("select * from  xd_shift where shiftname='" + cellValue + "'");
+									/*XdShift shif = XdShift.dao.findFirst("select * from  xd_shift where shiftname='" + cellValue + "'");*/
+									XdShift shif = nameShiftObjMap.get(cellValue);
 									schDetail.setShiftName(cellValue);
 									if(shif==null){
 										schDetail.setWorkHours("0");
@@ -179,77 +267,16 @@ public class XdScheduleSummaryService{
 								schDetail.setHolidays(xdDayModels.get(j - 1).getHolidays());
 								schDetail.setCreateDate(DateUtil.getCurrentTime());
 								schDetail.setCreateUser(ShiroKit.getUserId());
-								schDetail.save();
+								//schDetail.save();
+								scheduleDetailList.add(schDetail);
 							}
-/*
-							String orgName = empCertStr.get(1);
-							SysOrg sysOrg = SysOrg.dao.findFirst("select * from sys_org where name='" + orgName + "'");
-							empCert.setDepartment(sysOrg.getId());
-							String name = empCertStr.get(2);
-							XdEmployee emp = XdEmployee.dao.findFirst("select * from  xd_employee where name='" + name + "'");
-							if(emp==null){
-								empCert.setEname(name);
-							}else{
-								empCert.setEid(emp.getId());
-								empCert.setEname(name);
-							}
-							String certName = empCertStr.get(3);
-							XdCertificate certificate = XdCertificate.dao.findFirst("select * from xd_certificate where certificateTitle='" + certName + "'");
-							if(certificate!=null){
-								empCert.setCertTile(certName);
-								empCert.setCertId(certificate.getId());
-							}else{
-								empCert.setCertTile(certName);
-							}
-							String level = empCertStr.get(4);
-							String auth = empCertStr.get(5);
-							XdDict licenseAuth = XdDict.dao.findFirst("select * from xd_dict where  type  = 'licenseauth' and name ='" + auth + "'");
-
-							empCert.setCertAuthValue(Integer.valueOf(licenseAuth.getValue()));
-							empCert.setCertAuthName(auth);
-							String opendate = empCertStr.get(6);
-							empCert.setOpenDate(opendate);
-							String validity = empCertStr.get(7);
-							empCert.setValidity(validity);
-							if(empCertStr.get(8).contains("-")){
-								empCert.setCloseDate(empCertStr.get(8));
-							}else{
-								try {
-									if("长期".equals(validity)){
-										empCert.setCloseDate("长期");
-									}else{
-										LocalDate parse = LocalDate.parse(opendate);
-										LocalDate localDate = parse.plusMonths(Integer.valueOf(validity) * 12);
-										LocalDate localDate1 = localDate.minusDays(1);
-										empCert.setCloseDate(localDate1.toString());
-
-									}
-								} catch (NumberFormatException e) {
-									e.printStackTrace();
-									empCert.setCloseDate(empCertStr.get(8));
-								}
-							}
-
-							String idnum = empCertStr.get(9);
-							empCert.setIdnum(idnum);
-							String certnum = empCertStr.get(10);
-							empCert.setCertnum(certnum);
-							String remark = empCertStr.get(11);
-							empCert.setRemak(remark);
-							String certstatus = empCertStr.get(12);
-							if(certstatus!=null && !"".equals(certstatus)){
-								if(certstatus.contains("复印件")){
-									empCert.setCertstatus("0");
-								}else{
-									empCert.setCertstatus("1");
-								}
-							}
-							String sny = empCertStr.get(16);
-							empCert.setSny(sny);
-							String sn = empCertStr.get(17);
-							empCert.setSn(sn);
-							empCert.save();*/
 						}
+
+
+						Db.batchSave(overTimeList,overTimeList.size());
+						Db.batchSave(scheduleSummaryList,scheduleSummaryList.size());
+						Db.batchSave(scheduleDetailList,scheduleDetailList.size());
+
 						if(result.get("success")==null){
 							result.put("success",true);//正常执行完毕
 						}

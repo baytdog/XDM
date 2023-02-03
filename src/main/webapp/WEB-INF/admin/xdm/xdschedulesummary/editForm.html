@@ -2,36 +2,200 @@
 	<input id="summaryId" type="hidden"  name="#(formModelName).id" class="form-control" value="#(o?o.id:'')">
 	<div class="form-group">
 		<label class="col-md-1 control-label">部门</label>
-		<div class="col-md-5">
-			<input type="text"  name="#(formModelName).name" class="form-control"  value="#(o?o.dept_name:'')"  >
+		<div class="col-md-3">
+			<input type="text"  name="#(formModelName).dept_name" class="form-control"  value="#(o?o.dept_name:'')"  >
 		</div>
 		<label class="col-md-1 control-label">单元</label>
-		<div class="col-md-5">
+		<div class="col-md-3">
 			<input type="text"  name="#(formModelName).unit_name" class="form-control"  value="#(o?o.unit_name:'')"  >
 		</div>
-	</div>
-	<div class="form-group">
 		<label class="col-md-1 control-label">项目</label>
-		<div class="col-md-5">
+		<div class="col-md-3">
 			<input type="text"  name="#(formModelName).project_name" class="form-control"  value="#(o?o.project_name:'')"  >
-		</div>
-		<label class="col-md-1 control-label">岗位</label>
-		<div class="col-md-5">
-			<input type="text"  name="#(formModelName).work_station" class="form-control"  value="#(o?o.work_station:'')"  >
 		</div>
 	</div>
 	<div class="form-group">
 		<label class="col-md-1 control-label">工号</label>
-		<div class="col-md-5">
+		<div class="col-md-2">
 			<input type="text"  name="#(formModelName).emp_num" class="form-control"  value="#(o?o.emp_num:'')"  >
 		</div>
 		<label class="col-md-1 control-label">姓名</label>
-		<div class="col-md-5">
+		<div class="col-md-2">
 			<input type="text"  name="#(formModelName).emp_name" class="form-control"  value="#(o?o.emp_name:'')"  >
+		</div>
+		<label class="col-md-1 control-label">岗位</label>
+		<div class="col-md-2">
+			<input type="text"  name="#(formModelName).work_station" class="form-control"  value="#(o?o.work_station:'')"  >
+		</div>
+		<label class="col-md-1 control-label">年月</label>
+		<div class="col-md-2">
+			<input type="text"  name="#(formModelName).schedule_year_month" class="form-control"  value="#(o?o.schedule_year_month:'')"  >
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-1 control-label">1号</label>
+		<div class="col-md-2">
+			<input type="text"  name="#(formModelName).day01" class="form-control"  value="#(o?o.day01:'')"  >
+		</div>
+		<label class="col-md-1 control-label">2号</label>
+		<div class="col-md-2">
+			<input type="text"  name="#(formModelName).day02" class="form-control"  value="#(o?o.day02:'')"  >
+		</div>
+		<label class="col-md-1 control-label">3号</label>
+		<div class="col-md-2">
+			<input type="text"  name="#(formModelName).day03" class="form-control"  value="#(o?o.day03:'')"  >
+		</div>
+		<label class="col-md-1 control-label">4号</label>
+		<div class="col-md-2">
+			<input type="text"  name="#(formModelName).day04" class="form-control"  value="#(o?o.day04:'')"  >
+		</div>
+
+	</div>
+
+
+	<div class="form-group">
+		<label class="col-md-1 control-label">5号</label>
+		<div class="col-md-2">
+			<input type="text"  name="#(formModelName).day05" class="form-control"  value="#(o?o.day05:'')"  >
+		</div>
+		<label class="col-md-1 control-label">6号</label>
+		<div class="col-md-2">
+			<input type="text"  name="#(formModelName).day06" class="form-control"  value="#(o?o.day06:'')"  >
+		</div>
+		<label class="col-md-1 control-label">7号</label>
+		<div class="col-md-2">
+			<input type="text"  name="#(formModelName).day07" class="form-control"  value="#(o?o.day07:'')"  >
+		</div>
+		<label class="col-md-1 control-label">8号</label>
+		<div class="col-md-2">
+			<input type="text"  name="#(formModelName).day08" class="form-control"  value="#(o?o.day08:'')"  >
 		</div>
 	</div>
 
-	<mini-datagrid id="datagrid1" class="mini-datagrid" style="width:100%;height:480px;"
+	<div class="form-group">
+
+		<label class="col-md-1 control-label">9号</label>
+		<div class="col-md-2">
+			<input type="text"  name="#(formModelName).day09" class="form-control"  value="#(o?o.day09:'')"  >
+		</div>
+		<label class="col-md-1 control-label">10号</label>
+		<div class="col-md-2">
+			<input type="text"  name="#(formModelName).day10" class="form-control"  value="#(o?o.day10:'')"  >
+		</div>
+		<label class="col-md-1 control-label">11号</label>
+		<div class="col-md-2">
+			<input type="text"  name="#(formModelName).day11" class="form-control"  value="#(o?o.day11:'')"  >
+		</div>
+		<label class="col-md-1 control-label">12号</label>
+		<div class="col-md-2">
+			<input type="text"  name="#(formModelName).day12" class="form-control"  value="#(o?o.day12:'')"  >
+		</div>
+
+	</div>
+
+	<div class="form-group">
+
+		<label class="col-md-1 control-label">13号</label>
+		<div class="col-md-2">
+			<input type="text"  name="#(formModelName).day13" class="form-control"  value="#(o?o.day13:'')"  >
+		</div>
+		<label class="col-md-1 control-label">14号</label>
+		<div class="col-md-2">
+			<input type="text"  name="#(formModelName).day14" class="form-control"  value="#(o?o.day14:'')"  >
+		</div>
+		<label class="col-md-1 control-label">15号</label>
+		<div class="col-md-2">
+			<input type="text"  name="#(formModelName).day15" class="form-control"  value="#(o?o.day15:'')"  >
+		</div>
+		<label class="col-md-1 control-label">16号</label>
+		<div class="col-md-2">
+			<input type="text"  name="#(formModelName).day16" class="form-control"  value="#(o?o.day16:'')"  >
+		</div>
+
+	</div>
+	<div class="form-group">
+
+		<label class="col-md-1 control-label">17号</label>
+		<div class="col-md-2">
+			<input type="text"  name="#(formModelName).day17" class="form-control"  value="#(o?o.day17:'')"  >
+		</div>
+		<label class="col-md-1 control-label">18号</label>
+		<div class="col-md-2">
+			<input type="text"  name="#(formModelName).day18" class="form-control"  value="#(o?o.day18:'')"  >
+		</div>
+		<label class="col-md-1 control-label">19号</label>
+		<div class="col-md-2">
+			<input type="text"  name="#(formModelName).day19" class="form-control"  value="#(o?o.day19:'')"  >
+		</div>
+		<label class="col-md-1 control-label">20号</label>
+		<div class="col-md-2">
+			<input type="text"  name="#(formModelName).day20" class="form-control"  value="#(o?o.day20:'')"  >
+		</div>
+
+	</div>
+
+	<div class="form-group">
+
+		<label class="col-md-1 control-label">21号</label>
+		<div class="col-md-2">
+			<input type="text"  name="#(formModelName).day21" class="form-control"  value="#(o?o.day21:'')"  >
+		</div>
+		<label class="col-md-1 control-label">22号</label>
+		<div class="col-md-2">
+			<input type="text"  name="#(formModelName).day22" class="form-control"  value="#(o?o.day22:'')"  >
+		</div>
+		<label class="col-md-1 control-label">23号</label>
+		<div class="col-md-2">
+			<input type="text"  name="#(formModelName).day23" class="form-control"  value="#(o?o.day23:'')"  >
+		</div>
+		<label class="col-md-1 control-label">24号</label>
+		<div class="col-md-2">
+			<input type="text"  name="#(formModelName).day24" class="form-control"  value="#(o?o.day24:'')"  >
+		</div>
+
+	</div>
+	<div class="form-group">
+
+		<label class="col-md-1 control-label">25号</label>
+		<div class="col-md-2">
+			<input type="text"  name="#(formModelName).day25" class="form-control"  value="#(o?o.day25:'')"  >
+		</div>
+		<label class="col-md-1 control-label" hidden_flag="26">26号</label>
+		<div class="col-md-2">
+			<input type="text" hidden_flag="26" name="#(formModelName).day26" class="form-control"  value="#(o?o.day26:'')"  >
+		</div>
+		<label class="col-md-1 control-label" hidden_flag="27">27号</label>
+		<div class="col-md-2">
+			<input type="text"  hidden_flag="27" name="#(formModelName).day27" class="form-control"  value="#(o?o.day27:'')"  >
+		</div>
+		<label class="col-md-1 control-label" hidden_flag="28">28号</label>
+		<div class="col-md-2">
+			<input type="text" hidden_flag="28"  name="#(formModelName).day28" class="form-control"  value="#(o?o.day28:'')"  >
+		</div>
+
+	</div>
+	<div class="form-group">
+
+		<label class="col-md-1 control-label" hidden_flag="29">29号</label>
+		<div class="col-md-2">
+			<input type="text" hidden_flag="29" name="#(formModelName).day29" class="form-control"  value="#(o?o.day29:'')"  >
+		</div>
+		<label class="col-md-1 control-label" hidden_flag="30">30号</label>
+		<div class="col-md-2">
+			<input type="text" hidden_flag="30"  name="#(formModelName).day30" class="form-control"  value="#(o?o.day30:'')"  >
+		</div>
+		<label class="col-md-1 control-label" hidden_flag="31">31号</label>
+		<div class="col-md-2">
+			<input type="text" hidden_flag="31" name="#(formModelName).day31" class="form-control"  value="#(o?o.day31:'')"  >
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="col-md-1 control-label">备注</label>
+		<textarea class="col-md-11" rows="4" name="#(formModelName).remarks" >#(o?o.remarks:'')</textarea>
+	</div>
+
+	<!--<mini-datagrid id="datagrid1" class="mini-datagrid" style="width:100%;height:480px;"
 				   url="" idField="id"  allowResize="true" pageSize="31"
 				   allowCellEdit="true" allowCellSelect="true" multiSelect="false"
 				   editNextOnEnterKey="true"  editNextRowCell="true"
@@ -51,7 +215,7 @@
 
 
 		</columns>
-	</mini-datagrid>
+	</mini-datagrid>-->
 
 	#if(view=='edit')
 	<div class="panel-footer">
