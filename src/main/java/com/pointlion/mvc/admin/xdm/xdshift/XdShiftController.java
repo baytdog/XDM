@@ -17,6 +17,12 @@ import com.pointlion.plugin.shiro.ShiroKit;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.sql.SQLException;
+import java.text.DecimalFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -44,6 +50,35 @@ public class XdShiftController extends BaseController {
 	 */
 	public void save(){
 		XdShift o = getModel(XdShift.class);
+
+		if(o.getSpanDay().equals("1")){
+			SimpleDateFormat sdf2 =new SimpleDateFormat("yyyy-MM-dd HH:mm");
+
+			String time1 ="2023-02-01";
+			String unbusitime = o.getUnbusitime();
+			String timeEnd=time1+" "+unbusitime;
+
+			try {
+				Date parse = sdf2.parse(timeEnd);
+				Date parse1 = sdf2.parse(time1 + " 00:00");
+				long l = parse.getTime() - parse1.getTime();
+
+				Date parse2 = sdf2.parse(time1 + " 24:00");
+				Date parse3 = sdf2.parse(time1 + " " + o.getBusitime());
+				long l1 = parse2.getTime() - parse3.getTime();
+
+
+				DecimalFormat df = new DecimalFormat("0.0");
+				String spanHours = df.format(l / (double) (60 * 60 * 1000));
+				String curDayHours = df.format(l1 / (double) (60 * 60 * 1000));
+				o.setSpanHours(spanHours);
+				o.setCurdayHours(curDayHours);
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+
+
+		}
 		XdShift xdShift= XdShift.dao.findById(o.getId());
 		if (xdShift == null) {
 			o.setCtime(DateUtil.getCurrentTime());
@@ -108,6 +143,8 @@ public class XdShiftController extends BaseController {
 			renderError((String)result.get("message"));
 		}
 	}
+
+
 
 
 }

@@ -19,6 +19,8 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -187,6 +189,7 @@ public class XdScheduleSummaryService{
 							scheduleSummaryList.add(scheduleSummary);
 							String ymd="";
 							String ymr="";
+//							 节假日加班
 							for (int j = 1; j <= daysNum; j++) {
 								if(j<10){
 									ymd = yearMonth + '0' + j;
@@ -196,8 +199,81 @@ public class XdScheduleSummaryService{
 									ymr=year+"-"+month+"-"+j;
 								}
 								String cellValue = summaryList.get(6 + j);
-							    if(holidaysMap.get(ymd)!=null && !"".equals(holidaysMap.get(ymd)) && !cellValue.equals("")){
-							    	XdOvertimeSummary xdOvertimeSummary=new XdOvertimeSummary();
+								if(!cellValue.equals("")){
+									XdShift xdShift = nameShiftObjMap.get(cellValue);
+									if(xdShift!=null){
+										if(xdShift.getSpanDay().equals("1")){
+											LocalDate localDate = LocalDate.parse(ymr).plusDays(1);
+											DateTimeFormatter dtf=DateTimeFormatter.ofPattern("yyyyMMdd");
+											DateTimeFormatter dtf1=DateTimeFormatter.ofPattern("yyyy-MM-dd");
+											String nextDate  = dtf.format(localDate);
+											//是跨天且当天法定假日
+											if(holidaysMap.get(ymd)!=null && !"".equals(holidaysMap.get(ymd))){
+												XdOvertimeSummary xdOvertimeSummary=new XdOvertimeSummary();
+												xdOvertimeSummary.setEmpNum(scheduleSummary.getEmpNum());
+												xdOvertimeSummary.setEmpName(scheduleSummary.getEmpName());
+												xdOvertimeSummary.setEmpIdnum(emp==null?"":emp.getIdnum());
+												xdOvertimeSummary.setProjectName(projectName);
+												xdOvertimeSummary.setProjectId(projectValue);
+												xdOvertimeSummary.setDeptName(scheduleSummary.getDeptName());
+												xdOvertimeSummary.setDeptId(scheduleSummary.getDeptValue());
+												xdOvertimeSummary.setApplyDate(ymr);
+												xdOvertimeSummary.setApplyStart(xdShift.getBusitime());
+												xdOvertimeSummary.setApplyEnd("24:00");
+												xdOvertimeSummary.setApplyHours(xdShift.getCurdayHours());
+												xdOvertimeSummary.setApplyType("0");
+												xdOvertimeSummary.setCreateUser(ShiroKit.getUserId());
+												xdOvertimeSummary.setCreateDate(DateUtil.getCurrentTime());
+												overTimeList.add(xdOvertimeSummary);
+
+											}
+											//是跨天且第二天是法定假日
+											if(holidaysMap.get(nextDate)!=null && !"".equals(holidaysMap.get(nextDate))){
+												XdOvertimeSummary xdOvertimeSummary=new XdOvertimeSummary();
+												xdOvertimeSummary.setEmpNum(scheduleSummary.getEmpNum());
+												xdOvertimeSummary.setEmpName(scheduleSummary.getEmpName());
+												xdOvertimeSummary.setEmpIdnum(emp==null?"":emp.getIdnum());
+												xdOvertimeSummary.setProjectName(projectName);
+												xdOvertimeSummary.setProjectId(projectValue);
+												xdOvertimeSummary.setDeptName(scheduleSummary.getDeptName());
+												xdOvertimeSummary.setDeptId(scheduleSummary.getDeptValue());
+												xdOvertimeSummary.setApplyDate(dtf1.format(localDate));
+												xdOvertimeSummary.setApplyStart("00:00");
+												xdOvertimeSummary.setApplyEnd(xdShift.getUnbusitime());
+												xdOvertimeSummary.setApplyHours(xdShift.getSpanHours());
+												xdOvertimeSummary.setApplyType("0");
+												xdOvertimeSummary.setCreateUser(ShiroKit.getUserId());
+												xdOvertimeSummary.setCreateDate(DateUtil.getCurrentTime());
+												overTimeList.add(xdOvertimeSummary);
+											}
+										}else{
+											if(holidaysMap.get(ymd)!=null && !"".equals(holidaysMap.get(ymd)) && !cellValue.equals("")){
+												XdOvertimeSummary xdOvertimeSummary=new XdOvertimeSummary();
+												xdOvertimeSummary.setEmpNum(scheduleSummary.getEmpNum());
+												xdOvertimeSummary.setEmpName(scheduleSummary.getEmpName());
+												xdOvertimeSummary.setEmpIdnum(emp==null?"":emp.getIdnum());
+												xdOvertimeSummary.setProjectName(projectName);
+												xdOvertimeSummary.setProjectId(projectValue);
+												xdOvertimeSummary.setDeptName(scheduleSummary.getDeptName());
+												xdOvertimeSummary.setDeptId(scheduleSummary.getDeptValue());
+												xdOvertimeSummary.setApplyDate(ymr);
+												xdOvertimeSummary.setApplyStart(xdShift.getBusitime());
+												xdOvertimeSummary.setApplyEnd(xdShift.getUnbusitime());
+												xdOvertimeSummary.setApplyHours(xdShift.getHours());
+												xdOvertimeSummary.setApplyType("0");
+												xdOvertimeSummary.setCreateUser(ShiroKit.getUserId());
+												xdOvertimeSummary.setCreateDate(DateUtil.getCurrentTime());
+												overTimeList.add(xdOvertimeSummary);
+											}
+
+										}
+									}
+								}
+
+
+
+								/*if(holidaysMap.get(ymd)!=null && !"".equals(holidaysMap.get(ymd)) && !cellValue.equals("")){
+									XdOvertimeSummary xdOvertimeSummary=new XdOvertimeSummary();
 									xdOvertimeSummary.setEmpNum(scheduleSummary.getEmpNum());
 									xdOvertimeSummary.setEmpName(scheduleSummary.getEmpName());
 									xdOvertimeSummary.setEmpIdnum(emp==null?"":emp.getIdnum());
@@ -208,7 +284,7 @@ public class XdScheduleSummaryService{
 									xdOvertimeSummary.setApplyDate(ymr);
 
 									//XdShift shif = XdShift.dao.findFirst("select * from  xd_shift where shiftname='" + cellValue + "'");
-									XdShift xdShift = nameShiftObjMap.get(cellValue);
+
 									xdOvertimeSummary.setApplyStart(xdShift==null?"":xdShift.getBusitime());
 									xdOvertimeSummary.setApplyEnd(xdShift==null?"":xdShift.getUnbusitime());
 									xdOvertimeSummary.setApplyHours(xdShift==null?"":xdShift.getHours());
@@ -217,7 +293,7 @@ public class XdScheduleSummaryService{
 									xdOvertimeSummary.setCreateDate(DateUtil.getCurrentTime());
 //									xdOvertimeSummary.save();
 									overTimeList.add(xdOvertimeSummary);
-								}
+								}*/
 
 
 							}

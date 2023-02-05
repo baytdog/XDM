@@ -97,6 +97,30 @@ public abstract class BaseXdShift<M extends BaseXdShift<M>> extends Model<M> imp
 		return getStr("dutydesc");
 	}
 
+	public void setSpanDay(String spanDay) {
+		set("span_day", spanDay);
+	}
+	
+	public String getSpanDay() {
+		return getStr("span_day");
+	}
+
+	public void setCurdayHours(String curdayHours) {
+		set("curday_hours", curdayHours);
+	}
+	
+	public String getCurdayHours() {
+		return getStr("curday_hours");
+	}
+
+	public void setSpanHours(String spanHours) {
+		set("span_hours", spanHours);
+	}
+	
+	public String getSpanHours() {
+		return getStr("span_hours");
+	}
+
 	public void setRemarks(String remarks) {
 		set("remarks", remarks);
 	}

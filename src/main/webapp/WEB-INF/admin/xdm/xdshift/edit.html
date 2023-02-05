@@ -32,6 +32,21 @@
 		});
 	});
 </script>
+<script>
 
+	$(function () {
+		let spanDay=$("#spanDay").val();
+		if(spanDay){
+			$('#spanDaySelect').selectpicker('val',spanDay.split(",")).trigger("change");
+		}else{
+			spanDay=0;
+			$('#spanDaySelect').selectpicker('val',spanDay.split(",")).trigger("change");
+		}
+
+		$('#spanDaySelect').on('changed.bs.select', function (e) {
+			$('#spanDay').val($('#spanDaySelect').val())
+		});
+	})
+</script>
 
 

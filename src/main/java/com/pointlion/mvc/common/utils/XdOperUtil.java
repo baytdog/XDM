@@ -12,6 +12,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
@@ -195,6 +196,12 @@ public class XdOperUtil {
         setChangeValue(e2,"name","小渣渣");
 
         System.out.println(e2);
+
+        LocalDate localDate = LocalDate.parse("2022-12-31").plusDays(1);
+
+        DateTimeFormatter dtf=DateTimeFormatter.ofPattern("yyyyMMdd");
+        String format = dtf.format(localDate);
+        System.out.println(format);
 
 
     }

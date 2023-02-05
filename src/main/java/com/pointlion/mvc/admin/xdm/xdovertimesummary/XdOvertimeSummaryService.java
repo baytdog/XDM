@@ -39,7 +39,7 @@ public class XdOvertimeSummaryService{
 	/***
 	 * get page
 	 */
-	public Page<Record> getPage(int pnum,int psize,String dept,String project,String emp_name,String emp_num,String apply_date){
+	public Page<Record> getPage(int pnum,int psize,String dept,String project,String emp_name,String emp_num,String apply_date,String overtimeType){
 		String sql  = " from "+TABLE_NAME+" o   where 1=1";
 		if(StrKit.notBlank(dept)){
 			sql = sql + " and o.dept_id='"+dept+"'";
@@ -54,6 +54,9 @@ public class XdOvertimeSummaryService{
 			sql = sql + " and o.emp_num like '%"+emp_num+"%'";
 		}
 
+		if(StrKit.notBlank(overtimeType)){
+			sql = sql + " and o.apply_type='"+overtimeType+"'";
+		}
 		if(StrKit.notBlank(apply_date)){
 			String[] split = apply_date.split("-");
 			String month=split[1];

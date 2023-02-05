@@ -51,7 +51,8 @@ public class XdOvertimeSummaryController extends BaseController {
 		String emp_name = java.net.URLDecoder.decode(getPara("emp_name",""),"UTF-8");
 		String emp_num = getPara("emp_num","");
 		String apply_date = getPara("apply_date","");
-    	Page<Record> page = service.getPage(Integer.valueOf(curr),Integer.valueOf(pageSize),dept,project,emp_name,emp_num,apply_date);
+		String overtimeType = getPara("overtimeType","");
+    	Page<Record> page = service.getPage(Integer.valueOf(curr),Integer.valueOf(pageSize),dept,project,emp_name,emp_num,apply_date,overtimeType);
     	renderPage(page.getList(),"",page.getTotalRow());
     }
     /***
