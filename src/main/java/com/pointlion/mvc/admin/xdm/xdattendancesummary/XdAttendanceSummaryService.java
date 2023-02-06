@@ -15,13 +15,21 @@ import com.pointlion.mvc.common.utils.DateUtil;
 import com.pointlion.plugin.shiro.ext.SimpleUser;
 import com.pointlion.util.DictMapping;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.shiro.web.servlet.ShiroFilter;
+import org.openxmlformats.schemas.presentationml.x2006.main.CTHandoutMasterIdListEntry;
 
 import java.io.File;
+import java.lang.reflect.Method;
+import java.math.BigDecimal;
 import java.sql.SQLException;
+import java.text.DecimalFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class XdAttendanceSummaryService{
 	public static final XdAttendanceSummaryService me = new XdAttendanceSummaryService();
@@ -79,10 +87,372 @@ public class XdAttendanceSummaryService{
 	 * @Exception
 	 * @Description  加班申请导入
 	 * @Author king
-	 * @Version  1.0
+	 * @Version  1.1
 	 * @Return java.util.Map<java.lang.String,java.lang.Object>
 	 */
 	public Map<String,Object> importExcel(List<List<String>> list) throws SQLException {
+		final List<String> message = new ArrayList<String>();
+		final Map<String,Object> result = new HashMap<String,Object>();
+		Map<String, String> orgMapping = DictMapping.orgMapping("1");
+		Map<String, Map<String, String>> stringMapMap = DictMapping.dictMapping();
+		Map<String, String> unitMap = stringMapMap.get("unit");
+		Map<String, String> projectsMap = DictMapping.projectsMapping();
+
+		Db.tx(new IAtom() {
+			@Override
+			public boolean run() throws SQLException {
+				try{
+					if(list.size()>4){
+						SimpleUser user = ShiroKit.getLoginUser();
+						String time = DateUtil.getCurrentTime();
+						List<String> title = list.get(0);
+						String[] ny = title.get(0).replaceAll("年", "_").replaceAll("[^(0-9_)]", "").split("_");
+						String year=ny[0];
+						String month=ny[1];
+						if(month.length()==1){
+							month="0"+month;
+						}
+						String yearMonth=year+month;
+						List<XdDayModel> xdDayModels = XdDayModel.dao.find("select * from  xd_day_model where id like '" + yearMonth + "%' order by id");
+						Map<String, String> holidaysMap = xdDayModels.stream().collect(Collectors.toMap(XdDayModel::getId, XdDayModel::getHolidays));
+						List<XdShift> xdShifts = XdShift.dao.find("select * from  xd_shift");
+						Map<String, XdShift> nameShiftObjMap = xdShifts.stream().collect(Collectors.toMap(XdShift::getShiftname, xdShift -> xdShift));
+
+
+
+
+						for(int i = 4;i<list.size();i++){//从第四行开始取
+
+							int daysNum=xdDayModels.size();
+							double actWorkHours=0;//本月实际工时
+							double ordinaryOTHours=0;//平时加班
+							double nationlOTHours=0;//国定加班
+							double dutyCharge=0;//值班费
+							int middleShiftDays=0; //中班天数
+							int nightShiftDays=0;//夜班天数
+							double highTempCharge=0;//高温费
+							int  monthWorkDays=0;//每月 应工作天数
+							int sickLeaveDays=0;//病假天数
+							int personalLeaveDays=0;//事假天数
+							int newLeaveDays=0;//新离缺勤天数
+							int absenteeismDays=0;//旷工天数
+							double alreayAnnualLeave=0;//已休年假
+							boolean shift18A=false;
+							List<String> summaryList = list.get(i);
+							XdAttendanceSummary attendanceSummary=new XdAttendanceSummary();
+							String summaryId = UuidUtil.getUUID();
+							attendanceSummary.setId(summaryId);
+							String department = summaryList.get(1);
+							String depeId = orgMapping.get(department);
+							attendanceSummary.setDeptName(department);
+							attendanceSummary.setDeptValue(depeId);
+							String unitName = summaryList.get(2);
+							String unitValue = unitMap.get(unitName);
+							attendanceSummary.setUnitName(unitName);
+							attendanceSummary.setUnitValue(unitValue);
+							String projectName = summaryList.get(3);
+							String projectValue = projectsMap.get(projectName);
+							attendanceSummary.setProjectName(projectName);
+							attendanceSummary.setProjectValue(projectValue);
+							String empNum = summaryList.get(4);
+							attendanceSummary.setEmpNum(empNum);
+							String empName = summaryList.get(5);
+							attendanceSummary.setEmpName(empName);
+							XdEmployee emp=XdEmployee.dao.findFirst("select * from  xd_employee where name='" + empName + "'");
+							String workStation = summaryList.get(6);
+							attendanceSummary.setWorkStation(workStation);
+							attendanceSummary.setScheduleMonth(month);
+							attendanceSummary.setScheduleYear(year);
+							attendanceSummary.setScheduleYearMonth(yearMonth);
+
+							if(emp==null){
+								attendanceSummary.setAnnualleaveDays("");
+							}else{
+								XdAnleaveSummary leave=	XdAnleaveSummary.dao.findFirst("select *from  xd_anleave_summary where emp_name='"+empName+"'");
+								if(leave==null){
+									attendanceSummary.setAnnualleaveDays("");
+								}else{
+									attendanceSummary.setAnnualleaveDays(leave.getLeaveDays());
+								}
+							}
+							attendanceSummary.setRemarks("");
+							attendanceSummary.setWeeks("");
+							attendanceSummary.setSpecialDesc("");
+							attendanceSummary.setPerformRewardpunish("");
+							attendanceSummary.setHireDate(emp==null?"":emp.getEntrytime());
+							attendanceSummary.setDimissionDate(emp==null?"":emp.getDepartime());
+							Class superclass = attendanceSummary.getClass().getSuperclass();
+							for (int j = 1; j <=daysNum ; j++) {
+								String ymr="";
+								String ymd="";
+								String methodsuffix="";
+								if(j<10){
+									ymd = yearMonth + '0' + j;
+									ymr=year+"-"+month+"-"+'0' + j;
+									methodsuffix="0" + j;
+								}else {
+									ymd = yearMonth  + j;
+									ymr=year+"-"+month+"-"+j;
+									methodsuffix=j+"";
+								}
+
+
+								XdAttendanceDetail attDetail =new XdAttendanceDetail();
+								attDetail.setAttendidId(summaryId);
+								String cellValue = summaryList.get(6 + j);
+								if("18A".equals(cellValue)){
+									shift18A=true;
+								}
+								Method method = superclass.getMethod("setDay" + methodsuffix,String.class);
+								method.invoke(attendanceSummary,cellValue);
+								if(!"".equals(cellValue)){
+									XdShift shfit = nameShiftObjMap.get(cellValue);
+									if (shfit != null) {
+										attDetail.setShiftName(cellValue);
+										attDetail.setWorkHours(shfit.getHours());
+										attDetail.setMiddleNightShift("");
+										if(shfit.getMiddleshift()!=null&& !shfit.getMiddleshift().equals("")){
+											attDetail.setMiddleNightShift(shfit.getMiddleshift());
+										}
+										if(shfit.getNigthshift()!=null&& !shfit.getNigthshift().equals("")){
+											attDetail.setMiddleNightShift(shfit.getNigthshift());
+										}
+										System.out.println(shfit.getHours());
+										if(shfit.getHours()!=null && !shfit.getHours().equals("")){
+											actWorkHours=actWorkHours+Double.valueOf(shfit.getHours());//实际工作时间
+										}
+
+
+
+										if(shfit.getSpanDay().equals("1")){
+											LocalDate localDate = LocalDate.parse(ymr).plusDays(1);
+											DateTimeFormatter dtf=DateTimeFormatter.ofPattern("yyyyMMdd");
+											String nextDate  = dtf.format(localDate);
+											//是跨天且当天法定假日
+											if(holidaysMap.get(ymd)!=null && !"".equals(holidaysMap.get(ymd))){
+												if(shfit.getCurdayHours()!=null && !shfit.getCurdayHours().equals("")){
+													nationlOTHours=nationlOTHours+ Double.valueOf(shfit.getCurdayHours());
+												}
+											}
+											//是跨天且第二天是法定假日
+											if(holidaysMap.get(nextDate)!=null && !"".equals(holidaysMap.get(nextDate))){
+												if(shfit.getSpanHours()!=null && !shfit.getSpanHours().equals("")){
+													nationlOTHours=nationlOTHours+ Double.valueOf(shfit.getSpanHours());
+												}
+											}
+										}else{
+											if(holidaysMap.get(ymd)!=null && !"".equals(holidaysMap.get(ymd)) && !cellValue.equals("")){
+												if(shfit.getHours()!=null && !shfit.getHours().equals("")){
+													nationlOTHours=nationlOTHours+ Double.valueOf(shfit.getHours());
+												}
+											}
+										}
+
+										dutyCharge=dutyCharge+0;//值班费
+
+										if(shfit.getMiddleshift()!=null&& !shfit.getMiddleshift().equals("")){
+											middleShiftDays++;//中班天数
+										}
+										if(shfit.getNigthshift()!=null&& !shfit.getNigthshift().equals("")){
+											 nightShiftDays++;//夜班天数
+										}
+
+										if(month.endsWith("7")||month.endsWith("8")||month.endsWith("9")){
+											highTempCharge=300;//高温费
+										}
+
+
+									}
+									monthWorkDays++;
+									if(cellValue.equals("病")){
+										sickLeaveDays++;
+									}
+									if(cellValue.equals("事")){
+										personalLeaveDays++;
+									}
+									if(cellValue.equals("新离")){
+										newLeaveDays++;
+									}
+									if(cellValue.equals("年")){
+										alreayAnnualLeave++;
+									}
+									if(cellValue.contains("年")){
+										String annual = cellValue.replace("年", "");
+										if(annual.equals("")){
+											alreayAnnualLeave=alreayAnnualLeave+1;
+										}else{
+											alreayAnnualLeave=alreayAnnualLeave+Double.valueOf(annual);
+										}
+									}
+
+								}else{
+									attDetail.setShiftName("");
+									attDetail.setWorkHours("");
+									attDetail.setMiddleNightShift("");
+								}
+								attDetail.setScheduleYear(year);
+								attDetail.setScheduleMonth(month);
+								attDetail.setScheduleDay(String.valueOf(j));
+								attDetail.setScheduleYmd(ymr);
+								attDetail.setWeekDay(xdDayModels.get(j - 1).getWeeks());
+								attDetail.setHolidays(xdDayModels.get(j - 1).getHolidays());
+								attDetail.setCreateDate(DateUtil.getCurrentTime());
+								attDetail.setCreateUser(ShiroKit.getUserId());
+								attDetail.save();
+							}
+							attendanceSummary.setCurmonActworkhours(String.valueOf(actWorkHours));
+							attendanceSummary.setCurmonWorkhours(String.valueOf(actWorkHours));
+							attendanceSummary.setCurmonBalancehours(String.valueOf(actWorkHours));//本月工时结余
+
+							XdAttendanceSummary beforAttendanceSummary =XdAttendanceSummary.dao.findFirst("select * from xd_attendance_summary where emp_name='' order by   schedule_year_month desc");
+							attendanceSummary.setPremonAccbalancehours(beforAttendanceSummary==null?"":beforAttendanceSummary.getCurmonAccbalancehours());//上月累计工时结余
+							attendanceSummary.setCurmonAccbalancehours(String.valueOf(actWorkHours));//本月累计工时结余
+
+							attendanceSummary.setCurmonSettlehours(String.valueOf(actWorkHours));//当月待结算工时
+							attendanceSummary.setAccSettlehours(String.valueOf(actWorkHours));//累计待结算工时
+							attendanceSummary.save();
+							if(shift18A){
+								XdRcpSummary rcp =new XdRcpSummary();
+								rcp.setDeptValue(attendanceSummary.getDeptValue());
+								rcp.setDeptName(attendanceSummary.getDeptName());
+								rcp.setUnitValue(attendanceSummary.getUnitValue());
+								rcp.setUnitName(attendanceSummary.getUnitName());
+								rcp.setProjectValue(attendanceSummary.getProjectValue());
+								rcp.setProjectName(attendanceSummary.getProjectName());
+								rcp.setEmpName(empName);
+								rcp.setIdnum(emp==null?"":emp.getIdnum());
+								rcp.setWorStation(attendanceSummary.getWorkStation());
+								rcp.setShfitName("18A");
+								int mnShiftDays = middleShiftDays + nightShiftDays;
+								rcp.setRcpDays(String.valueOf(mnShiftDays));
+								rcp.setWorkDays(String.valueOf(monthWorkDays));
+								rcp.setRcpStandard("100");
+								if(mnShiftDays>=26){
+									rcp.setRental("100");
+								}else{
+									//DecimalFormat df = new DecimalFormat("0.0");
+									//String rcptenal = df.format(mnShiftDays*100/ (double) (26));
+									String rcptenal = String.valueOf(mnShiftDays * 100 / (double) 26).substring(0,4);
+									rcp.setRental(rcptenal);
+								}
+								rcp.setRcpYear(year);
+								rcp.setRcpMonthYear(month);
+								rcp.setRcpMonthYear(yearMonth);
+								rcp.setStatus("0");
+								rcp.setCreateUser("出勤生成");
+								rcp.setCreateDate(time);
+								rcp.save();
+
+
+							}
+
+
+//							for (int m = 1; m <= 12; m++) {
+								XdAttendanceDays days=new XdAttendanceDays();
+//								int i1 = 13 + 3 * daysNum + m;
+								days.setAttendidId(summaryId);
+								days.setOrdinaryOvertime(String.valueOf(ordinaryOTHours));
+								days.setNationalOvertime(String.valueOf(nationlOTHours));
+								days.setDutyCharge(String.valueOf(dutyCharge));
+								days.setMidshiftDays(String.valueOf(middleShiftDays));
+								days.setNightshiftDays(String.valueOf(nightShiftDays));
+								days.setHightempAllowance(String.valueOf(highTempCharge));
+								days.setMonshouldWorkdays(String.valueOf(monthWorkDays));
+								days.setSickeleaveDays(String.valueOf(sickLeaveDays));
+								days.setCasualleaveDays(String.valueOf(personalLeaveDays));
+								days.setAbsencedutyDays(String.valueOf(newLeaveDays));
+								days.setAbsentworkDays(String.valueOf(absenteeismDays));
+								days.setRestanleaveDays(String.valueOf(alreayAnnualLeave));
+								days.setCreateDate(DateUtil.getCurrentTime());
+								days.setCreateUser(ShiroKit.getUserId());
+								days.save();
+
+							XdAttendanceDays days1=new XdAttendanceDays();
+							days1.setAttendidId(summaryId);
+							days1.setOrdinaryOvertime(String.valueOf(ordinaryOTHours));
+							days1.setNationalOvertime(String.valueOf(nationlOTHours));
+							days1.setDutyCharge(String.valueOf(dutyCharge));
+							days1.setMidshiftDays(String.valueOf(middleShiftDays));
+							days1.setNightshiftDays(String.valueOf(nightShiftDays));
+							days1.setHightempAllowance(String.valueOf(highTempCharge));
+							days1.setMonshouldWorkdays(String.valueOf(monthWorkDays));
+							days1.setSickeleaveDays(String.valueOf(sickLeaveDays));
+							days1.setCasualleaveDays(String.valueOf(personalLeaveDays));
+							days1.setAbsencedutyDays(String.valueOf(newLeaveDays));
+							days1.setAbsentworkDays(String.valueOf(absenteeismDays));
+							days1.setRestanleaveDays(String.valueOf(alreayAnnualLeave));
+							days1.setCreateDate(DateUtil.getCurrentTime());
+							days1.setCreateUser(ShiroKit.getUserId());
+							days1.save();
+
+							XdAttendanceDays days2=new XdAttendanceDays();
+							days2.setAttendidId(summaryId);
+
+							days2.setOrdinaryOvertime(String.valueOf(ordinaryOTHours));
+							days2.setNationalOvertime(String.valueOf(nationlOTHours));
+							days2.setDutyCharge(String.valueOf(dutyCharge));
+							days2.setMidshiftDays(String.valueOf(middleShiftDays));
+							days2.setNightshiftDays(String.valueOf(nightShiftDays));
+							days2.setHightempAllowance(String.valueOf(highTempCharge));
+							days2.setMonshouldWorkdays(String.valueOf(monthWorkDays));
+							days2.setSickeleaveDays(String.valueOf(sickLeaveDays));
+							days2.setCasualleaveDays(String.valueOf(personalLeaveDays));
+							days2.setAbsencedutyDays(String.valueOf(newLeaveDays));
+							days2.setAbsentworkDays(String.valueOf(absenteeismDays));
+							days2.setRestanleaveDays(String.valueOf(alreayAnnualLeave));
+							days2.setCreateDate(DateUtil.getCurrentTime());
+							days2.setCreateUser(ShiroKit.getUserId());
+							days2.save();
+
+
+
+							/*XdAttendanceRcp rcp =new XdAttendanceRcp();
+							rcp.setAttendidId(summaryId);
+							rcp.setMidnightDays(summaryList.get(58 + 3 * daysNum));
+							rcp.setMonworkDays(summaryList.get(59 + 3 * daysNum));
+							rcp.setAllowanceAmount(summaryList.get(60 + 3 * daysNum));
+							rcp.setShiftName(summaryList.get(61 + 3 * daysNum));
+							rcp.setRemarks(summaryList.get(62 + 3 * daysNum));
+							rcp.setCreateDate(DateUtil.getCurrentTime());
+							rcp.setCreateUser(ShiroKit.getUserId());
+							rcp.save();*/
+
+//							}
+
+
+						}
+						if(result.get("success")==null){
+							result.put("success",true);//正常执行完毕
+						}
+					}else{
+						result.put("success",false);//正常执行完毕
+						message.add("excel中无内容");
+						result.put("message", StringUtils.join(message," "));
+					}
+					result.put("message",StringUtils.join(message," "));
+					if((Boolean) result.get("success")){//正常执行完毕
+						return true;
+					}else{//回滚
+						return false;
+					}
+				}catch(Exception e){
+					return false;
+				}
+			}
+		});
+		return result;
+	}
+	/**
+	 * @Method importExcelV1
+	 * @param list:
+	 * @Date 2023/2/6 9:59
+	 * @Exception
+	 * @Description  出勤核算V1
+	 * @Author king
+	 * @Version  1.0
+	 * @Return java.util.Map<java.lang.String,java.lang.Object>
+	 */
+	public Map<String,Object> importExcelV1(List<List<String>> list) throws SQLException {
 		final List<String> message = new ArrayList<String>();
 		final Map<String,Object> result = new HashMap<String,Object>();
 		Map<String, String> orgMapping = DictMapping.orgMapping("1");

@@ -8,10 +8,10 @@
 </div>
 <script>
 	function save(){
-		var data = common_ajax.ajaxFunc("/admin/xd/xdschedule/save", $('#editForm').serialize(), "json", null);
+		var data = common_ajax.ajaxFunc("/admin/xd/xdattendancesummary/save", $('#editForm').serialize(), "json", null);
 		if(data.success){
 			pointLion.alertMsg("保存成功!" , "success" , "small" , function(){
-				location.href = ctx+'/admin/xd/xdschedule/getListPage';//跳转到列表页
+				location.href = ctx+'/admin/xd/xdattendancesummary/getListPage';//跳转到列表页
 			},data);
 		}else{
 			pointLion.alertMsg(data.message , "danger" , "small" , function(){
@@ -19,16 +19,23 @@
 			},data);
 		}
 	}
+
+
 	$(document).ready(function() {
+
+		let less='#(less)'
+		let greater='#(greate)'
+		console.log("less="+less)
+		console.log("greater="+greater)
 		$('#editForm').bootstrapValidator({
 			excluded:[":disabled"],
 			live: 'enabled',
 			fields: {
-				"#(formModelName).dept_value": {
+				"#(formModelName).dept_name": {
 					trigger: 'change',
 					validators: {
 						notEmpty: {
-							message: '*姓名不能为空'
+							message: '*部门不能为空'
 						}
 					}
 				},
@@ -48,10 +55,20 @@
 						}
 					}
 				},
-				"#(formModelName).approver_id": {
+				"#(formModelName).perform_rewardpunish": {
 					validators: {
-						notEmpty: {
+						/*notEmpty: {
 							message: '*审批人不能为空'
+						}*/
+						greaterThan: {
+							value : greater,
+   						 message : '最小输入1'
+						},
+
+						//内容最大值验证
+						lessThan: {
+							value : less,
+							message : '最大输入'+less
 						}
 					}
 				},
@@ -81,7 +98,7 @@
 <script>
 
 	$(function () {
-		mini.parse();
+		/*mini.parse();
 		let id=$("#summaryId").val();
 		let data1 = common_ajax.ajaxFunc("/admin/xd/xdattendancedeital/getDetailList", {"id":id}, "json", null);
 		let grid1 = mini.get("datagrid1");
@@ -91,7 +108,11 @@
 		grid2.setData(data2);
 		let data3 = common_ajax.ajaxFunc("/admin/xd/xdattendancesummary/getRcpList", {"id":id}, "json", null);
 		let grid3 = mini.get("datagrid3");
-		grid3.setData(data3);
+		grid3.setData(data3);*/
+		let daysNum="#(daysNum)";
+		for (let i = daysNum; i <=31 ; i++) {
+			$("[hidden_flag='"+i+"']").hide();
+		}
 
 	})
 

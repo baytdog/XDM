@@ -1,29 +1,21 @@
 package com.pointlion.mvc.admin.xdm.xdattendancesummary;
 
+import com.jfinal.plugin.activerecord.Page;
+import com.jfinal.plugin.activerecord.Record;
+import com.jfinal.upload.UploadFile;
+import com.pointlion.mvc.common.base.BaseController;
+import com.pointlion.mvc.common.model.*;
+import com.pointlion.mvc.common.utils.DateUtil;
+import com.pointlion.mvc.common.utils.StringUtil;
+import com.pointlion.mvc.common.utils.office.excel.ExcelUtil;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.sql.SQLException;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import com.jfinal.aop.Before;
-import com.jfinal.kit.StrKit;
-import com.jfinal.plugin.activerecord.Page;
-import com.jfinal.plugin.activerecord.Record;
-import com.jfinal.upload.UploadFile;
-import com.pointlion.mvc.common.base.BaseController;
-import com.pointlion.mvc.admin.oa.workflow.WorkFlowService;
-import com.pointlion.mvc.common.model.*;
-import com.pointlion.mvc.common.utils.StringUtil;
-import com.pointlion.mvc.common.utils.UuidUtil;
-import com.pointlion.mvc.common.utils.Constants;
-import com.pointlion.mvc.admin.oa.common.OAConstants;
-import com.pointlion.mvc.common.utils.DateUtil;
-import com.pointlion.mvc.common.utils.office.excel.ExcelUtil;
-import com.pointlion.plugin.shiro.ShiroKit;
 
 
 
@@ -55,7 +47,15 @@ public class XdAttendanceSummaryController extends BaseController {
 	 * save data
 	 */
 	public void save(){
-		XdScheduleSummary o = getModel(XdScheduleSummary.class);
+		XdAttendanceSummary o = getModel(XdAttendanceSummary.class);
+		o.update();
+		String deptValue = o.getDeptValue();
+		SysOrg org = SysOrg.dao.findById(deptValue);
+		String operate = org.getOperate();
+		String performRewardpunish = o.getPerformRewardpunish();
+		int i = Integer.valueOf(operate) + Integer.valueOf(performRewardpunish);
+		org.setOperate(String.valueOf(i));
+		org.update();
 		renderSuccess();
 	}
 	/***
@@ -66,6 +66,22 @@ public class XdAttendanceSummaryController extends BaseController {
 		String view = getPara("view");
 		setAttr("view", view);
 		XdAttendanceSummary summary =service.getById(id);
+		String deptValue = summary.getDeptValue();
+		SysOrg org = SysOrg.dao.findById(deptValue);
+		String operate = org.getOperate();
+		int integer = Integer.valueOf(operate);
+		if(integer==0){
+			setAttr("less","0");//最大
+			setAttr("greate","-2000000");//最小
+		}else if(integer<0){
+			setAttr("less",Math.abs(integer));//最大
+			setAttr("greate","-2000000");//最小
+		}
+		String scheduleYearMonth = summary.getScheduleYearMonth();
+		List<XdDayModel> xdDayModels = XdDayModel.dao.find("select * from  xd_day_model where id like '" + scheduleYearMonth + "%' order by id");
+		int daysNum=xdDayModels.size();
+		setAttr("daysNum",daysNum+1);
+
 		setAttr("o", summary);
 		setAttr("formModelName",StringUtil.toLowerCaseFirstOne(XdAttendanceSummary.class.getSimpleName()));
 		renderIframe("edit.html");
