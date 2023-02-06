@@ -17,6 +17,14 @@ public abstract class BaseXdRcpSummary<M extends BaseXdRcpSummary<M>> extends Mo
 		return getLong("id");
 	}
 
+	public void setSummaryId(String summaryId) {
+		set("summary_id", summaryId);
+	}
+	
+	public String getSummaryId() {
+		return getStr("summary_id");
+	}
+
 	public void setDeptValue(String deptValue) {
 		set("dept_value", deptValue);
 	}

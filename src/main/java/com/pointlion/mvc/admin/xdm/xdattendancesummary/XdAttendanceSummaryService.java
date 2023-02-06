@@ -8,21 +8,17 @@ import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.plugin.activerecord.Record;
 import com.jfinal.plugin.activerecord.tx.Tx;
 import com.pointlion.mvc.common.model.*;
+import com.pointlion.mvc.common.utils.DateUtil;
 import com.pointlion.mvc.common.utils.UuidUtil;
 import com.pointlion.mvc.common.utils.office.excel.ExcelUtil;
 import com.pointlion.plugin.shiro.ShiroKit;
-import com.pointlion.mvc.common.utils.DateUtil;
 import com.pointlion.plugin.shiro.ext.SimpleUser;
 import com.pointlion.util.DictMapping;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.shiro.web.servlet.ShiroFilter;
-import org.openxmlformats.schemas.presentationml.x2006.main.CTHandoutMasterIdListEntry;
 
 import java.io.File;
 import java.lang.reflect.Method;
-import java.math.BigDecimal;
 import java.sql.SQLException;
-import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -273,9 +269,9 @@ public class XdAttendanceSummaryService{
 									if(cellValue.equals("新离")){
 										newLeaveDays++;
 									}
-									if(cellValue.equals("年")){
+									/*if(cellValue.equals("年")){
 										alreayAnnualLeave++;
-									}
+									}*/
 									if(cellValue.contains("年")){
 										String annual = cellValue.replace("年", "");
 										if(annual.equals("")){
@@ -313,6 +309,7 @@ public class XdAttendanceSummaryService{
 							attendanceSummary.save();
 							if(shift18A){
 								XdRcpSummary rcp =new XdRcpSummary();
+								rcp.setSummaryId(attendanceSummary.getId());
 								rcp.setDeptValue(attendanceSummary.getDeptValue());
 								rcp.setDeptName(attendanceSummary.getDeptName());
 								rcp.setUnitValue(attendanceSummary.getUnitValue());
@@ -965,16 +962,299 @@ public class XdAttendanceSummaryService{
 			row.add(summary.getAccSettlehours());
 			row.add(summary.getWeeks());
 
-			XdAttendanceRcp rcp= XdAttendanceRcp.dao.findFirst("select * from  xd_attendance_rcp  where  attendid_id='"+summary.getId()+"'");
-			row.add(rcp.getMidnightDays());
-			row.add(rcp.getMonworkDays());
-			row.add(rcp.getAllowanceAmount());
-			row.add(rcp.getShiftName());
-			row.add(rcp.getRemarks());
+			XdRcpSummary rcp= XdRcpSummary.dao.findFirst("select * from  xd_rcp_summary  where  summary_id='"+summary.getId()+"'");
+			row.add(rcp==null?"":rcp.getRcpDays());
+			row.add(rcp==null?"":rcp.getWorkDays());
+			row.add(rcp==null?"":rcp.getRental());
+			row.add(rcp==null?"":rcp.getShfitName());
+			row.add(rcp==null?"":rcp.getRemarks());
 
 			rows.add(row);
 		}
 		File file = ExcelUtil.attendanceFile(path,rows,xdDayModels.size());
+		return file;
+	}
+
+
+	public File exportRewardPunishExcel(String path, String dept,String year, String month){
+		String sql  = " from "+TABLE_NAME+" o   where  perform_rewardpunish !=''";
+		if(StrKit.notBlank(dept)){
+			sql = sql + " and o.dept_value='"+ dept+"'";
+		}
+		if(StrKit.notBlank(year)){
+			sql = sql + " and o.schedule_year='"+ year+"'";
+		}
+		if(StrKit.notBlank(month)){
+			sql = sql + " and o.schedule_month='"+ month+"'";
+		}
+
+		sql = sql + " order by o.create_date desc,emp_num";
+
+
+		List<XdAttendanceSummary> list = XdAttendanceSummary.dao.find(" select * "+sql);//查询全部
+
+
+		Map<String, Map<String, String>> dictMap = DictMapping.dictMappingValueToName();
+		Map<String, String> projectMap = DictMapping.projectsMappingValueToName();
+		Map<String, String> orgMap = DictMapping.orgMapping("0");
+		String departName = orgMap.get(dept)==null?"":orgMap.get(dept);
+		Map<String, String> unit = dictMap.get("unit");
+//		String unitName = unit.get(unitname)==null?"":unit.get(unitname);
+		String years="";
+		String months="";
+		//String title="出勤表";
+		if(StrKit.notBlank(year)){
+			years=year+"年";
+		}
+		if(StrKit.notBlank(month)){
+			months=month+"月";
+		}
+		List<String> titleFirstRow=new ArrayList<String>();
+		List<String> titleSecondRow=new ArrayList<String>();
+		titleFirstRow.add("上海东方欣迪商务服务有限公司");
+		for (int i = 0; i <6 ; i++) {
+			titleFirstRow.add("");
+		}
+
+		SysOrg org = SysOrg.dao.findById(dept);
+		titleSecondRow.add("");
+		titleSecondRow.add("");
+		titleSecondRow.add("");
+		titleSecondRow.add(org.getName());
+		titleSecondRow.add("绩效奖惩表");
+		titleSecondRow.add("");
+		titleSecondRow.add(years+months);
+
+/*
+		for (int i =1; i <=7; i++) {
+			if(i==12){
+				titleFirstRow.add("上海东方欣迪商务服务有限公司");
+//				titleSecondRow.add("RCP项目津贴申请表");
+//				titleThirdRow.add("");
+
+			}else if(i==11){
+				titleFirstRow.add("");
+				titleSecondRow.add("");
+				titleThirdRow.add(ny);
+			}else{
+				titleFirstRow.add("");
+				titleSecondRow.add("");
+				titleThirdRow.add("");
+			}
+
+		}*/
+//		title=departName+unitName+years+months+title;
+//		List<XdDayModel> xdDayModels = XdDayModel.dao.find("select * from  xd_day_model where id like'" + year + month + "%' order by id");
+		List<List<String>> rows = new ArrayList<List<String>>();
+		List<String> titleRow=new ArrayList<String>();
+		//titleRow.add(title);
+		rows.add(titleFirstRow);
+		rows.add(titleSecondRow);
+
+		List<String> first = new ArrayList<String>();
+		first.add("条线");
+		first.add("所在单元");//0
+		first.add("项目");//1
+		first.add("姓名");//3
+		first.add("身份证号");//2
+		first.add("绩效奖惩金额");//3
+		first.add("备注");//3
+
+
+		rows.add(first);
+
+		double sum=0;
+		for(int j = 0; j < list.size(); j++){
+			List<String> row = new ArrayList<String>();
+			//row.add(String.valueOf(j+1));
+			XdAttendanceSummary summary = list.get(j);
+			//List<XdAttendanceDetail> xdAttendanceDetails = XdAttendanceDetail.dao.find("select * from  xd_attendance_detail where attendid_id='"+summary.getId()+"' order by schedule_ymd");
+			row.add(org.getName());//0
+			row.add(summary.getUnitName());//0
+			row.add(summary.getProjectName());//0
+			row.add(summary.getEmpName());
+			XdEmployee emp = XdEmployee.dao.findFirst("select * from  xd_employee where name='" + summary.getEmpName() + "' ");
+			row.add(emp==null?"":emp.getIdnum());
+			row.add(summary.getPerformRewardpunish());
+			row.add(summary.getSpecialDesc());
+			sum=sum+Math.abs(Double.valueOf(summary.getPerformRewardpunish()));
+			rows.add(row);
+		}
+		List<String> countRow = new ArrayList<String>();
+		countRow.add("");
+		countRow.add("");
+		countRow.add("");
+		countRow.add("");
+		countRow.add("");
+		countRow.add(String.valueOf(sum));
+		countRow.add("");
+		rows.add(countRow);
+
+		List<String> blankRow = new ArrayList<String>();
+		rows.add(blankRow);
+		rows.add(blankRow);
+		List<String> firstFootRow = new ArrayList<String>();
+		firstFootRow.add("分管领导：");
+		firstFootRow.add("");
+		firstFootRow.add("");
+		firstFootRow.add("人力资源部：");
+		firstFootRow.add("");
+		firstFootRow.add("部门：");
+		firstFootRow.add("");
+		List<String> secondFootRow = new ArrayList<String>();
+		secondFootRow.add("日    期：");
+		secondFootRow.add("");
+		secondFootRow.add("");
+		secondFootRow.add("日    期：");
+		secondFootRow.add("");
+		secondFootRow.add("日    期：");
+		secondFootRow.add("");
+		rows.add(firstFootRow);
+		rows.add(secondFootRow);
+		File file = ExcelUtil.exportRewardPunishFile(path,rows);
+		return file;
+	}
+
+
+	public File exportCheckInExcel(String path, String dept,String year, String month){
+		String sql  = " from "+TABLE_NAME+" o   where  1=1";
+		if(StrKit.notBlank(dept)){
+			sql = sql + " and o.dept_value='"+ dept+"'";
+		}
+		if(StrKit.notBlank(year)){
+			sql = sql + " and o.schedule_year='"+ year+"'";
+		}
+		if(StrKit.notBlank(month)){
+			sql = sql + " and o.schedule_month='"+ month+"'";
+		}
+
+		sql = sql + " order by o.create_date desc,emp_num";
+
+
+		List<XdAttendanceSummary> list = XdAttendanceSummary.dao.find(" select * "+sql);//查询全部
+
+
+		Map<String, Map<String, String>> dictMap = DictMapping.dictMappingValueToName();
+		Map<String, String> projectMap = DictMapping.projectsMappingValueToName();
+		Map<String, String> orgMap = DictMapping.orgMapping("0");
+		String departName = orgMap.get(dept)==null?"":orgMap.get(dept);
+		Map<String, String> unit = dictMap.get("unit");
+//		String unitName = unit.get(unitname)==null?"":unit.get(unitname);
+		String years="";
+		String months="";
+		//String title="出勤表";
+		if(StrKit.notBlank(year)){
+			years=year+"年";
+		}
+		if(StrKit.notBlank(month)){
+			months=month+"月";
+		}
+		List<String> titleFirstRow=new ArrayList<String>();
+		List<String> titleSecondRow=new ArrayList<String>();
+		List<String> titleThirdRow=new ArrayList<String>();
+		titleFirstRow.add("上海东方欣迪商务服务有限公司");
+		titleSecondRow.add("考勤统计表");
+		for (int i = 0; i <28 ; i++) {
+			titleFirstRow.add("");
+			titleSecondRow.add("");
+		}
+		for (int i = 0; i <8 ; i++) {
+			titleThirdRow.add("");
+		}
+		SysOrg org = SysOrg.dao.findById(dept);
+		titleThirdRow.add("部门：");
+		titleThirdRow.add(org.getName());
+		titleThirdRow.add("");
+		titleThirdRow.add("");
+		titleThirdRow.add("统计月份：");
+		titleThirdRow.add("");
+		titleThirdRow.add(year);
+		titleThirdRow.add("年");
+		titleThirdRow.add(month);
+		titleThirdRow.add("月");
+		for (int i = 0; i < 11; i++) {
+			titleThirdRow.add("");
+		}
+
+
+
+		List<List<String>> rows = new ArrayList<List<String>>();
+		List<String> titleRow=new ArrayList<String>();
+		//titleRow.add(title);
+		rows.add(titleFirstRow);
+		rows.add(titleSecondRow);
+		rows.add(titleThirdRow);
+
+		List<String> first = new ArrayList<String>();
+		first.add("序号");
+		first.add("部门");//0
+		first.add("单元名称");//1
+		first.add("项目名称");//1
+		first.add("员工工号");//1
+		first.add("姓名");//3
+		first.add("职员代码");//3
+		first.add("平时加班");//2
+		first.add("双休日加班");//2
+		first.add("节假日加班");//3
+		first.add("值班费");//3
+		first.add("中班天数");//3
+		first.add("夜班天数");//3
+		first.add("高温费");//3
+		first.add("工龄津贴");//3
+		first.add("兼项津贴");//3
+		first.add("其他津贴");//3
+		first.add("其他调整");//3
+		first.add("每月应工作天数");//3
+		first.add("病假天数");//3
+		first.add("事假天数");//3
+		first.add("新离缺勤天数");//3
+		first.add("旷工天数");//3
+		first.add("试用期扣款");//3
+		first.add("绩效奖惩");//3
+		first.add("备注");//3
+		first.add("已年假天数");//3
+		first.add("入职时间");//3
+		first.add("离职时间");//3
+		rows.add(first);
+
+		double sum=0;
+		for(int j = 0; j < list.size(); j++){
+			List<String> row = new ArrayList<String>();
+			XdAttendanceSummary summary = list.get(j);
+			row.add(String.valueOf(j+1));
+			row.add(summary.getDeptName());
+			row.add(summary.getUnitName());
+			row.add(summary.getProjectName());
+			row.add(summary.getEmpNum());
+			row.add(summary.getEmpName());
+			row.add("");//职员代码
+			XdAttendanceDays days = XdAttendanceDays.dao.findFirst("select * from  xd_attendance_days where attendid_id='" + summary.getId() + "'");
+			row.add(days.getOrdinaryOvertime());
+			row.add("");//双休日加班
+			row.add(days.getNationalOvertime());
+			row.add(days.getDutyCharge());
+			row.add(days.getMidshiftDays());
+			row.add(days.getNightshiftDays());
+			row.add(days.getHightempAllowance());
+			row.add("");//工龄津贴
+			row.add("");//兼项津贴
+			row.add("");//其他津贴
+			row.add("");//其他调整
+			row.add(days.getMonshouldWorkdays());
+			row.add(days.getSickeleaveDays());
+			row.add(days.getCasualleaveDays());
+			row.add(days.getAbsencedutyDays());
+			row.add(days.getAbsentworkDays());
+			row.add("");//试用期扣款
+			row.add(summary.getPerformRewardpunish());
+			row.add(summary.getSpecialDesc());
+			row.add(days.getRestanleaveDays());
+			row.add(summary.getHireDate());
+			row.add(summary.getDimissionDate());
+			rows.add(row);
+		}
+
+		File file = ExcelUtil.exportCheckInExcelFile(path,rows);
 		return file;
 	}
 

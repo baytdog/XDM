@@ -136,6 +136,37 @@ public class XdAttendanceSummaryController extends BaseController {
 		File file = service.exportExcel(path,dept,unitname,year,month,emp_name);
 		renderFile(file);
 	}
+	/**
+	 * @Method exportRewardPunishExcel
+	 * @Date 2023/2/6 20:43
+	 * @Exception
+	 * @Description  导出绩效奖惩
+	 * @Author king
+	 * @Version  1.0
+	 * @Return void
+	 */
+	public void exportRewardPunishExcel() throws UnsupportedEncodingException {
+
+		String dept=getPara("dept","");
+		String year=getPara("year","");
+		String month = getPara("month","");
+//		String emp_name = new String(getPara("emp_name","").getBytes("ISO-8859-1"), "utf-8");
+
+		String path = this.getSession().getServletContext().getRealPath("")+"/upload/export/"+ DateUtil.format(new Date(),21)+".xlsx";
+		File file = service.exportRewardPunishExcel(path,dept,year,month);
+		renderFile(file);
+	}
+	public void exportCheckInExcel() throws UnsupportedEncodingException {
+
+		String dept=getPara("dept","");
+		String year=getPara("year","");
+		String month = getPara("month","");
+//		String emp_name = new String(getPara("emp_name","").getBytes("ISO-8859-1"), "utf-8");
+
+		String path = this.getSession().getServletContext().getRealPath("")+"/upload/export/"+ DateUtil.format(new Date(),21)+".xlsx";
+		File file = service.exportCheckInExcel(path,dept,year,month);
+		renderFile(file);
+	}
 
 
 	public void getRcpList() {

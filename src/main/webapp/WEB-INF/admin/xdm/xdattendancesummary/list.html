@@ -79,9 +79,10 @@
 					<a id="del" class="btn btn-danger data-toolbar" onclick="delSel()" href="javascript:void(0);"><i class="demo-pli-cross"></i> 批量删除</a>
 					<a id="filePicker"  href="javascript:void(0);" ><i class="demo-pli-add"></i> 导入</a>
 					<a id="export" class="btn btn-primary data-toolbar" onclick="exportExcel()" target="_blank"><i class="demo-pli-download-from-cloud"></i> 导出</a>
-
+					<a id="rewardPunish" class="btn btn-primary data-toolbar" onclick="exportRewardPunish()" target="_blank"><i class="demo-pli-download-from-cloud"></i> 导出绩效奖惩</a>
+					<a id="checkIn" class="btn btn-primary data-toolbar" onclick="exportCheckIn()" target="_blank"><i class="demo-pli-download-from-cloud"></i> 导出考勤</a>
 					<table id="pageTable" class="demo-add-niftycheck table "
-						   data-toolbar="#del,#add,#filePicker,#export"
+						   data-toolbar="#del,#add,#filePicker,#export,#rewardPunish,#checkIn"
 						   data-width="90px"
 						   ></table>
 				</div>
@@ -284,6 +285,35 @@
 			return;
 		}
 		location.href = "#(ctx)/admin/xd/xdattendancesummary/exportExcel?dept="+dept+"&emp_name="+emp_name+"&unitname="+unitname+"&year="+year+"&month="+month;
+	}
+	function  exportRewardPunish(){
+		let dept = $("#dept").val();
+		let year =$("#year").val();
+		let month =	$("#month").val();
+		if(dept==''){
+			pointLion.alertMsg("请选择部门！","success",null,null);
+			return;
+		}
+		if(year==''||month==''){
+			pointLion.alertMsg("请选择年月！","success",null,null);
+			return;
+		}
+		location.href = "#(ctx)/admin/xd/xdattendancesummary/exportRewardPunishExcel?dept="+dept+"&year="+year+"&month="+month;
+	}
+
+	function  exportCheckIn(){
+		let dept = $("#dept").val();
+		let year =$("#year").val();
+		let month =	$("#month").val();
+		if(dept==''){
+			pointLion.alertMsg("请选择部门！","success",null,null);
+			return;
+		}
+		if(year==''||month==''){
+			pointLion.alertMsg("请选择年月！","success",null,null);
+			return;
+		}
+		location.href = "#(ctx)/admin/xd/xdattendancesummary/exportCheckInExcel?dept="+dept+"&year="+year+"&month="+month;
 	}
 	function exportExcel2(){
 

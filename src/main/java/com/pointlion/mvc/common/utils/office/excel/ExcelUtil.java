@@ -1,6 +1,7 @@
 package com.pointlion.mvc.common.utils.office.excel;
 
 import cn.hutool.poi.excel.ExcelWriter;
+import cn.hutool.poi.excel.StyleSet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.ShapeTypes;
@@ -320,6 +321,31 @@ public class ExcelUtil {
     }
 
 
+
+    public static File exportRewardPunishFile(String path,List<List<String>> rows){
+        //通过工具类创建writer
+        ExcelWriter writer = cn.hutool.poi.excel.ExcelUtil.getWriter(path);
+        writer.write(rows, true);
+        int size = rows.get(1).size();
+        writer.merge(0,0,0,size-1,rows.get(0).get(0),false);
+        //关闭writer，释放内存
+        writer.close();
+        return new File(path);
+    }
+
+    public static File exportCheckInExcelFile(String path,List<List<String>> rows){
+        //通过工具类创建writer
+        ExcelWriter writer = cn.hutool.poi.excel.ExcelUtil.getWriter(path);
+        writer.write(rows, true);
+        int size = rows.get(1).size();
+        writer.merge(0,0,0,size-1,rows.get(0).get(0),false);
+        writer.merge(1,1,0,size-1,rows.get(1).get(0),false);
+        writer.merge(2,2,9,11,rows.get(2).get(9),false);
+        writer.merge(2,2,12,13,rows.get(2).get(12),false);
+        //关闭writer，释放内存
+        writer.close();
+        return new File(path);
+    }
     public static File overtimeFile(String path,List<List<String>> rows){
         //通过工具类创建writer
         ExcelWriter writer = cn.hutool.poi.excel.ExcelUtil.getWriter(path);
