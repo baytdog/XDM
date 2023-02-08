@@ -397,5 +397,236 @@ public class XdOvertimeSummaryService{
 		File file = ExcelUtil.overtimeFile(path,rows);
 		return file;
 	}
+	public File exportJBJSExcel(String path, String dept, String year, String month,String overtimeType){
+		String sql  = " from "+TABLE_NAME+" o   where 1=1";
+		if(StrKit.notBlank(dept)){
+			sql = sql + " and o.dept_id='"+ dept+"'";
+		}
+		if(StrKit.notBlank(overtimeType)){
+			sql = sql + " and o.apply_type='"+ overtimeType+"'";
+		}
+		if(StrKit.notBlank(year)&&StrKit.notBlank(month)){
+			sql = sql + " and o.apply_date like'%"+year+"-"+month+"%'";
+		}
+
+		/*	/*if(StrKit.notBlank(year)){
+			sql = sql + " and o.schedule_year='"+ year+"'";
+		}
+		if(StrKit.notBlank(month)){
+			sql = sql + " and o.schedule_month='"+ month+"'";
+		}
+		if(StrKit.notBlank(emp_name)){
+			sql = sql + " and o.emp_name like'%"+emp_name+"%'";
+		}*/
+
+		sql = sql + " order by o.create_date desc,emp_num";
+
+
+		List<XdOvertimeSummary> list = XdOvertimeSummary.dao.find(" select * "+sql);//查询全部
+
+
+		Map<String, Map<String, String>> dictMap = DictMapping.dictMappingValueToName();
+		Map<String, String> projectMap = DictMapping.projectsMappingValueToName();
+		Map<String, String> orgMap = DictMapping.orgMapping("0");
+		String departName = orgMap.get(dept)==null?"":orgMap.get(dept);
+		Map<String, String> unit = dictMap.get("unit");
+		List<List<String>> rows = new ArrayList<List<String>>();
+		List<String> titleFirstRow=new ArrayList<String>();
+		List<String> titleSecondRow=new ArrayList<String>();
+		List<String> titleThirdRow=new ArrayList<String>();
+		List<String> titleFourRow=new ArrayList<String>();
+
+		for (int i =1; i <=13; i++) {
+			if(i==13){
+				titleFirstRow.add("MF/WI-HR-03-01(B/0)");
+				titleSecondRow.add("上海东方欣迪商务服务有限公司");
+				titleThirdRow.add("加班申请表");
+				if(StrKit.notBlank(dept)) {
+					SysOrg org = SysOrg.dao.findById(dept);
+					titleFourRow.add(org.getName());
+				}else{
+					titleFourRow.add("");
+				}
+
+			}else if(i==11){
+				titleFirstRow.add("");
+				titleSecondRow.add("");
+				titleThirdRow.add("");
+				titleFourRow.add("部门:");
+			}else{
+				titleFirstRow.add("");
+				titleSecondRow.add("");
+				titleThirdRow.add("");
+				titleFourRow.add("");
+
+			}
+
+		}
+		rows.add(titleFirstRow);
+		rows.add(titleSecondRow);
+		rows.add(titleThirdRow);
+		rows.add(titleFourRow);
+		/*List<String> titleRow=new ArrayList<String>();
+
+		titleRow.add(title);
+		rows.add(titleRow);*/
+
+		List<String> first = new ArrayList<String>();
+		List<String> second = new ArrayList<String>();
+		first.add("工号");
+		first.add("姓名");//0
+		first.add("身份证");
+		first.add("加班所在项目");//1
+		first.add("加班申请");//2
+		first.add("");//2
+		first.add("");//2
+		first.add("");//2
+		first.add("");//2
+		first.add("实际加班");//2
+		first.add("");//2
+		first.add("");//2
+		first.add("备注");//3
+
+		second.add("");
+		second.add("");
+		second.add("");
+		second.add("");
+		second.add("日期");
+		second.add("开始时间");
+		second.add("结束时间");
+		second.add("加班时长");
+		second.add("类别");
+		second.add("开始时间");
+		second.add("结束时间");
+		second.add("加班时长");
+		second.add("");
+
+		rows.add(first);
+		rows.add(second);
+		double applyOvertime=0;
+
+		DecimalFormat df = new DecimalFormat("0.00");
+
+		double actOvertime=0;
+		for(int j = 0; j < list.size(); j++){
+			List<String> row = new ArrayList<String>();
+			XdOvertimeSummary summary = list.get(j);
+			row.add(summary.getEmpNum());//0
+			row.add(summary.getEmpName());//0
+			row.add(summary.getEmpIdnum());//0
+			row.add(summary.getProjectName());
+			row.add(summary.getApplyDate());
+			row.add(summary.getApplyStart());
+			row.add(summary.getApplyEnd());
+			row.add(summary.getApplyHours());
+			String applyType = summary.getApplyType();
+			if(applyType.equals("1")){
+				row.add("非国定节假日加班");
+			}else if(applyType.equals("0")){
+				row.add("国定节假日加班");
+			}else{
+				row.add(applyType);
+			}
+			row.add(summary.getActStart());
+			row.add(summary.getActEnd());
+			row.add(summary.getActHours());
+			row.add(summary.getRemarks());
+
+			if(summary.getApplyHours()==null ||summary.getApplyHours().equals("")){
+				applyOvertime=applyOvertime+Double.valueOf("0");
+			}else{
+				applyOvertime=applyOvertime+Double.valueOf(summary.getApplyHours());
+			}
+
+			if(summary.getActHours()==null ||summary.getActHours().equals("")){
+				actOvertime=actOvertime+Double.valueOf("0");
+			}else{
+				actOvertime=actOvertime+Double.valueOf(summary.getActHours());
+			}
+
+			rows.add(row);
+		}
+
+		List<String> footFirstRow = new ArrayList<String>();
+		footFirstRow.add("合计");
+		footFirstRow.add("0");
+		footFirstRow.add("人次");
+		footFirstRow.add(String.valueOf(list.size()));
+		footFirstRow.add("");
+		footFirstRow.add("");
+		footFirstRow.add("");
+		footFirstRow.add(df.format(applyOvertime));
+		footFirstRow.add("");
+		footFirstRow.add("");
+		footFirstRow.add("");
+		footFirstRow.add(df.format(actOvertime));
+		footFirstRow.add("");
+		List<String> footSecondRow = new ArrayList<String>();
+		footSecondRow.add("部门签字");
+		footSecondRow.add("");
+		footSecondRow.add("");
+		footSecondRow.add("");
+		footSecondRow.add("");
+		footSecondRow.add("");
+		footSecondRow.add("");
+		footSecondRow.add("");
+		footSecondRow.add("");
+		footSecondRow.add("日期：           年       月      日\t\t\t\t\n");
+		footSecondRow.add("");
+		footSecondRow.add("");
+		footSecondRow.add("");
+
+		List<String> footThirdRow = new ArrayList<String>();
+		footThirdRow.add("人力资源部签字");
+		footThirdRow.add("");
+		footThirdRow.add("");
+		footThirdRow.add("");
+		footThirdRow.add("日期：           年       月      日\t\t\t\t\n");
+		footThirdRow.add("");
+		footThirdRow.add("");
+		footThirdRow.add("");
+		footThirdRow.add("");
+		footThirdRow.add("日期：           年       月      日\t\t\t\t\n");
+		footThirdRow.add("");
+		footThirdRow.add("");
+		footThirdRow.add("");
+		List<String> footFourRow = new ArrayList<String>();
+		footFourRow.add("分管领导签字");
+		footFourRow.add("");
+		footFourRow.add("");
+		footFourRow.add("");
+		footFourRow.add("日期：           年       月      日\t\t\t\t\n");
+		footFourRow.add("");
+		footFourRow.add("");
+		footFourRow.add("");
+		footFourRow.add("");
+		footFourRow.add("日期：           年       月      日\t\t\t\t\n");
+		footFourRow.add("");
+		footFourRow.add("");
+		footFourRow.add("");
+		List<String> footFiveRow = new ArrayList<String>();
+		footFiveRow.add("总经理签字");
+		footFiveRow.add("");
+		footFiveRow.add("");
+		footFiveRow.add("");
+		footFiveRow.add("日期：           年       月      日\t\t\t\t\n");
+		footFiveRow.add("");
+		footFiveRow.add("");
+		footFiveRow.add("");
+		footFiveRow.add("");
+		footFiveRow.add("日期：           年       月      日\t\t\t\t\n");
+		footFiveRow.add("");
+		footFiveRow.add("");
+		footFiveRow.add("");
+		rows.add(footFirstRow);
+		rows.add(footSecondRow);
+		rows.add(footThirdRow);
+		rows.add(footFourRow);
+		rows.add(footFiveRow);
+
+
+		File file = ExcelUtil.overtimeFile(path,rows);
+		return file;
+	}
 
 }

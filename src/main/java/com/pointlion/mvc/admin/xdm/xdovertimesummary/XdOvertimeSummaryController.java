@@ -131,4 +131,16 @@ public class XdOvertimeSummaryController extends BaseController {
 		renderFile(file);
 	}
 	
+	public void exportJBJSExcel() throws UnsupportedEncodingException {
+
+		String dept=getPara("dept","");
+		String year=getPara("year","");
+		String month = getPara("month","");
+		String overtimeType = getPara("overtimeType","");
+
+		String path = this.getSession().getServletContext().getRealPath("")+"/upload/export/"+ DateUtil.format(new Date(),21)+".xlsx";
+		File file = service.exportJBJSExcel(path,dept,year,month,overtimeType);
+		renderFile(file);
+	}
+
 }

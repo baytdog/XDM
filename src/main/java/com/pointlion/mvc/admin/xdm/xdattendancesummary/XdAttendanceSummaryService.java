@@ -203,6 +203,199 @@ public class XdAttendanceSummaryService{
 								method.invoke(attendanceSummary,cellValue);
 								if(!"".equals(cellValue)){
 									XdShift shfit = nameShiftObjMap.get(cellValue);
+									//加班结算开始
+									if (shfit != null) {
+										XdScheduleSummary scheduleSummary= XdScheduleSummary.dao.findFirst("select * from  xd_schedule_summary  where schedule_year='"+year
+												+"' and schedule_month='"+month+"' and  emp_name='"+empName+"'");
+
+										if(scheduleSummary==null){
+											if(shfit.getSpanDay().equals("1")){
+												LocalDate localDate = LocalDate.parse(ymr).plusDays(1);
+												DateTimeFormatter dtf=DateTimeFormatter.ofPattern("yyyyMMdd");
+												String nextDate  = dtf.format(localDate);
+												DateTimeFormatter dtf3=DateTimeFormatter.ofPattern("yyyy-MM-dd");
+												//是跨天且当天法定假日
+												if(holidaysMap.get(ymd)!=null && !"".equals(holidaysMap.get(ymd))){
+													XdOvertimeSummary overtimeSummary=new XdOvertimeSummary();
+													overtimeSummary.setDeptId(depeId);
+													overtimeSummary.setDeptName(department);
+													overtimeSummary.setEmpNum(empNum);
+													overtimeSummary.setEmpName(empNum);
+													overtimeSummary.setProjectId(attendanceSummary.getProjectValue());
+													overtimeSummary.setProjectName(attendanceSummary.getProjectName());
+													overtimeSummary.setApplyDate(ymr);
+													overtimeSummary.setApplyStart("");
+													overtimeSummary.setApplyEnd("");
+													overtimeSummary.setApplyHours("");
+													overtimeSummary.setApplyType("0");
+													overtimeSummary.setActStart(shfit.getBusitime());
+													overtimeSummary.setActEnd("24:00");
+													overtimeSummary.setActHours(shfit.getCurdayHours());
+													overtimeSummary.setRemarks("");
+													overtimeSummary.setCreateDate(DateUtil.getCurrentTime());
+													overtimeSummary.setCreateUser(ShiroKit.getUserId());
+													overtimeSummary.save();
+												}else{
+													XdOvertimeSummary overtimeSummary=new XdOvertimeSummary();
+													overtimeSummary.setDeptId(depeId);
+													overtimeSummary.setDeptName(department);
+													overtimeSummary.setEmpNum(empNum);
+													overtimeSummary.setEmpName(empNum);
+													overtimeSummary.setProjectId(attendanceSummary.getProjectValue());
+													overtimeSummary.setProjectName(attendanceSummary.getProjectName());
+													overtimeSummary.setApplyDate(ymr);
+													overtimeSummary.setApplyStart("");
+													overtimeSummary.setApplyEnd("");
+													overtimeSummary.setApplyHours("");
+													overtimeSummary.setApplyType("1");
+													overtimeSummary.setActStart(shfit.getBusitime());
+													overtimeSummary.setActEnd("24:00");
+													overtimeSummary.setActHours(shfit.getCurdayHours());
+													overtimeSummary.setRemarks("");
+													overtimeSummary.setCreateDate(DateUtil.getCurrentTime());
+													overtimeSummary.setCreateUser(ShiroKit.getUserId());
+													overtimeSummary.save();
+												}
+												//是跨天且第二天是法定假日
+												if(holidaysMap.get(nextDate)!=null && !"".equals(holidaysMap.get(nextDate))){
+													XdOvertimeSummary overtimeSummary=new XdOvertimeSummary();
+													overtimeSummary.setDeptId(depeId);
+													overtimeSummary.setDeptName(department);
+													overtimeSummary.setEmpNum(empNum);
+													overtimeSummary.setEmpName(empNum);
+													overtimeSummary.setProjectId(attendanceSummary.getProjectValue());
+													overtimeSummary.setProjectName(attendanceSummary.getProjectName());
+													overtimeSummary.setApplyDate(dtf3.format(localDate));
+													overtimeSummary.setApplyStart("");
+													overtimeSummary.setApplyEnd("");
+													overtimeSummary.setApplyHours("");
+													overtimeSummary.setApplyType("0");
+													overtimeSummary.setActStart("00:00");
+													overtimeSummary.setActEnd(shfit.getUnbusitime());
+													overtimeSummary.setActHours(shfit.getCurdayHours());
+													overtimeSummary.setRemarks("");
+													overtimeSummary.setCreateDate(DateUtil.getCurrentTime());
+													overtimeSummary.setCreateUser(ShiroKit.getUserId());
+													overtimeSummary.save();
+
+												}else{
+
+													XdOvertimeSummary overtimeSummary=new XdOvertimeSummary();
+													overtimeSummary.setDeptId(depeId);
+													overtimeSummary.setDeptName(department);
+													overtimeSummary.setEmpNum(empNum);
+													overtimeSummary.setEmpName(empNum);
+													overtimeSummary.setProjectId(attendanceSummary.getProjectValue());
+													overtimeSummary.setProjectName(attendanceSummary.getProjectName());
+													overtimeSummary.setApplyDate(dtf3.format(localDate));
+													overtimeSummary.setApplyStart("");
+													overtimeSummary.setApplyEnd("");
+													overtimeSummary.setApplyHours("");
+													overtimeSummary.setApplyType("1");
+													overtimeSummary.setActStart("00:00");
+													overtimeSummary.setActEnd(shfit.getUnbusitime());
+													overtimeSummary.setActHours(shfit.getCurdayHours());
+													overtimeSummary.setRemarks("");
+													overtimeSummary.setCreateDate(DateUtil.getCurrentTime());
+													overtimeSummary.setCreateUser(ShiroKit.getUserId());
+													overtimeSummary.save();
+
+												}
+											}else{
+												XdOvertimeSummary overtimeSummary=new XdOvertimeSummary();
+												overtimeSummary.setDeptId(depeId);
+												overtimeSummary.setDeptName(department);
+												overtimeSummary.setEmpNum(empNum);
+												overtimeSummary.setEmpName(empNum);
+												overtimeSummary.setProjectId(attendanceSummary.getProjectValue());
+												overtimeSummary.setProjectName(attendanceSummary.getProjectName());
+												overtimeSummary.setApplyDate(ymr);
+												overtimeSummary.setApplyStart("");
+												overtimeSummary.setApplyEnd("");
+												overtimeSummary.setApplyHours("");
+												overtimeSummary.setApplyType("1");
+												overtimeSummary.setRemarks("");
+												overtimeSummary.setCreateDate(DateUtil.getCurrentTime());
+												overtimeSummary.setCreateUser(ShiroKit.getUserId());
+
+												if(holidaysMap.get(ymd)!=null && !"".equals(holidaysMap.get(ymd))){
+													/*if(shfit.getHours()!=null && !shfit.getHours().equals("")){
+														nationlOTHours=nationlOTHours+ Double.valueOf(shfit.getHours());
+													}*/
+													overtimeSummary.setApplyType("0");
+												}else{
+													overtimeSummary.setApplyType("1");
+												}
+												overtimeSummary.setActStart(shfit.getBusitime());
+												overtimeSummary.setActEnd(shfit.getUnbusitime());
+												overtimeSummary.setActHours(shfit.getHours());
+												overtimeSummary.save();
+											}
+
+
+
+										}else{
+											Method getMethod = scheduleSummary.getClass().getSuperclass().getMethod("getDay" + methodsuffix);
+											String values = (String)getMethod.invoke(scheduleSummary);
+											if(cellValue.equals(values)){//和排班相同
+												if(shfit.getSpanDay().equals("1")){//是跨天
+													XdOvertimeSummary appOT=
+															XdOvertimeSummary.dao.findFirst("select * from  xd_overtime_summary where apply_date='"
+																	+ymr+"' and  emp_name='"+empName+"'");
+													if(appOT!=null){
+														appOT.setActStart(appOT.getApplyStart());
+														appOT.setActEnd(appOT.getApplyEnd());
+														appOT.setApplyHours(appOT.getApplyHours());
+														appOT.update();
+													}
+
+
+													LocalDate localDate = LocalDate.parse(ymr).plusDays(1);
+													DateTimeFormatter dtf=DateTimeFormatter.ofPattern("yyyy-MM-dd");
+													String nextDate  = dtf.format(localDate);
+													XdOvertimeSummary appOTNext=
+															XdOvertimeSummary.dao.findFirst("select * from  xd_overtime_summary where apply_date='"
+																	+nextDate+"' and  emp_name='"+empName+"'");
+													if(appOTNext!=null){
+														appOTNext.setActStart(appOTNext.getActStart());
+														appOTNext.setActEnd(appOTNext.getApplyEnd());
+														appOTNext.setActHours(appOTNext.getApplyHours());
+														appOTNext.update();
+													}
+
+
+
+												}else{//不是跨天
+													XdOvertimeSummary appOT=
+															XdOvertimeSummary.dao.findFirst("select * from  xd_overtime_summary where apply_date='"
+																	+ymr+"' and  emp_name='"+empName+"'");
+													if(appOT!=null){
+														appOT.setActStart(appOT.getApplyStart());
+														appOT.setActEnd(appOT.getApplyEnd());
+														appOT.setApplyHours(appOT.getApplyHours());
+														appOT.update();
+													}
+
+												}
+											}else{//和排班不同
+
+
+
+											}
+										}
+
+
+
+									}
+
+
+									//加班结算结束
+
+
+
+
+
+
 									if (shfit != null) {
 										attDetail.setShiftName(cellValue);
 										attDetail.setWorkHours(shfit.getHours());
