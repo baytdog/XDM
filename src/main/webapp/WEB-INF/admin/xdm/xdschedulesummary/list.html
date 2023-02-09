@@ -7,6 +7,10 @@
 	.table{
 		table-layout: fixed;
 	}
+
+	/*.fixed-table-header{
+		height:70px;
+	}*/
 </style>
 <div id="page-content">
 	<div class="col-sm-12 eq-box-sm">
@@ -66,7 +70,7 @@
 							</select>
 						</div>
 
-
+					<!--	<a href="#" id="username">用户名</a>-->
 						<div class="form-group">
 							<button class="btn btn-primary" type="button" onclick="searchTable()">搜索</button>
 						</div>
@@ -90,63 +94,210 @@
 	</div>
 </div>
 <script>
+	let lastyear="#(year)";
+	let lastmonth="#(month)";
+	if(lastyear){
+		$('#year').selectpicker('val',lastyear.split(",")).trigger("change");
+	}
+	if(lastmonth){
+		$('#month').selectpicker('val',lastmonth.split(",")).trigger("change");
+	}
 
-	var col = [{field: 'checked', checkbox : true, align: 'center'},
+	var col = [
+	/*	{field: 'checked', checkbox : true, align: 'center'},*/
 
-		{field: 'dept_name', title: '部门', align: 'center',width:'120'},
-		{field: 'unit_name', title: '单元', align: 'center',width:'120'},
-		{field: 'project_name', title: '项目', align: 'center',width:'120'},
-		{field: 'emp_num', title: '工号', align: 'center',width:'80'},
-		{field: 'emp_name', title: '姓名', align: 'center',width:'80'},
-		{field: 'work_station', title: '岗位', align: 'center',width:'120'},
+		[{field: 'dept_name', title: '部门',align: 'center',width:'120',valign:'middle',halign:"center",rowspan: 3 },
+		{field: 'unit_name', title: '单元', align: 'center',width:'120',valign:'middle',halign:"center", colspan: 1,rowspan: 3 },
+		{field: 'project_name', title: '项目', align: 'center',width:'120',valign:'middle',halign:"center", colspan: 1,rowspan: 3 },
+		{field: 'emp_num', title: '工号', align: 'center',width:'80',valign:'middle',halign:"center", colspan: 1,rowspan: 3 },
+		{field: 'emp_name', title: '姓名', align: 'center',width:'80',valign:'middle',halign:"center", colspan: 1,rowspan: 3 },
+		{field: 'work_station', title: '岗位', align: 'center',width:'120',valign:'middle',halign:"center", colspan: 1,rowspan: 3 },
+		{field: 'day00', title: '上月', align: 'center',width:'80', colspan: 1,rowspan: 1},
+		{field: 'day01', title: '1', align: 'center',width:'80', colspan: 1,rowspan: 1},
+		{field: 'day02', title: '2', align: 'center',width:'80', colspan: 1,rowspan: 1},
+		{field: 'day03', title: '3', align: 'center',width:'80', colspan: 1,rowspan: 1},
+		{field: 'day04', title: '4', align: 'center',width:'80', colspan: 1,rowspan: 1},
+		{field: 'day05', title: '5', align: 'center',width:'80', colspan: 1,rowspan: 1},
+		{field: 'day06', title: '6', align: 'center',width:'80', colspan: 1,rowspan: 1},
+		{field: 'day07', title: '7', align: 'center',width:'80', colspan: 1,rowspan: 1},
+		{field: 'day08', title: '8', align: 'center',width:'80', colspan: 1,rowspan: 1},
+		{field: 'day09', title: '9', align: 'center',width:'80', colspan: 1,rowspan: 1},
+		{field: 'day10', title: '10', align: 'center',width:'80', colspan: 1,rowspan: 1},
+		{field: 'day11', title: '11', align: 'center',width:'80', colspan: 1,rowspan: 1},
+		{field: 'day12', title: '12', align: 'center',width:'80', colspan: 1,rowspan: 1},
+		{field: 'day13', title: '13', align: 'center',width:'80', colspan: 1,rowspan: 1},
+		{field: 'day14', title: '14', align: 'center',width:'80', colspan: 1,rowspan: 1},
+		{field: 'day15', title: '15', align: 'center',width:'80', colspan: 1,rowspan: 1},
+		{field: 'day16', title: '16', align: 'center',width:'80', colspan: 1,rowspan: 1},
+		{field: 'day17', title: '17', align: 'center',width:'80', colspan: 1,rowspan: 1},
+		{field: 'day18', title: '18', align: 'center',width:'80', colspan: 1,rowspan: 1},
+		{field: 'day19', title: '19', align: 'center',width:'80', colspan: 1,rowspan: 1},
+		{field: 'day20', title: '20', align: 'center',width:'80', colspan: 1,rowspan: 1},
+		{field: 'day21', title: '21', align: 'center',width:'80', colspan: 1,rowspan: 1},
+		{field: 'day22', title: '22', align: 'center',width:'80', colspan: 1,rowspan: 1},
+		{field: 'day23', title: '23', align: 'center',width:'80', colspan: 1,rowspan: 1},
+		{field: 'day24', title: '24', align: 'center',width:'80', colspan: 1,rowspan: 1},
+		{field: 'day25', title: '25', align: 'center',width:'80', colspan: 1,rowspan: 1},
+		{field: 'day26', title: '26', align: 'center',width:'80', colspan: 1,rowspan: 1},
+		{field: 'day27', title: '27', align: 'center',width:'80', colspan: 1,rowspan: 1},
+		{field: 'day28', title: '28', align: 'center',width:'80', colspan: 1,rowspan: 1},
+		{field: 'day29', title: '29', align: 'center',width:'80', colspan: 1,rowspan: 1},
+		{field: 'day30', title: '30', align: 'center',width:'80', colspan: 1,rowspan: 1},
+		{field: 'day31', title: '31', align: 'center',width:'80', colspan: 1,rowspan: 1},
 
-		{field: 'day01', title: '1', align: 'center',width:'80'},
-		{field: 'day02', title: '2', align: 'center',width:'80'},
-		{field: 'day03', title: '3', align: 'center',width:'80'},
-		{field: 'day04', title: '4', align: 'center',width:'80'},
-		{field: 'day05', title: '5', align: 'center',width:'80'},
-		{field: 'day06', title: '6', align: 'center',width:'80'},
-		{field: 'day07', title: '7', align: 'center',width:'80'},
-		{field: 'day08', title: '8', align: 'center',width:'80'},
-		{field: 'day09', title: '9', align: 'center',width:'80'},
-		{field: 'day10', title: '10', align: 'center',width:'80'},
-		{field: 'day11', title: '11', align: 'center',width:'80'},
-		{field: 'day12', title: '12', align: 'center',width:'80'},
-		{field: 'day13', title: '13', align: 'center',width:'80'},
-		{field: 'day14', title: '14', align: 'center',width:'80'},
-		{field: 'day15', title: '15', align: 'center',width:'80'},
-		{field: 'day16', title: '16', align: 'center',width:'80'},
-		{field: 'day17', title: '17', align: 'center',width:'80'},
-		{field: 'day18', title: '18', align: 'center',width:'80'},
-		{field: 'day19', title: '19', align: 'center',width:'80'},
-		{field: 'day20', title: '20', align: 'center',width:'80'},
-		{field: 'day21', title: '21', align: 'center',width:'80'},
-		{field: 'day22', title: '22', align: 'center',width:'80'},
-		{field: 'day23', title: '23', align: 'center',width:'80'},
-		{field: 'day24', title: '24', align: 'center',width:'80'},
-		{field: 'day25', title: '25', align: 'center',width:'80'},
-		{field: 'day26', title: '26', align: 'center',width:'80'},
-		{field: 'day27', title: '27', align: 'center',width:'80'},
-		{field: 'day28', title: '28', align: 'center',width:'80'},
-		{field: 'day29', title: '29', align: 'center',width:'80'},
-		{field: 'day30', title: '30', align: 'center',width:'80'},
-		{field: 'day31', title: '31', align: 'center',width:'80'},
-
-		{field: 'remarks', title: '备注', align: 'center',width:'150'},
-		{field: 'control', title: '操作', align: 'left', width:'160',
+		{field: 'remarks', title: '备注', align: 'center',width:'150',valign:'middle',halign:"center", colspan: 1,rowspan: 3},
+		{field: 'control', title: '操作', align: 'left', width:'60',valign:'middle',halign:"center",
 
 			formatter:function(value,row,index){
 				//通过formatter可以自定义列显示的内容
 				//value：当前field的值，即id
 				//row：当前行的数据
-				var a = '<a class="label label-table label-success" href="'+ctx+'/admin/xd/xdschedulesummary/getEditPage?id='+row.id+'&view=detail" >查看</a>&nbsp;';
-					a = a + '<a class="label label-table label-success" href="'+ctx+'/admin/xd/xdschedulesummary/getEditPage?id='+row.id+'&view=edit" >编辑</a>&nbsp;';
-					a = a + '<a class="label label-table label-danger" onclick="del(\''+row.id+'\')" href="javascript:void(0);" >删除</a>';
+				/*var a = '<a class="label label-table label-success" href="'+ctx+'/admin/xd/xdschedulesummary/getEditPage?id='+row.id+'&view=detail" >查看</a>&nbsp;';
+					a = a + '<a class="label label-table label-success" href="'+ctx+'/admin/xd/xdschedulesummary/getEditPage?id='+row.id+'&view=edit" >编辑</a>&nbsp;';*/
+				var	a = '<a class="label label-table label-danger" onclick="del(\''+row.id+'\')" href="javascript:void(0);" >删除</a>';
 				return a;
-			}
+			}, colspan: 1,rowspan: 3
+		}]
+				,
+
+
+
+		/*[
+
+
+			{field: 'day00', title: '上月', align: 'center',width:'80', colspan: 1,rowspan: 1},
+			{field: 'day01', title: '1', align: 'center',width:'80',formatter:function(value,row,index){
+						//通过formatter可以自定义列显示的内容
+						//value：当前field的值，
+						//row：当前行的数据
+						if(value=='aa'){
+							alert("111")
+							return "<span style='color:blue'>"+value+"</span>";
+						}else{
+							return  value ;
+						}
+
+			}},
+				{field: 'day02', title: '2', align: 'center',width:'80'},
+				{field: 'day03', title: '3', align: 'center',width:'80'},
+				{field: 'day04', title: '4', align: 'center',width:'80'},
+				{field: 'day05', title: '5', align: 'center',width:'80'},
+				{field: 'day06', title: '6', align: 'center',width:'80'},
+				{field: 'day07', title: '7', align: 'center',width:'80'},
+				{field: 'day08', title: '8', align: 'center',width:'80'},
+				{field: 'day09', title: '9', align: 'center',width:'80'},
+				{field: 'day10', title: '10', align: 'center',width:'80'},
+				{field: 'day11', title: '11', align: 'center',width:'80'},
+				{field: 'day12', title: '12', align: 'center',width:'80'},
+				{field: 'day13', title: '13', align: 'center',width:'80'},
+				{field: 'day14', title: '14', align: 'center',width:'80'},
+				{field: 'day15', title: '15', align: 'center',width:'80'},
+				{field: 'day16', title: '16', align: 'center',width:'80'},
+				{field: 'day17', title: '17', align: 'center',width:'80'},
+				{field: 'day18', title: '18', align: 'center',width:'80'},
+				{field: 'day19', title: '19', align: 'center',width:'80'},
+				{field: 'day20', title: '20', align: 'center',width:'80'},
+				{field: 'day21', title: '21', align: 'center',width:'80'},
+				{field: 'day22', title: '22', align: 'center',width:'80'},
+				{field: 'day23', title: '23', align: 'center',width:'80'},
+				{field: 'day24', title: '24', align: 'center',width:'80'},
+				{field: 'day25', title: '25', align: 'center',width:'80'},
+				{field: 'day26', title: '26', align: 'center',width:'80'},
+				{field: 'day27', title: '27', align: 'center',width:'80'},
+				{field: 'day28', title: '28', align: 'center',width:'80'},
+				{field: 'day29', title: '29', align: 'center',width:'80'},
+				{field: 'day30', title: '30', align: 'center',width:'80'},
+				{field: 'day31', title: '31', align: 'center',width:'80'}
+
+
+		 ],
+		[
+			{field: 'day01', title: '上月', align: 'center',width:'80', colspan: 1,rowspan: 1},
+			{field: 'day01', title: '1', align: 'center',width:'80',formatter:function(value,row,index){
+					//通过formatter可以自定义列显示的内容
+					//value：当前field的值，
+					//row：当前行的数据
+					if(value=='aa'){
+						alert("111")
+						return "<span style='color:yellow'>"+value+"</span>";
+					}else{
+						return  value ;
+					}
+
+				},cellStyle:function(value,row,index){                 // 修改列（单元格）的颜色
+					return {css:{"background-color":"yellow"}};
+				}},
+			{field: 'day02', title: '2', align: 'center',width:'80'},
+			{field: 'day03', title: '3', align: 'center',width:'80'},
+			{field: 'day04', title: '4', align: 'center',width:'80'},
+			{field: 'day05', title: '5', align: 'center',width:'80'},
+			{field: 'day06', title: '6', align: 'center',width:'80'},
+			{field: 'day07', title: '7', align: 'center',width:'80'},
+			{field: 'day08', title: '8', align: 'center',width:'80'},
+			{field: 'day09', title: '9', align: 'center',width:'80'},
+			{field: 'day10', title: '10', align: 'center',width:'80'},
+			{field: 'day11', title: '11', align: 'center',width:'80'},
+			{field: 'day12', title: '12', align: 'center',width:'80'},
+			{field: 'day13', title: '13', align: 'center',width:'80'},
+			{field: 'day14', title: '14', align: 'center',width:'80'},
+			{field: 'day15', title: '15', align: 'center',width:'80'},
+			{field: 'day16', title: '16', align: 'center',width:'80'},
+			{field: 'day17', title: '17', align: 'center',width:'80'},
+			{field: 'day18', title: '18', align: 'center',width:'80'},
+			{field: 'day19', title: '19', align: 'center',width:'80'},
+			{field: 'day20', title: '20', align: 'center',width:'80'},
+			{field: 'day21', title: '21', align: 'center',width:'80'},
+			{field: 'day22', title: '22', align: 'center',width:'80'},
+			{field: 'day23', title: '23', align: 'center',width:'80'},
+			{field: 'day24', title: '24', align: 'center',width:'80'},
+			{field: 'day25', title: '25', align: 'center',width:'80'},
+			{field: 'day26', title: '26', align: 'center',width:'80'},
+			{field: 'day27', title: '27', align: 'center',width:'80'},
+			{field: 'day28', title: '28', align: 'center',width:'80'},
+			{field: 'day29', title: '29', align: 'center',width:'80'},
+			{field: 'day30', title: '30', align: 'center',width:'80'},
+			{field: 'day31', title: '31', align: 'center',width:'80'}
+
+
+		]
+*/		];
+	let weekLists="#(weekLists)";
+	let holidayLists="#(holidayLists)";
+	weekLists=weekLists.replace("[","").replace("]","").split(",")
+	var secondRrow=[];
+/*	let weekArr=weekLists.split(",");*/
+	for (let i = 0; i < weekLists.length; i++) {
+		let suffix="";
+		if(i<10){
+			suffix='0'+i;
+
+		}else{
+			suffix=i;
 		}
-		];
+
+		secondRrow.push({field: 'day'+suffix, title: weekLists[i], align: 'center',width:'80', colspan: 1,rowspan: 1})
+
+	}
+
+	var thirdRrow=[];
+	holidayLists=holidayLists.replace("[","").replace("]","").split(",")
+
+	for (let i = 0; i < holidayLists.length; i++) {
+		console.log({field: 'day'+i, title: holidayLists[i], align: 'center',width:'80', colspan: 1,rowspan: 1})
+		let suffix="";
+		if(i<10){
+			suffix='0'+i;
+
+		}else{
+			suffix=i;
+		}
+		thirdRrow.push({field: 'day'+suffix, title: holidayLists[i], align: 'center',width:'80', colspan: 1,rowspan: 1})
+
+	}
+	col.push(secondRrow)
+	col.push(thirdRrow)
 	var opt = {
+	/*	height:$(document).height()-170,*/
 		//请求方法
 		method: 'get',
 		//是否显示行间隔色
@@ -164,9 +315,9 @@
 		//我设置了这一项，但是貌似没起作用，而且我这默认是0,- -
 		//pageNumber:1,
 		//每页的记录行数（*）
-		pageSize: 10,
+		pageSize: 20,
 		//可供选择的每页的行数（*）
-		pageList: [10, 25, 50, 100],
+		pageList: [100, 150, 200, 250],
 		//这个接口需要处理bootstrap table传递的固定参数,并返回特定格式的json数据
 		url: ctx+"/admin/xd/xdschedulesummary/listData",
 		//默认值为 'limit',传给服务端的参数为：limit, offset, search, sort, order Else
@@ -198,9 +349,35 @@
 		//fixedNumber:3,			  //固定右侧列
 	//	fixedRightNumber:5,
 		leftFixedColumns:true,
-		leftFixedNumber:7,
+		leftFixedNumber:6,
 		rightFixedColumns:true,
-		rightFixedNumber:2,
+		rightFixedNumber:1,
+
+		onClickCell: function (field, value, row, $element) {
+			console.log("start")
+			console.log(field)
+			console.log(value)
+			console.log(row)
+			console.log("$element="+$element)
+			console.log($element.parent().data('index'))
+			console.log($element.parent().data('emp_name'))
+			console.log("end")
+			let index = $element.parent().data('index');
+			//修改单元格
+		/*	$element.attr('contenteditable', true);
+			$element.blur(function () {
+				let index = $element.parent().data('index');
+				let tdValue = $element.html();
+				//resetAmount(index, field, tdValue)
+				// saveData(index, field, tdValue);
+			})*/
+		test(index, field, value);
+		},
+		cellStyle:function(value,row,index){                 // 修改列（单元格）的颜色
+			return {css:{"background-color":"black"}};
+		},
+
+
 	};
 
 	//表格
@@ -296,6 +473,88 @@
 
 		var certTitle = $("#certTitle").val();
 		location.href = "#(ctx)/admin/xd/xdschedulesummary/exportExcel2?certTitle="+certTitle;
+	}
+
+</script>
+
+
+<script>
+	$(function () {
+		let length = $(".fixed-table-header-columns>table>thead>tr>th").length;
+		console.log("length="+length);
+		$(".fixed-table-header-columns>table>thead>tr>th").each(function (i,thobj) {
+			$(thobj).css("height",'105px');//设置合并单元格高度
+
+		})
+	})
+</script>
+
+<script>
+	function test(index, field, value) {
+		let  fValue="";
+		bootbox.dialog({
+			title: "班次调整",
+			message:'<div class="row"> ' +
+					'<div class="col-md-12"> ' +
+					'<form class="form-horizontal"> ' +
+					'<div class="form-group"> ' +
+					'<label class="col-md-4 control-label" for="name">Name</label> ' +
+					'<div class="col-md-4"> ' +
+					'<input id="name" name="name" type="text" placeholder="Your name" class="form-control input-md"> ' +
+					'</div> ' +
+					'</div> ' +
+					'<div class="form-group"> ' +
+					'<label class="col-md-4 control-label" for="awesomeness">是否加班</label> ' +
+					'<div class="col-md-8">' +
+					/*' <div class="form-block"> ' +*/
+				/*	'<input type="checkbox"  name="awesomeness"   > ' +*/
+					/*'<label class="form-radio form-icon demo-modal-radio">' +
+					'<input type="radio" autocomplete="off" name="awesomeness" value="Super awesome"> 测试1 </label> ' +*/
+				/*	'</div>' +*/
+					'<div class="checkbox">'+
+
+					'<input id="demo-form-inline-checkbox" class="magic-checkbox" type="checkbox" name="ovtime">'+
+					'<label for="demo-form-inline-checkbox"></label>'+
+
+						/*<input id="demo-form-inline-checkbox-2" class="magic-checkbox" type="checkbox">
+								<label for="demo-form-inline-checkbox-2">Option 2</label>
+
+						<input id="demo-form-inline-checkbox-3" class="magic-checkbox" type="checkbox">
+								<label for="demo-form-inline-checkbox-3">Option 3</label>*/
+
+					'</div>'+
+
+					'</div> ' +
+					'</div>' +
+					'<\/form><\/div><\/div><\/script><\/script>',
+			buttons: {
+				success: {
+					label: "Save",
+					className: "btn-purple",
+					callback: function() {
+						var name = $('#name').val();
+						var overtime = $("input[name='ovtime']:checked").val();
+						console.log("overtime="+overtime);
+					   console.log(name)
+						fValue="<span color='red'>"+name+"</span>";
+						$('#pageTable').bootstrapTable('updateCell', {
+							index: index,
+							field: field,
+							value: fValue
+						})
+					},
+
+
+					/*var upIndex = $element.data('index');
+					row.field=$("#editId").val();
+					$('#cancelBillListTable').bootstrapTable('updateRow', {
+						index: upIndex,
+						row: row
+					});*/
+
+				}
+			}
+		});
 	}
 
 </script>

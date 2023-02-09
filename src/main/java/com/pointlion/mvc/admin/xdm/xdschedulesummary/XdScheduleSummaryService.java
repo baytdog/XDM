@@ -39,7 +39,7 @@ public class XdScheduleSummaryService{
 	/***
 	 * get page
 	 */
-	public Page<Record> getPage(int pnum,int psize,String dept,String emp_name,String unitname,String year,String month){
+	public Page<Record> getPage(int pnum,int psize,String dept,String unitname,String emp_name,String year,String month){
 		String sql  = " from "+TABLE_NAME+" o where 1=1";
 		if(StrKit.notBlank(dept)){
 			sql = sql + " and o.dept_value='"+ dept+"'";

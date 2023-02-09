@@ -5,6 +5,7 @@ import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.plugin.activerecord.Record;
 import com.jfinal.upload.UploadFile;
 import com.pointlion.mvc.common.base.BaseController;
+import com.pointlion.mvc.common.model.XdAttendanceSummary;
 import com.pointlion.mvc.common.model.XdDayModel;
 import com.pointlion.mvc.common.model.XdDict;
 import com.pointlion.mvc.common.model.XdScheduleSummary;
@@ -12,14 +13,19 @@ import com.pointlion.mvc.common.utils.DateUtil;
 import com.pointlion.mvc.common.utils.StringUtil;
 import com.pointlion.mvc.common.utils.UuidUtil;
 import com.pointlion.mvc.common.utils.office.excel.ExcelUtil;
+import org.joda.time.format.DateTimeFormat;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 
 public class XdScheduleSummaryController extends BaseController {
@@ -30,6 +36,40 @@ public class XdScheduleSummaryController extends BaseController {
 	public void getListPage(){
 		List<XdDict> units = XdDict.dao.find("select * from xd_dict where type ='unit' order by sortnum");
 		setAttr("units",units);
+		XdScheduleSummary last = XdScheduleSummary.dao.findFirst("select * from  xd_schedule_summary order by schedule_year_month desc");
+		setAttr("year",last.getScheduleYear());
+		setAttr("month",last.getScheduleMonth());
+		String yearMonth=last.getScheduleYear()+last.getScheduleMonth();
+		List<XdDayModel> xdDayModels = XdDayModel.dao.find("select * from  xd_day_model where id like '"+yearMonth+"%' order by id");
+		LocalDate localDate = LocalDate.parse(last.getScheduleYear()+"-"+last.getScheduleMonth()+"-01").minusMonths(1);
+		DateTimeFormatter dtf=DateTimeFormatter.ofPattern("yyyyMM");
+		String lastMonth = dtf.format(localDate);
+		XdDayModel lastMonLastDay = XdDayModel.dao.findFirst("select * from  xd_day_model where id like '" + lastMonth + "%' order by id desc");
+		List<String> weekLists=new ArrayList<>();
+		List<String> holidayLists=new ArrayList<>();
+		if(lastMonLastDay!=null){
+			weekLists.add(lastMonLastDay.getWeeks());
+			holidayLists.add(lastMonLastDay.getHolidays()==null?"":lastMonLastDay.getHolidays());
+		}else{
+			weekLists.add("");
+			holidayLists.add("");
+		}
+
+		xdDayModels.stream().forEach(
+				xdDayModel-> {
+				weekLists.add(xdDayModel.getWeeks());
+				holidayLists.add(xdDayModel.getHolidays()==null?"":xdDayModel.getHolidays());
+		});
+		if(xdDayModels.size()<31){
+			for (int i = 31; i> xdDayModels.size(); i--) {
+				weekLists.add("");
+				holidayLists.add("");
+			}
+
+		}
+		System.out.println(weekLists.toString());
+		setAttr("weekLists",weekLists);
+		setAttr("holidayLists",holidayLists);
 		renderIframe("list.html");
     }
 	/***

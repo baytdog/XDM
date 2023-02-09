@@ -121,6 +121,14 @@ public abstract class BaseXdScheduleSummary<M extends BaseXdScheduleSummary<M>> 
 		return getStr("schedule_year_month");
 	}
 
+	public void setDay00(String day00) {
+		set("day00", day00);
+	}
+	
+	public String getDay00() {
+		return getStr("day00");
+	}
+
 	public void setDay01(String day01) {
 		set("day01", day01);
 	}
@@ -367,6 +375,30 @@ public abstract class BaseXdScheduleSummary<M extends BaseXdScheduleSummary<M>> 
 	
 	public String getDay31() {
 		return getStr("day31");
+	}
+
+	public void setOthours(Double othours) {
+		set("othours", othours);
+	}
+	
+	public Double getOthours() {
+		return getDouble("othours");
+	}
+
+	public void setCurMonHours(Double curMonHours) {
+		set("cur_mon_hours", curMonHours);
+	}
+	
+	public Double getCurMonHours() {
+		return getDouble("cur_mon_hours");
+	}
+
+	public void setFlags(String flags) {
+		set("flags", flags);
+	}
+	
+	public String getFlags() {
+		return getStr("flags");
 	}
 
 	public void setRemarks(String remarks) {

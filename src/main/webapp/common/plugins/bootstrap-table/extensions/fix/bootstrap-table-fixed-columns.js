@@ -83,10 +83,19 @@
       var $newtr = $('<tr></tr>');
       $newtr.attr('data-index', $tr.attr('data-index'));
       $newtr.attr('data-uniqueid', $tr.attr('data-uniqueid'));
+
+
       //debugger;
       for (var i = 0; i < this.options.leftFixedNumber; i++) {
-        $newtr.append($ths.eq(i).clone());
+
+       $newtr.append($ths.eq(i).clone());
+       /* let cloneTh = $ths.eq(i).clone();
+        console.log(cloneTh)
+        cloneTh.addClass("height","80px");
+        $newtr.append(cloneTh);
+        console.log("t123123")*/
       }
+     // console.log(this.$fixedHeaderColumns.html())
       this.$fixedHeaderColumns.html('').append($newtr);
     }
     //$tr.html('');
@@ -166,7 +175,7 @@
   BootstrapTable.prototype.fitHeaderColumns = function () {
     var that = this,
         visibleFields = this.getVisibleFields(),
-        headerWidth = 0;
+        headerWidth = 0,headerHeight=0,rightHeaderWidth=0;
     if (that.options.leftFixedColumns) {
       this.$body.find('tr:first-child:not(.no-records-found) > *').each(function (i) {
         var $this = $(this),
@@ -183,8 +192,13 @@
         that.$fixedHeader.find('thead th[data-field="' + visibleFields[index] + '"]')
             .find('.fht-cell').width($this.innerWidth() - 1);
         headerWidth += $this.outerWidth();
+        headerHeight=$this.outerHeight();
+    /*    console.log("headerWidth"+headerWidth);
+        console.log("headerHeight"+headerHeight)*/
       });
-      this.$fixedHeader.width(headerWidth - 1).show();
+      this.$fixedHeader.width(headerWidth-1).show();
+  /*    this.$fixedHeader.height(headerHeight*2-10).show();*/
+     // this.$fixedHeader.css("background-color","red")
     }
     if (that.options.rightFixedColumns) {
       this.$body.find('tr:first-child:not(.no-records-found) > *').each(function (i) {
@@ -200,11 +214,13 @@
           //}
           that.$rightfixedHeader.find('thead th[data-field="' + visibleFields[index] + '"]')
               .find('.fht-cell').width($this.innerWidth());
-          headerWidth += $this.outerWidth();
+        //  headerWidth += $this.outerWidth();
+          rightHeaderWidth += $this.outerWidth();
         }
       });
-     // this.$rightfixedHeader.width(headerWidth - 1).show();
-      this.$rightfixedHeader.width(300).show();
+     //this.$rightfixedHeader.width(headerWidth - 1).show();
+      //this.$rightfixedHeader.width(300).show();
+      this.$rightfixedHeader.width(rightHeaderWidth - 1).show();
     }
   };
 
@@ -212,6 +228,7 @@
     var that = this,
         top = -(parseInt(this.$el.css('margin-top')) - 2),
         height = this.$tableBody.height() - 2;
+    let height2=height;
 
     if (that.options.leftFixedColumns) {
       if (!this.$body.find('> tr[data-index]').length) {
@@ -258,19 +275,21 @@
         this.$rightfixedBody.hide();
         return;
       }
+      console.log("height3="+height);
       if (!this.options.height) {
         top = this.$rightfixedHeader.height() - 1;
-        height = height - top;
+        height2 = height2 - top;
       }
-
       this.$rightfixedBody.css({
        /* width: this.$rightfixedHeader.width()+2,
         height: height - 17,
         //top: top + 1*/
-
         width: this.$rightfixedHeader.width(),
+        height: height2,
+        top: top - 1,
+     /*   width: this.$rightfixedHeader.width(),
         height: height+25,
-        //top: top + 1,
+        //top: top + 1,*/
       }).show();
 
       console.log("5555")

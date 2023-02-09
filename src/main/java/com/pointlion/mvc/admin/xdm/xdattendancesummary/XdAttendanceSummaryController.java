@@ -27,6 +27,9 @@ public class XdAttendanceSummaryController extends BaseController {
 	public void getListPage(){
 		List<XdDict> units = XdDict.dao.find("select * from xd_dict where type ='unit' order by sortnum");
 		setAttr("units",units);
+		XdAttendanceSummary last = XdAttendanceSummary.dao.findFirst("select * from  xd_schedule_summary order by schedule_year_month desc");
+		setAttr("year",last.getScheduleYear());
+		setAttr("month",last.getScheduleMonth());
 		renderIframe("list.html");
 	}
 	/***
