@@ -385,6 +385,14 @@ public abstract class BaseXdScheduleSummary<M extends BaseXdScheduleSummary<M>> 
 		return getDouble("othours");
 	}
 
+	public void setWorkHour(Double workHour) {
+		set("work_hour", workHour);
+	}
+	
+	public Double getWorkHour() {
+		return getDouble("work_hour");
+	}
+
 	public void setCurMonHours(Double curMonHours) {
 		set("cur_mon_hours", curMonHours);
 	}

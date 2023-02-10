@@ -28,6 +28,7 @@ import com.pointlion.mvc.admin.xdm.xdsettleovertimesummary.XdSettleOvertimeSumma
 import com.pointlion.mvc.admin.xdm.xdshift.XdShiftController;
 import com.pointlion.mvc.admin.xdm.xdsteps.XdStepsController;
 import com.pointlion.mvc.admin.xdm.xdworkexper.XdWorkExperController;
+import com.pointlion.mvc.admin.xdm.xdworkhour.XdWorkHourController;
 import com.pointlion.mvc.common.model.XdAnleave;
 import com.pointlion.mvc.common.model.XdRecords;
 import com.pointlion.mvc.common.model.XdScheduleDetail;
@@ -76,6 +77,7 @@ public class XDRoutes extends Routes {
         add("/admin/xd/xdanleave", XdAnleaveController.class,"/xdanleave");
         add("/admin/xd/xdanleavesummary", XdAnleaveSummaryController.class,"/xdanleavesummary");
         add("/admin/xd/xdleave", XdLeaveController.class,"/xdleave");
+        add("/admin/xd/xdworkhour", XdWorkHourController.class,"/xdworkhour");
 
 
     }

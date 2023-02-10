@@ -104,9 +104,7 @@
 	}
 
 	var col = [
-	/*	{field: 'checked', checkbox : true, align: 'center'},*/
-
-		[{field: 'dept_name', title: '部门',align: 'center',width:'120',valign:'middle',halign:"center",rowspan: 3 },
+		/*[{field: 'dept_name', title: '部门',align: 'center',width:'120',valign:'middle',halign:"center",rowspan: 3 },
 		{field: 'unit_name', title: '单元', align: 'center',width:'120',valign:'middle',halign:"center", colspan: 1,rowspan: 3 },
 		{field: 'project_name', title: '项目', align: 'center',width:'120',valign:'middle',halign:"center", colspan: 1,rowspan: 3 },
 		{field: 'emp_num', title: '工号', align: 'center',width:'80',valign:'middle',halign:"center", colspan: 1,rowspan: 3 },
@@ -149,16 +147,11 @@
 		{field: 'control', title: '操作', align: 'left', width:'60',valign:'middle',halign:"center",
 
 			formatter:function(value,row,index){
-				//通过formatter可以自定义列显示的内容
-				//value：当前field的值，即id
-				//row：当前行的数据
-				/*var a = '<a class="label label-table label-success" href="'+ctx+'/admin/xd/xdschedulesummary/getEditPage?id='+row.id+'&view=detail" >查看</a>&nbsp;';
-					a = a + '<a class="label label-table label-success" href="'+ctx+'/admin/xd/xdschedulesummary/getEditPage?id='+row.id+'&view=edit" >编辑</a>&nbsp;';*/
 				var	a = '<a class="label label-table label-danger" onclick="del(\''+row.id+'\')" href="javascript:void(0);" >删除</a>';
 				return a;
 			}, colspan: 1,rowspan: 3
 		}]
-				,
+				,*/
 
 
 
@@ -261,10 +254,46 @@
 
 		]
 */		];
+
+	let daysNum="#(daysNum)";
+	let firstRow=[
+		{field: 'checked', checkbox : true,valign:'middle',halign:"center", align: 'center',rowspan: 3 },
+		{field: 'dept_name', title: '部门',align: 'center',width:'120',valign:'middle',halign:"center",rowspan: 3 },
+		{field: 'unit_name', title: '单元', align: 'center',width:'120',valign:'middle',halign:"center", colspan: 1,rowspan: 3 },
+		{field: 'project_name', title: '项目', align: 'center',width:'120',valign:'middle',halign:"center", colspan: 1,rowspan: 3 },
+		{field: 'emp_num', title: '工号', align: 'center',width:'80',valign:'middle',halign:"center", colspan: 1,rowspan: 3 },
+		{field: 'emp_name', title: '姓名', align: 'center',width:'80',valign:'middle',halign:"center", colspan: 1,rowspan: 3 },
+		{field: 'work_station', title: '岗位', align: 'center',width:'120',valign:'middle',halign:"center", colspan: 1,rowspan: 3 },
+		{field: 'remarks', title: '备注', align: 'center',width:'150',valign:'middle',halign:"center", colspan: 1,rowspan: 3},
+	];
+	for (let i = 0; i <=daysNum; i++) {
+		if(i<10){
+			suffix='0'+i;
+		}else{
+			suffix=i;
+		}
+		firstRow.push({field: 'day0'+suffix, title: i, align: 'center',width:'80', colspan: 1,rowspan: 1})
+
+	}
+	firstRow.push(
+			{field: 'control', title: '操作', align: 'left', width:'60',valign:'middle',halign:"center",
+				formatter:function(value,row,index){
+					var	a = '<a class="label label-table label-danger" onclick="del(\''+row.id+'\')" href="javascript:void(0);" >删除</a>';
+					return a;
+				}, colspan: 1,rowspan: 3
+			})
+	col.push(firstRow)
 	let weekLists="#(weekLists)";
 	let holidayLists="#(holidayLists)";
 	weekLists=weekLists.replace("[","").replace("]","").split(",")
-	var secondRrow=[];
+	var secondRrow=[
+		/*{field: 'checked', checkbox : true, align: 'center' },
+		{field: 'checked', checkbox : true, align: 'center' },
+		{field: 'checked', checkbox : true, align: 'center' },
+		{field: 'checked', checkbox : true, align: 'center' },
+		{field: 'checked', checkbox : true, align: 'center' },
+		{field: 'checked', checkbox : true, align: 'center' },*/
+	];
 /*	let weekArr=weekLists.split(",");*/
 	for (let i = 0; i < weekLists.length; i++) {
 		let suffix="";
@@ -279,7 +308,14 @@
 
 	}
 
-	var thirdRrow=[];
+	var thirdRrow=[
+		/*{field: 'checked', checkbox : true, align: 'center' },
+		{field: 'checked', checkbox : true, align: 'center' },
+		{field: 'checked', checkbox : true, align: 'center' },
+		{field: 'checked', checkbox : true, align: 'center' },
+		{field: 'checked', checkbox : true, align: 'center' },
+		{field: 'checked', checkbox : true, align: 'center' },*/
+	];
 	holidayLists=holidayLists.replace("[","").replace("]","").split(",")
 
 	for (let i = 0; i < holidayLists.length; i++) {
@@ -349,7 +385,7 @@
 	//	fixedRightNumber:5,
 		leftFixedColumns:true,
 		leftFixedNumber:6,
-		rightFixedColumns:true,
+		rightFixedColumns:false,
 		rightFixedNumber:1,
 
 		onClickCell: function (field, value, row, $element) {
@@ -406,7 +442,8 @@
 			pointLion.alertMsg("请选择要删除的数据!","danger",null,null);
 			return;
 		}
-		del(data.join(","));//执行删除
+		console.log(data)
+		//del(data.join(","));//执行删除
 	}
 	//删除
 	function del(ids){
@@ -489,8 +526,28 @@
 		console.log("length="+length);
 		$(".fixed-table-header-columns>table>thead>tr>th").each(function (i,thobj) {
 			$(thobj).css("height",'105px');//设置合并单元格高度
-
 		})
+		/*$(".fixed-table-body-columns").css(""paddin"")*/
+		$("input[name='btSelectAll']").click(function () {
+			/*var btSelectAll = $("input[name='btSelectAll']:checked").val();
+			if(btSelectAll=="on"){
+			  $("input[name='btSelectItem']").attr('checked','checked');
+			}else {
+				$("input[name='btSelectItem']").removeAttr('checked');
+			}*/
+
+			console.log("click")
+			var btSelectAll = $("input[name='btSelectAll']:checked").val();
+			console.log(btSelectAll)
+
+
+			console.log($("input[name='btSelectAll']").prop("checked"))
+			if(btSelectAll=="on"){
+				$("input[name='btSelectItem']").prop('checked',true);
+			}else {
+				$("input[name='btSelectItem']").prop('checked',false);
+			}
+		});
 	})
 </script>
 
@@ -574,7 +631,7 @@
 
 	function remarksmodify(index, field, value,row) {
 		bootbox.dialog({
-			title: "班次调整",
+			title: "备注调整",
 			message:'<div class="row"> ' +
 					'<div class="col-md-12"> ' +
 					'<form class="form-horizontal"> ' +

@@ -847,7 +847,7 @@
         // ===============================================
         bindSmallNav = function(){
             var hidePopover, $menulink = $('#mainnav-menu > li > a, #mainnav-menu-wrap .mainnav-widget a[data-toggle="menu-widget"]');
-
+            alert("12312321")
             $menulink.each(function(){
                 var $el             = $(this),
                     $listTitle          = $el.children('.menu-title'),

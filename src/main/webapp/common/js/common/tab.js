@@ -62,11 +62,11 @@
     	
     	
     	
-    	console.log("111111111111");
+    	/*console.log("111111111111");
     	
     	console.log( $(this))
     	console.log("111111111111");
-    	
+    	*/
     	
         $(this.parentElement).animate({
             "width": "0",

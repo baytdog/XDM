@@ -58,10 +58,10 @@ public class XdScheduleSummaryController extends BaseController {
 				weekLists.add(xdDayModel.getWeeks());
 				holidayLists.add(xdDayModel.getHolidays()==null?"":xdDayModel.getHolidays());
 		});
-		for (int i = 1; i <= xdDayModels.size(); i++) {
+	/*	for (int i = 1; i <= xdDayModels.size(); i++) {
 			firstRow=firstRow+","+i;
 		}
-		System.out.println(firstRow);
+		System.out.println(firstRow);*/
 
 		/*if(xdDayModels.size()<31){
 			for (int i = 31; i> xdDayModels.size(); i--) {
@@ -70,6 +70,7 @@ public class XdScheduleSummaryController extends BaseController {
 			}
 
 		}*/
+		setAttr("daysNum",xdDayModels.size());
 		setAttr("weekLists",weekLists);
 		setAttr("holidayLists",holidayLists);
 		List<XdShift> xdShifts = XdShift.dao.find("select * from  xd_shift order by shiftname");

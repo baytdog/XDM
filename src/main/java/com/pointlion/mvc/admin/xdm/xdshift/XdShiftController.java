@@ -5,8 +5,6 @@ import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.plugin.activerecord.Record;
 import com.jfinal.upload.UploadFile;
 import com.pointlion.mvc.common.base.BaseController;
-import com.pointlion.mvc.common.model.SysOrg;
-import com.pointlion.mvc.common.model.SysUser;
 import com.pointlion.mvc.common.model.XdShift;
 import com.pointlion.mvc.common.utils.DateUtil;
 import com.pointlion.mvc.common.utils.StringUtil;
@@ -17,12 +15,6 @@ import com.pointlion.plugin.shiro.ShiroKit;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.sql.SQLException;
-import java.text.DecimalFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -51,7 +43,7 @@ public class XdShiftController extends BaseController {
 	public void save(){
 		XdShift o = getModel(XdShift.class);
 
-		if(o.getSpanDay().equals("1")){
+		/*if(o.getSpanDay().equals("1")){
 			SimpleDateFormat sdf2 =new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
 			String time1 ="2023-02-01";
@@ -78,7 +70,7 @@ public class XdShiftController extends BaseController {
 			}
 
 
-		}
+		}*/
 		XdShift xdShift= XdShift.dao.findById(o.getId());
 		if (xdShift == null) {
 			o.setCtime(DateUtil.getCurrentTime());

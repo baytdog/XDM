@@ -294,9 +294,9 @@ public class HomeController extends BaseController {
     	setAttr("mlist", mlist);
     	
     	SimpleDateFormat sdf  =new SimpleDateFormat("yyyy-MM-dd");
-    	OaNotices oanotices = OaNotices.dao.findFirst("select  * from  oa_notices 	where  	sfpublish = '1' and publishdatetime !='' 	and showtime >= '"+sdf.format(new Date())+"' and departments LIKE '%"+ShiroKit.getUserOrgId()+"%' ORDER BY 	publishdatetime DESC");
+    	/*OaNotices oanotices = OaNotices.dao.findFirst("select  * from  oa_notices 	where  	sfpublish = '1' and publishdatetime !='' 	and showtime >= '"+sdf.format(new Date())+"' and departments LIKE '%"+ShiroKit.getUserOrgId()+"%' ORDER BY 	publishdatetime DESC");
     	this.getSession().setAttribute("oanotices", oanotices);
-    	setAttr("oanotices", oanotices);
+    	setAttr("oanotices", oanotices);*/
     	if("single".equals(settingType)){
 			render("/WEB-INF/admin/home/index_singlepage.html");
 		}else{
@@ -317,7 +317,7 @@ public class HomeController extends BaseController {
 			}else {
 				render("/WEB-INF/admin/home/index.html");
 			}
-			
+			//render("/WEB-INF/admin/home/index_singlepage.html");
 			
 			
 		}

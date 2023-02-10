@@ -126,7 +126,9 @@
             $tds = $tr.clone().find('td');
 
         $tr.html('');
+        console.log("2222222222")
         for (var i = 0; i < that.options.leftFixedNumber; i++) {
+
           $tr.append($tds.eq(i).clone());
         }
         that.$fixedBodyColumns.append($tr);

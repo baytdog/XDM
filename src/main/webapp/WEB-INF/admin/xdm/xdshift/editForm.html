@@ -61,8 +61,18 @@
 									<option value="1">是</option>
 								</select>
 							</div>
+							<label class="col-md-1 control-label">当天时长</label>
+							<div class="col-md-3">
+								<input type="text"  name="#(formModelName).curday_hours" class="form-control"  value="#(o?o.curday_hours:'')"  >
+							</div>
+							<label class="col-md-1 control-label">跨天时长</label>
+							<div class="col-md-3">
+								<input type="text"  name="#(formModelName).span_hours" class="form-control"  value="#(o?o.span_hours:'')"  >
+							</div>
+						</div>
+						<div class="form-group">
 							<label class="col-md-1 control-label">值班说明</label>
-							<div class="col-md-7">
+							<div class="col-md-11">
 								<input type="text"  name="#(formModelName).dutydesc" class="form-control"  value="#(o?o.dutydesc:'')"  >
 							</div>
 						</div>

@@ -351,6 +351,7 @@ $(document).ready(function () {
                 $('.mainnav-toggle').removeClass('push slide reveal').addClass(nav_mode);
 
                 navOffcanvasSB.value = nav_mode;
+
             }else{
                 if(niftyContainer.hasClass('mainnav-sm')){
                     collapsedCheckbox.checked = true;
@@ -512,7 +513,7 @@ $(document).ready(function () {
             return(false);
         }();
         if(nav_mode == "push" || nav_mode == "slide" ||nav_mode == "reveal"){
-            $('.mainnav-toggle').removeClass('push slide reveal').addClass(nav_mode);
+           $('.mainnav-toggle').removeClass('push slide reveal').addClass(nav_mode);
             niftyContainer.removeClass('mainnav-lg mainnav-sm').addClass('mainnav-out '+nav_mode);
         }
         var demoSetBody = $('#demo-set-body'), demoSetBtn = $('#demo-set-btn');
