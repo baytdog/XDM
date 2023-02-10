@@ -5,10 +5,7 @@ import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.plugin.activerecord.Record;
 import com.jfinal.upload.UploadFile;
 import com.pointlion.mvc.common.base.BaseController;
-import com.pointlion.mvc.common.model.XdAttendanceSummary;
-import com.pointlion.mvc.common.model.XdDayModel;
-import com.pointlion.mvc.common.model.XdDict;
-import com.pointlion.mvc.common.model.XdScheduleSummary;
+import com.pointlion.mvc.common.model.*;
 import com.pointlion.mvc.common.utils.DateUtil;
 import com.pointlion.mvc.common.utils.StringUtil;
 import com.pointlion.mvc.common.utils.UuidUtil;
@@ -47,6 +44,7 @@ public class XdScheduleSummaryController extends BaseController {
 		XdDayModel lastMonLastDay = XdDayModel.dao.findFirst("select * from  xd_day_model where id like '" + lastMonth + "%' order by id desc");
 		List<String> weekLists=new ArrayList<>();
 		List<String> holidayLists=new ArrayList<>();
+		String firstRow="0";
 		if(lastMonLastDay!=null){
 			weekLists.add(lastMonLastDay.getWeeks());
 			holidayLists.add(lastMonLastDay.getHolidays()==null?"":lastMonLastDay.getHolidays());
@@ -60,16 +58,26 @@ public class XdScheduleSummaryController extends BaseController {
 				weekLists.add(xdDayModel.getWeeks());
 				holidayLists.add(xdDayModel.getHolidays()==null?"":xdDayModel.getHolidays());
 		});
-		if(xdDayModels.size()<31){
+		for (int i = 1; i <= xdDayModels.size(); i++) {
+			firstRow=firstRow+","+i;
+		}
+		System.out.println(firstRow);
+
+		/*if(xdDayModels.size()<31){
 			for (int i = 31; i> xdDayModels.size(); i--) {
 				weekLists.add("");
 				holidayLists.add("");
 			}
 
-		}
-		System.out.println(weekLists.toString());
+		}*/
 		setAttr("weekLists",weekLists);
 		setAttr("holidayLists",holidayLists);
+		List<XdShift> xdShifts = XdShift.dao.find("select * from  xd_shift order by shiftname");
+		String shifts="";
+		for (XdShift xdShift : xdShifts) {
+			shifts=shifts+","+xdShift.getShiftname();
+		}
+		setAttr("shifts",shifts.replaceAll("^,", ""));
 		renderIframe("list.html");
     }
 	/***
@@ -176,6 +184,25 @@ public class XdScheduleSummaryController extends BaseController {
 		File file = service.exportExcel(path,dept,unitname,year,month,emp_name);
 		renderFile(file);
 	}
+
+	/**
+	 * @Method updateShifts
+	 * @Date 2023/2/10 11:27
+	 * @Exception
+	 * @Description  修改班次
+	 * @Author king
+	 * @Version  1.0
+	 * @Return void
+	 */
+	public void updateCell(){
+		System.out.println(getPara("id"));
+		System.out.println(getPara("modValue"));
+		System.out.println(getPara("overtime"));
+		renderSuccess();
+	}
+
+
+
 
 
 }

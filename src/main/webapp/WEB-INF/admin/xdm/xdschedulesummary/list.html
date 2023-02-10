@@ -283,7 +283,6 @@
 	holidayLists=holidayLists.replace("[","").replace("]","").split(",")
 
 	for (let i = 0; i < holidayLists.length; i++) {
-		console.log({field: 'day'+i, title: holidayLists[i], align: 'center',width:'80', colspan: 1,rowspan: 1})
 		let suffix="";
 		if(i<10){
 			suffix='0'+i;
@@ -354,14 +353,14 @@
 		rightFixedNumber:1,
 
 		onClickCell: function (field, value, row, $element) {
-			console.log("start")
+			/*console.log("start")
 			console.log(field)
 			console.log(value)
 			console.log(row)
 			console.log("$element="+$element)
 			console.log($element.parent().data('index'))
 			console.log($element.parent().data('emp_name'))
-			console.log("end")
+			console.log("end")*/
 			let index = $element.parent().data('index');
 			//修改单元格
 		/*	$element.attr('contenteditable', true);
@@ -371,7 +370,13 @@
 				//resetAmount(index, field, tdValue)
 				// saveData(index, field, tdValue);
 			})*/
-		test(index, field, value);
+		if(field=="remarks"){
+			remarksmodify(index, field, value,row);
+		}else{
+			shfitsModify(index, field, value,row);
+		}
+
+
 		},
 		cellStyle:function(value,row,index){                 // 修改列（单元格）的颜色
 			return {css:{"background-color":"black"}};
@@ -490,7 +495,23 @@
 </script>
 
 <script>
-	function test(index, field, value) {
+	let shifts="#(shifts)";
+	let shiftsArr = shifts.split(",");
+	let shiftOptions="";
+	for (let i = 0; i < shiftsArr.length; i++) {
+		shiftOptions=shiftOptions+'<option value="'+shiftsArr[i]+'">'+shiftsArr[i]+'</option>'
+	}
+	function shfitsModify(index, field, value,row) {
+		console.log(field);
+		let shiftOptions='';
+		for (let i = 0; i < shiftsArr.length; i++) {
+			if(value==shiftsArr[i]){
+				shiftOptions=shiftOptions+'<option value="'+shiftsArr[i]+'" selected>'+shiftsArr[i]+'</option>'
+			}else{
+				shiftOptions=shiftOptions+'<option value="'+shiftsArr[i]+'">'+shiftsArr[i]+'</option>'
+			}
+		}
+
 		let  fValue="";
 		bootbox.dialog({
 			title: "班次调整",
@@ -498,32 +519,27 @@
 					'<div class="col-md-12"> ' +
 					'<form class="form-horizontal"> ' +
 					'<div class="form-group"> ' +
-					'<label class="col-md-4 control-label" for="name">Name</label> ' +
+					'<label class="col-md-4 control-label" for="name">姓名</label> ' +
 					'<div class="col-md-4"> ' +
-					'<input id="name" name="name" type="text" placeholder="Your name" class="form-control input-md"> ' +
+					'<input id="name" name="name" type="text" value="'+row.emp_name+'" placeholder="Your name" class="form-control input-md"> ' +
+					'</div> ' +
+					'</div> ' +
+					'<div class="form-group"> ' +
+					'<label class="col-md-4 control-label" for="shift">班次</label> ' +
+					'<div class="col-md-4"> ' +
+					'<select class="form-control "  id="shift"   data-live-search="true"  >'+
+					'<option value="">------班次------</option>'+
+					shiftOptions+
+					'</select>'+
 					'</div> ' +
 					'</div> ' +
 					'<div class="form-group"> ' +
 					'<label class="col-md-4 control-label" for="awesomeness">是否加班</label> ' +
 					'<div class="col-md-8">' +
-					/*' <div class="form-block"> ' +*/
-				/*	'<input type="checkbox"  name="awesomeness"   > ' +*/
-					/*'<label class="form-radio form-icon demo-modal-radio">' +
-					'<input type="radio" autocomplete="off" name="awesomeness" value="Super awesome"> 测试1 </label> ' +*/
-				/*	'</div>' +*/
 					'<div class="checkbox">'+
-
 					'<input id="demo-form-inline-checkbox" class="magic-checkbox" type="checkbox" name="ovtime">'+
 					'<label for="demo-form-inline-checkbox"></label>'+
-
-						/*<input id="demo-form-inline-checkbox-2" class="magic-checkbox" type="checkbox">
-								<label for="demo-form-inline-checkbox-2">Option 2</label>
-
-						<input id="demo-form-inline-checkbox-3" class="magic-checkbox" type="checkbox">
-								<label for="demo-form-inline-checkbox-3">Option 3</label>*/
-
 					'</div>'+
-
 					'</div> ' +
 					'</div>' +
 					'<\/form><\/div><\/div><\/script><\/script>',
@@ -532,29 +548,65 @@
 					label: "Save",
 					className: "btn-purple",
 					callback: function() {
-						var name = $('#name').val();
+						var shift = $('#shift').val();
 						var overtime = $("input[name='ovtime']:checked").val();
-						console.log("overtime="+overtime);
-					   console.log(name)
-						fValue="<span color='red'>"+name+"</span>";
+						//fValue="<span color='red'>"+shift+"</span>";
 						$('#pageTable').bootstrapTable('updateCell', {
 							index: index,
 							field: field,
-							value: fValue
+							value: shift
 						})
+						common_ajax.ajaxFunc("/admin/xd/xdschedulesummary/updateCell",{"id":row.id,"modValue":shift,"overtime":overtime,"type":"1"}, "json", null);
 					},
 
 
-					/*var upIndex = $element.data('index');
-					row.field=$("#editId").val();
-					$('#cancelBillListTable').bootstrapTable('updateRow', {
-						index: upIndex,
-						row: row
-					});*/
+		/*var upIndex = $element.data('index');
+        row.field=$("#editId").val();
+        $('#cancelBillListTable').bootstrapTable('updateRow', {
+            index: upIndex,
+            row: row
+        });*/
 
 				}
 			}
 		});
 	}
 
+	function remarksmodify(index, field, value,row) {
+		bootbox.dialog({
+			title: "班次调整",
+			message:'<div class="row"> ' +
+					'<div class="col-md-12"> ' +
+					'<form class="form-horizontal"> ' +
+					'<div class="form-group"> ' +
+					'<label class="col-md-4 control-label" for="name">姓名</label> ' +
+					'<div class="col-md-6"> ' +
+					'<input id="name" name="name" type="text" value="'+row.emp_name+'" placeholder="Your name" readonly="readonly" class="form-control input-md"> ' +
+					'</div> ' +
+					'</div> ' +
+					'<div class="form-group"> ' +
+					'<label class="col-md-4 control-label" for="">备注</label> ' +
+					'<div class="col-md-6"> ' +
+					'<textarea id="remarks" placeholder="Message" rows="5" class="form-control">'+value+'</textarea>'+
+					'</div> ' +
+					'</div> ' +
+					'<\/form><\/div><\/div><\/script><\/script>',
+			buttons: {
+				success: {
+					label: "Save",
+					className: "btn-purple",
+					callback: function() {
+						var remarks = $('#remarks').val();
+						console.log(remarks)
+						$('#pageTable').bootstrapTable('updateCell', {
+							index: index,
+							field: field,
+							value: remarks
+						})
+						common_ajax.ajaxFunc("/admin/xd/xdschedulesummary/updateCell",{"id":row.id,"modValue":remarks,"overtime":"","type":"2"}, "json", null);
+					},
+				}
+			}
+		});
+	}
 </script>
