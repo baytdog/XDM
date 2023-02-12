@@ -170,24 +170,27 @@ public class XdOvertimeSummaryService{
 	}
 
 
-	public File exportExcel(String path, String dept, String unitname, String year, String month, String emp_name){
+	public File exportExcel(String path, String dept, String project, String year, String month, String emp_name,String overtimeType){
 		String sql  = " from "+TABLE_NAME+" o   where 1=1";
 		if(StrKit.notBlank(dept)){
 			sql = sql + " and o.dept_id='"+ dept+"'";
 		}
-	/*	if(StrKit.notBlank(unitname)){
-			sql = sql + " and o.unit_value='"+ unitname+"'";
-		}*/
+		if(StrKit.notBlank(project)){
+			sql = sql + " and o.project_id='"+ project+"'";
+		}
 		/*if(StrKit.notBlank(year)){
 			sql = sql + " and o.schedule_year='"+ year+"'";
 		}
 		if(StrKit.notBlank(month)){
 			sql = sql + " and o.schedule_month='"+ month+"'";
-		}
+		}*/
 		if(StrKit.notBlank(emp_name)){
 			sql = sql + " and o.emp_name like'%"+emp_name+"%'";
-		}*/
+		}
 
+		if(StrKit.notBlank(overtimeType)){
+			sql = sql + " and o.apply_type='"+ overtimeType+"'";
+		}
 		sql = sql + " order by o.create_date desc,emp_num";
 
 

@@ -94,6 +94,113 @@
 	</div>
 </div>
 <script>
+
+	function createTable(daysNum,weekLists,holidayLists){
+
+		let firstRow=[
+			{field: 'checked', checkbox : true,valign:'middle',halign:"center", align: 'center',rowspan: 3 },
+			{field: 'dept_name', title: '部门',align: 'center',width:'120',valign:'middle',halign:"center",rowspan: 3 },
+			{field: 'unit_name', title: '单元', align: 'center',width:'120',valign:'middle',halign:"center", colspan: 1,rowspan: 3 },
+			{field: 'project_name', title: '项目', align: 'center',width:'120',valign:'middle',halign:"center", colspan: 1,rowspan: 3 },
+			{field: 'emp_num', title: '工号', align: 'center',width:'80',valign:'middle',halign:"center", colspan: 1,rowspan: 3 },
+			{field: 'emp_name', title: '姓名', align: 'center',width:'80',valign:'middle',halign:"center", colspan: 1,rowspan: 3 },
+			{field: 'work_station', title: '岗位', align: 'center',width:'120',valign:'middle',halign:"center", colspan: 1,rowspan: 3 },
+			{field: 'remarks', title: '备注', align: 'center',width:'150',valign:'middle',halign:"center", colspan: 1,rowspan: 3},
+		];
+		for (let i = 0; i <=daysNum; i++) {
+			if(i<10){
+				suffix='0'+i;
+			}else{
+				suffix=i;
+			}
+			firstRow.push({field: 'day0'+suffix, title: i, align: 'center',width:'80', colspan: 1,rowspan: 1})
+
+		}
+		firstRow.push({field: 'othours', title: '加班时长', align: 'center',width:'85',valign:'middle',halign:"center", colspan: 1,rowspan: 3},
+				{field: 'cur_mon_hours', title: '当月工时', align: 'center',width:'85',valign:'middle',halign:"center", colspan: 1,rowspan: 3},
+				{field: 'control', title: '操作', align: 'left', width:'60',valign:'middle',halign:"center",
+					formatter:function(value,row,index){
+						var	a = '<a class="label label-table label-danger" onclick="del(\''+row.id+'\')" href="javascript:void(0);" >删除</a>';
+						return a;
+					}, colspan: 1,rowspan: 3
+				})
+		col.push(firstRow)
+
+		//console.log(holidayLists)
+
+		var secondRrow=[
+			/*{field: 'checked', checkbox : true, align: 'center' },
+            {field: 'checked', checkbox : true, align: 'center' },
+            {field: 'checked', checkbox : true, align: 'center' },
+            {field: 'checked', checkbox : true, align: 'center' },
+            {field: 'checked', checkbox : true, align: 'center' },
+            {field: 'checked', checkbox : true, align: 'center' },*/
+		];
+		/*	let weekArr=weekLists.split(",");*/
+		for (let i = 0; i < weekLists.length; i++) {
+			let suffix="";
+			if(i<10){
+				suffix='0'+i;
+
+			}else{
+				suffix=i;
+			}
+
+			secondRrow.push({field: 'day'+suffix, title: weekLists[i], align: 'center',width:'80', colspan: 1,rowspan: 1})
+
+		}
+
+		var thirdRrow=[
+			/*{field: 'checked', checkbox : true, align: 'center' },
+            {field: 'checked', checkbox : true, align: 'center' },
+            {field: 'checked', checkbox : true, align: 'center' },
+            {field: 'checked', checkbox : true, align: 'center' },
+            {field: 'checked', checkbox : true, align: 'center' },
+            {field: 'checked', checkbox : true, align: 'center' },*/
+		];
+
+
+		for (let i = 0; i < holidayLists.length; i++) {
+			let suffix="";
+			if(i<10){
+				suffix='0'+i;
+
+			}else{
+				suffix=i;
+			}
+			thirdRrow.push({field: 'day'+suffix, title: holidayLists[i], align: 'center',width:'80', colspan: 1,rowspan: 1,
+				formatter:function(value,row,index){
+				if(row.flags){
+					let flagsArr = row.flags.split(",");
+
+					if(flagsArr[parseInt(suffix)]=='1'){
+						console.log("有调整")
+						return "<span style='color:red'>"+value+"</span>";
+					}else{
+						return  value ;
+					}
+				}else{
+					return  value ;
+				}
+
+
+				},cellStyle:function(value,row,index,field){                 // 修改列（单元格）的颜色
+					let i = field.replace("day","");
+				 inti=parseInt(i);
+					if(holidayLists[inti].indexOf("-")!=-1){
+						return {css:{}} ;
+					}else{
+						return {css:{"background-color":"yellow"}};
+					}
+
+				}})
+
+		}
+		col.push(secondRrow)
+		col.push(thirdRrow)
+	}
+</script>
+<script>
 	let lastyear="#(year)";
 	let lastmonth="#(month)";
 	if(lastyear){
@@ -102,7 +209,9 @@
 	if(lastmonth){
 		$('#month').selectpicker('val',lastmonth.split(",")).trigger("change");
 	}
-
+	let weekLists="#(weekLists)";
+	let holidayLists="#(holidayLists)";
+	let daysNum="#(daysNum)";
 	var col = [
 		/*[{field: 'dept_name', title: '部门',align: 'center',width:'120',valign:'middle',halign:"center",rowspan: 3 },
 		{field: 'unit_name', title: '单元', align: 'center',width:'120',valign:'middle',halign:"center", colspan: 1,rowspan: 3 },
@@ -254,83 +363,10 @@
 
 		]
 */		];
-
-	let daysNum="#(daysNum)";
-	let firstRow=[
-		{field: 'checked', checkbox : true,valign:'middle',halign:"center", align: 'center',rowspan: 3 },
-		{field: 'dept_name', title: '部门',align: 'center',width:'120',valign:'middle',halign:"center",rowspan: 3 },
-		{field: 'unit_name', title: '单元', align: 'center',width:'120',valign:'middle',halign:"center", colspan: 1,rowspan: 3 },
-		{field: 'project_name', title: '项目', align: 'center',width:'120',valign:'middle',halign:"center", colspan: 1,rowspan: 3 },
-		{field: 'emp_num', title: '工号', align: 'center',width:'80',valign:'middle',halign:"center", colspan: 1,rowspan: 3 },
-		{field: 'emp_name', title: '姓名', align: 'center',width:'80',valign:'middle',halign:"center", colspan: 1,rowspan: 3 },
-		{field: 'work_station', title: '岗位', align: 'center',width:'120',valign:'middle',halign:"center", colspan: 1,rowspan: 3 },
-		{field: 'remarks', title: '备注', align: 'center',width:'150',valign:'middle',halign:"center", colspan: 1,rowspan: 3},
-	];
-	for (let i = 0; i <=daysNum; i++) {
-		if(i<10){
-			suffix='0'+i;
-		}else{
-			suffix=i;
-		}
-		firstRow.push({field: 'day0'+suffix, title: i, align: 'center',width:'80', colspan: 1,rowspan: 1})
-
-	}
-	firstRow.push(
-			{field: 'control', title: '操作', align: 'left', width:'60',valign:'middle',halign:"center",
-				formatter:function(value,row,index){
-					var	a = '<a class="label label-table label-danger" onclick="del(\''+row.id+'\')" href="javascript:void(0);" >删除</a>';
-					return a;
-				}, colspan: 1,rowspan: 3
-			})
-	col.push(firstRow)
-	let weekLists="#(weekLists)";
-	let holidayLists="#(holidayLists)";
 	weekLists=weekLists.replace("[","").replace("]","").split(",")
-	var secondRrow=[
-		/*{field: 'checked', checkbox : true, align: 'center' },
-		{field: 'checked', checkbox : true, align: 'center' },
-		{field: 'checked', checkbox : true, align: 'center' },
-		{field: 'checked', checkbox : true, align: 'center' },
-		{field: 'checked', checkbox : true, align: 'center' },
-		{field: 'checked', checkbox : true, align: 'center' },*/
-	];
-/*	let weekArr=weekLists.split(",");*/
-	for (let i = 0; i < weekLists.length; i++) {
-		let suffix="";
-		if(i<10){
-			suffix='0'+i;
-
-		}else{
-			suffix=i;
-		}
-
-		secondRrow.push({field: 'day'+suffix, title: weekLists[i], align: 'center',width:'80', colspan: 1,rowspan: 1})
-
-	}
-
-	var thirdRrow=[
-		/*{field: 'checked', checkbox : true, align: 'center' },
-		{field: 'checked', checkbox : true, align: 'center' },
-		{field: 'checked', checkbox : true, align: 'center' },
-		{field: 'checked', checkbox : true, align: 'center' },
-		{field: 'checked', checkbox : true, align: 'center' },
-		{field: 'checked', checkbox : true, align: 'center' },*/
-	];
 	holidayLists=holidayLists.replace("[","").replace("]","").split(",")
+	createTable(daysNum,weekLists,holidayLists);
 
-	for (let i = 0; i < holidayLists.length; i++) {
-		let suffix="";
-		if(i<10){
-			suffix='0'+i;
-
-		}else{
-			suffix=i;
-		}
-		thirdRrow.push({field: 'day'+suffix, title: holidayLists[i], align: 'center',width:'80', colspan: 1,rowspan: 1})
-
-	}
-	col.push(secondRrow)
-	col.push(thirdRrow)
 	var opt = {
 	/*	height:$(document).height()-170,*/
 		//请求方法
@@ -384,9 +420,9 @@
 		//fixedNumber:3,			  //固定右侧列
 	//	fixedRightNumber:5,
 		leftFixedColumns:true,
-		leftFixedNumber:6,
-		rightFixedColumns:false,
-		rightFixedNumber:1,
+		leftFixedNumber:7,
+		rightFixedColumns:true,
+		rightFixedNumber:3,
 
 		onClickCell: function (field, value, row, $element) {
 			/*console.log("start")
@@ -414,9 +450,11 @@
 
 
 		},
-		cellStyle:function(value,row,index){                 // 修改列（单元格）的颜色
+		/*cellStyle:function(value,row,index){// 修改列（单元格）的颜色
+
+
 			return {css:{"background-color":"black"}};
-		},
+		},*/
 
 
 	};
@@ -477,8 +515,19 @@
 				"month":month
 			}
 		}
-		// 刷新表格
-		$('#pageTable').bootstrapTable('refresh',param);
+
+
+		var data = common_ajax.ajaxFunc("/admin/xd/xdschedulesummary/getTableHeader",{"year":year,"month":month}, "json", null);
+		col =[];
+		createTable(data.data.daysNum,data.data.weekLists,data.data.holidayLists);
+		opt.columns=col;
+				// 刷新表格
+		//let bootstrapTable = $('#pageTable').bootstrapTable('refresh',param);
+		initTable();
+		$(".fixed-table-header-columns>table>thead>tr>th").each(function (i,thobj) {
+			$(thobj).css("height",'105px');//设置合并单元格高度
+		})
+	//	console.log(bootstrapTable)
 	}
 
 	$(document).ready(function(){
@@ -488,7 +537,8 @@
 		pointLion.initUploader("/admin/xd/xdschedulesummary/importExcel",function(data){
 			if(data.success){
 				pointLion.alertMsg("导入成功！","success",null,null);
-				searchTable();
+				//searchTable();
+				location.href = ctx+'/admin/xd/xdschedulesummary/getListPage';//跳转到列表页
 			}else{
 				pointLion.alertMsg(data.message,"danger",null,null);
 			}
@@ -527,6 +577,11 @@
 		$(".fixed-table-header-columns>table>thead>tr>th").each(function (i,thobj) {
 			$(thobj).css("height",'105px');//设置合并单元格高度
 		})
+	/*	$(".fixed-table-container tbody td, .bootstrap-table .table>thead>tr>th").each(function (i,thobj) {
+			//$(thobj).css("height",'35px');
+			//console.log("-------------")
+		})*/
+
 		/*$(".fixed-table-body-columns").css(""paddin"")*/
 		$("input[name='btSelectAll']").click(function () {
 			/*var btSelectAll = $("input[name='btSelectAll']:checked").val();
@@ -560,6 +615,7 @@
 	}
 	function shfitsModify(index, field, value,row) {
 		console.log(field);
+
 		let shiftOptions='';
 		for (let i = 0; i < shiftsArr.length; i++) {
 			if(value==shiftsArr[i]){
@@ -568,8 +624,16 @@
 				shiftOptions=shiftOptions+'<option value="'+shiftsArr[i]+'">'+shiftsArr[i]+'</option>'
 			}
 		}
+		let otArr = row.otflas.split(",");
+		let fieldNum = field.replace("day","");
+		let checkInput='<input id="demo-form-inline-checkbox" class="magic-checkbox" type="checkbox" name="ovtime" >';
+		if(otArr[parseInt(fieldNum)]=='1'){
+			checkInput='<input id="demo-form-inline-checkbox" class="magic-checkbox" type="checkbox" name="ovtime" checked="checked">';
+		}
+		//console.log(checkInput)
+		//'<input id="demo-form-inline-checkbox" class="magic-checkbox" type="checkbox" name="ovtime" checked="">'+
 
-		let  fValue="";
+		//let  fValue="";
 		bootbox.dialog({
 			title: "班次调整",
 			message:'<div class="row"> ' +
@@ -578,7 +642,7 @@
 					'<div class="form-group"> ' +
 					'<label class="col-md-4 control-label" for="name">姓名</label> ' +
 					'<div class="col-md-4"> ' +
-					'<input id="name" name="name" type="text" value="'+row.emp_name+'" placeholder="Your name" class="form-control input-md"> ' +
+					'<input id="name" name="name" type="text" value="'+row.emp_name+'"  class="form-control input-md"> ' +
 					'</div> ' +
 					'</div> ' +
 					'<div class="form-group"> ' +
@@ -594,7 +658,8 @@
 					'<label class="col-md-4 control-label" for="awesomeness">是否加班</label> ' +
 					'<div class="col-md-8">' +
 					'<div class="checkbox">'+
-					'<input id="demo-form-inline-checkbox" class="magic-checkbox" type="checkbox" name="ovtime">'+
+					//'<input id="demo-form-inline-checkbox" class="magic-checkbox" type="checkbox" name="ovtime" checked="">'+
+					checkInput+
 					'<label for="demo-form-inline-checkbox"></label>'+
 					'</div>'+
 					'</div> ' +
@@ -613,7 +678,13 @@
 							field: field,
 							value: shift
 						})
-						common_ajax.ajaxFunc("/admin/xd/xdschedulesummary/updateCell",{"id":row.id,"modValue":shift,"overtime":overtime,"type":"1"}, "json", null);
+						let data = common_ajax.ajaxFunc("/admin/xd/xdschedulesummary/updateCell",{"id":row.id,"oldValue":value,"modValue":shift,"overtime":overtime,"field":field,"type":"1"}, "json", null);
+						console.log("-----"+data.message)
+						$('#pageTable').bootstrapTable('updateCell', {
+							index: index,
+							field: "othours",
+							value: data.message
+						})
 					},
 
 
@@ -660,7 +731,7 @@
 							field: field,
 							value: remarks
 						})
-						common_ajax.ajaxFunc("/admin/xd/xdschedulesummary/updateCell",{"id":row.id,"modValue":remarks,"overtime":"","type":"2"}, "json", null);
+						common_ajax.ajaxFunc("/admin/xd/xdschedulesummary/updateCell",{"id":row.id,"oldValue":value,"modValue":remarks,"overtime":"","field":field,"type":"2"}, "json", null);
 					},
 				}
 			}

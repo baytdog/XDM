@@ -1,34 +1,61 @@
 <form id="editForm" class="panel-body form-horizontal form-padding">
 	<input id="summaryId" type="hidden"  name="#(formModelName).id" class="form-control" value="#(o?o.id:'')">
 	<div class="form-group">
-		<label class="col-md-1 control-label">部门</label>
-		<div class="col-md-5">
-			<input type="text"  name="#(formModelName).dept_name" class="form-control"  value="#(o?o.dept_name:'')"  >
-		</div>
-		<label class="col-md-1 control-label">项目</label>
-		<div class="col-md-5">
-			<input type="text"  name="#(formModelName).project_name" class="form-control"  value="#(o?o.project_name:'')"  >
-		</div>
-	</div>
-	<div class="form-group">
 		<label class="col-md-1 control-label">姓名</label>
-		<div class="col-md-5">
+	<!--	<div class="col-md-5">
 			<input type="text"  name="#(formModelName).emp_name" class="form-control"  value="#(o?o.emp_name:'')"  >
+		</div>-->
+
+	<!--	<input type="hidden" id="eid" name="#(formModelName).eid" value="#(o?o.eid:'')">-->
+		<input type="hidden" id="ename" name="#(formModelName).emp_name" value="#(o?o.emp_name:'')">
+		<div class="col-md-5">
+			<select id="enameSelect"   title="请选择员工"  class="selectpicker show-tick form-control" actionsBox="true"  disable  data-live-search="true">
+				#for(emp:emps)
+				<option value="#(emp.name)">#(emp.name)</option>
+				#end
+			</select>
 		</div>
 		<label class="col-md-1 control-label">工号</label>
 		<div class="col-md-5">
-			<input type="text"  name="#(formModelName).emp_num" class="form-control"  value="#(o?o.emp_num:'')"  >
+			<input id="emp_num" type="text"  name="#(formModelName).emp_num" class="form-control"  value="#(o?o.emp_num:'')"  >
 		</div>
 	</div>
 	<div class="form-group">
+		<label class="col-md-1 control-label">部门</label>
+		<div class="col-md-5">
+			<input type="hidden" id="dept_id" name="#(formModelName).dept_id" class="form-control"  value="#(o?o.dept_id:'')"  >
+			<input type="hidden" id="dept_name" name="#(formModelName).dept_name" class="form-control"  value="#(o?o.dept_name:'')"  >
+			<select id="deptSelect"   title="请选择员工"  class="selectpicker show-tick form-control" actionsBox="true"  disabled="disabled"   data-live-search="true">
+				#for(org:orgList)
+				<option value="#(org.id)">#(org.name)</option>
+				#end
+			</select>
+		</div>
+		<label class="col-md-1 control-label">项目</label>
+		<div class="col-md-5">
+			<input type="hidden" id="project_id" name="#(formModelName).project_id" class="form-control"  value="#(o?o.project_id:'')"  >
+			<input type="hidden" id="project_name" name="#(formModelName).project_name" class="form-control"  value="#(o?o.project_name:'')"  >
+			<select id="proSelect"   title="请选择员工"  class="selectpicker show-tick form-control" actionsBox="true"  disabled="disabled"  data-live-search="true">
+				#for(pro:projects)
+				<option value="#(pro.id)">#(pro.project_name)</option>
+				#end
+			</select>
+
+		</div>
+	</div>
+
+	<div class="form-group">
 		<label class="col-md-1 control-label">身份证</label>
 		<div class="col-md-5">
-			<input type="text"  name="#(formModelName).emp_idnum" class="form-control"  value="#(o?o.emp_idnum:'')"  >
+			<input id="emp_idnum" type="text"  name="#(formModelName).emp_idnum" class="form-control"  value="#(o?o.emp_idnum:'')"  >
 		</div>
 		<label class="col-md-1 control-label">申请日期</label>
-		<div class="col-md-5">
-			<input type="text"  name="#(formModelName).apply_date" class="form-control"  value="#(o?o.apply_date:'')"  >
-		</div>
+			<!--<input type="text"  name="#(formModelName).apply_date" class="form-control"  value="#(o?o.apply_date:'')"  >-->
+			<div class="input-group date form_datetime col-md-5" style="float:left">
+				<input type="text" id="apply_date" name="#(formModelName).apply_date" class="form-control"  value="#(o?o.apply_date:'')"    >
+				<span class="input-group-addon"> <span class="glyphicon glyphicon-th"></span>
+									</span>
+			</div>
 	</div>
 	<div class="form-group">
 		<label class="col-md-1 control-label">申请开始时间</label>
@@ -54,16 +81,6 @@
 			</select>
 		</div>
 
-	</div>
-	<div class="form-group">
-		<label class="col-md-1 control-label">加班开始时间</label>
-		<div class="col-md-5">
-			<input type="text"  name="#(formModelName).act_start" class="form-control"  value="#(o?o.act_start:'')"  >
-		</div>
-		<label class="col-md-1 control-label">加班结束时间</label>
-		<div class="col-md-5">
-			<input type="text"  name="#(formModelName).act_end" class="form-control"  value="#(o?o.act_end:'')"  >
-		</div>
 	</div>
 	<div class="form-group">
 		<label class="col-md-1 control-label">备注</label>

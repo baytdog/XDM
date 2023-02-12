@@ -198,10 +198,11 @@ public class XdOperUtil {
         System.out.println(e2);
 
         LocalDate localDate = LocalDate.parse("2022-12-31").plusDays(1);
-
-        DateTimeFormatter dtf=DateTimeFormatter.ofPattern("yyyyMMdd");
+        DateTimeFormatter dtf=DateTimeFormatter.ofPattern("yyyy-MM-dd");
         String format = dtf.format(localDate);
         System.out.println(format);
+        String abc="12345";
+        System.out.println(abc.substring(abc.length() - 1));
 
 
     }

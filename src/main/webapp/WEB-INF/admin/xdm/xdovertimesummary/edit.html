@@ -8,10 +8,10 @@
 </div>
 <script>
 	function save(){
-		var data = common_ajax.ajaxFunc("/admin/xd/xdschedule/save", $('#editForm').serialize(), "json", null);
+		var data = common_ajax.ajaxFunc("/admin/xd/xdovertimesummary/save", $('#editForm').serialize(), "json", null);
 		if(data.success){
 			pointLion.alertMsg("保存成功!" , "success" , "small" , function(){
-				location.href = ctx+'/admin/xd/xdschedule/getListPage';//跳转到列表页
+				location.href = ctx+'/admin/xd/xdovertimesummary/getListPage';//跳转到列表页
 			},data);
 		}else{
 			pointLion.alertMsg(data.message , "danger" , "small" , function(){
@@ -223,4 +223,43 @@ $(function () {
 		});
 	};
 
+</script>
+<script>
+	let ename=$("#ename").val();
+	if(ename){
+		$('#enameSelect').selectpicker('val',ename.split(",")).trigger("change");
+	}
+
+	let project_id=$("#project_id").val();
+	if(project_id){
+		$('#proSelect').selectpicker('val',project_id.split(",")).trigger("change");
+	}
+	let dept_id=$("#dept_id").val();
+	if(dept_id){
+		$('#deptSelect').selectpicker('val',dept_id.split(",")).trigger("change");
+	}
+
+	$('#enameSelect').on('changed.bs.select', function (e) {
+		$('#ename').val($('#enameSelect').val())
+
+		var data = common_ajax.ajaxFunc("/admin/xd/xdovertimesummary/getUserinfo",{"ename":$('#enameSelect').val()}, "json", null);
+	/*	console.log(data);
+		console.log(data.empNum);
+		console.log(data.idnum);
+		console.log(data.orgId);
+		console.log(data.orgName);
+		console.log(data.projectId);
+		console.log(data.projectName);*/
+		$('#proSelect').selectpicker('val',data.projectId.split(",")).trigger("change");
+		$("#project_id").val(data.projectId);
+		$("#project_name").val(data.projectName);
+		$('#deptSelect').selectpicker('val',data.orgId.split(",")).trigger("change");
+		$("#dept_id").val(data.orgId);
+		$("#dept_name").val(data.orgName);
+		$("#emp_num").val(data.empNum);
+		$("#emp_idnum").val(data.idnum);
+
+		//$('#ename').val($('#enameSelect option:selected').text())
+
+	});
 </script>

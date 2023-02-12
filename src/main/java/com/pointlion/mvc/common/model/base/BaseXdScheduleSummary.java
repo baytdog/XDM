@@ -409,6 +409,14 @@ public abstract class BaseXdScheduleSummary<M extends BaseXdScheduleSummary<M>> 
 		return getStr("flags");
 	}
 
+	public void setOtflas(String otflas) {
+		set("otflas", otflas);
+	}
+	
+	public String getOtflas() {
+		return getStr("otflas");
+	}
+
 	public void setRemarks(String remarks) {
 		set("remarks", remarks);
 	}

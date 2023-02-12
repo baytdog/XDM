@@ -61,10 +61,19 @@
 
         }
        function clickTest(){
-    	    moveToHomeTab();
+    	    /*moveToHomeTab();
     	  		var linkUrl =ctx+'/admin/home/getPersonalHomePage?action=openPage';
 			    var linkHtml = '首页';
-	    		 $("#jfinaloa-tab-page-content iframe[data-url='" + linkUrl + "'][data-value='" + linkHtml + "']")[0].src=linkUrl;
+	    		 $("#jfinaloa-tab-page-content iframe[data-url='" + linkUrl + "'][data-value='" + linkHtml + "']")[0].src=linkUrl;*/
+               let smClass = $("#container").hasClass("mainnav-lg");
+               if(smClass){
+                       $("#container").removeClass("mainnav-lg");
+                       $("#container").addClass("mainnav-sm")
+               }else{
+                       $("#container").removeClass("mainnav-sm")
+                       $("#container").addClass("mainnav-lg");
+
+               }
        }
        
        

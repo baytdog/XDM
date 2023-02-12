@@ -48,7 +48,7 @@
 
 						<div class="form-group">
 							<select class="selectpicker form-control"  id="overtimeType"  >
-								<option value="">------请选择部门------</option>
+								<option value="">------请选择加班类型------</option>
 								<option value="1">非国定节假日加班</option>
 								<option value="0">国定节假日加班</option>
 							</select>
@@ -61,11 +61,12 @@
 			</div>
 			<div class="panel ">
 				<div class="panel-body">
-					<!--				<a id="add" class="btn btn-primary data-toolbar" href="#(ctx)/admin/xd/xdovertimesummary/getEditPage?view=edit"><i class="demo-pli-add"></i> 添加</a>-->
+									<a id="add" class="btn btn-primary data-toolbar" href="#(ctx)/admin/xd/xdovertimesummary/getEditPage?view=edit"><i class="demo-pli-add"></i> 添加</a>
 					<a id="del" class="btn btn-danger data-toolbar" onclick="delSel()" href="javascript:void(0);"><i class="demo-pli-cross"></i> 批量删除</a>
 					<a id="filePicker"  href="javascript:void(0);" ><i class="demo-pli-add"></i> 导入</a>
 					<a id="export" class="btn btn-primary data-toolbar" onclick="exportExcel()" target="_blank"><i class="demo-pli-download-from-cloud"></i> 导出</a>
-					<a id="exportJBJS" class="btn btn-primary data-toolbar" onclick="exportJBJSExcel()" target="_blank"><i class="demo-pli-download-from-cloud"></i> 导出加班结算</a>
+					<!--
+					<a id="exportJBJS" class="btn btn-primary data-toolbar" onclick="exportJBJSExcel()" target="_blank"><i class="demo-pli-download-from-cloud"></i> 导出加班结算</a>-->
 
 					<table id="pageTable" class="demo-add-niftycheck table table-bordered"
 						   data-toolbar="#del,#add,#filePicker,#export,#exportJBJS"
@@ -109,8 +110,8 @@
 				//value：当前field的值，即id
 				//row：当前行的数据
 				var a = '<a class="label label-table label-success" href="'+ctx+'/admin/xd/xdovertimesummary/getEditPage?id='+row.id+'&view=detail" >查看</a>&nbsp;';
-				/*				a = a + '<a class="label label-table label-success" href="'+ctx+'/admin/xd/xdovertimesummary/getEditPage?id='+row.id+'&view=edit" >编辑</a>&nbsp;';
-                                a = a + '<a class="label label-table label-danger" onclick="del(\''+row.id+'\')" href="javascript:void(0);" >删除</a>';*/
+								a = a + '<a class="label label-table label-success" href="'+ctx+'/admin/xd/xdovertimesummary/getEditPage?id='+row.id+'&view=edit" >编辑</a>&nbsp;';
+                                a = a + '<a class="label label-table label-danger" onclick="del(\''+row.id+'\')" href="javascript:void(0);" >删除</a>';
 				return a;
 			}
 		}];
@@ -245,14 +246,15 @@
 
 		let dept = $("#dept").val();
 		let emp_name =encodeURIComponent($("#emp_name").val());
-		let unitname = $("#unitname").val();
+		let project = $("#project").val();
 		let year =$("#year").val();
 		let month =	$("#month").val();
+		let overtimeType =	$("#overtimeType").val();
 	/*	if(year==''||month==''){
 			pointLion.alertMsg("请选择年月！","success",null,null);
 			return;
 		}*/
-		location.href = "#(ctx)/admin/xd/xdovertimesummary/exportExcel?dept="+dept+"&emp_name="+emp_name+"&unitname="+unitname+"&year="+year+"&month="+month;
+		location.href = "#(ctx)/admin/xd/xdovertimesummary/exportExcel?dept="+dept+"&emp_name="+emp_name+"&project="+project+"&year="+year+"&month="+month+"&overtimeType="+overtimeType;
 	}
 	function exportJBJSExcel(){
 
