@@ -273,6 +273,14 @@ public abstract class BaseXdAttendanceSummary<M extends BaseXdAttendanceSummary<
 		return getStr("update_date");
 	}
 
+	public void setDay00(String day00) {
+		set("day00", day00);
+	}
+	
+	public String getDay00() {
+		return getStr("day00");
+	}
+
 	public void setDay01(String day01) {
 		set("day01", day01);
 	}
@@ -519,6 +527,30 @@ public abstract class BaseXdAttendanceSummary<M extends BaseXdAttendanceSummary<
 	
 	public String getDay31() {
 		return getStr("day31");
+	}
+
+	public void setOthours(Double othours) {
+		set("othours", othours);
+	}
+	
+	public Double getOthours() {
+		return getDouble("othours");
+	}
+
+	public void setFlags(String flags) {
+		set("flags", flags);
+	}
+	
+	public String getFlags() {
+		return getStr("flags");
+	}
+
+	public void setOtflags(String otflags) {
+		set("otflags", otflags);
+	}
+	
+	public String getOtflags() {
+		return getStr("otflags");
 	}
 
 }

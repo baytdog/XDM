@@ -1,5 +1,6 @@
 package com.pointlion.mvc.admin.xdm.xdattendancesummary;
 
+import cn.hutool.json.JSONObject;
 import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.plugin.activerecord.Record;
 import com.jfinal.upload.UploadFile;
@@ -8,15 +9,21 @@ import com.pointlion.mvc.common.model.*;
 import com.pointlion.mvc.common.utils.DateUtil;
 import com.pointlion.mvc.common.utils.StringUtil;
 import com.pointlion.mvc.common.utils.office.excel.ExcelUtil;
+import com.pointlion.plugin.shiro.ShiroKit;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
+import java.util.stream.Collectors;
 
 
 public class XdAttendanceSummaryController extends BaseController {
@@ -25,11 +32,66 @@ public class XdAttendanceSummaryController extends BaseController {
 	 * get list page
 	 */
 	public void getListPage(){
-		List<XdDict> units = XdDict.dao.find("select * from xd_dict where type ='unit' order by sortnum");
+		/*List<XdDict> units = XdDict.dao.find("select * from xd_dict where type ='unit' order by sortnum");
 		setAttr("units",units);
 		XdAttendanceSummary last = XdAttendanceSummary.dao.findFirst("select * from  xd_schedule_summary order by schedule_year_month desc");
 		setAttr("year",last.getScheduleYear());
-		setAttr("month",last.getScheduleMonth());
+		setAttr("month",last.getScheduleMonth());*/
+
+		List<XdDict> units = XdDict.dao.find("select * from xd_dict where type ='unit' order by sortnum");
+		setAttr("units",units);
+		XdAttendanceSummary last = XdAttendanceSummary.dao.findFirst("select * from  xd_attendance_summary order by schedule_year_month desc");
+		if(last!=null){
+			setAttr("year",last==null?"":last.getScheduleYear());
+			setAttr("month",last==null?"":last.getScheduleMonth());
+			String yearMonth=(last==null?"":last.getScheduleYear())+(last==null?"":last.getScheduleMonth());
+			List<XdDayModel> xdDayModels = XdDayModel.dao.find("select * from  xd_day_model where id like '"+yearMonth+"%' order by id");
+			LocalDate localDate = LocalDate.parse(last.getScheduleYear()+"-"+last.getScheduleMonth()+"-01").minusMonths(1);
+			DateTimeFormatter dtf=DateTimeFormatter.ofPattern("yyyyMM");
+			String lastMonth = dtf.format(localDate);
+			XdDayModel lastMonLastDay = XdDayModel.dao.findFirst("select * from  xd_day_model where id like '" + lastMonth + "%' order by id desc");
+			List<String> weekLists=new ArrayList<>();
+			List<String> holidayLists=new ArrayList<>();
+			String firstRow="0";
+			if(lastMonLastDay!=null){
+				weekLists.add(lastMonLastDay.getWeeks());
+				if(lastMonLastDay.getHolidays()==null||lastMonLastDay.getHolidays().equals("")){
+					holidayLists.add("-");
+				}else{
+
+					holidayLists.add(lastMonLastDay.getHolidays());
+				}
+			}else{
+				weekLists.add("");
+				holidayLists.add("-");
+			}
+
+			xdDayModels.stream().forEach(
+					xdDayModel-> {
+						weekLists.add(xdDayModel.getWeeks());
+						if(xdDayModel.getHolidays()==null||xdDayModel.getHolidays().equals("")){
+							holidayLists.add("-");
+						}else{
+
+							holidayLists.add(xdDayModel.getHolidays());
+						}
+					});
+			setAttr("daysNum",xdDayModels.size());
+			setAttr("weekLists",weekLists);
+			setAttr("holidayLists",holidayLists);
+			List<XdShift> xdShifts = XdShift.dao.find("select * from  xd_shift order by shiftname");
+			String shifts="";
+			for (XdShift xdShift : xdShifts) {
+				shifts=shifts+","+xdShift.getShiftname();
+			}
+			setAttr("shifts",shifts.replaceAll("^,", ""));
+		}
+
+
+
+
+
+
 		renderIframe("list.html");
 	}
 	/***
@@ -172,7 +234,7 @@ public class XdAttendanceSummaryController extends BaseController {
 	}
 
 
-	public void getRcpList() {
+	/*public void getRcpList() {
 		String id = getPara("id");
 		List<XdAttendanceRcp> rcpList = XdAttendanceRcp.dao.find("select * from  xd_attendance_rcp where  attendid_id='" + id + "' order by id");
 		renderJson(rcpList);
@@ -182,6 +244,339 @@ public class XdAttendanceSummaryController extends BaseController {
 		String id = getPara("id");
 		List<XdAttendanceRcp> rcpList = XdAttendanceRcp.dao.find("select * from  xd_attendance_days where  attendid_id='" + id + "' order by id");
 		renderJson(rcpList);
+	}*/
+
+	public void getTableHeader(){
+		String year = getPara("year","");
+		String month = getPara("month","");
+		String yearMonth=year+month;
+		List<XdDayModel> xdDayModels = XdDayModel.dao.find("select * from  xd_day_model where id like '"+yearMonth+"%' order by id");
+		LocalDate localDate = LocalDate.parse(year+"-"+month+"-01").minusMonths(1);
+		DateTimeFormatter dtf=DateTimeFormatter.ofPattern("yyyyMM");
+		String lastMonth = dtf.format(localDate);
+		XdDayModel lastMonLastDay = XdDayModel.dao.findFirst("select * from  xd_day_model where id like '" + lastMonth + "%' order by id desc");
+		List<String> weekLists=new ArrayList<>();
+		List<String> holidayLists=new ArrayList<>();
+		if(lastMonLastDay!=null){
+			weekLists.add(lastMonLastDay.getWeeks());
+			if(lastMonLastDay.getHolidays()==null||lastMonLastDay.getHolidays().equals("")){
+				holidayLists.add("-");
+			}else{
+
+				holidayLists.add(lastMonLastDay.getHolidays());
+			}
+		}else{
+			weekLists.add("");
+			holidayLists.add("-");
+		}
+
+		xdDayModels.stream().forEach(
+				xdDayModel-> {
+					weekLists.add(xdDayModel.getWeeks());
+					if(xdDayModel.getHolidays()==null||xdDayModel.getHolidays().equals("")){
+						holidayLists.add("-");
+					}else{
+
+						holidayLists.add(xdDayModel.getHolidays());
+					}
+				});
+		setAttr("daysNum",xdDayModels.size());
+		setAttr("weekLists",weekLists);
+		setAttr("holidayLists",holidayLists);
+		JSONObject jsonObject=new JSONObject();
+		jsonObject.put("daysNum",xdDayModels.size());
+		jsonObject.put("weekLists",weekLists);
+		jsonObject.put("holidayLists",holidayLists);
+		renderSuccess(jsonObject,"");
+	}
+
+	/**
+	 * @Method updateCell
+	 * @Date 2023/2/13 15:57
+	 * @Description 更新单元格内容
+	 * @Author king
+	 * @Version  1.0
+	 * @Return void
+	 */
+	public void updateCell(){
+
+		String id = getPara("id");
+		String oldValue = getPara("oldValue");
+		String modValue = getPara("modValue");
+		String overtime = getPara("overtime");
+		String field = getPara("field");
+		String type = getPara("type");
+		double returunOtHour=0;
+		XdAttendanceSummary summary  = XdAttendanceSummary.dao.findById(id);
+		if("2".equals(type)){
+			summary.setRemarks(modValue);
+		}else{
+			Class  superclass = XdAttendanceSummary.class.getSuperclass();
+			try {
+				Method method = superclass.getMethod("set" + field.substring(0, 1).toUpperCase() + field.substring(1),String.class);
+				method.invoke(summary, modValue);
+				int index = Integer.parseInt(field.replace("day", ""));
+
+				String[] modifyFlags = summary.getFlags().split(",");
+				modifyFlags[index]="1";
+
+				String modify="";
+				for (String modifyFlag : modifyFlags) {
+					modify=modify+","+modifyFlag;
+				}
+				summary.setFlags(modify.replaceAll("^,",""));
+
+				String ot="";
+				String[] otFlags = summary.getOtflags().split(",");
+				if("on".equals(overtime)){
+					otFlags[index]="1";
+				}else{
+					otFlags[index]="0";
+				}
+				for (String otFlag : otFlags) {
+					ot=ot+","+otFlag;
+				}
+				summary.setOtflags(ot.replaceAll("^,",""));
+
+
+
+				String yearMonth=summary.getScheduleYear()+"-"+summary.getScheduleMonth();
+
+				LocalDate lastMonLastDay = LocalDate.parse(yearMonth+"-01").minusDays(1);
+				DateTimeFormatter dtf=DateTimeFormatter.ofPattern("yyyy-MM-dd");
+				String lastMonthDay = dtf.format(lastMonLastDay);
+				//删除当前记录对应的加班核算记录
+				List<XdSettleOvertimeSummary> settleList = XdSettleOvertimeSummary.dao.find("select * from  xd_overtime_summary where emp_name='"+summary.getEmpName()+"' and apply_date like'" + yearMonth + "%' ");
+				for (XdSettleOvertimeSummary settle : settleList) {
+					settle.delete();
+				}
+
+				List<XdDayModel> dayModels =
+						XdDayModel.dao.find("select * from  xd_day_model where days like '" + yearMonth + "%' or days='" + lastMonthDay + "'");
+
+				List<XdShift> xdShifts = XdShift.dao.find("select * from  xd_shift");
+				Map<String, XdShift> nameShiftObjMap = xdShifts.stream().collect(Collectors.toMap(XdShift::getShiftname, xdShift -> xdShift));
+				Map<String, String> holidaysMap = dayModels.stream().collect(Collectors.toMap(XdDayModel::getId, XdDayModel::getHolidays));
+
+
+				XdEmployee emp = XdEmployee.dao.findFirst("select * from xd_employee where name ='" + summary.getEmpName() + "'");
+
+				XdSettleOvertimeSummary setOTSummary=new XdSettleOvertimeSummary();
+				setOTSummary.setEmpNum(summary.getEmpNum());
+				setOTSummary.setEmpName(summary.getEmpName());
+				setOTSummary.setEmpIdnum(emp==null?"":emp.getIdnum());
+				setOTSummary.setProjectName(summary.getProjectName());
+				setOTSummary.setProjectId(summary.getProjectValue());
+				setOTSummary.setDeptName(summary.getDeptName());
+				setOTSummary.setDeptId(summary.getDeptValue());
+				setOTSummary.setCreateUser(ShiroKit.getUserId());
+				setOTSummary.setCreateDate(DateUtil.getCurrentTime());
+				double othours=0;//平时加班时间
+				double naOTHours=0;
+				double work_hour=0;//出勤时间
+				double needWorkDay=0;//应工作天数
+				double shouldWorkDay=0;//希望工作天数
+				double actWorkDay=0;//实际工作天数
+
+
+
+				for (int i = 0; i < dayModels.size(); i++) {
+					String suffix="";
+					if(i<10){
+						suffix="0"+i;
+					}else{
+						suffix=i+"";
+					}
+					//	XdShift xdShift = nameShiftObjMap.get(cellValue);
+					Method getMethod = superclass.getMethod("getDay" + suffix);
+					String  shiftName = (String) getMethod.invoke(summary);
+					XdDayModel dayModel = dayModels.get(i);
+					XdShift shift = nameShiftObjMap.get(shiftName);
+					if(i==0){//上个月最后一天
+						/*holidaysMap.get(lastMonthDay)
+						if(shiftName!=null&&!shiftName.equals(""))
+*/
+						if("1".equals(shift.getSpanDay())){//是跨天
+							XdDayModel firstDay = dayModels.get(1);
+							if(holidaysMap.get(firstDay)!=null&& !"".equals(holidaysMap.get(firstDay))){
+								XdSettleOvertimeSummary otSummary=new XdSettleOvertimeSummary();
+								XdOvertimeSummary overTime = XdOvertimeSummary.dao.findFirst("select * from xd_overtime_summary where apply_date='" + firstDay.getDays() + "' and emp_name='" + summary.getEmpName() + "' and apply_type='0'");
+								otSummary.setEmpName(summary.getEmpName());
+								otSummary.setEmpIdnum(emp==null?"":emp.getIdnum());
+								otSummary.setEmpNum(summary.getEmpNum());
+								otSummary.setDeptName(summary.getDeptName());
+								otSummary.setDeptId(summary.getDeptValue());
+								otSummary.setProjectName(summary.getProjectName());
+								otSummary.setProjectId(summary.getProjectValue());
+								otSummary.setApplyType("0");
+								otSummary.setApplyDate(firstDay.getDays());
+								otSummary.setApplyStart(overTime.getApplyStart());
+								otSummary.setApplyEnd(overTime.getApplyEnd());
+								otSummary.setApplyHours(overTime.getApplyHours());
+								otSummary.setActStart("00:00");
+								otSummary.setActEnd(shift.getUnbusitime());
+								otSummary.setActHours(shift.getSpanHours());
+								otSummary.setCreateUser(ShiroKit.getUserId());
+								otSummary.setCreateDate(DateUtil.getCurrentTime());
+								otSummary.save();
+								naOTHours+=Double.valueOf(shift.getSpanHours());
+							}else{
+								othours+=Double.valueOf(shift.getSpanHours());
+							}
+
+						}
+					}else{//本月
+
+						if(shiftName!=null&&!shiftName.equals("")){
+							XdShift xdShift = nameShiftObjMap.get(shiftName);
+							if(xdShift!=null && xdShift.getBusitime()!=null&& !xdShift.getBusitime().equals("")){
+
+								if(xdShift.getSpanDay().equals("1")){
+									LocalDate localDate = LocalDate.parse(dayModel.getDays()).plusDays(1);
+									String nextDay  = dtf.format(localDate);
+									//是跨天且当天法定假日
+									if(holidaysMap.get(dayModel.getId())!=null && !"".equals(holidaysMap.get(dayModel.getId()))){
+										XdOvertimeSummary overTime = XdOvertimeSummary.dao.findFirst("select * from xd_overtime_summary where apply_date='" + dayModel.getDays() + "' and emp_name='" + summary.getEmpName() + "' and apply_type='0'");
+
+										setOTSummary.setId(null);
+										setOTSummary.setApplyDate(overTime.getApplyDate());
+										setOTSummary.setApplyStart(overTime.getApplyStart());
+										setOTSummary.setApplyEnd(overTime.getApplyEnd());
+										setOTSummary.setApplyHours(overTime.getApplyHours());
+										setOTSummary.setApplyType("0");
+										setOTSummary.setActHours(shift.getCurdayHours());
+										setOTSummary.setActStart(shift.getBusitime());
+										setOTSummary.setActEnd("24:00");
+										setOTSummary.save();
+										naOTHours+=Double.valueOf(xdShift.getCurdayHours());
+										//overTimeList.add(xdOvertimeSummary);
+										//othours+=Double.valueOf(xdShift.getCurdayHours());
+									}else{//跨天当天不是法定假日
+										work_hour+=Double.valueOf(xdShift.getCurdayHours());
+										if(i==index && "on".equals(overtime)){
+											XdOvertimeSummary overTime = XdOvertimeSummary.dao.findFirst("select * from xd_overtime_summary where apply_date='" + dayModel.getDays() + "' and emp_name='" + summary.getEmpName() + "' and apply_type='1'");
+											setOTSummary.setId(null);
+											setOTSummary.setApplyDate(overTime.getApplyDate());
+											setOTSummary.setApplyStart(overTime.getApplyStart());
+											setOTSummary.setApplyEnd(overTime.getApplyEnd());
+											setOTSummary.setApplyHours(overTime.getApplyHours());
+											setOTSummary.setApplyType("1");
+											setOTSummary.setActStart(shift.getBusitime());
+											setOTSummary.setActEnd("24:00");
+											setOTSummary.setActHours(shift.getCurdayHours());
+											setOTSummary.save();
+										}
+
+
+										//work_hour+=Double.valueOf(xdShift.getCurdayHours());
+										//otFlags=otFlags+","+"0";
+									}
+									//是跨天且第二天是法定假日
+									if(holidaysMap.get(nextDay.replaceAll("-",""))!=null && !"".equals(holidaysMap.get(nextDay.replaceAll("-","")))){
+
+										XdOvertimeSummary overTime = XdOvertimeSummary.dao.findFirst("select * from xd_overtime_summary where apply_date='" + nextDay + "' and emp_name='" + summary.getEmpName() + "' and apply_type='0'");
+										setOTSummary.setId(null);
+										setOTSummary.setApplyDate(nextDay);
+										setOTSummary.setApplyStart(overTime==null?"":overTime.getApplyStart());
+										setOTSummary.setApplyEnd(overTime==null?"":overTime.getApplyEnd());
+										setOTSummary.setApplyHours(overTime==null?"":overTime.getApplyHours());
+										setOTSummary.setActStart("00:00");
+										setOTSummary.setActEnd(shift.getUnbusitime());
+										setOTSummary.setActHours(shift.getSpanHours());
+										setOTSummary.setApplyType("0");
+										//overTimeList.add(xdOvertimeSummary);
+										setOTSummary.save();
+										if(i<dayModels.size()-1){
+											naOTHours+=Double.valueOf(xdShift.getSpanHours());
+										}
+									}else{//是跨天且第二天不是法定假日
+										if(i<dayModels.size()-1){
+											work_hour+=Double.valueOf(xdShift.getSpanHours());
+										}
+										if(i==index && "on".equals(overtime)){
+											XdOvertimeSummary overTime = XdOvertimeSummary.dao.findFirst("select * from xd_overtime_summary where apply_date='" + nextDay + "' and emp_name='" + summary.getEmpName() + "' and apply_type='1'");
+											setOTSummary.setId(null);
+											setOTSummary.setApplyStart(overTime==null?"":overTime.getApplyStart());
+											setOTSummary.setApplyEnd(overTime==null?"":overTime.getApplyEnd());
+											setOTSummary.setApplyHours(overTime==null?"":overTime.getApplyHours());
+											setOTSummary.setApplyDate(nextDay);
+											setOTSummary.setActStart("00:00");
+											setOTSummary.setActEnd(shift.getUnbusitime());
+											setOTSummary.setActHours(shift.getSpanHours());
+											setOTSummary.setApplyType("1");
+											setOTSummary.save();
+										}
+									}
+								}else{
+
+									if(holidaysMap.get(dayModel.getId())!=null && !"".equals(holidaysMap.get(dayModel.getId()))){
+
+										XdOvertimeSummary overTime = XdOvertimeSummary.dao.findFirst("select * from xd_overtime_summary where apply_date='" + dayModel.getDays() + "' and emp_name='" + summary.getEmpName() + "' and apply_type='0'");
+
+										setOTSummary.setId(null);
+										setOTSummary.setApplyDate(dayModel.getDays());
+										setOTSummary.setApplyStart(overTime==null?"":overTime.getApplyStart());
+										setOTSummary.setApplyEnd(overTime==null?"":overTime.getApplyEnd());
+										setOTSummary.setApplyHours(overTime==null?"":overTime.getApplyHours());
+										setOTSummary.setActStart(shift.getBusitime());
+										setOTSummary.setActEnd(shift.getUnbusitime());
+										setOTSummary.setActHours(shift.getHours());
+										setOTSummary.setApplyType("0");
+										setOTSummary.save();
+										//overTimeList.add(xdOvertimeSummary);
+										naOTHours+=Double.valueOf(xdShift.getHours());
+
+									}else{
+										XdOvertimeSummary overTime = XdOvertimeSummary.dao.findFirst("select * from xd_overtime_summary where apply_date='" + dayModel.getDays() + "' and emp_name='" + summary.getEmpName() + "' and apply_type='1'");
+
+										if(i==index){
+											if( "on".equals(overtime)){
+												setOTSummary.setId(null);
+												setOTSummary.setApplyDate(dayModel.getDays());
+												setOTSummary.setApplyStart(overTime==null?"":overTime.getApplyStart());
+												setOTSummary.setApplyEnd(overTime==null?"":overTime.getApplyEnd());
+												setOTSummary.setApplyHours(overTime==null?"":overTime.getApplyHours());
+												setOTSummary.setActStart(shift.getBusitime());
+												setOTSummary.setActEnd(shift.getUnbusitime());
+												setOTSummary.setActHours(shift.getHours());
+												setOTSummary.setApplyType("1");
+												setOTSummary.save();
+												othours+=Double.valueOf(xdShift.getHours());
+											}
+
+										}else {
+												work_hour+=Double.valueOf(xdShift.getHours());
+										}
+
+									}
+
+								}
+							}
+
+						}
+
+
+					}
+
+				}
+				returunOtHour=othours;
+				summary.setOthours(othours);
+				//summary.setWorkHour(work_hour);
+				summary.update();
+
+			} catch (NoSuchMethodException e) {
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				e.printStackTrace();
+			} catch (InvocationTargetException e) {
+				e.printStackTrace();
+			}
+
+		}
+
+
+		renderSuccess(String.valueOf(returunOtHour));
+
 	}
 	
 }
