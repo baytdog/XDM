@@ -346,6 +346,28 @@ public class ExcelUtil {
         writer.close();
         return new File(path);
     }
+
+
+    public static File exportOnDutyFile(String path,List<List<String>> rows){
+        //通过工具类创建writer
+        ExcelWriter writer = cn.hutool.poi.excel.ExcelUtil.getWriter(path);
+        writer.write(rows, true);
+        int size = rows.get(1).size();
+        writer.merge(0,0,0,size-1,rows.get(0).get(0),false);
+        writer.merge(1,1,0,size-1,rows.get(1).get(0),false);
+        writer.merge(2,2,1,3,rows.get(2).get(1),false);
+        writer.merge(2,2,5,6,rows.get(2).get(6),false);
+        writer.merge(3,3,0,size-1,rows.get(3).get(0),false);
+        writer.merge(rows.size()-3,rows.size()-3,0,1,rows.get(rows.size()-3).get(0),false);
+        writer.merge(rows.size()-2,rows.size()-2,0,1,rows.get(rows.size()-2).get(0),false);
+        writer.merge(rows.size()-1,rows.size()-1,0,1,rows.get(rows.size()-1).get(0),false);
+        writer.merge(rows.size()-3,rows.size()-3,2,6,rows.get(rows.size()-3).get(5),false);
+        writer.merge(rows.size()-2,rows.size()-2,2,6,rows.get(rows.size()-2).get(5),false);
+        writer.merge(rows.size()-1,rows.size()-1,2,6,rows.get(rows.size()-1).get(5),false);
+        //关闭writer，释放内存
+        writer.close();
+        return new File(path);
+    }
     public static File overtimeFile(String path,List<List<String>> rows){
         //通过工具类创建writer
         ExcelWriter writer = cn.hutool.poi.excel.ExcelUtil.getWriter(path);

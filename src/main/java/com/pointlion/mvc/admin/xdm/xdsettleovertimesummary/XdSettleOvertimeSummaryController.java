@@ -1,32 +1,22 @@
 package com.pointlion.mvc.admin.xdm.xdsettleovertimesummary;
 
+import com.jfinal.plugin.activerecord.Page;
+import com.jfinal.plugin.activerecord.Record;
+import com.jfinal.upload.UploadFile;
+import com.pointlion.mvc.common.base.BaseController;
+import com.pointlion.mvc.common.model.*;
+import com.pointlion.mvc.common.utils.DateUtil;
+import com.pointlion.mvc.common.utils.StringUtil;
+import com.pointlion.mvc.common.utils.office.excel.ExcelUtil;
+import com.pointlion.plugin.shiro.ShiroKit;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.sql.SQLException;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import com.jfinal.aop.Before;
-import com.jfinal.kit.StrKit;
-import com.jfinal.plugin.activerecord.Page;
-import com.jfinal.plugin.activerecord.Record;
-import com.jfinal.upload.UploadFile;
-import com.pointlion.mvc.common.base.BaseController;
-import com.pointlion.mvc.admin.oa.workflow.WorkFlowService;
-import com.pointlion.mvc.common.model.XdOvertimeSummary;
-import com.pointlion.mvc.common.utils.StringUtil;
-import com.pointlion.mvc.common.model.XdSettleOvertimeSummary;
-import com.pointlion.mvc.common.model.SysUser;
-import com.pointlion.mvc.common.model.SysOrg;
-import com.pointlion.mvc.common.utils.UuidUtil;
-import com.pointlion.mvc.common.utils.Constants;
-import com.pointlion.mvc.admin.oa.common.OAConstants;
-import com.pointlion.mvc.common.utils.DateUtil;
-import com.pointlion.mvc.common.utils.office.excel.ExcelUtil;
-import com.pointlion.plugin.shiro.ShiroKit;
 
 
 
@@ -55,6 +45,20 @@ public class XdSettleOvertimeSummaryController extends BaseController {
      */
     public void save(){
     	XdSettleOvertimeSummary o = getModel(XdSettleOvertimeSummary.class);
+		XdOvertimeSummary overtimeSummary = XdOvertimeSummary.dao.
+				findFirst("select * from  xd_overtime_summary where apply_date='"+o.getApplyDate()+"' and emp_name='"+o.getEmpName()+"' and apply_type='"+o.getApplyType()+"'");
+		if(overtimeSummary!=null){
+			o.setApplyStart(overtimeSummary.getApplyStart());
+			o.setApplyEnd(overtimeSummary.getApplyEnd());
+			o.setApplyHours(overtimeSummary.getApplyHours());
+		}
+		if(o.getId()!=null){
+			o.update();
+		}else{
+			o.setCreateDate(DateUtil.getCurrentTime());
+			o.setCreateUser(ShiroKit.getUserId());
+			o.save();
+		}
     	renderSuccess();
     }
     /***
@@ -66,6 +70,13 @@ public class XdSettleOvertimeSummaryController extends BaseController {
 		setAttr("view", view);
 		XdSettleOvertimeSummary summary =service.getById(id);
 		setAttr("o", summary);
+		List<XdEmployee> emps = XdEmployee.dao.find("select * from  xd_employee");
+		setAttr("emps",emps);
+		List<SysOrg> orgList = SysOrg.dao.find("select * from  sys_org");
+		setAttr("orgList",orgList);
+		List<XdProjects> projects = XdProjects.dao.find("select * from  xd_projects");
+
+		setAttr("projects",projects);
 		setAttr("formModelName",StringUtil.toLowerCaseFirstOne(XdSettleOvertimeSummary.class.getSimpleName()));
 		renderIframe("edit.html");
     }
@@ -118,6 +129,37 @@ public class XdSettleOvertimeSummaryController extends BaseController {
 		File file = service.exportExcel(path,dept,unitname,year,month,emp_name);
 		renderFile(file);
 	}
+	public void exportApportionExcel() throws UnsupportedEncodingException {
 
+		String dept=getPara("dept","");
+		String unitname=getPara("unitname","");
+		String year=getPara("year","");
+		String month = getPara("month","");
+		String emp_name = new String(getPara("emp_name","").getBytes("ISO-8859-1"), "utf-8");
+
+		String path = this.getSession().getServletContext().getRealPath("")+"/upload/export/"+ DateUtil.format(new Date(),21)+".xlsx";
+		File file = service.exportApportionExcel(path,dept,unitname,year,month,emp_name);
+		renderFile(file);
+	}
+	public void getUserinfo(){
+
+		String ename = getPara("ename");
+
+		XdEmployee emp = XdEmployee.dao.findFirst("select * from  xd_employee where name='" + ename + "'");
+
+		SysOrg org = SysOrg.dao.findById(emp.getDepartment());
+		XdProjects project = XdProjects.dao.findById(emp.getCostitem());
+
+		cn.hutool.json.JSONObject jsonObject=new cn.hutool.json.JSONObject();
+		jsonObject.put("empNum",emp.getEmpnum());
+		jsonObject.put("idnum",emp.getIdnum());
+		jsonObject.put("orgId",org.getId());
+		jsonObject.put("orgName",org.getName());
+		jsonObject.put("projectId",project.getId()+"");
+		jsonObject.put("projectName",project.getProjectName());
+		renderJson(jsonObject);
+
+
+	}
 	
 }

@@ -7,12 +7,9 @@ import com.jfinal.plugin.activerecord.IAtom;
 import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.plugin.activerecord.Record;
 import com.jfinal.plugin.activerecord.tx.Tx;
-import com.pointlion.mvc.common.model.SysOrg;
-import com.pointlion.mvc.common.model.XdOvertimeSummary;
-import com.pointlion.mvc.common.model.XdSettleOvertimeSummary;
+import com.pointlion.mvc.common.model.*;
 import com.pointlion.mvc.common.utils.office.excel.ExcelUtil;
 import com.pointlion.plugin.shiro.ShiroKit;
-import com.pointlion.mvc.common.model.SysRoleOrg;
 import com.pointlion.mvc.common.utils.DateUtil;
 import com.pointlion.plugin.shiro.ext.SimpleUser;
 import com.pointlion.util.DictMapping;
@@ -21,10 +18,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.io.File;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class XdSettleOvertimeSummaryService{
 	public static final XdSettleOvertimeSummaryService me = new XdSettleOvertimeSummaryService();
@@ -384,6 +378,100 @@ public class XdSettleOvertimeSummaryService{
 
 
 		File file = ExcelUtil.overtimeFile(path,rows);
+		return file;
+	}
+
+
+	public File exportApportionExcel(String path, String dept, String unitname, String year, String month, String emp_name){
+		String sql  = " from "+TABLE_NAME+" o   where 1=1";
+	/*	if(StrKit.notBlank(dept)){
+			sql = sql + " and o.dept_id='"+ dept+"'";
+		}*/
+
+		sql = sql + " order by o.create_date desc,emp_num";
+
+
+		List<XdSettleOvertimeSummary> list = XdSettleOvertimeSummary.dao.find(" select * "+sql);//查询全部
+
+
+		List<List<String>> rows = new ArrayList<List<String>>();
+
+
+		Map<String, Map<String, String>> dictMap = DictMapping.dictMappingValueToName();
+		Map<String, String> unit = dictMap.get("unit");
+
+		List<String> first = new ArrayList<String>();
+		first.add("部门");
+		first.add("单元");
+		first.add("加班项目");
+		first.add("姓名");
+		first.add("身份证号");
+		first.add("平时加班");
+		first.add("国定加班");
+
+
+
+		rows.add(first);
+		double applyOvertime=0;
+
+		DecimalFormat df = new DecimalFormat("0.00");
+		Map<String,Double> comOTmap=new HashMap<>();
+		Map<String,Double> natOTmap=new HashMap<>();
+		Map<String,XdSettleOvertimeSummary> map =new HashMap<>();
+		double actOvertime=0;
+		for(int j = 0; j < list.size(); j++){
+			XdSettleOvertimeSummary summary = list.get(j);
+			//if(map.get(summary.getEmpName())==null){
+				String empName = summary.getEmpName();
+				map.put(empName,summary);
+				if(summary.getApplyType().equals("1")){
+					double comOT = comOTmap.get(empName) == null ? 0 : comOTmap.get(empName);
+					comOT+=summary.getActHours()==null?0:Double.valueOf(summary.getActHours());
+					comOTmap.put(empName,comOT);
+				}else{
+
+					double natOT = natOTmap.get(empName) == null ? 0 : natOTmap.get(empName);
+					natOT+=summary.getActHours()==null?0:Double.valueOf(summary.getActHours());
+					natOTmap.put(empName,natOT);
+					//natOTmap.put(empName,(summary.getActHours()==null?0:Double.valueOf(summary.getActHours())));
+				}
+		}
+
+		Set<String> empNameSet = map.keySet();
+		double sumComOTHours=0;
+		double sumNaOTHours=0;
+
+		for (String empName : empNameSet) {
+			List<String> row = new ArrayList<String>();
+			XdSettleOvertimeSummary settleOvertimeSummary = map.get(empName);
+
+			Double comHours = (comOTmap.get(empName)==null? 0.0 :comOTmap.get(empName));
+			Double natHours = (natOTmap.get(empName)==null? 0.0 :natOTmap.get(empName));
+			sumComOTHours+=comHours;
+			sumNaOTHours+=natHours;
+			row.add(settleOvertimeSummary.getDeptName());
+			XdEmployee emp = XdEmployee.dao.findFirst("select * from  xd_employee where name='" + empName + "'");
+			row.add(emp==null?"":emp.getUnitname());
+			row.add(settleOvertimeSummary.getProjectName());
+			row.add(empName);
+			row.add(emp==null?"":emp.getIdnum());
+			row.add(String.valueOf(comHours));
+			row.add(String.valueOf(natHours));
+			rows.add(row);
+
+		}
+
+
+		List<String> footFirstRow = new ArrayList<String>();
+		footFirstRow.add("合计");
+		footFirstRow.add("");
+		footFirstRow.add("");
+		footFirstRow.add("");
+		footFirstRow.add("");
+		footFirstRow.add(String.valueOf(sumComOTHours));
+		footFirstRow.add(String.valueOf(sumNaOTHours));
+		rows.add(footFirstRow);
+		File file = ExcelUtil.listToFile(path,rows);
 		return file;
 	}
 

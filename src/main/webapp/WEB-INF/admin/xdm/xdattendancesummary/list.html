@@ -81,8 +81,9 @@
 					<a id="export" class="btn btn-primary data-toolbar" onclick="exportExcel()" target="_blank"><i class="demo-pli-download-from-cloud"></i> 导出</a>
 					<a id="rewardPunish" class="btn btn-primary data-toolbar" onclick="exportRewardPunish()" target="_blank"><i class="demo-pli-download-from-cloud"></i> 导出绩效奖惩</a>
 					<a id="checkIn" class="btn btn-primary data-toolbar" onclick="exportCheckIn()" target="_blank"><i class="demo-pli-download-from-cloud"></i> 导出考勤</a>
+					<a id="onDuty" class="btn btn-primary data-toolbar" onclick="exportOnDuty()" target="_blank"><i class="demo-pli-download-from-cloud"></i> 导出值班汇总</a>
 					<table id="pageTable" class="demo-add-niftycheck table "
-						   data-toolbar="#del,#add,#filePicker,#export,#rewardPunish,#checkIn"
+						   data-toolbar="#del,#add,#filePicker,#export,#rewardPunish,#checkIn,#onDuty"
 						   data-width="90px"
 						   ></table>
 				</div>
@@ -94,6 +95,10 @@
 <script>
 
 	function createTable(daysNum,weekLists,holidayLists){
+	/*	console.log("createTable")
+		console.log(daysNum)
+		console.log(weekLists)
+		console.log(holidayLists)*/
 
 		let firstRow=[
 			{field: 'checked', checkbox : true,valign:'middle',halign:"center", align: 'center',rowspan: 3 },
@@ -115,7 +120,7 @@
 
 		}
 		firstRow.push({field: 'othours', title: '加班时长', align: 'center',width:'85',valign:'middle',halign:"center", colspan: 1,rowspan: 3},
-				{field: 'cur_mon_hours', title: '当月工时', align: 'center',width:'85',valign:'middle',halign:"center", colspan: 1,rowspan: 3},
+				{field: 'curmon_workhours', title: '当月工时', align: 'center',width:'85',valign:'middle',halign:"center", colspan: 1,rowspan: 3},
 				{field: 'control', title: '操作', align: 'left', width:'60',valign:'middle',halign:"center",
 					formatter:function(value,row,index){
 						var	a = '<a class="label label-table label-danger" onclick="del(\''+row.id+'\')" href="javascript:void(0);" >删除</a>';
@@ -184,59 +189,6 @@
 </script>
 <script>
 
-	/*var col = [{field: 'checked', checkbox : true, align: 'center'},
-
-		{field: 'dept_name', title: '部门', align: 'center' ,width:'120'},
-		{field: 'unit_name', title: '单元', align: 'center',width:'120'},
-		{field: 'project_name', title: '项目', align: 'center',width:'120'},
-		{field: 'emp_num', title: '工号', align: 'center',width:'80'},
-		{field: 'emp_name', title: '姓名', align: 'center',width:'80'},
-		{field: 'work_station', title: '岗位', align: 'center',width:'120'},
-
-		{field: 'day01', title: '1', align: 'center',width:'80'},
-		{field: 'day02', title: '2', align: 'center',width:'80'},
-		{field: 'day03', title: '3', align: 'center',width:'80'},
-		{field: 'day04', title: '4', align: 'center',width:'80'},
-		{field: 'day05', title: '5', align: 'center',width:'80'},
-		{field: 'day06', title: '6', align: 'center',width:'80'},
-		{field: 'day07', title: '7', align: 'center',width:'80'},
-		{field: 'day08', title: '8', align: 'center',width:'80'},
-		{field: 'day09', title: '9', align: 'center',width:'80'},
-		{field: 'day10', title: '10', align: 'center',width:'80'},
-		{field: 'day11', title: '11', align: 'center',width:'80'},
-		{field: 'day12', title: '12', align: 'center',width:'80'},
-		{field: 'day13', title: '13', align: 'center',width:'80'},
-		{field: 'day14', title: '14', align: 'center',width:'80'},
-		{field: 'day15', title: '15', align: 'center',width:'80'},
-		{field: 'day16', title: '16', align: 'center',width:'80'},
-		{field: 'day17', title: '17', align: 'center',width:'80'},
-		{field: 'day18', title: '18', align: 'center',width:'80'},
-		{field: 'day19', title: '19', align: 'center',width:'80'},
-		{field: 'day20', title: '20', align: 'center',width:'80'},
-		{field: 'day21', title: '21', align: 'center',width:'80'},
-		{field: 'day22', title: '22', align: 'center',width:'80'},
-		{field: 'day23', title: '23', align: 'center',width:'80'},
-		{field: 'day24', title: '24', align: 'center',width:'80'},
-		{field: 'day25', title: '25', align: 'center',width:'80'},
-		{field: 'day26', title: '26', align: 'center',width:'80'},
-		{field: 'day27', title: '27', align: 'center',width:'80'},
-		{field: 'day28', title: '28', align: 'center',width:'80'},
-		{field: 'day29', title: '29', align: 'center',width:'80'},
-		{field: 'day30', title: '30', align: 'center',width:'80'},
-		{field: 'day31', title: '31', align: 'center',width:'80'},
-		{field: 'remarks', title: '备注', align: 'center',width:'150'},
-		{field: 'control', title: '操作', align: 'left', width:'160',
-			formatter:function(value,row,index){
-				//通过formatter可以自定义列显示的内容
-				//value：当前field的值，即id
-				//row：当前行的数据
-				var a = '<a class="label label-table label-success" href="'+ctx+'/admin/xd/xdattendancesummary/getEditPage?id='+row.id+'&view=detail" >查看</a>&nbsp;';
-								a = a + '<a class="label label-table label-success" href="'+ctx+'/admin/xd/xdattendancesummary/getEditPage?id='+row.id+'&view=edit" >编辑</a>&nbsp;';
-                                a = a + '<a class="label label-table label-danger" onclick="del(\''+row.id+'\')" href="javascript:void(0);" >删除</a>';
-				return a;
-			}
-		}];
-*/
 
 
 	let lastyear="#(year)";
@@ -321,11 +273,12 @@
 
 	//表格
 	function initTable(){
-		$('#pageTable').bootstrapTable(opt);
+		console.log("initTable")
+		$('#pageTable').bootstrapTable('destroy').bootstrapTable(opt);
 		$('#pageTable').bootstrapTable('hideColumn', 'id');
 	}
 	function refreshTable(){
-		$("#pageTable").bootstrapTable('refresh', opt);
+		$("#pageTable").bootstrapTable('destroy').bootstrapTable('refresh', opt);
 		$('#pageTable').bootstrapTable('hideColumn', 'id');
 	}
 
@@ -364,7 +317,7 @@
 		let unitname = $("#unitname").val();
 		let year =$("#year").val();
 		let month =	$("#month").val();
-		var param = {
+		let param = {
 			query: {
 				"dept":dept,
 				"emp_name":emp_name,
@@ -373,10 +326,12 @@
 				"month":month
 			}
 		}
+		console.log("search");
 		// 刷新表格
 		//$('#pageTable').bootstrapTable('refresh',param);
 		var data = common_ajax.ajaxFunc("/admin/xd/xdattendancesummary/getTableHeader",{"year":year,"month":month}, "json", null);
 		col =[];
+		console.log(data);
 		createTable(data.data.daysNum,data.data.weekLists,data.data.holidayLists);
 		opt.columns=col;
 		// 刷新表格
@@ -446,6 +401,20 @@
 			return;
 		}
 		location.href = "#(ctx)/admin/xd/xdattendancesummary/exportCheckInExcel?dept="+dept+"&year="+year+"&month="+month;
+	}
+	function  exportOnDuty(){
+		let dept = $("#dept").val();
+		let year =$("#year").val();
+		let month =	$("#month").val();
+		if(dept==''){
+			pointLion.alertMsg("请选择部门！","success",null,null);
+			return;
+		}
+		if(year==''||month==''){
+			pointLion.alertMsg("请选择年月！","success",null,null);
+			return;
+		}
+		location.href = "#(ctx)/admin/xd/xdattendancesummary/exportOnDuty?dept="+dept+"&year="+year+"&month="+month;
 	}
 	function exportExcel2(){
 

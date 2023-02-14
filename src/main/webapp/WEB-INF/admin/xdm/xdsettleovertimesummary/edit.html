@@ -8,10 +8,10 @@
 </div>
 <script>
 	function save(){
-		var data = common_ajax.ajaxFunc("/admin/xd/xdschedule/save", $('#editForm').serialize(), "json", null);
+		var data = common_ajax.ajaxFunc("/admin/xd/xdsettleovertimesummary/save", $('#editForm').serialize(), "json", null);
 		if(data.success){
 			pointLion.alertMsg("保存成功!" , "success" , "small" , function(){
-				location.href = ctx+'/admin/xd/xdschedule/getListPage';//跳转到列表页
+				location.href = ctx+'/admin/xd/xdsettleovertimesummary/getListPage';//跳转到列表页
 			},data);
 		}else{
 			pointLion.alertMsg(data.message , "danger" , "small" , function(){
@@ -214,4 +214,45 @@
 		});
 	};
 
+</script>
+<script>
+	let ename=$("#ename").val();
+	if(ename){
+		$('#enameSelect').selectpicker('val',ename.split(",")).trigger("change");
+	}
+
+	let project_id=$("#project_id").val();
+	if(project_id){
+		$('#proSelect').selectpicker('val',project_id.split(",")).trigger("change");
+	}
+	let dept_id=$("#dept_id").val();
+	if(dept_id){
+		$('#deptSelect').selectpicker('val',dept_id.split(",")).trigger("change");
+	}
+
+	$('#enameSelect').on('changed.bs.select', function (e) {
+		$('#ename').val($('#enameSelect').val())
+
+		var data = common_ajax.ajaxFunc("/admin/xd/xdovertimesummary/getUserinfo",{"ename":$('#enameSelect').val()}, "json", null);
+		$('#proSelect').selectpicker('val',data.projectId.split(",")).trigger("change");
+		$("#project_id").val(data.projectId);
+		$("#project_name").val(data.projectName);
+		$('#deptSelect').selectpicker('val',data.orgId.split(",")).trigger("change");
+		$("#dept_id").val(data.orgId);
+		$("#dept_name").val(data.orgName);
+		$("#emp_num").val(data.empNum);
+		$("#emp_idnum").val(data.idnum);
+
+		//$('#ename').val($('#enameSelect option:selected').text())
+
+	});
+
+	let apply_type=$("#apply_type").val();
+	if(apply_type){
+		$('#applyTypeSelect').selectpicker('val',apply_type.split(",")).trigger("change");
+	}
+
+	$('#applyTypeSelect').on('changed.bs.select', function (e) {
+		$('#apply_type').val($('#applyTypeSelect').val())
+	});
 </script>
