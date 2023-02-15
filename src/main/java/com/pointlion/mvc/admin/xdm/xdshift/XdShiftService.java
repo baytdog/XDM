@@ -50,7 +50,7 @@ public class XdShiftService{
 		if(StrKit.notBlank(shiftname)){
 			sql = sql + " and o.shiftname like '%"+shiftname+"%'";
 		}
-		sql = sql + " order by o.busitime desc";
+		sql = sql + " order by o.sort_num";
 		return Db.paginate(pnum, psize, " select * ", sql);
 	}
 

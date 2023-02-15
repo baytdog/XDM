@@ -143,7 +143,7 @@ public class MainConfig extends JFinalConfig {
 	@Override
 	public void configRoute(Routes me) {
 		MainConfig.routes = me;//shiro使用
-		me.add(new OARoutes());//办公路由
+		//me.add(new OARoutes());//办公路由
 		me.add(new CRMRoutes());//客户路由
 		me.add(new AMSRoutes());//资产路由
 		me.add(new SysRoutes());//系统管理路由

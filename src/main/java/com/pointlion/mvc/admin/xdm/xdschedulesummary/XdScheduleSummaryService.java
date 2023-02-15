@@ -117,6 +117,7 @@ public class XdScheduleSummaryService{
 						int daysNum=xdDayModels.size();
 						Map<String, String> holidaysMap = xdDayModels.stream().collect(Collectors.toMap(XdDayModel::getId, XdDayModel::getHolidays));
 						List<XdShift> xdShifts = XdShift.dao.find("select * from  xd_shift");
+						//holidaysMap.put("20230501","劳动");
 						Map<String, XdShift> nameShiftObjMap = xdShifts.stream().collect(Collectors.toMap(XdShift::getShiftname, xdShift -> xdShift));
 
 						XdWorkHour workHours = XdWorkHour.dao.findFirst("select * from  xd_work_hour where year='" + year + "' and  month='" + month + "'");
@@ -275,6 +276,7 @@ public class XdScheduleSummaryService{
 												otFlags=otFlags+","+"0";
 											}
 											//是跨天且第二天是法定假日
+											System.out.println(holidaysMap.get(nextDate));
 											if(holidaysMap.get(nextDate)!=null && !"".equals(holidaysMap.get(nextDate))){
 												XdOvertimeSummary xdOvertimeSummary=new XdOvertimeSummary();
 												xdOvertimeSummary.setEmpNum(scheduleSummary.getEmpNum());

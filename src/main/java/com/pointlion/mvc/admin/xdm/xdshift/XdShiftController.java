@@ -72,6 +72,9 @@ public class XdShiftController extends BaseController {
 
 		}*/
 		XdShift xdShift= XdShift.dao.findById(o.getId());
+		System.out.println(o.getSortNum());
+
+
 		if (xdShift == null) {
 			o.setCtime(DateUtil.getCurrentTime());
 			o.setCuser(ShiroKit.getUserId());
@@ -80,7 +83,19 @@ public class XdShiftController extends BaseController {
 
 		}else{
 			o.update();
+
 		}
+
+		if(o.getSortNum()!=null && !o.getSortNum().equals("") && (o.getSortNum()!=xdShift.getSortNum())){
+			List<XdShift> xdShifts = XdShift.dao.find("select * from xd_shift where   sort_num>"+o.getSortNum());
+			int sortNum=o.getSortNum();
+			for (XdShift shift : xdShifts) {
+				shift.setSortNum(++sortNum);
+				shift.update();
+
+			}
+		}
+
 		renderSuccess();
 	}
 	/***

@@ -208,24 +208,24 @@ public class HomeController extends BaseController {
 		
 
     	Map<String,List<Record>> todoMap = new HashMap<String,List<Record>>();
-    	List<OaPicNews> picNewsList =null;
+    	//List<OaPicNews> picNewsList =null;
 //    	List<OaNotice> xxjbList = OaNotice.dao.find("select * from oa_showinfo  where menuid='9b576e6581204cda90ae04722d8640c9' and sfpublish='1' order by changetime desc  limit 6");
-    	List<OaNotice> xxjbList =null;
+    	/*List<OaNotice> xxjbList =null;
     	setAttr("picNewsList", picNewsList);
-    	setAttr("xxjb", xxjbList);
+    	setAttr("xxjb", xxjbList);*/
     	
     	//事务公开查询
-    	List<OaShowinfo> swgkList = null;
-    	setAttr("swgk", swgkList);
+    	/*List<OaShowinfo> swgkList = null;
+    	setAttr("swgk", swgkList);*/
     	
      	
     	//学习交流
-    	List<OaShowinfo> xxjlList = null;
-    	setAttr("xxjl", xxjlList);
+    /*	List<OaShowinfo> xxjlList = null;
+    	setAttr("xxjl", xxjlList);*/
     	//党务公开
-    	List<OaShowinfo> dwgk =null;
+    	/*List<OaShowinfo> dwgk =null;
     	setAttr("dwgk", dwgk);
-    	
+    	*/
     	
     	
     	//待办
@@ -311,12 +311,13 @@ public class HomeController extends BaseController {
 			}*/
 			
 			
-			OaTypes findFirst = OaTypes.dao.findFirst("select  * from oa_types where  status='1'");
+		/*	OaTypes findFirst = OaTypes.dao.findFirst("select  * from oa_types where  status='1'");
 			if(findFirst.getType().equals("1")||findFirst.getType().equals("2")) {
 				render("/WEB-INF/admin/home/index1.html");
 			}else {
 				render("/WEB-INF/admin/home/index.html");
-			}
+			}*/
+			render("/WEB-INF/admin/home/index.html");
 			//render("/WEB-INF/admin/home/index_singlepage.html");
 			
 			

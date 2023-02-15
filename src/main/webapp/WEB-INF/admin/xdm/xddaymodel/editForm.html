@@ -1,0 +1,51 @@
+<form id="editForm" class="panel-body form-horizontal form-padding">
+	<input id="scheduleId" type="hidden"  name="#(formModelName).id" class="form-control" value="#(o?o.id:'')">
+
+	<div class="form-group">
+		<label class="col-md-2 control-label">日期</label>
+		<div class="col-md-10">
+			<input type="text"  name="#(formModelName).days" class="form-control"  value="#(o?o.days:'')" readonly="readonly"  >
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-2 control-label">周</label>
+		<div class="col-md-10">
+			<input type="text"  name="#(formModelName).days" class="form-control"  value="#(o?o.weeks:'')" readonly="readonly"  >
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="col-md-2 control-label">法定假日</label>
+		<div class="col-md-10">
+			<input type="hidden"  id="year" name="#(formModelName).holidays" class="form-control"  value="#(o?o.holidays:'')" >
+			<select id="yearSelect"   title="请选择"  class="selectpicker show-tick form-control" actionsBox="true"  disable  data-live-search="false">
+				<option value="">--请选择--</option>
+				<option value="元旦">元旦</option>
+				<option value="春节">春节</option>
+				<option value="清明">清明</option>
+				<option value="劳动">劳动</option>
+				<option value="端午">端午</option>
+				<option value="中秋">中秋</option>
+				<option value="国庆">国庆</option>
+			</select>
+		</div>
+	</div>
+	#if(view=='edit')
+	<div class="panel-footer">
+		<div class="row">
+			<div class="col-sm-12 " style="text-align: center">
+				<button class="btn btn-primary" type="submit" #if(view=='detail') disabled #end>保存</button>
+				<button class="btn btn-primary" type="button" onclick="window.history.back();" >返回</button>
+			</div>
+		</div>
+	</div>
+	#else
+	<div class="panel-footer">
+		<div class="row">
+			<div class="col-sm-12 " style="text-align: center">
+				<button class="btn btn-primary" type="button" onclick="window.history.back();" >返回</button>
+			</div>
+		</div>
+	</div>
+	#end
+</form>

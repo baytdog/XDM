@@ -67,10 +67,16 @@
 	</div>
 </div>
 <script>
-
+/*	$('#table .editable').editable('disable');*/
 	var col = [
 		{field: 'checked', checkbox : true, align: 'center'},
 		{field: 'year_month', title: '年月', align: 'center'},
+			/*editable: {
+				type: 'select',
+				title: '评标意见',
+				disabled:true,
+				source: [{ value: "0", text: "请选择" },{ value: "1", text: "首选" }, { value: "2", text: "备选" }]}
+			},*/
 		{field: 'work_hour', title: '工时', align: 'center'},
 		/*{field: 'status', title: '状态', align: 'center',
 			formatter:function(value,row,index){
@@ -152,7 +158,24 @@
 		$("#pageTable").bootstrapTable('refresh', opt);
 		$('#pageTable').bootstrapTable('hideColumn', 'id');
 	}
-
+	$("#pageTable").on("editable-save.bs.table", function ( $el, field,row,oldValue) {
+				//保存编辑
+				$.ajax({
+					type: "post",
+					url: prefix+"/saveedit",
+					data: row,
+					dataType: 'JSON',
+					success: function (data, status) {
+						if (status == "success") {
+							alert('提交数据成功');
+						}
+					},
+					error: function () {
+						alert('编辑失败');
+					},
+				});
+			}
+	);
 	//批量删除
 	function delSel(){
 		var data = [];

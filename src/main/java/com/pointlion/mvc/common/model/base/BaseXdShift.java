@@ -137,6 +137,14 @@ public abstract class BaseXdShift<M extends BaseXdShift<M>> extends Model<M> imp
 		return getStr("status");
 	}
 
+	public void setSortNum(Integer sortNum) {
+		set("sort_num", sortNum);
+	}
+	
+	public Integer getSortNum() {
+		return getInt("sort_num");
+	}
+
 	public void setCtime(String ctime) {
 		set("ctime", ctime);
 	}

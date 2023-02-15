@@ -49,6 +49,14 @@ public abstract class BaseXdDayModel<M extends BaseXdDayModel<M>> extends Model<
 		return getStr("status");
 	}
 
+	public void setIsnatHoliday(String isnatHoliday) {
+		set("isnat_holiday", isnatHoliday);
+	}
+	
+	public String getIsnatHoliday() {
+		return getStr("isnat_holiday");
+	}
+
 	public void setCreateUser(String createUser) {
 		set("create_user", createUser);
 	}
