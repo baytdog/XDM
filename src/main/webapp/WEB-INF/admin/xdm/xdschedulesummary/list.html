@@ -82,7 +82,8 @@
 				<div class="panel-body table-responsive">
 	<!--				<a id="add" class="btn btn-primary data-toolbar" href="#(ctx)/admin/xd/xdschedulesummary/getEditPage?view=edit"><i class="demo-pli-add"></i> 添加</a>-->
 					<a id="del" class="btn btn-danger data-toolbar" onclick="delSel()" href="javascript:void(0);"><i class="demo-pli-cross"></i> 批量删除</a>
-					<a id="filePicker"  href="javascript:void(0);" ><i class="demo-pli-add"></i> 导入</a>
+					<a id="filePicker"  href="javascript:void(0);" data-toggle="tooltip" data-placement="top"
+					   title="顶部的 Tooltip" ><i class="demo-pli-add"></i> 导入</a>
 					<a id="export" class="btn btn-primary data-toolbar" onclick="exportExcel()" target="_blank"><i class="demo-pli-download-from-cloud"></i> 导出</a>
 
 					<table id="pageTable" class="demo-add-niftycheck table"
@@ -173,13 +174,23 @@
 				formatter:function(value,row,index){
 				if(row.flags){
 					let flagsArr = row.flags.split(",");
-
-					if(flagsArr[parseInt(suffix)]=='1'){
-						console.log("有调整")
-						return "<span style='color:red'>"+value+"</span>";
+					let otArr= row.otflags.split(",");
+					let tipArr= row.tips.split(",");
+					if(tipArr[parseInt(suffix)]!='0'){
+						return "<span style='color:green'   data-toggle='tooltip'  title='加班时间："+tipArr[parseInt(suffix)]+"'>"+value+"</span>";
 					}else{
-						return  value ;
+						if(otArr[parseInt(suffix)]=='1'){
+							return "<span style='color:blue' data-toggle='tooltip'  title='全天加班'>"+value+"</span>";
+						}else{
+							if(flagsArr[parseInt(suffix)]=='1'){
+								//console.log("有调整")
+								return "<span style='color:red'  >"+value+"</span>";
+							}else{
+								return  value ;
+							}
+						}
 					}
+
 				}else{
 					return  value ;
 				}
@@ -187,7 +198,7 @@
 
 				},cellStyle:function(value,row,index,field){                 // 修改列（单元格）的颜色
 					let i = field.replace("day","");
-				 inti=parseInt(i);
+					let inti=parseInt(i);
 					if(holidayLists[inti].indexOf("-")!=-1){
 						return {css:{}} ;
 					}else{
@@ -625,7 +636,7 @@
 				shiftOptions=shiftOptions+'<option value="'+shiftsArr[i]+'">'+shiftsArr[i]+'</option>'
 			}
 		}
-		let otArr = row.otflas.split(",");
+		let otArr = row.otflags.split(",");
 		let fieldNum = field.replace("day","");
 		let checkInput='<input id="demo-form-inline-checkbox" class="magic-checkbox" type="checkbox" name="ovtime" >';
 		if(otArr[parseInt(fieldNum)]=='1'){

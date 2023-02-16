@@ -486,8 +486,9 @@ public abstract class BaseController extends Controller {
 		}
 
 
-		OaTypes findFirst = OaTypes.dao.findFirst("select  * from oa_types where  status='1'");
-		String oatypes=findFirst.getType();
+		/*OaTypes findFirst = OaTypes.dao.findFirst("select  * from oa_types where  status='1'");
+		String oatypes=findFirst.getType();*/
+		String oatypes="3";
 
 		if(oatypes.equals("3")||view.indexOf("roleUser.html")!=-1||view.indexOf("selectOneUser.html")!=-1||view.indexOf("giveAuth.html")!=-1) {
 			super.render("/common/include/iframe.html");

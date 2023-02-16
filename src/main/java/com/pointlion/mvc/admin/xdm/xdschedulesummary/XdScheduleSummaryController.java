@@ -105,10 +105,10 @@ public class XdScheduleSummaryController extends BaseController {
     	String pageSize = getPara("pageSize");
 		String dept = getPara("dept","");
 		String emp_name = java.net.URLDecoder.decode(getPara("emp_name",""),"UTF-8");
-		String unitname = getPara("unitname","");
+		String unitName = getPara("unitname","");
 		String year = getPara("year","");
 		String month = getPara("month","");
-    	Page<Record> page = service.getPage(Integer.valueOf(curr),Integer.valueOf(pageSize),dept,unitname,emp_name,year,month);
+    	Page<Record> page = service.getPage(Integer.valueOf(curr),Integer.valueOf(pageSize),dept,unitName,emp_name,year,month);
 
     	renderPage(page.getList(),"",page.getTotalRow());
     }
@@ -117,14 +117,37 @@ public class XdScheduleSummaryController extends BaseController {
 		String year = getPara("year","");
 		String month = getPara("month","");
 		String yearMonth=year+month;
-		List<XdDayModel> xdDayModels = XdDayModel.dao.find("select * from  xd_day_model where id like '"+yearMonth+"%' order by id");
-		LocalDate localDate = LocalDate.parse(year+"-"+month+"-01").minusMonths(1);
-		DateTimeFormatter dtf=DateTimeFormatter.ofPattern("yyyyMM");
-		String lastMonth = dtf.format(localDate);
-		XdDayModel lastMonLastDay = XdDayModel.dao.findFirst("select * from  xd_day_model where id like '" + lastMonth + "%' order by id desc");
+		LocalDate lastMontLastDay = LocalDate.parse(year+"-"+month+"-01").minusMonths(1);
+		//DateTimeFormatter dtf=DateTimeFormatter.ofPattern("yyyyMMdd");
+		List<XdDayModel> xdDayModels =
+				XdDayModel.dao.find("select * from  xd_day_model " +
+										"where id like '"+yearMonth+"%'" +
+										" or id='"+DateTimeFormatter.ofPattern("yyyyMMdd").format(lastMontLastDay)+"'"+
+										" order by id");
+		//String lastMonth = dtf.format(localDate);
+		//XdDayModel lastMonLastDay = XdDayModel.dao.findFirst("select * from  xd_day_model where id like '" + lastMonth + "%' order by id desc");
 		List<String> weekLists=new ArrayList<>();
 		List<String> holidayLists=new ArrayList<>();
-		if(lastMonLastDay!=null){
+		int daySize=xdDayModels.size()-1;;
+
+		for (int i = 0; i < xdDayModels.size(); i++) {
+			if (i==0 && xdDayModels.get(0).getId().startsWith(yearMonth)) {
+				//无当月前一天
+				daySize=xdDayModels.size();
+				weekLists.add("");
+				holidayLists.add("-");
+			}
+			XdDayModel dayModel = xdDayModels.get(i);
+			weekLists.add(dayModel.getWeeks());
+
+			if(dayModel.getHolidays()==null||dayModel.getHolidays().equals("")){
+				holidayLists.add("-");
+			}else{
+				holidayLists.add(dayModel.getHolidays());
+			}
+		}
+
+		/*if(lastMonLastDay!=null){
 			weekLists.add(lastMonLastDay.getWeeks());
 			if(lastMonLastDay.getHolidays()==null||lastMonLastDay.getHolidays().equals("")){
 				holidayLists.add("-");
@@ -136,8 +159,8 @@ public class XdScheduleSummaryController extends BaseController {
 			weekLists.add("");
 			holidayLists.add("-");
 		}
-
-		xdDayModels.stream().forEach(
+*/
+		/*xdDayModels.stream().forEach(
 				xdDayModel-> {
 					weekLists.add(xdDayModel.getWeeks());
 					if(xdDayModel.getHolidays()==null||xdDayModel.getHolidays().equals("")){
@@ -146,19 +169,10 @@ public class XdScheduleSummaryController extends BaseController {
 
 						holidayLists.add(xdDayModel.getHolidays());
 					}
-				});
-		setAttr("daysNum",xdDayModels.size());
+				});*/
+		/*setAttr("daysNum",xdDayModels.size());
 		setAttr("weekLists",weekLists);
-		setAttr("holidayLists",holidayLists);
-		/*List<XdShift> xdShifts = XdShift.dao.find("select * from  xd_shift order by shiftname");
-		String shifts="";
-		for (XdShift xdShift : xdShifts) {
-			shifts=shifts+","+xdShift.getShiftname();
-		}
-		setAttr("shifts",shifts.replaceAll("^,", ""));*/
-	/*	JsonObject jsonObject=new JsonObject();
-		jsonObject.ad
-		jsonObject.add("daysNum",xdDayModels.size());*/
+		setAttr("holidayLists",holidayLists);*/
 		JSONObject jsonObject=new JSONObject();
 		jsonObject.put("daysNum",xdDayModels.size());
 		jsonObject.put("weekLists",weekLists);
@@ -282,7 +296,8 @@ public class XdScheduleSummaryController extends BaseController {
 				Method method = superclass.getMethod("set" + field.substring(0, 1).toUpperCase() + field.substring(1),String.class);
 				method.invoke(scheduleSummary, modValue);
 				int index = Integer.parseInt(field.replace("day", ""));
-
+				List<XdShift> xdShifts = XdShift.dao.find("select * from  xd_shift");
+				Map<String, XdShift> nameShiftObjMap = xdShifts.stream().collect(Collectors.toMap(XdShift::getShiftname, xdShift -> xdShift));
 				String[] moidfyFlags = scheduleSummary.getFlags().split(",");
 				moidfyFlags[index]="1";
 				String modify="";
@@ -291,16 +306,28 @@ public class XdScheduleSummaryController extends BaseController {
 				}
 				scheduleSummary.setFlags(modify.replaceAll("^,",""));
 				String ot="";
-				String[] otFlags = scheduleSummary.getOtflas().split(",");
+				String[] otFlags = scheduleSummary.getOtflags().split(",");
+				String[] tipArr = scheduleSummary.getTips().split(",");
 				if("on".equals(overtime)){
 					otFlags[index]="1";
+					XdShift shift = nameShiftObjMap.get(modValue);
+					tipArr[index]=shift.getBusitime()+"-"+shift.getUnbusitime();
 				}else{
 					otFlags[index]="0";
+					XdShift shift = nameShiftObjMap.get(modValue);
+					tipArr[index]=tipArr[index].replaceAll(shift.getBusitime()+"-"+shift.getUnbusitime(),"0");
 				}
 				for (String otFlag : otFlags) {
 					ot=ot+","+otFlag;
 				}
-				scheduleSummary.setOtflas(ot.replaceAll("^,",""));
+				scheduleSummary.setOtflags(ot.replaceAll("^,",""));
+				/*String tipStr="";
+				for (String tip : tipArr) {
+					tipStr=tipStr+","+tip;
+				}
+				scheduleSummary.setTips(tipStr.replaceAll("^,",""));*/
+
+
 
 				String yearMonth=scheduleSummary.getScheduleYear()+"-"+scheduleSummary.getScheduleMonth();
 				LocalDate lastMonLastDay = LocalDate.parse(yearMonth+"-01").minusDays(1);
@@ -313,8 +340,7 @@ public class XdScheduleSummaryController extends BaseController {
 				}
 
 				List<XdDayModel> xdDayModels = XdDayModel.dao.find("select * from  xd_day_model where days like '" + yearMonth + "%' or days='" + lastMonLastDay + "'");
-				List<XdShift> xdShifts = XdShift.dao.find("select * from  xd_shift");
-				Map<String, XdShift> nameShiftObjMap = xdShifts.stream().collect(Collectors.toMap(XdShift::getShiftname, xdShift -> xdShift));
+
 				Map<String, String> holidaysMap = xdDayModels.stream().collect(Collectors.toMap(XdDayModel::getId, XdDayModel::getHolidays));
 				double othours=0;//加班时间
 				double work_hour=0;//出勤时间

@@ -191,18 +191,24 @@ public class XdOperUtil {
         e1.setId("12345");
         XdEmployee e2=new XdEmployee();
         e2.setId("7890");*/
-        XdEmployee e2=new XdEmployee();
+       /* XdEmployee e2=new XdEmployee();
         e2.setId("7890");
         setChangeValue(e2,"name","小渣渣");
 
-        System.out.println(e2);
+        System.out.println(e2);*/
 
-        LocalDate localDate = LocalDate.parse("2022-12-31").plusDays(1);
+        /*LocalDate localDate = LocalDate.parse("2022-12-31").plusDays(1);
         DateTimeFormatter dtf=DateTimeFormatter.ofPattern("yyyy-MM-dd");
         String format = dtf.format(localDate);
         System.out.println(format);
         String abc="12345";
         System.out.println(abc.substring(abc.length() - 1));
+
+        System.out.println(DateTimeFormatter.ofPattern("yyyy-MM-dd").format(LocalDate.parse("2023-01-01").minusDays(1)));*/
+        System.out.println("".indexOf("123"));
+        StringBuffer sb =new StringBuffer();
+        sb.append("123").append(",'");
+        System.out.println(sb.indexOf("123"));
 
 
     }

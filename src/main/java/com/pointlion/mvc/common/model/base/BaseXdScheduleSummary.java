@@ -377,6 +377,14 @@ public abstract class BaseXdScheduleSummary<M extends BaseXdScheduleSummary<M>> 
 		return getStr("day31");
 	}
 
+	public void setNatOthours(Double natOthours) {
+		set("nat_othours", natOthours);
+	}
+	
+	public Double getNatOthours() {
+		return getDouble("nat_othours");
+	}
+
 	public void setOthours(Double othours) {
 		set("othours", othours);
 	}
@@ -409,12 +417,20 @@ public abstract class BaseXdScheduleSummary<M extends BaseXdScheduleSummary<M>> 
 		return getStr("flags");
 	}
 
-	public void setOtflas(String otflas) {
-		set("otflas", otflas);
+	public void setOtflags(String otflags) {
+		set("otflags", otflags);
 	}
 	
-	public String getOtflas() {
-		return getStr("otflas");
+	public String getOtflags() {
+		return getStr("otflags");
+	}
+
+	public void setTips(String tips) {
+		set("tips", tips);
+	}
+	
+	public String getTips() {
+		return getStr("tips");
 	}
 
 	public void setRemarks(String remarks) {
