@@ -1,28 +1,22 @@
 package com.pointlion.mvc.admin.xdm.xdovertimesummary;
 
+import com.jfinal.plugin.activerecord.Page;
+import com.jfinal.plugin.activerecord.Record;
+import com.jfinal.upload.UploadFile;
+import com.pointlion.mvc.common.base.BaseController;
+import com.pointlion.mvc.common.model.*;
+import com.pointlion.mvc.common.utils.DateUtil;
+import com.pointlion.mvc.common.utils.StringUtil;
+import com.pointlion.mvc.common.utils.office.excel.ExcelUtil;
+import com.pointlion.plugin.shiro.ShiroKit;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.sql.SQLException;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import cn.hutool.json.JSON;
-import com.jfinal.aop.Before;
-import com.jfinal.kit.StrKit;
-import com.jfinal.plugin.activerecord.Page;
-import com.jfinal.plugin.activerecord.Record;
-import com.jfinal.upload.UploadFile;
-import com.pointlion.mvc.common.base.BaseController;
-import com.pointlion.mvc.admin.oa.workflow.WorkFlowService;
-import com.pointlion.mvc.common.model.*;
-import com.pointlion.mvc.common.utils.*;
-import com.pointlion.mvc.admin.oa.common.OAConstants;
-import com.pointlion.mvc.common.utils.office.excel.ExcelUtil;
-import com.pointlion.plugin.shiro.ShiroKit;
-import net.sf.json.JSONObject;
 
 
 public class XdOvertimeSummaryController extends BaseController {
@@ -56,12 +50,112 @@ public class XdOvertimeSummaryController extends BaseController {
     /***
      * save data
      */
-    public void save(){
+    public void save()  {
     	XdOvertimeSummary o = getModel(XdOvertimeSummary.class);
-    	if(o.getId()!=null){
-    		o.update();
+		String days = o.getApplyDate();
+		String[] ymd=null;
+		if (days != null) {
+			ymd = days.split("-");
+		}
+
+		if(o.getId()!=null){
+
+			XdOvertimeSummary summary = XdOvertimeSummary.dao.findById(o.getId());
+
+			String applyDate = summary.getApplyDate();
+
+			String[] appDateArr = applyDate.split("-");
+
+			int oldIndex = Integer.parseInt(appDateArr[2]);
+
+			XdScheduleSummary scheduleSummary =
+					XdScheduleSummary.dao.findFirst("select * from  xd_schedule_summary where emp_name='"+summary.getEmpName()
+							+"' and schedule_year='" + appDateArr[0]+ "' and schedule_month='" + appDateArr[1] + "'");
+			String[] oldTips = scheduleSummary.getTips().split(",");
+
+			String oldTip = oldTips[oldIndex];
+			oldTip=oldTip.replaceAll(summary.getApplyStart()+"-"+summary.getApplyEnd(),"");
+			if("".equals(oldTip)){
+				oldTip="0";
+			}
+			oldTips[oldIndex]=oldTip;
+			oldTip="";
+			for (String tip : oldTips) {
+				oldTip=oldTip+tip+",";
+			}
+			scheduleSummary.setTips(oldTip.replaceAll(",$",""));
+			if("0".equals(summary.getApplyType())){
+				//Double aDouble = Double.valueOf(summary.getApplyHours());
+				scheduleSummary.setNatOthours(scheduleSummary.getNatOthours()-Double.valueOf(summary.getApplyHours()));
+			}else{
+				scheduleSummary.setOthours(scheduleSummary.getOthours()-Double.valueOf(summary.getApplyHours()));
+			}
+			scheduleSummary.update();
+
+
+			scheduleSummary =XdScheduleSummary.dao.findFirst("select * from  xd_schedule_summary where emp_name='"+o.getEmpName()
+					+"' and schedule_year='" + ymd[0]+ "' and schedule_month='" + ymd[1] + "'");
+			int index = Integer.parseInt(ymd[2]);
+			String tips = scheduleSummary.getTips();
+			String[] tipsArr = tips.split(",");
+			String indexTip = tipsArr[index];
+			if("0".equals(indexTip)){
+				tipsArr[index]=o.getApplyStart()+"-"+o.getApplyEnd();
+			}else{
+				tipsArr[index]=tipsArr[index]+o.getApplyStart()+"-"+o.getApplyEnd();
+			}
+			String sb="";
+			for (String s : tipsArr) {
+				sb=sb+s+",";
+			}
+
+
+
+			scheduleSummary.setTips(sb.replaceAll(",$",""));
+
+			if("0".equals(o.getApplyType())){
+				//Double aDouble = Double.valueOf(summary.getApplyHours());
+				scheduleSummary.setNatOthours(scheduleSummary.getNatOthours()+Double.valueOf(o.getApplyHours()));
+			}else{
+				scheduleSummary.setOthours(scheduleSummary.getOthours()+Double.valueOf(o.getApplyHours()));
+			}
+			scheduleSummary.update();
+
+			o.update();
     	}else{
-    		o.setCreateDate(DateUtil.getCurrentTime());
+			int index = Integer.parseInt(ymd[2]);
+			XdScheduleSummary scheduleSummary =
+					XdScheduleSummary.dao.findFirst("select * from  xd_schedule_summary where emp_name='"+o.getEmpName()
+							+"' and schedule_year='" + ymd[0]+ "' and schedule_month='" + ymd[1] + "'");
+
+			String tips = scheduleSummary.getTips();
+			String[] tipsArr = tips.split(",");
+			String indexTip = tipsArr[index];
+			if("0".equals(indexTip)){
+				tipsArr[index]=o.getApplyStart()+"-"+o.getApplyEnd();
+			}else{
+				tipsArr[index]=tipsArr[index]+o.getApplyStart()+"-"+o.getApplyEnd();
+			}
+			String sb="";
+			for (String s : tipsArr) {
+				sb=sb+s+",";
+			}
+			if("0".equals(o.getApplyType())){
+				Double natOthours = scheduleSummary.getNatOthours();
+				scheduleSummary.setNatOthours(natOthours + Double.valueOf(o.getApplyHours()));
+			}else{
+				Double othours = scheduleSummary.getOthours();
+				scheduleSummary.setOthours(othours + Double.valueOf(o.getApplyHours()));
+			}
+
+
+
+
+			scheduleSummary.setTips(sb.replaceAll(",$",""));
+			scheduleSummary.update();
+
+			//tipsArr[index]=
+			o.setCreateDate(DateUtil.getCurrentTime());
     		o.setCreateUser(ShiroKit.getUserId());
     		o.save();
     	}

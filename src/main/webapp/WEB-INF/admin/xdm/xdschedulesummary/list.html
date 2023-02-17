@@ -118,7 +118,9 @@
 			firstRow.push({field: 'day0'+suffix, title: i, align: 'center',width:'80', colspan: 1,rowspan: 1})
 
 		}
-		firstRow.push({field: 'othours', title: '加班时长', align: 'center',width:'85',valign:'middle',halign:"center", colspan: 1,rowspan: 3},
+		firstRow.push(
+				{field: 'nat_othours', title: '国定加班', align: 'center',width:'85',valign:'middle',halign:"center", colspan: 1,rowspan: 3},
+				{field: 'othours', title: '平时加班', align: 'center',width:'85',valign:'middle',halign:"center", colspan: 1,rowspan: 3},
 				{field: 'cur_mon_hours', title: '当月工时', align: 'center',width:'85',valign:'middle',halign:"center", colspan: 1,rowspan: 3},
 				{field: 'control', title: '操作', align: 'left', width:'60',valign:'middle',halign:"center",
 					formatter:function(value,row,index){
@@ -434,7 +436,7 @@
 		leftFixedColumns:true,
 		leftFixedNumber:7,
 		rightFixedColumns:true,
-		rightFixedNumber:3,
+		rightFixedNumber:4,
 
 		onClickCell: function (field, value, row, $element) {
 			/*console.log("start")
@@ -692,10 +694,16 @@
 						})
 						let data = common_ajax.ajaxFunc("/admin/xd/xdschedulesummary/updateCell",{"id":row.id,"oldValue":value,"modValue":shift,"overtime":overtime,"field":field,"type":"1"}, "json", null);
 						console.log("-----"+data.message)
+						let otArr= data.message.split(",")
+						$('#pageTable').bootstrapTable('updateCell', {
+							index: index,
+							field: "nat_othours",
+							value: otArr[0]
+						})
 						$('#pageTable').bootstrapTable('updateCell', {
 							index: index,
 							field: "othours",
-							value: data.message
+							value:  otArr[1]
 						})
 					},
 

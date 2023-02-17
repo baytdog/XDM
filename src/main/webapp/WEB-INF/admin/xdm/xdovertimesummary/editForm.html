@@ -25,7 +25,7 @@
 		<div class="col-md-5">
 			<input type="hidden" id="dept_id" name="#(formModelName).dept_id" class="form-control"  value="#(o?o.dept_id:'')"  >
 			<input type="hidden" id="dept_name" name="#(formModelName).dept_name" class="form-control"  value="#(o?o.dept_name:'')"  >
-			<select id="deptSelect"   title="请选择员工"  class="selectpicker show-tick form-control" actionsBox="true"  disabled="disabled"   data-live-search="true">
+			<select id="deptSelect"   title="请选择部门"  class="selectpicker show-tick form-control" actionsBox="true"  disabled="disabled"   data-live-search="true">
 				#for(org:orgList)
 				<option value="#(org.id)">#(org.name)</option>
 				#end
@@ -35,7 +35,7 @@
 		<div class="col-md-5">
 			<input type="hidden" id="project_id" name="#(formModelName).project_id" class="form-control"  value="#(o?o.project_id:'')"  >
 			<input type="hidden" id="project_name" name="#(formModelName).project_name" class="form-control"  value="#(o?o.project_name:'')"  >
-			<select id="proSelect"   title="请选择员工"  class="selectpicker show-tick form-control" actionsBox="true"  disabled="disabled"  data-live-search="true">
+			<select id="proSelect"   title="请选择项目"  class="selectpicker show-tick form-control" actionsBox="true"     data-live-search="true">
 				#for(pro:projects)
 				<option value="#(pro.id)">#(pro.project_name)</option>
 				#end
@@ -76,6 +76,7 @@
 		<div class="col-md-5">
 			<input type="hidden" id="apply_type" name="#(formModelName).apply_type" class="form-control"  value="#(o?o.apply_type:'')"  >
 			<select id="applyTypeSelect" class="selectpicker form-control"   readonly="readonly" >
+				<option value="">请选择类型</option>
 				<option value="0">国定节假日加班</option>
 				<option value="1">非国定节假日加班</option>
 			</select>

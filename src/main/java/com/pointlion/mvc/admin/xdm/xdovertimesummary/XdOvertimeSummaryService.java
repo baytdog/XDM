@@ -83,7 +83,42 @@ public class XdOvertimeSummaryService{
 	public void deleteByIds(String ids){
     	String idarr[] = ids.split(",");
     	for(String id : idarr){
+
     		XdOvertimeSummary o = me.getById(id);
+
+			String[] appDateArr = o.getApplyDate().split("-");
+
+			int oldIndex = Integer.parseInt(appDateArr[2]);
+
+			XdScheduleSummary scheduleSummary =
+					XdScheduleSummary.dao.findFirst("select * from  xd_schedule_summary where emp_name='"+o.getEmpName()
+							+"' and schedule_year='" + appDateArr[0]+ "' and schedule_month='" + appDateArr[1] + "'");
+			if(scheduleSummary!=null){
+				String[] oldTips = scheduleSummary.getTips().split(",");
+
+				String oldTip = oldTips[oldIndex];
+				oldTip=oldTip.replaceAll(o.getApplyStart()+"-"+o.getApplyEnd(),"");
+				if("".equals(oldTip)){
+					oldTip="0";
+				}
+				oldTips[oldIndex]=oldTip;
+
+				oldTip="";
+				for (String tip : oldTips) {
+					oldTip=oldTip+tip+",";
+				}
+				scheduleSummary.setTips(oldTip.replaceAll(",$",""));
+
+				if("0".equals(o.getApplyType())){
+					scheduleSummary.setNatOthours(scheduleSummary.getNatOthours()-Double.valueOf(o.getApplyHours()));
+				}else{
+					scheduleSummary.setOthours(scheduleSummary.getOthours()-Double.valueOf(o.getApplyHours()));
+				}
+
+				scheduleSummary.update();
+			}
+
+
     		o.delete();
     	}
 	}

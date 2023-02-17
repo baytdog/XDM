@@ -209,6 +209,10 @@ public class XdOperUtil {
         StringBuffer sb =new StringBuffer();
         sb.append("123").append(",'");
         System.out.println(sb.indexOf("123"));
+        boolean equals = "1".equals("1");
+        if(equals){
+            System.out.println("你好啊");
+        }
 
 
     }

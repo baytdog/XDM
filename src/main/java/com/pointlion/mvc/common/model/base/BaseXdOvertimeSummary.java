@@ -137,6 +137,22 @@ public abstract class BaseXdOvertimeSummary<M extends BaseXdOvertimeSummary<M>> 
 		return getStr("act_hours");
 	}
 
+	public void setSource(String source) {
+		set("source", source);
+	}
+	
+	public String getSource() {
+		return getStr("source");
+	}
+
+	public void setSuperDays(String superDays) {
+		set("super_days", superDays);
+	}
+	
+	public String getSuperDays() {
+		return getStr("super_days");
+	}
+
 	public void setRemarks(String remarks) {
 		set("remarks", remarks);
 	}
