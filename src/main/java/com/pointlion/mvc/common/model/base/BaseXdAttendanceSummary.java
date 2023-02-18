@@ -529,6 +529,14 @@ public abstract class BaseXdAttendanceSummary<M extends BaseXdAttendanceSummary<
 		return getStr("day31");
 	}
 
+	public void setNatOthours(Double natOthours) {
+		set("nat_othours", natOthours);
+	}
+	
+	public Double getNatOthours() {
+		return getDouble("nat_othours");
+	}
+
 	public void setOthours(Double othours) {
 		set("othours", othours);
 	}
@@ -551,6 +559,14 @@ public abstract class BaseXdAttendanceSummary<M extends BaseXdAttendanceSummary<
 	
 	public String getOtflags() {
 		return getStr("otflags");
+	}
+
+	public void setTips(String tips) {
+		set("tips", tips);
+	}
+	
+	public String getTips() {
+		return getStr("tips");
 	}
 
 }

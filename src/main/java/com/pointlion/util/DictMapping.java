@@ -1,16 +1,15 @@
 package com.pointlion.util;
 
-import com.pointlion.annotation.ChangeFields;
 import com.pointlion.annotation.NeedMapping;
-import com.pointlion.mvc.common.model.*;
-import org.apache.poi.ss.formula.functions.T;
+import com.pointlion.mvc.common.model.SysOrg;
+import com.pointlion.mvc.common.model.XdDict;
+import com.pointlion.mvc.common.model.XdOplogDetail;
+import com.pointlion.mvc.common.model.XdProjects;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-import java.util.function.Consumer;
 
 /**
  * @Author: king
@@ -305,4 +304,8 @@ public class DictMapping {
             }
         }
     }
+
+
+
+
 }

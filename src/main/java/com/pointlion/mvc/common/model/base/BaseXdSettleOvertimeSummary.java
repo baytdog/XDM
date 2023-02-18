@@ -97,12 +97,12 @@ public abstract class BaseXdSettleOvertimeSummary<M extends BaseXdSettleOvertime
 		return getStr("apply_end");
 	}
 
-	public void setApplyHours(String applyHours) {
+	public void setApplyHours(Double applyHours) {
 		set("apply_hours", applyHours);
 	}
 	
-	public String getApplyHours() {
-		return getStr("apply_hours");
+	public Double getApplyHours() {
+		return getDouble("apply_hours");
 	}
 
 	public void setApplyType(String applyType) {
@@ -129,12 +129,28 @@ public abstract class BaseXdSettleOvertimeSummary<M extends BaseXdSettleOvertime
 		return getStr("act_end");
 	}
 
-	public void setActHours(String actHours) {
+	public void setActHours(Double actHours) {
 		set("act_hours", actHours);
 	}
 	
-	public String getActHours() {
-		return getStr("act_hours");
+	public Double getActHours() {
+		return getDouble("act_hours");
+	}
+
+	public void setSource(String source) {
+		set("source", source);
+	}
+	
+	public String getSource() {
+		return getStr("source");
+	}
+
+	public void setSuperDays(String superDays) {
+		set("super_days", superDays);
+	}
+	
+	public String getSuperDays() {
+		return getStr("super_days");
 	}
 
 	public void setRemarks(String remarks) {

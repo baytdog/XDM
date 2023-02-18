@@ -50,11 +50,116 @@ public class XdSettleOvertimeSummaryController extends BaseController {
 		if(overtimeSummary!=null){
 			o.setApplyStart(overtimeSummary.getApplyStart());
 			o.setApplyEnd(overtimeSummary.getApplyEnd());
-			o.setApplyHours(overtimeSummary.getApplyHours());
+			o.setApplyHours(Double.valueOf(overtimeSummary.getApplyHours()));
 		}
+		String days = o.getApplyDate();
+		String[] ymd=null;
+		if (days != null) {
+			ymd = days.split("-");
+		}
+
+
 		if(o.getId()!=null){
+
+			XdSettleOvertimeSummary summary = XdSettleOvertimeSummary.dao.findById(o.getId());
+
+			String applyDate = summary.getApplyDate();
+
+			String[] appDateArr = applyDate.split("-");
+
+			int oldIndex = Integer.parseInt(appDateArr[2]);
+
+			XdAttendanceSummary attendanceSummary =
+					XdAttendanceSummary.dao.findFirst("select * from  xd_attendance_summary where emp_name='"+summary.getEmpName()
+							+"' and schedule_year='" + appDateArr[0]+ "' and schedule_month='" + appDateArr[1] + "'");
+			String[] oldTips = attendanceSummary.getTips().split(",");
+
+			String oldTip = oldTips[oldIndex];
+
+
+			oldTip=oldTip.replaceAll(summary.getActStart()+"-"+summary.getActEnd(),"");
+			if("".equals(oldTip)){
+				oldTip="0";
+			}
+			oldTips[oldIndex]=oldTip;
+			oldTip="";
+			for (String tip : oldTips) {
+				oldTip=oldTip+tip+",";
+			}
+			attendanceSummary.setTips(oldTip.replaceAll(",$",""));
+
+
+			if("0".equals(summary.getApplyType())){
+				//Double aDouble = Double.valueOf(summary.getApplyHours());
+				attendanceSummary.setNatOthours(attendanceSummary.getNatOthours()-summary.getActHours());
+			}else{
+				attendanceSummary.setOthours(attendanceSummary.getOthours()-summary.getActHours());
+			}
+			attendanceSummary.update();
+
+
+			attendanceSummary =XdAttendanceSummary.dao.findFirst("select * from  xd_attendance_summary where emp_name='"+o.getEmpName()
+					+"' and schedule_year='" + ymd[0]+ "' and schedule_month='" + ymd[1] + "'");
+			int index = Integer.parseInt(ymd[2]);
+			String tips = attendanceSummary.getTips();
+			String[] tipsArr = tips.split(",");
+			String indexTip = tipsArr[index];
+			if("0".equals(indexTip)){
+				tipsArr[index]=o.getActStart()+"-"+o.getActEnd();
+			}else{
+				tipsArr[index]=tipsArr[index]+o.getActStart()+"-"+o.getActEnd();
+			}
+			String sb="";
+			for (String s : tipsArr) {
+				sb=sb+s+",";
+			}
+
+
+
+			attendanceSummary.setTips(sb.replaceAll(",$",""));
+
+			if("0".equals(o.getApplyType())){
+				//Double aDouble = Double.valueOf(summary.getApplyHours());
+				attendanceSummary.setNatOthours(attendanceSummary.getNatOthours()+o.getActHours());
+			}else{
+				attendanceSummary.setOthours(attendanceSummary.getOthours()+o.getActHours());
+			}
+			attendanceSummary.update();
 			o.update();
 		}else{
+
+			int index = Integer.parseInt(ymd[2]);
+			XdAttendanceSummary attendanceSummary =
+					XdAttendanceSummary.dao.findFirst("select * from  xd_attendance_summary where emp_name='"+o.getEmpName()
+							+"' and schedule_year='" + ymd[0]+ "' and schedule_month='" + ymd[1] + "'");
+
+			String tips = attendanceSummary.getTips();
+			String[] tipsArr = tips.split(",");
+			String indexTip = tipsArr[index];
+			if("0".equals(indexTip)){
+				tipsArr[index]=o.getActStart()+"-"+o.getActEnd();
+			}else{
+				tipsArr[index]=tipsArr[index]+o.getActStart()+"-"+o.getActEnd();
+			}
+			String sb="";
+			for (String s : tipsArr) {
+				sb=sb+s+",";
+			}
+			if("0".equals(o.getApplyType())){
+				//Double natOthours = attendanceSummary.getNatOthours();
+				attendanceSummary.setNatOthours(attendanceSummary.getNatOthours() + o.getActHours());
+			}else{
+				//Double othours = attendanceSummary.getOthours();
+				attendanceSummary.setOthours(attendanceSummary.getOthours() + o.getActHours());
+			}
+
+
+
+
+			attendanceSummary.setTips(sb.replaceAll(",$",""));
+			attendanceSummary.update();
+
+
 			o.setCreateDate(DateUtil.getCurrentTime());
 			o.setCreateUser(ShiroKit.getUserId());
 			o.save();

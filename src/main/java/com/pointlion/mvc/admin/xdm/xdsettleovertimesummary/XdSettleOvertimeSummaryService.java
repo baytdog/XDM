@@ -59,6 +59,39 @@ public class XdSettleOvertimeSummaryService{
     	String idarr[] = ids.split(",");
     	for(String id : idarr){
     		XdSettleOvertimeSummary o = me.getById(id);
+
+			String[] appDateArr = o.getApplyDate().split("-");
+
+			int oldIndex = Integer.parseInt(appDateArr[2]);
+
+			XdAttendanceSummary attendanceSummary =
+					XdAttendanceSummary.dao.findFirst("select * from  xd_attendance_summary where emp_name='"+o.getEmpName()
+							+"' and schedule_year='" + appDateArr[0]+ "' and schedule_month='" + appDateArr[1] + "'");
+			if(attendanceSummary!=null){
+				String[] oldTips = attendanceSummary.getTips().split(",");
+
+				String oldTip = oldTips[oldIndex];
+				oldTip=oldTip.replaceAll(o.getActStart()+"-"+o.getActEnd(),"");
+				if("".equals(oldTip)){
+					oldTip="0";
+				}
+				oldTips[oldIndex]=oldTip;
+
+				oldTip="";
+				for (String tip : oldTips) {
+					oldTip=oldTip+tip+",";
+				}
+				attendanceSummary.setTips(oldTip.replaceAll(",$",""));
+
+				if("0".equals(o.getApplyType())){
+					attendanceSummary.setNatOthours(attendanceSummary.getNatOthours()- o.getActHours());
+				}else{
+					attendanceSummary.setOthours(attendanceSummary.getOthours()-o.getActHours());
+				}
+
+				attendanceSummary.update();
+			}
+
     		o.delete();
     	}
 	}
@@ -107,7 +140,7 @@ public class XdSettleOvertimeSummaryService{
 							overtimeSummary.setApplyDate(overtimeList.get(4));
 							overtimeSummary.setApplyStart(overtimeList.get(5));
 							overtimeSummary.setApplyEnd(overtimeList.get(6));
-							overtimeSummary.setApplyHours(overtimeList.get(7));
+							overtimeSummary.setApplyHours(Double.valueOf(overtimeList.get(7)));
 							String overtype = overtimeList.get(8);
 							if(overtype==null||overtype.equals("")){
 								overtimeSummary.setApplyType("");
@@ -122,7 +155,7 @@ public class XdSettleOvertimeSummaryService{
 							}
 							overtimeSummary.setActStart(overtimeList.get(9));
 							overtimeSummary.setActEnd(overtimeList.get(10));
-							overtimeSummary.setActHours(overtimeList.get(11));
+							overtimeSummary.setActHours(Double.valueOf(overtimeList.get(11)));
 							overtimeSummary.setRemarks(overtimeList.get(12));
 							overtimeSummary.setCreateDate(DateUtil.getCurrentTime());
 							overtimeSummary.setCreateUser(ShiroKit.getUserId());
@@ -270,7 +303,7 @@ public class XdSettleOvertimeSummaryService{
 			row.add(summary.getApplyDate());
 			row.add(summary.getApplyStart());
 			row.add(summary.getApplyEnd());
-			row.add(summary.getApplyHours());
+			row.add(summary.getApplyHours()+"");
 			String applyType = summary.getApplyType();
 			if(applyType.equals("1")){
 				row.add("非国定节假日加班");
@@ -281,7 +314,7 @@ public class XdSettleOvertimeSummaryService{
 			}
 			row.add(summary.getActStart());
 			row.add(summary.getActEnd());
-			row.add(summary.getActHours());
+			row.add(summary.getActHours()+"");
 			row.add(summary.getRemarks());
 
 			if(summary.getApplyHours()==null ||summary.getApplyHours().equals("")){

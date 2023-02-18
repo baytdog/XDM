@@ -430,11 +430,11 @@ public class XdScheduleSummaryController extends BaseController {
 						if(span){
 							ots.setApplyStart(shift.getBusitime());
 							ots.setApplyEnd("24:00");
-							ots.setApplyHours(shift.getCurdayHours());
+							ots.setApplyHours(shift.getCurdayHours()+"");
 						}else{
 							ots.setApplyStart(shift.getBusitime());
 							ots.setApplyEnd(shift.getUnbusitime());
-							ots.setApplyHours(shift.getHours());
+							ots.setApplyHours(shift.getHours()+"");
 						}
 						ots.setSuperDays(xdDayModels.get(index).getDays());
 						if(sb.indexOf(xdDayModels.get(index).getId())!=-1){
@@ -464,7 +464,7 @@ public class XdScheduleSummaryController extends BaseController {
 							ots.setApplyDate(nextDayStr);
 							ots.setApplyStart("00:00");
 							ots.setApplyEnd(shift.getUnbusitime());
-							ots.setApplyHours(shift.getSpanHours());
+							ots.setApplyHours(shift.getSpanHours()+"");
 							ots.setSuperDays(xdDayModels.get(index).getDays());
 							if(sb.indexOf(nextDayStr.replaceAll("-",""))!=-1){
 								ots.setApplyType("0");
@@ -672,7 +672,7 @@ public class XdScheduleSummaryController extends BaseController {
 									ots.setApplyDate(dayModel.getDays());
 									ots.setApplyStart(xdShift.getBusitime());
 									ots.setApplyEnd("24:00");
-									ots.setApplyHours(xdShift.getCurdayHours());
+									ots.setApplyHours(xdShift.getCurdayHours()+"");
 									ots.setApplyType("0");
 									ots.save();
 									if(i>0){
@@ -692,7 +692,7 @@ public class XdScheduleSummaryController extends BaseController {
 										ots.setApplyDate(dayModel.getDays());
 										ots.setApplyStart(xdShift.getBusitime());
 										ots.setApplyEnd("24:00");
-										ots.setApplyHours(xdShift.getCurdayHours());
+										ots.setApplyHours(xdShift.getCurdayHours()+"");
 										ots.setApplyType("1");
 										ots.save();
 									}
@@ -707,7 +707,7 @@ public class XdScheduleSummaryController extends BaseController {
 									ots.setApplyDate(nextDate);
 									ots.setApplyStart("00:00");
 									ots.setApplyEnd(xdShift.getUnbusitime());
-									ots.setApplyHours(xdShift.getSpanHours());
+									ots.setApplyHours(xdShift.getSpanHours()+"");
 									ots.setApplyType("0");
 									//overTimeList.add(xdOvertimeSummary);
 									ots.save();
@@ -724,7 +724,7 @@ public class XdScheduleSummaryController extends BaseController {
 										ots.setApplyDate(nextDate);
 										ots.setApplyStart("00:00");
 										ots.setApplyEnd(xdShift.getUnbusitime());
-										ots.setApplyHours(xdShift.getSpanHours());
+										ots.setApplyHours(xdShift.getSpanHours()+"");
 										ots.setApplyType("1");
 										ots.save();
 									}
@@ -736,7 +736,7 @@ public class XdScheduleSummaryController extends BaseController {
 									ots.setApplyDate(dayModel.getDays());
 									ots.setApplyStart(xdShift.getBusitime());
 									ots.setApplyEnd(xdShift.getUnbusitime());
-									ots.setApplyHours(xdShift.getHours());
+									ots.setApplyHours(xdShift.getHours()+"");
 									ots.setApplyType("0");
 									ots.save();
 									//overTimeList.add(xdOvertimeSummary);
@@ -752,7 +752,7 @@ public class XdScheduleSummaryController extends BaseController {
 											ots.setApplyDate(dayModel.getDays());
 											ots.setApplyStart(xdShift.getBusitime());
 											ots.setApplyEnd(xdShift.getUnbusitime());
-											ots.setApplyHours(xdShift.getHours());
+											ots.setApplyHours(xdShift.getHours()+"");
 											ots.setApplyType("1");
 											ots.save();
 											othours+=Double.valueOf(xdShift.getHours());

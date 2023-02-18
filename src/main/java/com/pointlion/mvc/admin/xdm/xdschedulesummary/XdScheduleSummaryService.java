@@ -296,7 +296,7 @@ public class XdScheduleSummaryService{
 												ots.setApplyDate(ymdInLine);
 												ots.setApplyStart(xdShift.getBusitime());
 												ots.setApplyEnd("24:00");
-												ots.setApplyHours(xdShift.getCurdayHours());
+												ots.setApplyHours(xdShift.getCurdayHours()+"");
 												ots.setApplyType("0");
 												ots.setSource("0");
 												ots.setSuperDays(ymdInLine);
@@ -327,7 +327,7 @@ public class XdScheduleSummaryService{
 												otsObject.setApplyDate(DateTimeFormatter.ofPattern("yyyy-MM-dd").format(nextLocalDate));
 												otsObject.setApplyStart("00:00");
 												otsObject.setApplyEnd(xdShift.getUnbusitime());
-												otsObject.setApplyHours(xdShift.getSpanHours());
+												otsObject.setApplyHours(xdShift.getSpanHours()+"");
 												otsObject.setApplyType("0");
 												otsObject.setSource("0");
 												otsObject.setSuperDays(ymdInLine);
@@ -352,7 +352,7 @@ public class XdScheduleSummaryService{
 												xdOvertimeSummary.setApplyDate(ymdInLine);
 												xdOvertimeSummary.setApplyStart(xdShift.getBusitime());
 												xdOvertimeSummary.setApplyEnd(xdShift.getUnbusitime());
-												xdOvertimeSummary.setApplyHours(xdShift.getHours());
+												xdOvertimeSummary.setApplyHours(xdShift.getHours()+"");
 												xdOvertimeSummary.setApplyType("0");
 												xdOvertimeSummary.setSource("0");
 												xdOvertimeSummary.setSuperDays(ymdInLine);

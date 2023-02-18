@@ -12,6 +12,7 @@ import com.pointlion.mvc.common.utils.DateUtil;
 import com.pointlion.mvc.common.utils.UuidUtil;
 import com.pointlion.mvc.common.utils.office.excel.ExcelUtil;
 import com.pointlion.plugin.shiro.ShiroKit;
+import com.pointlion.util.CheckAttendanceUtil;
 import com.pointlion.util.DictMapping;
 import org.apache.commons.lang3.StringUtils;
 
@@ -97,7 +98,7 @@ public class XdAttendanceSummaryService{
 			public boolean run() throws SQLException {
 				try{
 					if(list.size()>4){
-						String time = DateUtil.getCurrentTime();
+						//String time = DateUtil.getCurrentTime();
 						List<String> title = list.get(0);
 						String[] ny = title.get(0).replaceAll("年", "_").replaceAll("[^(0-9_)]", "").split("_");
 						String year=ny[0];
@@ -105,30 +106,51 @@ public class XdAttendanceSummaryService{
 						if(month.length()==1){
 							month="0"+month;
 						}
+
+
 						String yearMonth=year+month;
-						List<XdDayModel> xdDayModels = XdDayModel.dao.find("select * from  xd_day_model where id like '" + yearMonth + "%' order by id");
-						Map<String, String> holidaysMap = xdDayModels.stream().collect(Collectors.toMap(XdDayModel::getId, XdDayModel::getHolidays));
-						List<XdShift> xdShifts = XdShift.dao.find("select * from  xd_shift");
-						Map<String, XdShift> nameShiftObjMap = xdShifts.stream().collect(Collectors.toMap(XdShift::getShiftname, xdShift -> xdShift));
 
 						DateTimeFormatter dtf=DateTimeFormatter.ofPattern("yyyy-MM-dd");
-						DateTimeFormatter dtfNoLine=DateTimeFormatter.ofPattern("yyyyMMdd");
-						LocalDate lastmonlastday = LocalDate.parse(year+"-"+month+"-01").minusDays(1);
+//						LocalDate lastmonlastday = LocalDate.parse(year+"-"+month+"-01").minusDays(1);
 
-						String lastMonLastDay = dtf.format(lastmonlastday);
+						String lastMonLastDay = dtf.format(LocalDate.parse(year+"-"+month+"-01").minusDays(1));
+
 						String[] split = lastMonLastDay.split("-");
 						String lastYear=split[0];
 						String lastMonth=split[1];
 						String lastDay=split[2];
-						XdWorkHour workHours = XdWorkHour.dao.findFirst("select * from  xd_work_hour where year='" + year + "' and  month='" + month + "'");
-						double cur_mon_hours=(workHours==null?0:workHours.getWorkHour());//当月工时
+
+
+						List<XdDayModel> xdDayModels = XdDayModel.dao.find("select * from  xd_day_model where id like '" + yearMonth + "%' or days='"+lastMonLastDay+"'  order by id");
+//						Map<String, String> holidaysMap = xdDayModels.stream().collect(Collectors.toMap(XdDayModel::getId, XdDayModel::getHolidays));
+
+						StringBuffer sb=CheckAttendanceUtil.getHolidays(xdDayModels);
+
+						//if(xdDayModels.get(0).getId().startsWith(yearMonth)){
+					  XdDayModel lastModel = xdDayModels.get(0);
+
+
+
+
+						/*List<XdShift> xdShifts = XdShift.dao.find("select * from  xd_shift");
+						Map<String, XdShift> nameShiftObjMap = xdShifts.stream().collect(Collectors.toMap(XdShift::getShiftname, xdShift -> xdShift));
+*/
+						Map<String, XdShift> nameShiftObjMap = CheckAttendanceUtil.shfitsMap();
+
+						//DateTimeFormatter dtfNoLine=DateTimeFormatter.ofPattern("yyyyMMdd");
+
+						//XdWorkHour workHours = XdWorkHour.dao.findFirst("select * from  xd_work_hour where year='" + year + "' and  month='" + month + "'");
+						double cur_mon_hours=CheckAttendanceUtil.getWokrHours(year,month);//当月工时
 
 						for(int i = 4;i<list.size();i++){
+							Class superclass = XdAttendanceSummary.class.getSuperclass();
 							String otFlags="";
 							String modifyFlags="";
+							String tips="";
+							//double natOtHours=0;
 							double othours=0;//加班时间
 							//double work_hour=0;//出勤时间
-							int daysNum=xdDayModels.size();
+							int daysNum=xdDayModels.size()-1;
 							int holidays=0;
 							double actWorkHours=0;//本月实际工时
 							double ordinaryOTHours=0;//平时加班
@@ -150,9 +172,9 @@ public class XdAttendanceSummaryService{
 							String summaryId = UuidUtil.getUUID();
 							attendanceSummary.setId(summaryId);
 							String department = summaryList.get(1);
-							String depeId = orgMapping.get(department);
+							String deptId = orgMapping.get(department);
 							attendanceSummary.setDeptName(department);
-							attendanceSummary.setDeptValue(depeId);
+							attendanceSummary.setDeptValue(deptId);
 							String unitName = summaryList.get(2);
 							String unitValue = unitMap.get(unitName);
 							attendanceSummary.setUnitName(unitName);
@@ -181,54 +203,55 @@ public class XdAttendanceSummaryService{
 
 
 							modifyFlags=modifyFlags+","+"0";
+							tips=tips+","+"0";
+
+//							处理上个月的最后一天day00 start
 							XdAttendanceSummary lastMonSummary = XdAttendanceSummary.dao.findFirst("select * from xd_attendance_summary " +
 									"where emp_name='" + empName + "' " +
 									"and  schedule_year='" + lastYear + "'" +
 									"and schedule_month='" + lastMonth + "'");
 
+
+							if(lastModel!=null && "1".equals(lastModel.getIsnatHoliday())){
+								otFlags=otFlags+","+"1";
+							}else{
+								otFlags=otFlags+","+"0";
+							}
 							if(lastMonSummary==null){
-								XdDayModel lastModel = XdDayModel.dao.findById(lastMonLastDay.replaceAll("-", ""));
-								if(lastModel==null || lastModel.getHolidays()==null||lastModel.getHolidays().equals("")){
-									otFlags=otFlags+","+"0";
-								}else{
-									otFlags=otFlags+","+"1";
-								}
 								attendanceSummary.setDay00("");
 							}else{
-								Method getLastMonLastDay = lastMonSummary.getClass().getSuperclass().getMethod("getDay" + lastDay);
-								String  lastMonShift = (String)getLastMonLastDay.invoke(lastMonSummary);
-								attendanceSummary.setDay00(lastMonShift);
-								if(lastMonShift==null ||lastMonShift.equals("")){
-									otFlags=otFlags+","+"0";
-								}else{
-									String lastFlags = lastMonSummary.getOtflags().substring(otFlags.length() - 1);
-									otFlags=otFlags+","+lastFlags;
-									XdShift xdShift = nameShiftObjMap.get(lastMonShift);
-									if(xdShift!=null){
-										if(xdShift.getSpanDay().equals("1")){//跨天
-											String holiday = holidaysMap.get(yearMonth + "01");
-											if(holiday!=null && !holiday.equals("")){
-												//othours+=Double.valueOf(xdShift.getSpanHours());//加班时间
-												nationlOTHours+=nationlOTHours+Double.valueOf(xdShift.getSpanHours());
-											}else{
-												//work_hour+=Double.valueOf(xdShift.getSpanHours());//出勤时间
-												actWorkHours+=Double.valueOf(xdShift.getSpanHours());//实际工时
-											}
+								String  lastMonLastShift = (String)superclass.getMethod("getDay" + lastDay).invoke(lastMonSummary);
+								attendanceSummary.setDay00(lastMonLastShift);
+
+								/*String lastFlags = lastMonSummary.getOtflags().substring(otFlags.length() - 1);
+								otFlags=otFlags+","+lastFlags;*/
+								XdShift xdShift = nameShiftObjMap.get(lastMonLastShift);
+								if(xdShift!=null){
+									if("1".equals(xdShift.getSpanDay())){//跨天
+										//String holiday = holidaysMap.get(yearMonth + "01");
+										if(sb.indexOf(yearMonth + "01")!=-1){
+											//othours+=Double.valueOf(xdShift.getSpanHours());//加班时间
+											nationlOTHours+=nationlOTHours+Double.valueOf(xdShift.getSpanHours());
+										}else{
+											//work_hour+=Double.valueOf(xdShift.getSpanHours());//出勤时间
+											actWorkHours+=Double.valueOf(xdShift.getSpanHours());//实际工时
 										}
 									}
-
 								}
 
+
 							}
+//							处理上个月的最后一天day00 end
 
 
 
-							Class superclass = attendanceSummary.getClass().getSuperclass();
+
 							String ymdInLine="";
 							String ymdNoLine="";
 							String methodSuffix="";
 							for (int j = 1; j <=daysNum ; j++) {
 								modifyFlags=modifyFlags+","+"0";
+								tips=tips+","+"0";
 								if(j<10){
 									ymdNoLine = yearMonth + '0' + j;
 									ymdInLine=year+"-"+month+"-"+'0' + j;
@@ -240,10 +263,10 @@ public class XdAttendanceSummaryService{
 								}
 
 
+								String cellValue = summaryList.get(6 + j);
+
 								XdAttendanceDetail attDetail =new XdAttendanceDetail();
 								attDetail.setAttendidId(summaryId);
-
-								String cellValue = summaryList.get(6 + j);
 
 								if("18A".equals(cellValue)){
 									shift18A=true;
@@ -252,12 +275,12 @@ public class XdAttendanceSummaryService{
 								method.invoke(attendanceSummary,cellValue);
 
 								if(!"".equals(cellValue)){
-									monthWorkDays++;
+									monthWorkDays++;//排班天数
 									XdShift shift = nameShiftObjMap.get(cellValue);
 									String fileteShift="事,病,旷,新离,调,丧,控,婚,陪产,育";
 
 									attDetail.setShiftName(shift==null?"":shift.getShiftname());
-									attDetail.setWorkHours(shift==null?"":shift.getHours());
+									attDetail.setWorkHours(shift==null?"":String.valueOf(shift.getHours()));
 									String mn="";
 									if(shift.getMiddleshift()!=null && !"".equals(shift.getMiddleshift())){
 										mn=shift.getMiddleshift();
@@ -266,133 +289,148 @@ public class XdAttendanceSummaryService{
 										mn=shift.getNigthshift();
 									}
 									attDetail.setMiddleNightShift(mn);
-									if (shift != null&& fileteShift.indexOf(cellValue)==-1 ) {
 
+
+//									if (shift != null&& fileteShift.indexOf(cellValue)==-1 ) {
+									if (shift != null&& shift.getBusitime()!=null && !"".equals(shift.getBusitime()) ) {
 
 										if(shift.getDutyamount()!=null && !"".equals(shift.getDutyamount())){
 											dutyCharge+=Double.valueOf(shift.getDutyamount());//值班费
 										}
 
 										//加班结算开始//调整开始
-										String curDayIfHoliday = holidaysMap.get(ymdNoLine);
+//										String curDayIfHoliday = holidaysMap.get(ymdNoLine);
 
 										LocalDate localDate = LocalDate.parse(ymdInLine).plusDays(1);
 										String nextDay  = dtf.format(localDate);
-										String nextDayHolidays = holidaysMap.get(nextDay.replaceAll("-",""));
+//										String nextDayHolidays = holidaysMap.get(nextDay.replaceAll("-",""));
 
-										if(curDayIfHoliday!=null && !curDayIfHoliday.equals("")){
+//										if(curDayIfHoliday!=null && !curDayIfHoliday.equals("")){
+										if(sb.indexOf(ymdNoLine)!=-1){
 											//当天是法定节日
 											holidays++;
 											otFlags=otFlags+","+"1";
-											XdOvertimeSummary otSummary = XdOvertimeSummary.dao.findFirst(
+											/*XdOvertimeSummary otSummary = XdOvertimeSummary.dao.findFirst(
 													"select * from  xd_overtime_summary where apply_date='" + ymdInLine +
 															"' and emp_name='" + empName +
-															"' and apply_type='0'");
+															"' and apply_type='0'");*/
+											XdOvertimeSummary otSummary=
+													CheckAttendanceUtil.getOverTimeSummary(empName,ymdInLine,"0");
+
 											XdSettleOvertimeSummary setOTSummary=new XdSettleOvertimeSummary();
 											setOTSummary.setEmpNum(empNum);
 											setOTSummary.setEmpName(empName);
 											setOTSummary.setEmpIdnum(emp==null?"":emp.getIdnum());
-											setOTSummary.setDeptId(depeId);
+											setOTSummary.setDeptId(deptId);
 											setOTSummary.setDeptName(department);
 											setOTSummary.setProjectId(projectValue);
 											setOTSummary.setProjectName(projectName);
 											setOTSummary.setApplyDate(ymdInLine);
 											setOTSummary.setApplyStart(otSummary==null?"":otSummary.getApplyStart());
 											setOTSummary.setApplyEnd(otSummary==null?"":otSummary.getApplyEnd());
-											setOTSummary.setApplyHours(otSummary==null?"":otSummary.getApplyHours());
+											setOTSummary.setApplyHours(otSummary==null?0.0:Double.valueOf(otSummary.getApplyHours()));
 											setOTSummary.setApplyType("0");
+											setOTSummary.setSource("0");
+											setOTSummary.setSuperDays(ymdInLine);
 
 											if("1".equals(shift.getSpanDay())){
 												//跨天
-												nationlOTHours+=Double.valueOf(shift.getCurdayHours());
+												nationlOTHours+= shift.getCurdayHours();
 												setOTSummary.setId(null);
 												setOTSummary.setActStart(shift.getBusitime());
 												setOTSummary.setActEnd("24:00");
 												setOTSummary.setActHours(shift.getCurdayHours());
-												setOTSummary.setCreateDate(time);
+												setOTSummary.setCreateDate(DateUtil.getCurrentTime());
 												setOTSummary.setCreateUser(ShiroKit.getUserId());
 												setOTSummary.save();
 
-												if(nextDayHolidays!=null && !"".equals(nextDayHolidays)){
+//												if(nextDayHolidays!=null && !"".equals(nextDayHolidays)){
+												if(sb.indexOf(nextDay.replaceAll("-",""))!=-1){
 													//跨天第二天是法定节日
-													otSummary = XdOvertimeSummary.dao.findFirst(
+													/*otSummary = XdOvertimeSummary.dao.findFirst(
 															"select * from  xd_overtime_summary where apply_date='" + nextDay +
 																	"' and emp_name='" + empName +
-																	"' and apply_type='1'");
-
+																	"' and apply_type='1'");*/
+													otSummary =CheckAttendanceUtil.getOverTimeSummary(empName,nextDay,"0");
 													setOTSummary.setId(null);
 													setOTSummary.setApplyStart(otSummary==null?"":otSummary.getApplyStart());
 													setOTSummary.setApplyEnd(otSummary==null?"":otSummary.getApplyEnd());
-													setOTSummary.setApplyHours(otSummary==null?"":otSummary.getApplyHours());
+													setOTSummary.setApplyHours(otSummary==null?0:Double.valueOf(otSummary.getApplyHours()));
 													setOTSummary.setActStart("00:00");
 													setOTSummary.setActEnd(shift.getUnbusitime());
 													setOTSummary.setActHours(shift.getSpanHours());
-													setOTSummary.setCreateDate(time);
+													setOTSummary.setCreateDate(DateUtil.getCurrentTime());
 													setOTSummary.setCreateUser(ShiroKit.getUserId());
 													setOTSummary.save();
-													if(i<daysNum){
-														nationlOTHours+=Double.valueOf(shift.getSpanHours());
+													if(j<daysNum){
+														nationlOTHours+= shift.getSpanHours();
 													}
 
 												}else{//第二天不是法定节日
-													if(i<daysNum) {
-														actWorkHours += Double.valueOf(shift.getSpanHours());
+													if(j<daysNum) {
+														actWorkHours +=  shift.getSpanHours();
 													}
 												}
 											}else{//不跨天
-												nationlOTHours+=Double.valueOf(shift.getHours());
+												nationlOTHours+= shift.getHours();
 												setOTSummary.setId(null);
 												setOTSummary.setActStart(shift.getBusitime());
 												setOTSummary.setActEnd(shift.getUnbusitime());
 												setOTSummary.setActHours(shift.getHours());
-												setOTSummary.setCreateDate(time);
+												setOTSummary.setCreateDate(DateUtil.getCurrentTime());
 												setOTSummary.setCreateUser(ShiroKit.getUserId());
 												setOTSummary.save();
 											}
 
-										}else{//当天不是法定节日
+										}else{
+											//当天不是法定节日
 											commWorkdDay++;
 											otFlags=otFlags+","+"0";
 											if("1".equals(shift.getSpanDay())){
 												//跨天
-												actWorkHours+=Double.valueOf(shift.getCurdayHours());
+												actWorkHours+= shift.getCurdayHours();
 
-												if(nextDayHolidays!=null && !"".equals(nextDayHolidays)){
+												//if(nextDayHolidays!=null && !"".equals(nextDayHolidays)){
+												if(sb.indexOf(nextDay.replaceAll("-",""))!=-1){
 													//第二天是法定节日
-													XdOvertimeSummary	ots = XdOvertimeSummary.dao.findFirst(
+													/*XdOvertimeSummary	ots = XdOvertimeSummary.dao.findFirst(
 															"select * from  xd_overtime_summary where apply_date='" + nextDay +
 																	"' and emp_name='" + empName +
-																	"' and apply_type='1'");
+																	"' and apply_type='1'");*/
+													XdOvertimeSummary ots =
+															CheckAttendanceUtil.getOverTimeSummary(empName,nextDay,"0");
 
 													XdSettleOvertimeSummary sots=new XdSettleOvertimeSummary();
 													sots.setEmpNum(empNum);
 													sots.setEmpName(empName);
 													sots.setEmpIdnum(emp==null?"":emp.getIdnum());
-													sots.setDeptId(depeId);
+													sots.setDeptId(deptId);
 													sots.setDeptName(department);
 													sots.setProjectId(projectValue);
 													sots.setProjectName(projectName);
-													sots.setApplyDate(ymdInLine);
+													sots.setApplyDate(nextDay);
 													sots.setApplyStart(ots==null?"":ots.getApplyStart());
 													sots.setApplyEnd(ots==null?"":ots.getApplyEnd());
-													sots.setApplyHours(ots==null?"":ots.getApplyHours());
+													sots.setApplyHours(ots==null?0:Double.valueOf(ots.getApplyHours()));
 													sots.setApplyType("0");
+													sots.setSource("0");
+													sots.setSuperDays(ymdInLine);
 													sots.setActHours(shift.getSpanHours());
 													sots.setActStart("00:00");
 													sots.setActEnd(shift.getUnbusitime());
 													sots.save();
-													if(i<daysNum){
-														nationlOTHours+=Double.valueOf(shift.getSpanHours());
+													if(j<daysNum){
+														nationlOTHours+=shift.getSpanHours();
 													}
 
 												}else{//第二天不是法定节日
-													if(i<daysNum){
-														actWorkHours+=Double.valueOf(shift.getSpanHours());
+													if(j<daysNum){
+														actWorkHours+=shift.getSpanHours();
 													}
 												}
 
 											}else{//不跨天
-												actWorkHours+=Double.valueOf(shift.getHours());
+												actWorkHours+=shift.getHours();
 											}
 										}
 
@@ -443,8 +481,8 @@ public class XdAttendanceSummaryService{
 								attDetail.setScheduleMonth(month);
 								attDetail.setScheduleDay(String.valueOf(j));
 								attDetail.setScheduleYmd(ymdInLine);
-								attDetail.setWeekDay(xdDayModels.get(j - 1).getWeeks());
-								attDetail.setHolidays(xdDayModels.get(j - 1).getHolidays());
+								attDetail.setWeekDay(xdDayModels.get(j).getWeeks());
+								attDetail.setHolidays(xdDayModels.get(j).getHolidays());
 								attDetail.setCreateDate(DateUtil.getCurrentTime());
 								attDetail.setCreateUser(ShiroKit.getUserId());
 								attDetail.save();
@@ -493,9 +531,14 @@ public class XdAttendanceSummaryService{
 							}
 
 							attendanceSummary.setOthours(othours);
+							attendanceSummary.setNatOthours(nationlOTHours);
 							attendanceSummary.setFlags(modifyFlags.replaceAll("^,",""));
 							attendanceSummary.setOtflags(otFlags.replaceAll("^,",""));
+							attendanceSummary.setTips(tips.replaceAll("^,",""));
 							attendanceSummary.save();
+
+							XdAnleaveSummary.dao.findFirst("select  * from  xd_anleave_summary where  emp_name='' and year=''");
+
 							if(shift18A){
 								XdRcpSummary rcp =new XdRcpSummary();
 								rcp.setSummaryId(attendanceSummary.getId());
@@ -526,7 +569,7 @@ public class XdAttendanceSummaryService{
 								rcp.setRcpMonthYear(yearMonth);
 								rcp.setStatus("0");
 								rcp.setCreateUser("出勤生成");
-								rcp.setCreateDate(time);
+								rcp.setCreateDate(DateUtil.getCurrentTime());
 								rcp.save();
 
 
@@ -557,6 +600,11 @@ public class XdAttendanceSummaryService{
 								days.setId(null);
 								days.save();
 
+							XdAnleaveSummary leave=	XdAnleaveSummary.dao.findFirst("select  * from  xd_anleave_summary where  emp_name='' and year=''");
+							if(leave!=null){
+								leave.setSurplusDays(String.valueOf(Double.valueOf(leave.getSurplusDays())-alreayAnnualLeave));
+								leave.update();
+							}
 						}
 						if(result.get("success")==null){
 							result.put("success",true);//正常执行完毕

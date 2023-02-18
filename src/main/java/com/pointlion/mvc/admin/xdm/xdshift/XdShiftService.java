@@ -96,7 +96,7 @@ public class XdShiftService{
 							shift.setBusitime(shiftStr.get(1));
 							shift.setUnbusitime(shiftStr.get(2));
 							shift.setTimebucket(shiftStr.get(3));
-							shift.setHours(shiftStr.get(4));
+							shift.setHours(Double.valueOf(shiftStr.get(4)));
 							shift.setMiddleshift(shiftStr.get(5));
 							shift.setNigthshift(shiftStr.get(6));
 							shift.setShiftcost(shiftStr.get(7));
