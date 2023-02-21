@@ -77,22 +77,22 @@
             var jthis = $(this);
             if (jthis.hasClass("active")) {
                 var linext = jthis.next();
-                console.log("----")
+                /*console.log("----")
              	console.log(linext);
-                console.log("----")
+                console.log("----")*/
                 if (linext.length > 0) {
                 	
                     linext.click();
                     move(linext)
                     
-                  console.log("====")
+                  // console.log("====")
                 	
                 	  
                 } else {
                     var liprev = jthis.prev();
-                    console.log("--+++--")
+                   /* console.log("--+++--")
                  	console.log(liprev);
-                    console.log("--+++--")
+                    console.log("--+++--")*/
                     if (liprev.length > 0) {
                         liprev.click();
                         move(liprev)
@@ -190,11 +190,11 @@
                     "data-value": linkHtml
                 }).bind("click",function() {//点击事件
                     var jthis = $(this);
-                    console.log("11111111111")
+                   /* console.log("11111111111")
                     
                     
                     console.log(jthis.data("url"))
-                    console.log(jthis.data("value"))
+                    console.log(jthis.data("value"))*/
                     linkframe(jthis.data("url"), jthis.data("value"))
                 }).on("contextmenu",function(e){//右键下拉事件
                 	bindMouseRightClickMenu(e,this);

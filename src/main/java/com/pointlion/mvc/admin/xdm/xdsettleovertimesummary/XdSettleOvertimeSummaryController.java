@@ -31,13 +31,13 @@ public class XdSettleOvertimeSummaryController extends BaseController {
 	/***
      * list page data
      **/
-    public void listData(){
+    public void listData() throws UnsupportedEncodingException {
     	String curr = getPara("pageNumber");
     	String pageSize = getPara("pageSize");
-		String endTime = getPara("endTime","");
-		String startTime = getPara("startTime","");
-		String applyUser = getPara("applyUser","");
-    	Page<Record> page = service.getPage(Integer.valueOf(curr),Integer.valueOf(pageSize),startTime,endTime,applyUser);
+		String emp_name = java.net.URLDecoder.decode(getPara("emp_name",""),"UTF-8");
+		String year = getPara("year","");
+		String month = getPara("month","");
+    	Page<Record> page = service.getPage(Integer.valueOf(curr),Integer.valueOf(pageSize),emp_name,year,month);
     	renderPage(page.getList(),"",page.getTotalRow());
     }
     /***

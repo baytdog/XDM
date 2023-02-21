@@ -531,5 +531,14 @@ public abstract class BaseXdEmployee<M extends BaseXdEmployee<M>> extends Model<
 		return getStr("cert_pic_id");
 	}
 
+	public void setStatus(java.lang.String status) {
+		set("status", status);
+	}
+
+	public java.lang.String getStatus() {
+		return getStr("status");
+	}
+
+
 
 }

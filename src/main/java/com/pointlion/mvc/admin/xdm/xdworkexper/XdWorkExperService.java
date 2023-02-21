@@ -1,5 +1,6 @@
 package com.pointlion.mvc.admin.xdm.xdworkexper;
 
+import com.alibaba.druid.sql.ast.statement.SQLWhileStatement;
 import com.jfinal.aop.Before;
 import com.jfinal.kit.StrKit;
 import com.jfinal.plugin.activerecord.Db;
@@ -7,6 +8,7 @@ import com.jfinal.plugin.activerecord.IAtom;
 import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.plugin.activerecord.Record;
 import com.jfinal.plugin.activerecord.tx.Tx;
+import com.jfinal.template.stat.ast.Switch;
 import com.pointlion.enums.XdOperEnum;
 import com.pointlion.mvc.common.model.*;
 import com.pointlion.mvc.common.utils.DateUtil;
@@ -17,6 +19,7 @@ import com.pointlion.plugin.shiro.ShiroKit;
 import com.pointlion.plugin.shiro.ext.SimpleUser;
 import com.pointlion.util.DictMapping;
 import org.apache.commons.lang3.StringUtils;
+import org.flowable.cmmn.model.Case;
 
 import java.io.File;
 import java.sql.SQLException;
@@ -319,6 +322,102 @@ public class XdWorkExperService{
 		return file;
 	}
 	public Map<String,Object> importExcel(List<List<String>> list) throws SQLException {
+		final List<String> message = new ArrayList<String>();
+		final Map<String,Object> result = new HashMap<String,Object>();
+		Db.tx(new IAtom() {
+			@Override
+			public boolean run() throws SQLException {
+				try{
+				if(list.size()>2){
+						SimpleUser user = ShiroKit.getLoginUser();
+						String time = DateUtil.getCurrentTime();
+						for(int i = 2;i<list.size();i++){//从第二行开始取
+							List<String> workStr = list.get(i);
+							XdWorkExper workExper=new XdWorkExper();
+
+							workExper.setCtime(time);
+							workExper.setCuser(user.getId());
+							if(workStr.get(0)==null ||"".equals(workStr.get(0).trim())){
+								continue;
+							}
+							XdEmployee employee = XdEmployee.dao.findFirst("select * from xd_employee where name ='" + workStr.get(0) + "'");
+							workExper.setEid(employee.getId());
+							workExper.setEname(workStr.get(0));
+							boolean flag=false;
+							int j=1;
+							while (true){
+								int k = j % 5;
+								if(k==1 && "".equals(workStr.get(j))){
+										flag=true;
+										break;
+								}else{
+									switch (k){
+										case 1:
+											workExper.setEntrydate(workStr.get(j)==null?"":workStr.get(j));
+											break;
+										case 2:
+											workExper.setDepartdate(workStr.get(j)==null?"":workStr.get(j));
+											break;
+										case 3:
+											workExper.setServiceunit(workStr.get(j)==null?"":workStr.get(j));
+											break;
+										case 4:
+											workExper.setJob(workStr.get(j)==null?"":workStr.get(j));
+											break;
+										case 0:
+											workExper.setAddr(workStr.get(j)==null?"":workStr.get(j));
+											workExper.setId(UuidUtil.getUUID());
+											workExper.save();
+											break;
+									}
+
+								}
+								j++;
+							}
+
+							if (flag) {
+								continue;
+							}
+
+
+
+
+						}
+						if(result.get("success")==null){
+							result.put("success",true);//正常执行完毕
+						}
+					}else{
+						result.put("success",false);//正常执行完毕
+						message.add("excel中无内容");
+						result.put("message", StringUtils.join(message," "));
+					}
+					result.put("message",StringUtils.join(message," "));
+					if((Boolean) result.get("success")){//正常执行完毕
+						return true;
+					}else{//回滚
+						return false;
+					}
+				}catch(Exception e){
+					return false;
+				}
+			}
+		});
+		return result;
+	}
+
+	public String dealCellValue(String cellStr){
+		if(cellStr==null){
+			return "";
+		}else{
+			if("至今".equals(cellStr)){
+				return "至今";
+			}else{
+				return cellStr.substring(0,7);
+			}
+		}
+
+	}
+	public Map<String,Object> importExcelV1(List<List<String>> list) throws SQLException {
 		final List<String> message = new ArrayList<String>();
 		final Map<String,Object> result = new HashMap<String,Object>();
 		Db.tx(new IAtom() {

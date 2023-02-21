@@ -20,7 +20,11 @@ import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -59,6 +63,117 @@ public class XdAttendanceSummaryService{
 
 		sql = sql + " order by o.create_date desc,emp_num";
 		return Db.paginate(pnum, psize, " select * ", sql);
+	}
+
+
+
+	public Page<Record> getPage(int pnum,int psize,String day,String hours,String min)  {
+		String sql  = " from "+TABLE_NAME+" o where 1=1";
+		/*if(StrKit.notBlank(dept)){
+			sql = sql + " and o.dept_value='"+ dept+"'";
+		}
+		if(StrKit.notBlank(unitname)){
+			sql = sql + " and o.unit_value='"+ unitname+"'";
+		}
+		if(StrKit.notBlank(year)){
+			sql = sql + " and o.schedule_year='"+ year+"'";
+		}
+		if(StrKit.notBlank(month)){
+			sql = sql + " and o.schedule_month='"+ month+"'";
+		}
+		if(StrKit.notBlank(emp_name)){
+			sql = sql + " and o.emp_name like'%"+emp_name+"%'";
+		}*/
+
+		String shfitName="";
+		if(StrKit.notBlank(hours)){
+		if(min.equals("")){
+			min="00";
+		}
+		String hm="";
+		if(StrKit.notBlank(min)){
+			if(min.length()<2){
+				hm=hours+":"+"0"+min;
+			}else{
+				hm=hours+":"+min;
+			}
+		}
+		;
+
+
+
+		List<XdShift> xdShifts = XdShift.dao.find("select * from  xd_shift");
+
+		String start="";
+		String end="";
+
+		Long startL=0L;
+		Long endL=0L;
+		Long inputSecond=0L;
+
+			SimpleDateFormat sdf =new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			try {
+				inputSecond = sdf.parse(day+" "+hm+":00").getTime();
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+			for (XdShift shift : xdShifts) {
+			if(shift.getBusitime()!=null && !"".equals(shift.getBusitime())){
+				if(shift.getBusitime().split(":")[0].length()==1){
+					start="0"+shift.getBusitime().split(":")[0]+shift.getBusitime().split(":")[1];
+				}else{
+					start=shift.getBusitime();
+				}
+
+				if(shift.getUnbusitime().split(":")[0].length()==1){
+					end="0"+shift.getUnbusitime().split(":")[0]+shift.getUnbusitime().split(":")[1];
+				}else{
+					end=shift.getUnbusitime();
+				}
+
+				try {
+
+					startL=sdf.parse(day+" "+start+":00").getTime();
+					endL=sdf.parse(day+" "+end+":00").getTime();
+				} catch (ParseException e) {
+					e.printStackTrace();
+				}
+
+				if(shift.getSpanDay().equals("1")){
+
+					try {
+						endL=sdf.parse(DateTimeFormatter.ofPattern("yyyy-MM-dd").format(LocalDate.parse(day).plusDays(1))+" "+end+":00").getTime();
+					} catch (ParseException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+
+			if(inputSecond>=startL && inputSecond<=endL){
+				startL=0L;
+				endL=0L;
+				shfitName=shfitName+"'"+shift.getShiftname()+"'"+",";
+			}
+
+		}
+
+		shfitName=shfitName.replaceAll(",$","");
+		}
+		String s = day.split("-")[2];
+		String yearMonth=day.split("-")[0]+day.split("-")[1];
+
+//		select * from  xd_attendance_summary where schedule_year_month=''
+ 		sql=sql+ " and schedule_year_month='"+yearMonth+"' ";
+
+ 		if(StrKit.notBlank(min)){
+ 			sql=sql+"and day"+day.split("-")[2]+" in ("+shfitName+")";
+		}
+
+
+
+
+		sql = sql + " order by o.create_date desc,emp_num";
+		return Db.paginate(pnum, psize, " select emp_name,emp_num,schedule_year_month,day"+day.split("-")[2]+" as shift", sql);
 	}
 
 	/***
@@ -281,18 +396,19 @@ public class XdAttendanceSummaryService{
 
 									attDetail.setShiftName(shift==null?"":shift.getShiftname());
 									attDetail.setWorkHours(shift==null?"":String.valueOf(shift.getHours()));
-									String mn="";
-									if(shift.getMiddleshift()!=null && !"".equals(shift.getMiddleshift())){
-										mn=shift.getMiddleshift();
-									}
-									if(shift.getNigthshift()!=null && !"".equals(shift.getNigthshift())){
-										mn=shift.getNigthshift();
-									}
-									attDetail.setMiddleNightShift(mn);
+
 
 
 //									if (shift != null&& fileteShift.indexOf(cellValue)==-1 ) {
 									if (shift != null&& shift.getBusitime()!=null && !"".equals(shift.getBusitime()) ) {
+										String mn="";
+										if(shift.getMiddleshift()!=null && !"".equals(shift.getMiddleshift())){
+											mn=shift.getMiddleshift();
+										}
+										if(shift.getNigthshift()!=null && !"".equals(shift.getNigthshift())){
+											mn=shift.getNigthshift();
+										}
+										attDetail.setMiddleNightShift(mn);
 
 										if(shift.getDutyamount()!=null && !"".equals(shift.getDutyamount())){
 											dutyCharge+=Double.valueOf(shift.getDutyamount());//值班费
@@ -334,9 +450,16 @@ public class XdAttendanceSummaryService{
 											setOTSummary.setSuperDays(ymdInLine);
 
 											if("1".equals(shift.getSpanDay())){
+
+												/*otSummary=
+														CheckAttendanceUtil.getOverTimeSummary(empName,ymdInLine,"0",shift.getBusitime(),"24:00");
+*/
 												//跨天
 												nationlOTHours+= shift.getCurdayHours();
 												setOTSummary.setId(null);
+												/*setOTSummary.setApplyStart(otSummary==null?"":otSummary.getApplyStart());
+												setOTSummary.setApplyEnd(otSummary==null?"":otSummary.getApplyEnd());
+												setOTSummary.setApplyHours(otSummary==null?0.0:Double.valueOf(otSummary.getApplyHours()));*/
 												setOTSummary.setActStart(shift.getBusitime());
 												setOTSummary.setActEnd("24:00");
 												setOTSummary.setActHours(shift.getCurdayHours());
@@ -372,11 +495,11 @@ public class XdAttendanceSummaryService{
 													}
 												}
 											}else{//不跨天
-												nationlOTHours+= shift.getHours();
+												nationlOTHours+= Double.valueOf(shift.getHours());
 												setOTSummary.setId(null);
 												setOTSummary.setActStart(shift.getBusitime());
 												setOTSummary.setActEnd(shift.getUnbusitime());
-												setOTSummary.setActHours(shift.getHours());
+												setOTSummary.setActHours(Double.valueOf(shift.getHours()));
 												setOTSummary.setCreateDate(DateUtil.getCurrentTime());
 												setOTSummary.setCreateUser(ShiroKit.getUserId());
 												setOTSummary.save();
@@ -430,7 +553,7 @@ public class XdAttendanceSummaryService{
 												}
 
 											}else{//不跨天
-												actWorkHours+=shift.getHours();
+												actWorkHours+=Double.valueOf(shift.getHours());
 											}
 										}
 

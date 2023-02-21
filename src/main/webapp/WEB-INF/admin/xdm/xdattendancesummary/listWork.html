@@ -11,21 +11,20 @@
             <div class="panel panel-search">
                 <div class="panel-body">
                     <div class="form-inline">
+
                         <div class="form-group">
-                            <input id="shiftname" placeholder="班次名称" class="form-control">
-                        </div>
-                       <!-- <div class="form-group">
                             <div class="input-group date form_datetime">
-                                <input id="searchStartTime" placeholder="开始时间" class="form-control">
+                                <input id="work_date" placeholder="日期" class="form-control" value="#(now)">
                                 <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
                             </div>
                         </div>
+
                         <div class="form-group">
-                            <div class="input-group date form_datetime">
-                                <input id="searchEndTime" placeholder="结束时间" class="form-control">
-                                <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
-                            </div>
-                        </div>-->
+                            <input id="hours" placeholder="小时" class="form-control">
+                            <input id="minus" placeholder="分钟" class="form-control">
+                        </div>
+
+
                         <div class="form-group">
                             <button class="btn btn-primary" type="button" onclick="searchTable()">搜索</button>
                         </div>
@@ -34,10 +33,10 @@
             </div>
             <div class="panel ">
                 <div class="panel-body">
-                    <a id="add" class="btn btn-primary data-toolbar" href="#(ctx)/admin/xd/xdshift/getEditPage?view=edit"><i class="demo-pli-add"></i> 添加</a>
+                    <a id="add" class="btn btn-primary data-toolbar" href="#(ctx)/admin/xd/xdsettleovertimesummary/getEditPage?view=edit"><i class="demo-pli-add"></i> 添加</a>
                     <a id="del" class="btn btn-danger data-toolbar" onclick="delSel()" href="javascript:void(0);"><i class="demo-pli-cross"></i> 批量删除</a>
                     <a id="filePicker"  href="javascript:void(0);" ><i class="demo-pli-add"></i> 导入</a>
-                    <table id="pageTable" class="demo-add-niftycheck" data-toolbar="#del,#add,#filePicker"
+                    <table id="pageTable" class="demo-add-niftycheck table table-bordered" data-toolbar="#del,#add,#filePicker,#export"
                            data-search="true"
                            data-show-refresh="true"
                            data-show-toggle="true"
@@ -55,42 +54,11 @@
 
     var col = [{field: 'checked', checkbox : true, align: 'center'},
 
-        {field: 'shiftname', title: '班次名称', align: 'center'},
-        {field: 'busitime', title: '上班时间', align: 'center'},
-        {field: 'unbusitime', title: '下班时间', align: 'center'},
-        {field: 'timebucket', title: '时间段', align: 'center'},
-        {field: 'hours', title: '上班时长', align: 'center'},
-        {field: 'middleshift', title: '中班', align: 'center'},
-        {field: 'nigthshift', title: '夜班', align: 'center'},
-        {field: 'shiftcost', title: '中/夜班费', align: 'center'},
-        {field: 'duty_time', title: '值班时间', align: 'center'},
-        {field: 'duty_hours', title: '值班时长', align: 'center'},
-        {field: 'dutyamount', title: '值班金额', align: 'center'},
-        {field: 'dutydesc', title: '值班说明', align: 'center'},
-        {field: 'span_day', title: '是否跨天', align: 'center',formatter:function(value,row,index){
-            if(value=='1'){
-                return "是";
-            }else{
-                return "否";
-            }
-            }},
-        {field: 'curday_hours', title: '当天时长', align: 'center'},
-        {field: 'span_hours', title: '跨天时长', align: 'center'},
-
-        {field: 'remarks', title: '备注', align: 'center'},
-
-
-        {field: 'control', title: '操作', align: 'left', width:'200',
-            formatter:function(value,row,index){
-                //通过formatter可以自定义列显示的内容
-                //value：当前field的值，即id
-                //row：当前行的数据
-                var a = '<a class="label label-table label-success" href="'+ctx+'/admin/xd/xdshift/getEditPage?id='+row.id+'&view=detail" >查看</a>&nbsp;';
-                a = a + '<a class="label label-table label-success" href="'+ctx+'/admin/xd/xdshift/getEditPage?id='+row.id+'&view=edit" >编辑</a>&nbsp;';
-                a = a + '<a class="label label-table label-danger" onclick="del(\''+row.id+'\')" href="javascript:void(0);" >删除</a>';
-                return a;
-            }
-        }];
+        {field: 'emp_num', title: '工号', align: 'center'},
+        {field: 'emp_name', title: '姓名', align: 'center'},
+        {field: 'schedule_year_month', title: '年月', align: 'center'},
+        {field: 'shift', title: '班次', align: 'center'},
+        ];
     var opt = {
         //请求方法
         method: 'get',
@@ -113,14 +81,17 @@
         //可供选择的每页的行数（*）
         pageList: [10, 25, 50, 100],
         //这个接口需要处理bootstrap table传递的固定参数,并返回特定格式的json数据
-        url: ctx+"/admin/xd/xdshift/listData",
+        url: ctx+"/admin/xd/xdattendancesummary/listWorkData",
         //默认值为 'limit',传给服务端的参数为：limit, offset, search, sort, order Else
         //queryParamsType:'',
         ////查询参数,每次调用是会带上这个参数，可自定义
         queryParams : function(params) {
             return {
                 pageNumber: (params.offset/params.limit)+1,
-                pageSize: params.limit
+                pageSize: params.limit,
+                "work_date":$("#work_date").val(),
+                "hours":$("#hours").val(),
+                "min":$("#minus").val(),
             };
         },
         //分页方式：client客户端分页，server服务端分页（*）
@@ -161,11 +132,11 @@
     function del(ids){
         pointLion.confimMsg("您是否要删除所选信息 ?<br/> 点击确认进行删除 , 点击取消取消该操作",null,function(){
             //执行删除
-            var data = common_ajax.ajaxFunc("/admin/xd/xdshift/delete",{"ids":ids}, "json", null);
+            var data = common_ajax.ajaxFunc("/admin/xd/xdsettleovertimesummary/delete",{"ids":ids}, "json", null);
             //删除结果
             if(data.success){
                 pointLion.alertMsg(data.message,"success",null,function(){
-                    location.href = ctx+'/admin/xd/xdshift/getListPage';//跳转到列表页
+                    location.href = ctx+'/admin/xd/xdsettleovertimesummary/getListPage';//跳转到列表页
                 });
             }else{
                 pointLion.alertMsg(data.message,"success",null,null);
@@ -175,10 +146,14 @@
 
     //查询
     function searchTable(){
-        var shiftname =encodeURIComponent($("#shiftname").val());
+        let work_date = $("#work_date").val();
+        let hours =$("#hours").val();
+        let min =	$("#minus").val();
         var param = {
             query: {
-                "shiftname":shiftname
+                "work_date":work_date,
+                "hours":hours,
+                "min":min,
             }
         }
         // 刷新表格
@@ -189,7 +164,7 @@
         $('.form_datetime').datepicker({format: 'yyyy-mm-dd',weekStart: 1,todayBtn:  1,autoclose: 1,language:  'zh-CN',todayHighlight: 1,forceParse: 0,clearBtn: true }).on('changeDate',null);
         initTable();//初始化
 
-        pointLion.initUploader("/admin/xd/xdshift/importExcel",function(data){
+        pointLion.initUploader("/admin/xd/xdsettleovertimesummary/importExcel",function(data){
             if(data.success){
                 pointLion.alertMsg("导入成功！","success",null,null);
                 searchTable();
@@ -198,4 +173,36 @@
             }
         });
     });
+    /***
+     * 导出
+     */
+
+    function exportExcel(){
+
+        let dept = $("#dept").val();
+        let emp_name =encodeURIComponent($("#emp_name").val());
+        let unitname = $("#unitname").val();
+        let year =$("#year").val();
+        let month =	$("#month").val();
+        /*	if(year==''||month==''){
+                pointLion.alertMsg("请选择年月！","success",null,null);
+                return;
+            }*/
+        location.href = "#(ctx)/admin/xd/xdsettleovertimesummary/exportExcel?dept="+dept+"&emp_name="+emp_name+"&unitname="+unitname+"&year="+year+"&month="+month;
+    }
+    //导出加班分摊
+    function exportApportionExcel(){
+
+        let dept = $("#dept").val();
+        let emp_name =encodeURIComponent($("#emp_name").val());
+        let unitname = $("#unitname").val();
+        let year =$("#year").val();
+        let month =	$("#month").val();
+        /*	if(year==''||month==''){
+                pointLion.alertMsg("请选择年月！","success",null,null);
+                return;
+            }*/
+        location.href = "#(ctx)/admin/xd/xdsettleovertimesummary/exportApportionExcel?dept="+dept+"&emp_name="+emp_name+"&unitname="+unitname+"&year="+year+"&month="+month;
+    }
+
 </script>

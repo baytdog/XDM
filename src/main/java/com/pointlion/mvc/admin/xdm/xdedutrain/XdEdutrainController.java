@@ -32,6 +32,14 @@ public class XdEdutrainController extends BaseController {
 	 * get list page
 	 */
 	public void getListPage(){
+
+		List<XdDict> dicts = XdDict.dao.find("select *from  xd_dict where  type='edu' order by sortnum");
+		String dictStr="";
+		Map<String,String> map =new HashMap<>();
+		for (XdDict dict : dicts) {
+			dictStr=dictStr+dict.getValue()+"="+dict.getName()+",";
+		}
+		setAttr("dictStr",dictStr);
 		renderIframe("list.html");
     }
 	/***
@@ -41,12 +49,13 @@ public class XdEdutrainController extends BaseController {
     	String curr = getPara("pageNumber");
     	String pageSize = getPara("pageSize");
 		String name = java.net.URLDecoder.decode(getPara("name",""),"UTF-8");
+//		String name = new String(getPara("name","").getBytes("ISO-8859-1"), "utf-8");
 		String trainOrgname = java.net.URLDecoder.decode(getPara("trainOrgname",""),"UTF-8");
 		String major = java.net.URLDecoder.decode(getPara("major",""),"UTF-8");
 		String edubg = java.net.URLDecoder.decode(getPara("edubg",""),"UTF-8");
 		String enrolldate =  getPara("enrolldate","");
 		String graduatdate =  getPara("graduatdate","");
-    	Page<Record> page = service.getPage(Integer.valueOf(curr),Integer.valueOf(pageSize),"","","","","","");
+    	Page<Record> page = service.getPage(Integer.valueOf(curr),Integer.valueOf(pageSize),name,"","","","","");
     	renderPage(page.getList(),"",page.getTotalRow());
     }
     /***
@@ -167,7 +176,7 @@ public class XdEdutrainController extends BaseController {
 	 */
 	public void importExcel() throws IOException, SQLException {
 		UploadFile file = getFile("file","/content");
-		List<List<String>> list = ExcelUtil.excelToStringList(file.getFile().getAbsolutePath());
+		List<List<String>> list = ExcelUtil.excelToStringList(file.getFile().getAbsolutePath(),4);
 		Map<String,Object> result = service.importExcel(list);
 		if((Boolean)result.get("success")){
 			renderSuccess((String)result.get("message"));

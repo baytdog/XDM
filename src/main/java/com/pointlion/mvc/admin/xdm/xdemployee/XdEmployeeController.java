@@ -17,10 +17,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Consumer;
 
 
@@ -43,6 +40,15 @@ public class XdEmployeeController extends BaseController {
 		List<XdProjects> projects = XdProjects.dao.find("select * from xd_projects where status='1' ");
 		setAttr("projects",projects);
 
+		List<SysOrg> orgList = SysOrg.dao.find("select * from  sys_org where id !='root' order by sort");
+
+		setAttr("orgs",orgList);
+		String orgStr="";
+		Map<String,String> map =new HashMap<>();
+		for (SysOrg org : orgList) {
+			orgStr=orgStr+org.getId()+"="+org.getName()+",";
+		}
+		setAttr("orgStr",orgStr);
 		renderIframe("list.html");
     }
 	/***

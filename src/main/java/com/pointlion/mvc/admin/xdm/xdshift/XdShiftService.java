@@ -84,6 +84,7 @@ public class XdShiftService{
 						String time = DateUtil.getCurrentTime();
 						for(int i = 1;i<list.size();i++){//从第二行开始取
 							List<String> shiftStr = list.get(i);
+							System.out.println(shiftStr);
 							XdShift shift=new XdShift();
 							shift.setId(UuidUtil.getUUID());
 							shift.setCtime(time);
@@ -96,13 +97,16 @@ public class XdShiftService{
 							shift.setBusitime(shiftStr.get(1));
 							shift.setUnbusitime(shiftStr.get(2));
 							shift.setTimebucket(shiftStr.get(3));
-							shift.setHours(Double.valueOf(shiftStr.get(4)));
+							shift.setHours(shiftStr.get(4));
 							shift.setMiddleshift(shiftStr.get(5));
 							shift.setNigthshift(shiftStr.get(6));
 							shift.setShiftcost(shiftStr.get(7));
-							shift.setDutyamount(shiftStr.get(8));
-							shift.setDutydesc(shiftStr.get(9));
-							shift.setRemarks(shiftStr.get(10));
+							shift.setDutyTime(shiftStr.get(8));
+							shift.setDutyHours(Double.valueOf(shiftStr.get(9).equals("")?"0":shiftStr.get(9)));
+							shift.setDutyamount(shiftStr.get(10));
+							shift.setDutydesc(shiftStr.get(11));
+							shift.setRemarks(shiftStr.get(12));
+							shift.setSortNum(i);
 							shift.save();
 						}
 						if(result.get("success")==null){

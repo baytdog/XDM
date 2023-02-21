@@ -126,6 +126,7 @@
 				{field: 'control', title: '操作', align: 'left', width:'60',valign:'middle',halign:"center",
 					formatter:function(value,row,index){
 						var	a = '<a class="label label-table label-danger" onclick="del(\''+row.id+'\')" href="javascript:void(0);" >删除</a>';
+						a = a + '<a class="label label-table label-success" href="'+ctx+'/admin/xd/xdattendancesummary/getEditPage?id='+row.id+'&view=edit" >编辑</a>&nbsp;';
 						return a;
 					}, colspan: 1,rowspan: 3
 				})

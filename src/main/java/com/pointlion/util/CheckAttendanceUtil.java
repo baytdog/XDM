@@ -69,7 +69,13 @@ public class CheckAttendanceUtil {
         if(StrKit.notBlank(agrs[2])){
             sql=sql+" and apply_type='"+agrs[2]+"'";
         }
+        /*if(StrKit.notBlank(agrs[3])){
+            sql=sql+" and apply_start='"+agrs[3]+"'";
+        }
 
+        if(StrKit.notBlank(agrs[4])){
+            sql=sql+" and apply_end='"+agrs[4]+"'";
+        }*/
 
      /*   XdOvertimeSummary otSummary = XdOvertimeSummary.dao.findFirst(
                 "select * from  xd_overtime_summary where apply_date='" + ymdInLine +

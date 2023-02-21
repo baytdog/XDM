@@ -58,7 +58,7 @@ public class XdOvertimeSummaryService{
 			sql = sql + " and o.apply_type='"+overtimeType+"'";
 		}
 		if(StrKit.notBlank(apply_date)){
-			String[] split = apply_date.split("-");
+		/*	String[] split = apply_date.split("-");
 			String month=split[1];
 			String day=split[2];
 			if(month.startsWith("0")){
@@ -68,10 +68,11 @@ public class XdOvertimeSummaryService{
 				day=day.replaceAll("0","");
 			}
 			String ymd=split[0]+"/"+month+"/"+day;
-			sql = sql + " and o.apply_date='"+ymd+"'";
+			sql = sql + " and o.apply_date='"+ymd+"'";*/
+			sql = sql + " and o.apply_date='"+apply_date+"'";
 		}
 
-		sql = sql + " order by o.create_date desc";
+		sql = sql + " order by o.emp_num ";
 		return Db.paginate(pnum, psize, " select * ", sql);
 	}
 	

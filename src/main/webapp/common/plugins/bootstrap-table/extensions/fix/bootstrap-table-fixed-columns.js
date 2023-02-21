@@ -277,7 +277,7 @@
         this.$rightfixedBody.hide();
         return;
       }
-      console.log("height3="+height);
+      // console.log("height3="+height);
       if (!this.options.height) {
         top = this.$rightfixedHeader.height() - 1;
         height2 = height2 - top;
@@ -294,7 +294,7 @@
         //top: top + 1,*/
       }).show();
 
-      console.log("5555")
+      // console.log("5555")
 
 
       this.$body.find('> tr').each(function (i) {

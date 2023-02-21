@@ -6,15 +6,18 @@ import com.pointlion.mvc.common.model.*;
 import com.pointlion.plugin.shiro.ShiroKit;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateUtils;
 
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Consumer;
 
 /**
@@ -215,6 +218,26 @@ public class XdOperUtil {
         }
 
 
+
+     /*   Calendar calendar = new GregorianCalendar(1900,0,-1);
+        int intDay = Integer.parseInt("33899");
+        Date dd = DateUtils.addDays(calendar.getTime(),intDay);
+        System.out.println(new SimpleDateFormat("yyyy-MM-dd").format(dd));*/
+
+        double abc=31.1;
+        String emd="31";
+        System.out.println(Double.valueOf(emd.equals("")?"0":emd).intValue());
+     //   System.out.println(Integer.valueOf(emd));
+        System.out.println((int) abc);
+        System.out.println(Integer.valueOf("31"));
+
+        System.out.println(1 % 5);
+        System.out.println(6 / 5);
+
+
+        System.out.println(LocalDate.parse("2023-10-10").plusDays(1).getMonth());
+
+
     }
 
     public static void setChangeValue(Object obj,String fieldName,String newValue)  {
@@ -235,6 +258,13 @@ public class XdOperUtil {
         }
     }
 
+    public static String numToDateFormat(String num){
+        Calendar calendar = new GregorianCalendar(1900,0,-1);
+        int intDay = Integer.parseInt(num);
+        Date dd = DateUtils.addDays(calendar.getTime(),intDay);
+        System.out.println(new SimpleDateFormat("yyyy-MM-dd").format(dd));
+        return new SimpleDateFormat("yyyy-MM-dd").format(dd);
+    }
 
 
     /**

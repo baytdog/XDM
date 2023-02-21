@@ -188,7 +188,7 @@ public class XdEdutrainService{
 
 
 
-		File file = ExcelUtil.workExperFile(path,rows);
+		File file = ExcelUtil.eduFile(path,rows);
 		return file;
 	}
 
@@ -205,28 +205,66 @@ public class XdEdutrainService{
 			@Override
 			public boolean run() throws SQLException {
 				try{
-					if(list.size()>1){
+					if(list.size()>2){
 						SimpleUser user = ShiroKit.getLoginUser();
 						String time = DateUtil.getCurrentTime();
-						for(int i = 1;i<list.size();i++){//从第二行开始取
+						for(int i = 2;i<list.size();i++){//从第二行开始取
 							List<String> eduStr = list.get(i);
 							XdEdutrain edutrain=new XdEdutrain();
 							edutrain.setId(UuidUtil.getUUID());
 							edutrain.setCtime(time);
 							edutrain.setCuser(user.getId());
-							if(eduStr.get(1)==null ||"".equals(eduStr.get(1).trim())){
+							if(eduStr.get(0)==null ||"".equals(eduStr.get(0).trim())){
 								continue;
 							}
-							XdEmployee employee = XdEmployee.dao.findFirst("select * from xd_employee where name ='" + eduStr.get(1) + "'");
+							XdEmployee employee = XdEmployee.dao.findFirst("select * from xd_employee where name ='" + eduStr.get(0) + "'");
 							edutrain.setEid(employee.getId());
-							edutrain.setEname(eduStr.get(1));
-							edutrain.setEnrolldate(eduStr.get(2)==null?"":eduStr.get(2));
+							edutrain.setEname(eduStr.get(0));
+
+							boolean flag=false;
+							int j=1;
+							while (true){
+								int k = j % 5;
+								if(k==3 && "".equals(eduStr.get(j))){
+									flag=true;
+									break;
+								}else{
+									switch (k){
+										case 1:
+											edutrain.setEnrolldate(eduStr.get(j)==null?"":eduStr.get(j));
+											break;
+										case 2:
+											edutrain.setGraduatdate(eduStr.get(j)==null?"":eduStr.get(j));
+											break;
+										case 3:
+											edutrain.setTrainOrgname(eduStr.get(j)==null?"":eduStr.get(j));
+											break;
+										case 4:
+											edutrain.setMajor(eduStr.get(j)==null?"":eduStr.get(j));
+											break;
+										case 0:
+											edutrain.setEdubg(eduStr.get(j)==null?"":eudMap.get(eduStr.get(j)));
+											edutrain.setGrade("1");
+											edutrain.setId(UuidUtil.getUUID());
+											edutrain.save();
+											break;
+									}
+
+								}
+								j++;
+							}
+
+							if (flag) {
+								continue;
+							}
+
+							/*edutrain.setEnrolldate(eduStr.get(2)==null?"":eduStr.get(2));
 							edutrain.setGraduatdate(eduStr.get(3)==null?"":eduStr.get(3));
 							edutrain.setTrainOrgname(eduStr.get(4)==null?"":eduStr.get(4));
 							edutrain.setMajor(eduStr.get(5)==null?"":eduStr.get(5));
 							edutrain.setEdubg(eduStr.get(6)==null?"":eudMap.get(eduStr.get(6)));
 							edutrain.setGrade(eduStr.get(6)==null?"":(eduStr.get(6).equals("全日制")==true?"0":"1"));
-							edutrain.save();
+							edutrain.save();*/
 
 						}
 						if(result.get("success")==null){

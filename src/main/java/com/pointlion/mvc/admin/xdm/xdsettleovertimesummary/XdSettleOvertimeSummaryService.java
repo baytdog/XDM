@@ -34,17 +34,17 @@ public class XdSettleOvertimeSummaryService{
 	/***
 	 * get page
 	 */
-	public Page<Record> getPage(int pnum,int psize,String startTime,String endTime,String applyUser){
+	public Page<Record> getPage(int pnum,int psize,String emp_name,String year,String month){
 		String userId = ShiroKit.getUserId();
 		String sql  = " from "+TABLE_NAME+" o  where 1=1";
-		if(StrKit.notBlank(startTime)){
-			sql = sql + " and o.create_time>='"+ DateUtil.formatSearchTime(startTime,"0")+"'";
+		if(StrKit.notBlank(emp_name)){
+			sql = sql + " and o.emp_name like'"+emp_name+"%'";
 		}
-		if(StrKit.notBlank(endTime)){
-			sql = sql + " and o.create_time<='"+DateUtil.formatSearchTime(endTime,"1")+"'";
+		if(StrKit.notBlank(year)){
+			sql = sql + " and o.apply_date like '%"+year+"%'";
 		}
-		if(StrKit.notBlank(applyUser)){
-			sql = sql + " and o.applyer_name like '%"+applyUser+"%'";
+		if(StrKit.notBlank(month)){
+			sql = sql + " and o.apply_date like '%-"+month+"-%'";
 		}
 		sql = sql + " order by o.create_date desc";
 		return Db.paginate(pnum, psize, " select * ", sql);

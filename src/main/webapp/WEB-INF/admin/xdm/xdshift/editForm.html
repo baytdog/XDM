@@ -47,6 +47,22 @@
 							<div class="col-md-3">
 								<input type="text"  name="#(formModelName).shiftcost" class="form-control"  value="#(o?o.shiftcost:'')"  >
 							</div>
+							<label class="col-md-1 control-label">排序号</label>
+							<div class="col-md-3">
+								<input type="text"  name="#(formModelName).sort_num" class="form-control"  value="#(o?o.sort_num:'')"  >
+							</div>
+
+						</div>
+						<div class="form-group">
+							<label class="col-md-1 control-label">值班时间</label>
+							<div class="col-md-3">
+								<input type="text"  name="#(formModelName).duty_time" class="form-control"  value="#(o?o.duty_time:'')"  >
+							</div>
+							<label class="col-md-1 control-label">值班时长</label>
+							<div class="col-md-3">
+								<input type="text"  name="#(formModelName).duty_hours" class="form-control"  value="#(o?o.duty_hours:'')"  >
+							</div>
+
 							<label class="col-md-1 control-label">值班金额</label>
 							<div class="col-md-3">
 								<input type="text"  name="#(formModelName).dutyamount" class="form-control"  value="#(o?o.dutyamount:'')"  >
@@ -71,12 +87,9 @@
 							</div>
 						</div>
 						<div class="form-group">
-							<label class="col-md-1 control-label">排序号</label>
-							<div class="col-md-3">
-								<input type="text"  name="#(formModelName).sort_num" class="form-control"  value="#(o?o.sort_num:'')"  >
-							</div>
+
 							<label class="col-md-1 control-label">值班说明</label>
-							<div class="col-md-5">
+							<div class="col-md-11">
 								<input type="text"  name="#(formModelName).dutydesc" class="form-control"  value="#(o?o.dutydesc:'')"  >
 							</div>
 						</div>

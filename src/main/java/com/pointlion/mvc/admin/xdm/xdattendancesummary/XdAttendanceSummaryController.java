@@ -19,6 +19,7 @@ import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.SQLException;
+import java.sql.Time;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -30,6 +31,25 @@ import java.util.stream.Collectors;
 
 public class XdAttendanceSummaryController extends BaseController {
 	public static final XdAttendanceSummaryService service = XdAttendanceSummaryService.me;
+
+
+	public void getlistWorkPage(){
+		setAttr("now",DateTimeFormatter.ofPattern("yyyy-MM-dd").format(LocalDate.now()));
+		renderIframe("listWork.html");
+	}
+
+
+	public void listWorkData() throws UnsupportedEncodingException {
+		String pageSize = getPara("pageSize");
+		String curr = getPara("pageNumber");
+		String emp_name = java.net.URLDecoder.decode(getPara("emp_name",""),"UTF-8");
+		String work_date = getPara("work_date","");
+		String hours = getPara("hours","");
+		String min = getPara("min","");
+		Page<Record> page = service.getPage(Integer.valueOf(curr),Integer.valueOf(pageSize),work_date, hours,min);
+		renderPage(page.getList(),"",page.getTotalRow());
+	}
+
 	/***
 	 * get list page
 	 */
@@ -489,7 +509,7 @@ public class XdAttendanceSummaryController extends BaseController {
 						}else{
 							setOTSummary.setActStart(shift.getBusitime());
 							setOTSummary.setActEnd(shift.getUnbusitime());
-							setOTSummary.setActHours(shift.getHours());
+							setOTSummary.setActHours(Double.valueOf(shift.getHours()));
 						}
 
 						setOTSummary.save();
@@ -598,7 +618,7 @@ public class XdAttendanceSummaryController extends BaseController {
 								}else{
 //									不是跨天
 									if(sb.indexOf(dayModel.getId())==-1 &&  "0".equals(otFlags[i])){
-										work_hour+=shift.getHours();
+										work_hour+=Double.valueOf(shift.getHours());
 									}
 								}
 							}

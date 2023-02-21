@@ -64,7 +64,18 @@
                 	</div>
 				</div>
 <script>
-	
+
+
+	let dictStr='#(dictStr)';
+	let euds = dictStr.split(",");
+	let eduMap = new Map();
+	for(let item of euds) {
+		/*if(item.value!=''){
+			projectMap.set(item.value, item.text);
+		}*/
+		eduMap.set(item.split("=")[0], item.split("=")[1])
+
+	}
 	var col = [{field: 'checked', checkbox : true, align: 'center'},
 
 		{field: 'ename', title: '姓名', align: 'center'},
@@ -73,7 +84,7 @@
 		{field: 'trainOrgname', title: '学校/培训机构名称', align: 'center'},
 		{field: 'major', title: '专业', align: 'center'},
 		{field: 'edubg', title: '学历', align: 'center', formatter:function(value,row,index){
-				if(value=='1'){
+				/*if(value=='1'){
 					return "技工";
 				}else if(value=='2'){
 					return "职高";
@@ -85,7 +96,8 @@
 					return "大专";
 				}else if(value=='6'){
 					return "本科";
-				}
+				}*/
+				return eduMap.get(value);
 			}},
 		{field: 'grade', title: '日制', align: 'center', formatter:function(value,row,index){
 				if(value=='0'){

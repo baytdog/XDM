@@ -5,12 +5,13 @@ import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.plugin.activerecord.Record;
 import com.jfinal.upload.UploadFile;
 import com.pointlion.enums.XdOperEnum;
-import com.pointlion.mvc.admin.oa.workflow.WorkFlowService;
 import com.pointlion.mvc.common.base.BaseController;
-import com.pointlion.mvc.common.model.*;
+import com.pointlion.mvc.common.model.XdEmployee;
+import com.pointlion.mvc.common.model.XdOplogDetail;
+import com.pointlion.mvc.common.model.XdOplogSummary;
+import com.pointlion.mvc.common.model.XdWorkExper;
 import com.pointlion.mvc.common.utils.*;
 import com.pointlion.mvc.common.utils.office.excel.ExcelUtil;
-import com.pointlion.plugin.shiro.ShiroKit;
 
 import java.io.File;
 import java.io.IOException;
@@ -162,7 +163,7 @@ public class XdWorkExperController extends BaseController {
 	 */
 	public void importExcel() throws IOException, SQLException {
 		UploadFile file = getFile("file","/content");
-		List<List<String>> list = ExcelUtil.excelToStringList(file.getFile().getAbsolutePath());
+		List<List<String>> list = ExcelUtil.excelToStringList(file.getFile().getAbsolutePath(),3);
 		Map<String,Object> result = service.importExcel(list);
 		if((Boolean)result.get("success")){
 			renderSuccess((String)result.get("message"));

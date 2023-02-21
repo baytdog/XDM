@@ -854,8 +854,8 @@ public class XdEmployeeService{
 							emp.setEmpnum(empStr.get(1));
 							emp.setName(empStr.get(2));
 							emp.setIdnum(empStr.get(3));
-							emp.setGender(empStr.get(4).equals("女")?"0":"1");
-							String org = empStr.get(5);
+
+							String org = empStr.get(4);
 
 							String orgid = orgMap.get(org);
 							//SysOrg orgInfo = SysOrg.dao.findFirst("select * from sys_org where name ='" + org + "'");
@@ -868,34 +868,37 @@ public class XdEmployeeService{
 
 //							XdDict unit = XdDict.dao.findFirst("select * from xd_dict where type='unit' and name ='" + empStr.get(6) + "'");
 							Map<String, String> unit = dictMapping.get("unit");
-							 unit.get(empStr.get(6));
+							// unit.get(empStr.get(5));
 							/*if(unit==null){
 								emp.setUnitname(0);//所属单元empStr.get(6)
 							}else{
 								emp.setUnitname(Integer.valueOf(unit.getValue()));
 							}*/
-							if(unit.get(empStr.get(6))==null){
+							if(unit.get(empStr.get(5))==null){
 								emp.setUnitname("0");//所属单元empStr.get(6)
 							}else{
-								emp.setUnitname(unit.get(empStr.get(6)));
+								emp.setUnitname(unit.get(empStr.get(5)));
 							}
-							String projectValue = (projectsMap.get(empStr.get(7)))==null?"0":projectsMap.get(empStr.get(7));
+							String projectValue = (projectsMap.get(empStr.get(6)))==null?"0":projectsMap.get(empStr.get(6));
 							emp.setCostitem(projectValue);
-							emp.setEntrytime(empStr.get(8));
-							emp.setPositivedate(empStr.get(9));
-							emp.setDepartime(empStr.get(10));
+							emp.setEntrytime(empStr.get(7));
+							emp.setPositivedate(empStr.get(8));
+							emp.setDepartime(empStr.get(9));
+							emp.setLeaveReason(empStr.get(10));
 							Map<String, String> officestatus = dictMapping.get("officestatus");
 							if(officestatus.get(empStr.get(11))==null){
 								emp.setInductionstatus("0");//就职状态empStr.get(11)
 							}else{
 								emp.setInductionstatus(officestatus.get(empStr.get(11)));
 							}
-							emp.setBirthday(empStr.get(12));
-							emp.setSeniority(empStr.get(13));
-							emp.setAge(Integer.valueOf(empStr.get(14)));
-							emp.setRetiretime(empStr.get(15));
-							emp.setRetirestatus(empStr.get(16));
-							emp.setEmprelation(empStr.get(17));
+							emp.setGender(empStr.get(12).equals("女")?"0":"1");
+							emp.setBirthday("".equals(empStr.get(13))?"":XdOperUtil.numToDateFormat(empStr.get(13)));
+							emp.setSeniority(empStr.get(14));
+							Double age =Double.valueOf(empStr.get(15));
+							emp.setAge(Integer.valueOf(empStr.get(15)));
+							emp.setRetiretime("".equals(empStr.get(16))?"":XdOperUtil.numToDateFormat(empStr.get(16)));
+							emp.setRetirestatus(empStr.get(17));
+							emp.setEmprelation(empStr.get(18));
 							/*XdDict position = XdDict.dao.findFirst("select * from xd_dict where type='position' and name ='" + empStr.get(18) + "'");
 							if(position==null){
 								emp.setPosition(0);//职位empStr.get(18)
@@ -903,19 +906,27 @@ public class XdEmployeeService{
 								emp.setPosition(Integer.valueOf(position.getValue()));
 							}*/
 							Map<String, String> position = dictMapping.get("position");
-							if(position.get(empStr.get(18))==null){
-								emp.setPosition("0");//职位empStr.get(18)
+							System.out.println("职位=============="+empStr.get(19));
+							System.out.println(position.get(empStr.get(19)));
+							if(position.get(empStr.get(19))==null){
+								emp.setPosition("0");//职位empStr.get(19)
 							}else{
-								emp.setPosition(position.get(empStr.get(18)));
+								emp.setPosition(position.get(empStr.get(19)));
+							}
+							Map<String, String> duty = dictMapping.get("duty");
+							if(empStr.get(20).equals("")){
+								emp.setWorkstation("");
+							}else{
+								emp.setWorkstation(duty.get(empStr.get(20)));
 							}
 
-							emp.setWorkstation(empStr.get(19));
-							emp.setTel(empStr.get(20));
+							//emp.setWorkstation(empStr.get(20));
+							emp.setTel(empStr.get(21));
 //							emp.setNational(empStr.get(21));
-							if(empStr.get(21)==null){
+							if(empStr.get(22)==null){
 								emp.setNational("");
 							}else{
-								String nation = dictMapping.get("nation").get(empStr.get(21));
+								String nation = dictMapping.get("nation").get(empStr.get(22));
 								if(nation==null){
 									emp.setNational("");
 								}else{
@@ -924,11 +935,11 @@ public class XdEmployeeService{
 							}
 //							政治面貌
 //							emp.setPoliticsstatus(empStr.get(22));
-							String politicsstatus = empStr.get(22);
+							String politicsstatus = empStr.get(23);
 							if(politicsstatus==null){
 								emp.setPoliticsstatus("");
 							}else{
-								String polity = dictMapping.get("polity").get(empStr.get(22));
+								String polity = dictMapping.get("polity").get(empStr.get(23));
 								if (polity == null) {
 									emp.setPoliticsstatus("");
 								}else{
@@ -939,7 +950,7 @@ public class XdEmployeeService{
 
 
 							Map<String, String> ismarry = dictMapping.get("ismarry");
-							String marryCode=ismarry.get(empStr.get(23))==null?"0":ismarry.get(empStr.get(23));
+							String marryCode=ismarry.get(empStr.get(24))==null?"0":ismarry.get(empStr.get(24));
 							emp.setMarried(marryCode);
 
 
@@ -952,7 +963,7 @@ public class XdEmployeeService{
 								emp.setTopedu(edu.getValue());
 							}*/
 							Map<String, String> eduMap = dictMapping.get("edu");
-							String  edu=eduMap.get(empStr.get(24))==null?empStr.get(24):eduMap.get(empStr.get(24)).toString();
+							String  edu=eduMap.get(empStr.get(25))==null?empStr.get(25):eduMap.get(empStr.get(25)).toString();
 							emp.setTopedu(edu);
 
 
@@ -962,10 +973,10 @@ public class XdEmployeeService{
 							}else{
 								emp.setEdubg1(edu.getValue());
 							}*/
-							String edubg1=eduMap.get(empStr.get(25))==null?empStr.get(25):eduMap.get(empStr.get(25)).toString();
+							String edubg1=eduMap.get(empStr.get(26))==null?empStr.get(26):eduMap.get(empStr.get(26)).toString();
 							emp.setEdubg1(edubg1);
-							emp.setSchool1(empStr.get(26));//0
-							emp.setMajor1(empStr.get(27));//0
+							emp.setSchool1(empStr.get(27));//0
+							emp.setMajor1(empStr.get(28));//0
 							//emp.setEdubg2(empStr.get(28));//0
 							/*if(edu==null){
 								emp.setEdubg2(empStr.get(28));
@@ -973,37 +984,43 @@ public class XdEmployeeService{
 								emp.setEdubg2(edu.getValue());
 							}*/
 
-							String edubg2=eduMap.get(empStr.get(28))==null?empStr.get(28):eduMap.get(empStr.get(28)).toString();
+							String edubg2=eduMap.get(empStr.get(29))==null?empStr.get(29):eduMap.get(empStr.get(29)).toString();
 							emp.setEdubg2(edubg2);
-							emp.setEdubg1(edubg1);
-							emp.setSchool2(empStr.get(29));//0
-							emp.setMajor2(empStr.get(30));//0
-							emp.setTopdegree(empStr.get(31));//0
-							emp.setCensusregister(empStr.get(32));//0
-							emp.setBirthplace(empStr.get(33));//0
-							emp.setNativeplace(empStr.get(34));//0
-							emp.setPresentaddr(empStr.get(35));//0
-							emp.setCensusregisteraddr(empStr.get(36));//0
-							emp.setIssoldier("是".equals(empStr.get(37))?"1":"0");//会是否军人empStr.get(37)
+//							emp.setEdubg1(edubg1);
+							emp.setSchool2(empStr.get(30));//0
+							emp.setMajor2(empStr.get(31));//0
+							emp.setTopdegree(empStr.get(32));//0
+							emp.setCensusregister(empStr.get(33));//0
+							emp.setBirthplace(empStr.get(34));//0
+							emp.setNativeplace(empStr.get(35));//0
+							emp.setPresentaddr(empStr.get(36));//0
+							emp.setCensusregisteraddr(empStr.get(37));//0
+							emp.setIssoldier("是".equals(empStr.get(38))?"1":"0");//会是否军人empStr.get(37)
 
-							emp.setWorktime(empStr.get(38));//0
-							emp.setContractstartdate(empStr.get(39));//0
-							emp.setContractenddate(empStr.get(40));//0
-							emp.setContractclauses(0);// 合同期数empStr.get(41)
-							emp.setEmprelation(empStr.get(42));
-							emp.setProtechgrade(empStr.get(43));//0
-							emp.setProtechposts(empStr.get(44));//0
-							emp.setVocaqualifilevel(empStr.get(45));//0
-							emp.setVocaQualifilevel1(empStr.get(46));//0
-							emp.setCertificates(empStr.get(47));
-							emp.setSpecialty(empStr.get(48));
-							emp.setEmcontact(empStr.get(49));
-							emp.setBanaccount(empStr.get(50));//银行账号
-							emp.setFundaccount(empStr.get(51));//公积金账号
-							emp.setRecruitsource(empStr.get(52));
-							emp.setSalary(Integer.valueOf((empStr.get(53)==null||empStr.get(53).equals(""))?"0":empStr.get(53)));
-							emp.setSaladjrecord(empStr.get(54));
-							emp.setChrecord(empStr.get(55));
+							emp.setWorktime(empStr.get(39));//0
+							emp.setContractstartdate("".equals(empStr.get(40))?"":XdOperUtil.numToDateFormat(empStr.get(40)));//0
+							if(empStr.get(41).equals("")||empStr.get(41).equals("无固定期限")){
+								emp.setContractenddate(empStr.get(41));//0
+							}else{
+
+								emp.setContractenddate(XdOperUtil.numToDateFormat(empStr.get(41)));//0
+							}
+							emp.setContractclauses(Integer.valueOf(empStr.get(42).equals("")?"0":empStr.get(42)));// 合同期数empStr.get(41)
+//							emp.setEmprelation(empStr.get(42));
+							emp.setContractnature(empStr.get(43));
+							emp.setProtechgrade(empStr.get(44));//0
+							emp.setProtechposts(empStr.get(45));//0
+							emp.setVocaqualifilevel(empStr.get(46));//0
+							emp.setVocaQualifilevel1(empStr.get(47));//0
+							emp.setCertificates(empStr.get(48));
+							emp.setSpecialty(empStr.get(49));
+							emp.setEmcontact(empStr.get(50));
+							emp.setBanaccount(empStr.get(51));//银行账号
+							emp.setFundaccount(empStr.get(52));//公积金账号
+							emp.setRecruitsource(empStr.get(53));
+							emp.setSalary(Integer.valueOf((empStr.get(54)==null||empStr.get(54).equals(""))?"0":empStr.get(54)));
+							emp.setSaladjrecord(empStr.get(55));
+							emp.setChrecord(empStr.get(56));
 							emp.save();
 
 

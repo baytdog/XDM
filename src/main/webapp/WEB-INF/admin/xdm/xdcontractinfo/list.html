@@ -1,0 +1,169 @@
+
+<style>
+	.webuploader-pick{
+		padding: 0px 15px;
+		height: 33px;
+		line-height: 33px;
+	}
+</style>
+
+                <div id="page-content">
+			        <div class="col-sm-12 eq-box-sm">
+						<div class="panel">
+							<div class="panel panel-search">
+								<div class="panel-body">
+									<div class="form-inline">
+										<!--<div class="form-group">
+											<input id="applyUser" placeholder="�Ƶ���" class="form-control">
+										</div>
+										<div class="form-group">
+											<div class="input-group date form_datetime">
+												<input id="searchStartTime" placeholder="��ʼʱ��" class="form-control">
+												<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+											</div>
+										</div>
+										<div class="form-group">
+											<div class="input-group date form_datetime">
+												<input id="searchEndTime" placeholder="����ʱ��" class="form-control">
+												<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+											</div>
+										</div>
+										<div class="form-group">
+											<button class="btn btn-primary" type="button" onclick="searchTable()">����</button>
+										</div>-->
+									</div>
+								</div>
+							</div>
+							<div class="panel ">
+								<div class="panel-body">
+									<a id="add" class="btn btn-primary data-toolbar" href="#(ctx)/admin/xd/xdcontractinfo/getEditPage?view=edit"><i class="demo-pli-add"></i> 添加</a>
+									<a id="del" class="btn btn-danger data-toolbar" onclick="delSel()" href="javascript:void(0);"><i class="demo-pli-cross"></i> 删除</a>
+									<a id="filePicker"  href="javascript:void(0);" ><i class="demo-pli-add"></i> 导入</a>
+									<table id="pageTable" class="demo-add-niftycheck" data-toolbar="#del,#add,#filePicker"
+										   data-search="true"
+										   data-show-refresh="true"
+										   data-show-toggle="true"
+										   data-show-columns="true"
+										   data-sort-name="id"
+										   data-page-list="[5, 10, 20]"
+										   data-page-size="5"
+										   data-pagination="true" data-show-pagination-switch="true" ></table>
+								</div>
+							</div>
+			        	</div>
+                	</div>
+				</div>
+<script>
+	
+	var col = [{field: 'checked', checkbox : true, align: 'center'},
+	   
+		   {field: 'empnum', title: '工号', align: 'center'},
+		   {field: 'idnum', title: '身份证号', align: 'center'},
+		   {field: 'name', title: '姓名', align: 'center'},
+		   {field: 'age', title: '年龄', align: 'center'},
+		   {field: 'emprelation', title: '员工性质', align: 'center'},
+		   {field: 'contractstartdate', title: '合同起始日期', align: 'center'},
+		   {field: 'contractenddate', title: '合同结束日期', align: 'center'},
+		   {field: 'contractclauses', title: '期数', align: 'center'},
+		   {field: 'contractnature', title: '合同性质', align: 'center'},
+
+	   
+	  /* {field: 'control', title: '����', align: 'left', width:'200',
+	       formatter:function(value,row,index){
+	           	var a = '<a class="label label-table label-success" href="'+ctx+'/admin/xdcontractinfo/getEditPage?id='+row.id+'&view=detail" >�鿴</a>&nbsp;';
+	           	a = a + '<a class="label label-table label-success" href="'+ctx+'/admin/xdcontractinfo/getEditPage?id='+row.id+'&view=edit" >�༭</a>&nbsp;';
+				a = a + '<a class="label label-table label-danger" onclick="del(\''+row.id+'\')" href="javascript:void(0);" >ɾ��</a>';
+	           	return a;
+	       }
+	   }*/];
+	var opt = {
+			   method: 'get',
+			   striped: true,
+			   cache: false,
+			   pagination: true,
+			   sortable: false,
+			   sortOrder: "asc",
+			   pageSize: 10,
+			   pageList: [10, 25, 50, 100],
+			   url: ctx+"/admin/xd/xdcontractinfo/listData",
+			   queryParams : function(params) {
+			       return {
+			             pageNumber: (params.offset/params.limit)+1,
+			             pageSize: params.limit
+			           };
+			   },
+			   sidePagination: "server",
+			   search: false,
+			   //Enable the strict search.    
+			   strictSearch: true,
+			   //Indicate which field is an identity field.
+			   idField : "id",
+			   columns: col,
+			   pagination:true,paginationShowPageGo: true
+			}; 
+		
+	//���
+	function initTable(){
+		$('#pageTable').bootstrapTable(opt);
+		$('#pageTable').bootstrapTable('hideColumn', 'id');
+	}
+	function refreshTable(){
+		$("#pageTable").bootstrapTable('refresh', opt);
+		$('#pageTable').bootstrapTable('hideColumn', 'id');
+	}
+	
+	//����ɾ��
+	function delSel(){
+		var data = [];
+		$("#pageTable input[type='checkbox'][name!='btSelectAll']:checked").each(function(){
+			data.push($(this).val());
+		});
+		if(data.length==0){
+			pointLion.alertMsg("��ѡ��Ҫɾ��������!","danger",null,null);
+			return;
+		}
+		del(data.join(","));//ִ��ɾ��
+	}
+	//ɾ��
+	function del(ids){
+		pointLion.confimMsg("���Ƿ�Ҫɾ����ѡ��Ϣ ?<br/> ���ȷ�Ͻ���ɾ�� , ���ȡ��ȡ���ò���",null,function(){
+			//ִ��ɾ��
+			var data = common_ajax.ajaxFunc("/admin/xdcontractinfo/delete",{"ids":ids}, "json", null);
+			//ɾ�����
+			if(data.success){
+				pointLion.alertMsg(data.message,"success",null,function(){
+					location.href = ctx+'/admin/xdcontractinfo/getListPage';//��ת���б�ҳ
+				});
+			}else{
+				pointLion.alertMsg(data.message,"success",null,null);
+			}
+		});
+	};
+	function searchTable(){
+		var startTime = $("#searchStartTime").val();
+		var endTime = $("#searchEndTime").val();
+		var applyUser = $("#applyUser").val();
+		var param = {
+			query: {
+				"startTime":startTime,
+				"endTime":endTime,
+				"applyUser":applyUser
+			}
+		}
+		// ˢ�±��
+		$('#pageTable').bootstrapTable('refresh',param);
+	}
+
+	$(document).ready(function(){
+		$('.form_datetime').datepicker({format: 'yyyy-mm-dd',weekStart: 1,todayBtn:  1,autoclose: 1,language:  'zh-CN',todayHighlight: 1,forceParse: 0,clearBtn: true }).on('changeDate',null);
+		initTable();
+		pointLion.initUploader("/admin/xd/xdcontractinfo/importExcel",function(data){
+			if(data.success){
+				pointLion.alertMsg("导入成功！","success",null,null);
+				searchTable();
+			}else{
+				pointLion.alertMsg(data.message,"danger",null,null);
+			}
+		});
+	});
+</script>

@@ -49,12 +49,12 @@ public abstract class BaseXdShift<M extends BaseXdShift<M>> extends Model<M> imp
 		return getStr("timebucket");
 	}
 
-	public void setHours(Double hours) {
+	public void setHours(String hours) {
 		set("hours", hours);
 	}
 	
-	public Double getHours() {
-		return getDouble("hours");
+	public String getHours() {
+		return getStr("hours");
 	}
 
 	public void setMiddleshift(String middleshift) {
@@ -79,6 +79,22 @@ public abstract class BaseXdShift<M extends BaseXdShift<M>> extends Model<M> imp
 	
 	public String getShiftcost() {
 		return getStr("shiftcost");
+	}
+
+	public void setDutyTime(String dutyTime) {
+		set("duty_time", dutyTime);
+	}
+	
+	public String getDutyTime() {
+		return getStr("duty_time");
+	}
+
+	public void setDutyHours(Double dutyHours) {
+		set("duty_hours", dutyHours);
+	}
+	
+	public Double getDutyHours() {
+		return getDouble("duty_hours");
 	}
 
 	public void setDutyamount(String dutyamount) {

@@ -33,8 +33,8 @@ public class XdShiftController extends BaseController {
 	public void listData() throws UnsupportedEncodingException {
 		String curr = getPara("pageNumber");
 		String pageSize = getPara("pageSize");
-		String shiftname = java.net.URLDecoder.decode(getPara("shiftname",""),"UTF-8");
-		Page<Record> page = service.getPage(Integer.valueOf(curr),Integer.valueOf(pageSize),shiftname,"endTime","applyUser");
+		String shiftName = java.net.URLDecoder.decode(getPara("shiftname",""),"UTF-8");
+		Page<Record> page = service.getPage(Integer.valueOf(curr),Integer.valueOf(pageSize),shiftName,"endTime","applyUser");
 		renderPage(page.getList(),"",page.getTotalRow());
 	}
 	/***

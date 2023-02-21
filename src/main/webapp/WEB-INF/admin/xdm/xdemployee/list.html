@@ -24,12 +24,9 @@
 											<!--<input id="department" placeholder="所属部门" class="form-control">-->
 											<select class="selectpicker form-control"  id="department"  >
 												<option value="">------请选择部门------</option>
-												<option value="1">人力资源部</option>
-												<option value="2">外场单元部</option>
-												<option value="3">设施一部</option>
-												<option value="4">内场单元部</option>
-												<option value="5">工程/设施二部</option>
-												<option value="887163179b6c4eaabd06c44e47e41f92">职能部门</option>
+												#for(org:orgs)
+												<option value="#(org.id)">#(org.name)</option>
+												#end
 											</select>
 										</div>
 										<div class="form-group">
@@ -111,6 +108,24 @@
 			projectMap.set(item.value, item.text);
 		}
 	}
+
+	let orgStr='#(orgStr)';
+	let org = orgStr.split(",");
+	let orgMap = new Map();
+	for(let item of org) {
+		/*if(item.value!=''){
+			projectMap.set(item.value, item.text);
+		}*/
+		orgMap.set(item.split("=")[0], item.split("=")[1])
+
+	}
+
+	/*let orgMap = new Map();
+	for(let item of ops) {
+		if(item.value!=''){
+			projectMap.set(item.value, item.text);
+		}
+	}*/
 	var col = [{field: 'checked', checkbox : true, align: 'center'},
 		{field: 'empnum', title: '员工编号', align: 'center'},
 		{field: 'name', title: '姓名', align: 'center'},
@@ -120,25 +135,9 @@
 				}else{
 					return "女";
 				}
-
-
 			}},
 		{field: 'department', title: '部门', align: 'center', formatter:function(value,row,index){
-				if(value=='1'){
-					return "人力资源部";
-				}else if(value=='2'){
-					return "外场单元部";
-				}else if(value=='3'){
-					return "设施一部";
-				}else if(value=='4'){
-					return "内场单元部";
-				}else if(value=='5'){
-					return "工程/设施二部";
-				}else if(value=='887163179b6c4eaabd06c44e47e41f92'){
-					return "职能部门";
-				}else{
-					return "";
-				}
+				return orgMap.get(value)
 
 
 			}},
