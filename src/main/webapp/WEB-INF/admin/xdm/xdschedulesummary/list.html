@@ -492,10 +492,12 @@
 		});
 		if(data.length==0){
 			pointLion.alertMsg("请选择要删除的数据!","danger",null,null);
+
 			return;
 		}
-		console.log(data)
-		//del(data.join(","));//执行删除
+		// pointLion.loading()
+
+		del(data.join(","));//执行删除
 	}
 	//删除
 	function del(ids){
@@ -644,6 +646,8 @@
 		if(otArr[parseInt(fieldNum)]=='1'){
 			checkInput='<input id="demo-form-inline-checkbox" class="magic-checkbox" type="checkbox" name="ovtime" checked="checked">';
 		}
+
+
 		//console.log(checkInput)
 		//'<input id="demo-form-inline-checkbox" class="magic-checkbox" type="checkbox" name="ovtime" checked="">'+
 
@@ -662,7 +666,7 @@
 					'<div class="form-group"> ' +
 					'<label class="col-md-4 control-label" for="shift">班次</label> ' +
 					'<div class="col-md-4"> ' +
-					'<select class="form-control "  id="shift"   data-live-search="true"  >'+
+					'<select class=" form-control "  id="shift"   data-live-search="true"  >'+
 					'<option value="">------班次------</option>'+
 					shiftOptions+
 					'</select>'+

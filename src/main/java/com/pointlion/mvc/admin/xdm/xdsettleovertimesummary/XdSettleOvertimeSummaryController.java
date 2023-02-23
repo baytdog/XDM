@@ -9,10 +9,12 @@ import com.pointlion.mvc.common.utils.DateUtil;
 import com.pointlion.mvc.common.utils.StringUtil;
 import com.pointlion.mvc.common.utils.office.excel.ExcelUtil;
 import com.pointlion.plugin.shiro.ShiroKit;
+import org.apache.commons.beanutils.BeanUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
@@ -45,8 +47,12 @@ public class XdSettleOvertimeSummaryController extends BaseController {
      */
     public void save(){
     	XdSettleOvertimeSummary o = getModel(XdSettleOvertimeSummary.class);
+
 		XdOvertimeSummary overtimeSummary = XdOvertimeSummary.dao.
-				findFirst("select * from  xd_overtime_summary where apply_date='"+o.getApplyDate()+"' and emp_name='"+o.getEmpName()+"' and apply_type='"+o.getApplyType()+"'");
+				findFirst("select * from  xd_overtime_summary where apply_date='"+o.getApplyDate()
+						+"' and emp_name='"+o.getEmpName()+"' and apply_type='"+o.getApplyType()
+						+"' and  apply_start='"+o.getActStart()+"' and apply_end='"+o.getActEnd()+"'");
+
 		if(overtimeSummary!=null){
 			o.setApplyStart(overtimeSummary.getApplyStart());
 			o.setApplyEnd(overtimeSummary.getApplyEnd());
@@ -62,21 +68,14 @@ public class XdSettleOvertimeSummaryController extends BaseController {
 		if(o.getId()!=null){
 
 			XdSettleOvertimeSummary summary = XdSettleOvertimeSummary.dao.findById(o.getId());
-
 			String applyDate = summary.getApplyDate();
-
 			String[] appDateArr = applyDate.split("-");
-
 			int oldIndex = Integer.parseInt(appDateArr[2]);
-
 			XdAttendanceSummary attendanceSummary =
 					XdAttendanceSummary.dao.findFirst("select * from  xd_attendance_summary where emp_name='"+summary.getEmpName()
 							+"' and schedule_year='" + appDateArr[0]+ "' and schedule_month='" + appDateArr[1] + "'");
 			String[] oldTips = attendanceSummary.getTips().split(",");
-
 			String oldTip = oldTips[oldIndex];
-
-
 			oldTip=oldTip.replaceAll(summary.getActStart()+"-"+summary.getActEnd(),"");
 			if("".equals(oldTip)){
 				oldTip="0";
@@ -113,9 +112,6 @@ public class XdSettleOvertimeSummaryController extends BaseController {
 			for (String s : tipsArr) {
 				sb=sb+s+",";
 			}
-
-
-
 			attendanceSummary.setTips(sb.replaceAll(",$",""));
 
 			if("0".equals(o.getApplyType())){
@@ -125,14 +121,21 @@ public class XdSettleOvertimeSummaryController extends BaseController {
 				attendanceSummary.setOthours(attendanceSummary.getOthours()+o.getActHours());
 			}
 			attendanceSummary.update();
-			o.update();
+		    o.update();
+
+
+
+
+
+
+
+
 		}else{
 
 			int index = Integer.parseInt(ymd[2]);
 			XdAttendanceSummary attendanceSummary =
 					XdAttendanceSummary.dao.findFirst("select * from  xd_attendance_summary where emp_name='"+o.getEmpName()
 							+"' and schedule_year='" + ymd[0]+ "' and schedule_month='" + ymd[1] + "'");
-
 			String tips = attendanceSummary.getTips();
 			String[] tipsArr = tips.split(",");
 			String indexTip = tipsArr[index];
@@ -163,7 +166,46 @@ public class XdSettleOvertimeSummaryController extends BaseController {
 			o.setCreateDate(DateUtil.getCurrentTime());
 			o.setCreateUser(ShiroKit.getUserId());
 			o.save();
+		/*	List<XdOvertimeSummary> otList = XdOvertimeSummary.dao.
+					find("select * from  xd_overtime_summary where source='2' and apply_date='"+o.getApplyDate()
+							+"' and emp_name='"+o.getEmpName()+"' and apply_type='"+o.getApplyType()+"'");
+			boolean flag=true;
+			for (XdOvertimeSummary ot : otList) {
+				if(o.getActStart().equals(ot.getApplyStart())&& o.getActEnd().equals(ot.getActEnd())){
+					o.setApplyStart(ot.getApplyStart());
+					o.setApplyEnd(ot.getApplyEnd());
+					o.setApplyHours(Double.valueOf(ot.getApplyHours()));
+					o.setSource("2");
+					o.save();
+					flag=false;
+				}else{
+					XdSettleOvertimeSummary sot=new XdSettleOvertimeSummary();
+					try {
+						BeanUtils.copyProperties(sot,ot);
+						sot.setId(null);
+						sot.save();
+					} catch (IllegalAccessException e) {
+						e.printStackTrace();
+					} catch (InvocationTargetException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+			if(flag){
+				o.save();
+			}*/
 		}
+
+		/*XdOvertimeSummary overtimeSummary = XdOvertimeSummary.dao.
+				findFirst("select * from  xd_overtime_summary where apply_date='"+o.getApplyDate()
+						+"' and emp_name='"+o.getEmpName()+"' and apply_type='"+o.getApplyType()
+						+"' and  apply_start='"+o.getActStart()+"' and apply_end='"+o.getActEnd()+"'");
+
+		if(overtimeSummary!=null){
+			o.setApplyStart(overtimeSummary.getApplyStart());
+			o.setApplyEnd(overtimeSummary.getApplyEnd());
+			o.setApplyHours(Double.valueOf(overtimeSummary.getApplyHours()));
+		}*/
     	renderSuccess();
     }
     /***
@@ -175,7 +217,7 @@ public class XdSettleOvertimeSummaryController extends BaseController {
 		setAttr("view", view);
 		XdSettleOvertimeSummary summary =service.getById(id);
 		setAttr("o", summary);
-		List<XdEmployee> emps = XdEmployee.dao.find("select * from  xd_employee");
+		List<XdEmployee> emps = XdEmployee.dao.find("select * from  xd_employee order by empnum");
 		setAttr("emps",emps);
 		List<SysOrg> orgList = SysOrg.dao.find("select * from  sys_org");
 		setAttr("orgList",orgList);

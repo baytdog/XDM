@@ -1,14 +1,10 @@
 package com.pointlion.mvc.common.utils.office.excel;
 
-import org.apache.commons.lang3.time.DateUtils;
 import org.apache.poi.hssf.usermodel.HSSFDataFormat;
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.DataFormatter;
-import org.apache.poi.ss.usermodel.FormulaEvaluator;
-import org.apache.poi.xssf.usermodel.XSSFFormulaEvaluator;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -72,7 +68,6 @@ public class DbImportExcelUtils {
     }
 
     public static String getCellValue(Cell cell) {
-        System.out.println(cell.getCellTypeEnum());
         if (cell.getCellTypeEnum() == CellType.NUMERIC) {
             if (HSSFDateUtil.isCellDateFormatted(cell)) {
                 SimpleDateFormat sdf = null;
@@ -83,7 +78,6 @@ public class DbImportExcelUtils {
                     sdf = new SimpleDateFormat("yyyy-MM-dd");
                 }
                 Date date = cell.getDateCellValue();
-                System.out.println(sdf.format(date));
                 return sdf.format(date);
             }
 

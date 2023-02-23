@@ -12,7 +12,7 @@ import com.pointlion.mvc.common.utils.StringUtil;
 import com.pointlion.mvc.common.utils.UuidUtil;
 import com.pointlion.mvc.common.utils.office.excel.ExcelUtil;
 import com.pointlion.plugin.shiro.ShiroKit;
-import org.joda.time.format.DateTimeFormat;
+import com.pointlion.util.CheckAttendanceUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,7 +22,10 @@ import java.lang.reflect.Method;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 
@@ -297,8 +300,11 @@ public class XdScheduleSummaryController extends BaseController {
 				method.invoke(scheduleSummary, modValue);
 				String day = field.replace("day", "");
 				int index = Integer.parseInt(day);
-				List<XdShift> xdShifts = XdShift.dao.find("select * from  xd_shift");
+				/*List<XdShift> xdShifts = XdShift.dao.find("select * from  xd_shift");
 				Map<String, XdShift> nameShiftObjMap = xdShifts.stream().collect(Collectors.toMap(XdShift::getShiftname, xdShift -> xdShift));
+*/
+
+				Map<String, XdShift> nameShiftObjMap= CheckAttendanceUtil.shfitsMap();
 
 				String[] modifyFlags = scheduleSummary.getFlags().split(",");
 				modifyFlags[index]="1";
@@ -335,7 +341,7 @@ public class XdScheduleSummaryController extends BaseController {
 
 				}else{
 					otFlags[index]="0";
-					XdShift shift = nameShiftObjMap.get(modValue);
+//					XdShift shift = nameShiftObjMap.get(modValue);
 					//tipArr[index]=tipArr[index].replaceAll(shift.getBusitime()+"-"+shift.getUnbusitime(),"0");
 					//String tipArrIndex = tipArr[index].replaceAll(shift.getBusitime() + "-" + shift.getUnbusitime(), "");
 
@@ -439,7 +445,9 @@ public class XdScheduleSummaryController extends BaseController {
 						ots.setSuperDays(xdDayModels.get(index).getDays());
 						if(sb.indexOf(xdDayModels.get(index).getId())!=-1){
 							ots.setApplyType("0");
+							ots.setSource("0");
 						}else{
+							ots.setSource("1");
 							ots.setApplyType("1");
 						}
 						ots.save();
@@ -462,13 +470,15 @@ public class XdScheduleSummaryController extends BaseController {
 							ots.setCreateUser(ShiroKit.getUserId());
 							ots.setCreateDate(DateUtil.getCurrentTime());
 							ots.setApplyDate(nextDayStr);
-							ots.setApplyStart("00:00");
+							ots.setApplyStart("0:00");
 							ots.setApplyEnd(shift.getUnbusitime());
 							ots.setApplyHours(shift.getSpanHours()+"");
 							ots.setSuperDays(xdDayModels.get(index).getDays());
 							if(sb.indexOf(nextDayStr.replaceAll("-",""))!=-1){
 								ots.setApplyType("0");
+								ots.setSource("0");
 							}else{
+								ots.setSource("1");
 								ots.setApplyType("1");
 							}
 							ots.save();
@@ -479,17 +489,12 @@ public class XdScheduleSummaryController extends BaseController {
 
 
 
-				Map<String, String> holidaysMap = xdDayModels.stream().collect(Collectors.toMap(XdDayModel::getId, XdDayModel::getHolidays));
+				//Map<String, String> holidaysMap = xdDayModels.stream().collect(Collectors.toMap(XdDayModel::getId, XdDayModel::getHolidays));
 				double othours=0;//加班时间
 				double natOTHours=0;//国定加班时间
 				double work_hour=0;//出勤时间
 				for (int i = 0; i < xdDayModels.size(); i++) {
 					String suffix="";
-				/*	if(i<10){
-						suffix="0"+i;
-					}else{
-						suffix=i+"";
-					}*/
 					suffix=(i<10?"0"+i:i+"");
 					Method getMethod = superclass.getMethod("getDay" + suffix);
 					String  shiftName = (String) getMethod.invoke(scheduleSummary);
@@ -504,8 +509,8 @@ public class XdScheduleSummaryController extends BaseController {
 									work_hour+=Double.valueOf(xdShift.getCurdayHours());
 								}
 								//跨天且   第二天不是法定假日
-								LocalDate localDate = LocalDate.parse(dayModel.getDays()).plusDays(1);
-								String nextDate  = dtf.format(localDate);
+//								LocalDate localDate = ;
+								String nextDate  = dtf.format(LocalDate.parse(dayModel.getDays()).plusDays(1));
 								if(sb.indexOf(nextDate.replaceAll("-",""))==-1
 								&& i<xdDayModels.size()-1 && otFlags[i].equals("0")){
 										work_hour+=Double.valueOf(xdShift.getSpanHours());

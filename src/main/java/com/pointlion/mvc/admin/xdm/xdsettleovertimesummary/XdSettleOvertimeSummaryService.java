@@ -56,8 +56,8 @@ public class XdSettleOvertimeSummaryService{
 	 */
 	@Before(Tx.class)
 	public void deleteByIds(String ids){
-    	String idarr[] = ids.split(",");
-    	for(String id : idarr){
+    	String idArr[] = ids.split(",");
+    	for(String id : idArr){
     		XdSettleOvertimeSummary o = me.getById(id);
 
 			String[] appDateArr = o.getApplyDate().split("-");

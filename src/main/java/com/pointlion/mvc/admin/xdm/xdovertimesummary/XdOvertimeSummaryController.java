@@ -155,6 +155,7 @@ public class XdOvertimeSummaryController extends BaseController {
 			scheduleSummary.update();
 
 			//tipsArr[index]=
+			o.setSource("2");
 			o.setCreateDate(DateUtil.getCurrentTime());
     		o.setCreateUser(ShiroKit.getUserId());
     		o.save();
@@ -169,7 +170,7 @@ public class XdOvertimeSummaryController extends BaseController {
 		String view = getPara("view");
 		setAttr("view", view);
 
-		List<XdEmployee> emps = XdEmployee.dao.find("select * from  xd_employee");
+		List<XdEmployee> emps = XdEmployee.dao.find("select * from  xd_employee order by empnum");
 		setAttr("emps",emps);
 		List<SysOrg> orgList = SysOrg.dao.find("select * from  sys_org");
 		setAttr("orgList",orgList);

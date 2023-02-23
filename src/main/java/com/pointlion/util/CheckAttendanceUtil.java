@@ -1,15 +1,13 @@
 package com.pointlion.util;
 
 import com.jfinal.kit.StrKit;
-import com.pointlion.mvc.common.model.XdDayModel;
-import com.pointlion.mvc.common.model.XdOvertimeSummary;
-import com.pointlion.mvc.common.model.XdShift;
-import com.pointlion.mvc.common.model.XdWorkHour;
-import org.joda.time.format.DateTimeFormat;
+import com.pointlion.mvc.common.model.*;
+import org.apache.commons.beanutils.BeanUtils;
 
+import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -32,11 +30,19 @@ public class CheckAttendanceUtil {
     }
 
     public static void main(String[] args) {
-        List <XdDayModel> lists =new ArrayList<>();
-        lists.add(null);
-        System.out.println(lists.size());
-        System.out.println(lists);
-        System.out.println(lists.get(0) == null);
+        XdOvertimeSummary os=new XdOvertimeSummary();
+        XdSettleOvertimeSummary sos=new XdSettleOvertimeSummary();
+        os.setId(123L);
+        os.setEmpName("abc");
+        try {
+            BeanUtils.copyProperties(sos,os);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        }
+        System.out.println(sos);
+
 
     }
 
@@ -83,5 +89,34 @@ public class CheckAttendanceUtil {
                         "' and apply_type='0'");*/
 
         return  XdOvertimeSummary.dao.findFirst(sql);
+    }
+
+/*
+    public static  List<XdOvertimeSummary> getOtSummaryList(String empName,String applyDate,String applyType){
+        String sql="select * from  xd_overtime_summary where 1=1 ";
+        if(StrKit.notBlank(empName)){
+            sql=sql+" and emp_name='"+empName+"'";
+        }
+        if(StrKit.notBlank(applyDate)){
+            sql=sql+" and apply_date='"+applyDate+"'";
+        }
+        if(StrKit.notBlank(applyType)){
+            sql=sql+" and apply_type='"+applyType+"'";
+        }
+
+        return  XdOvertimeSummary.dao.find(sql);
+    }*/
+
+    public static  List<XdOvertimeSummary> getOtSummaryList(String yearMonth,String applyType){
+        String sql="select * from  xd_overtime_summary where 1=1 ";
+
+        if(StrKit.notBlank(yearMonth)){
+            sql=sql+" and super_days like'"+yearMonth+"%'";
+        }
+        if(StrKit.notBlank(applyType)){
+            sql=sql+" and apply_type='"+applyType+"'";
+        }
+
+        return  XdOvertimeSummary.dao.find(sql);
     }
 }
