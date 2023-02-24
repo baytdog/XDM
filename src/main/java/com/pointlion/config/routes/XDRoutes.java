@@ -21,6 +21,8 @@ import com.pointlion.mvc.admin.xdm.xdprojects.XdProjectsController;
 import com.pointlion.mvc.admin.xdm.xdrcp.XdRcpController;
 import com.pointlion.mvc.admin.xdm.xdrcpsummary.XdRcpSummaryController;
 import com.pointlion.mvc.admin.xdm.xdrecords.XdRecordsController;
+import com.pointlion.mvc.admin.xdm.xdrewardpunishmentdetail.XdRewardPunishmentDetailController;
+import com.pointlion.mvc.admin.xdm.xdrewardpunishmentsummary.XdRewardPunishmentSummaryController;
 import com.pointlion.mvc.admin.xdm.xdschedule.XdScheduleController;
 import com.pointlion.mvc.admin.xdm.xdscheduledetail.XdScheduleDetailController;
 import com.pointlion.mvc.admin.xdm.xdschedulesummary.XdScheduleSummaryController;
@@ -82,6 +84,8 @@ public class XDRoutes extends Routes {
         add("/admin/xd/xdworkhour", XdWorkHourController.class,"/xdworkhour");
         add("/admin/xd/xddaymodel", XdDayModelController.class,"/xddaymodel");
         add("/admin/xd/xdcontractinfo", XdContractInfoController.class,"/xdcontractinfo");
+        add("/admin/xd/xdrewardpunishmentdetail", XdRewardPunishmentDetailController.class,"/xdrewardpunishmentdetail");
+        add("/admin/xd/xdrewardpunishmentsummary", XdRewardPunishmentSummaryController.class,"/xdrewardpunishmentsummary");
 
 
     }

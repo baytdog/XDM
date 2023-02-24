@@ -1,0 +1,259 @@
+<style>
+	.webuploader-pick{
+		padding: 0px 15px;
+		height: 33px;
+		line-height: 33px;
+	}
+</style>
+<div id="page-content">
+	<div class="col-sm-12 eq-box-sm">
+		<div class="panel">
+			<div class="panel panel-search">
+				<div class="panel-body">
+					<div class="form-inline">
+						<div class="form-group">
+							<select class="selectpicker form-control"  id="year"  >
+								<option value="">------请选择年份------</option>
+								<option value="2022">2022</option>
+								<option value="2023">2023</option>
+								<option value="2024">2024</option>
+								<option value="2025">2025</option>
+								<option value="2026">2026</option>
+								<option value="2027">2027</option>
+								<option value="2027">2028</option>
+								<option value="2027">2029</option>
+								<option value="2027">2030</option>
+							</select>
+						</div>
+						<div class="form-group">
+							<input id="emp_name" placeholder="姓名" class="form-control">
+						</div>
+						<!--<div class="form-group">
+							<div class="input-group date form_datetime">
+								<input id="departDate" placeholder="离职时间" class="form-control">
+								<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+							</div>
+						</div>-->
+						<div class="form-group">
+							<button class="btn btn-primary" type="button" onclick="searchTable()">搜索</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="panel ">
+				<div class="panel-body">
+					<!--<a id="add" class="btn btn-primary data-toolbar" href="#(ctx)/admin/xd/xdrewardpunishmentsummary/getEditPage?view=edit"><i class="demo-pli-add"></i> 添加</a>
+					<a id="del" class="btn btn-danger data-toolbar" onclick="delSel()" href="javascript:void(0);"><i class="demo-pli-cross"></i> 批量删除</a>
+					<a id="export" class="btn btn-primary data-toolbar" onclick="exportExcel()" target="_blank"><i class="demo-pli-download-from-cloud"></i> 导出</a>-->
+					<a id="filePicker"  href="javascript:void(0);" ><i class="demo-pli-add"></i> 导入</a>
+					<table id="pageTable" class="demo-add-niftycheck" data-toolbar="#del,#add,#export,#filePicker"
+					></table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+
+	var col = [
+		/*{field: 'checked', checkbox : true, align: 'center'},*/
+		{field: 'year', title: '年份', align: 'center'},
+		{field: 'month', title: '月份', align: 'center'},
+
+		{field: 'dept_name', title: '部门', align: 'center'},
+		{field: 'unit_name', title: '单元', align: 'center'},
+		{field: 'project_name', title: '项目', align: 'center'},
+		{field: 'emp_name', title: '姓名', align: 'center'},
+		{field: 'idnum', title: '身份证号', align: 'center'},
+		{field: 'reward_punishment', title: '绩效奖惩金额', align: 'center'},
+		{field: 'remarks', title: '备注', align: 'center'},
+		{field: 'can_distribution', title: '是否可分配', align: 'center',formatter:function(value,row,index){
+				return createSelect(row.id,value)
+			}},
+
+		{field: 'control', title: '操作', align: 'left', width:'200',
+			formatter:function(value,row,index){
+				//通过formatter可以自定义列显示的内容
+				//value：当前field的值，即id
+				//row：当前行的数据
+				/*var a = '<a class="label label-table label-success" href="'+ctx+'/admin/xd/xdrewardpunishmentsummary/getEditPage?id='+row.id+'&view=detail" >查看</a>&nbsp;';
+				a = a + '<a class="label label-table label-success" href="'+ctx+'/admin/xd/xdrewardpunishmentsummary/getEditPage?id='+row.id+'&view=edit" >编辑</a>&nbsp;';
+				a = a + '<a class="label label-table label-danger" onclick="del(\''+row.id+'\')" href="javascript:void(0);" >删除</a>';*/
+				return '<a class="label label-table label-danger" onclick="del(\''+row.id+'\')" href="javascript:void(0);" >删除</a>';
+			}
+		}];
+	var opt = {
+		//请求方法
+		method: 'get',
+		//是否显示行间隔色
+		striped: true,
+		//是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+		cache: false,
+		//data-toolbar: "#demo-delete-row",
+		//是否显示分页（*）
+		pagination: true,
+		//是否启用排序
+		sortable: false,
+		//排序方式
+		sortOrder: "asc",
+		//初始化加载第一页，默认第一页
+		//我设置了这一项，但是貌似没起作用，而且我这默认是0,- -
+		//pageNumber:1,
+		//每页的记录行数（*）
+		pageSize: 10,
+		//可供选择的每页的行数（*）
+		pageList: [10, 25, 50, 100],
+		//这个接口需要处理bootstrap table传递的固定参数,并返回特定格式的json数据
+		url: ctx+"/admin/xd/xdrewardpunishmentdetail/listData",
+		//默认值为 'limit',传给服务端的参数为：limit, offset, search, sort, order Else
+		//queryParamsType:'',
+		////查询参数,每次调用是会带上这个参数，可自定义
+		queryParams : function(params) {
+			return {
+				pageNumber: (params.offset/params.limit)+1,
+				pageSize: params.limit,
+				year:$('#year').val(),
+				"emp_name":encodeURIComponent($("#emp_name").val()),
+			};
+		},
+		//分页方式：client客户端分页，server服务端分页（*）
+		sidePagination: "server",
+		//是否显示搜索
+		search: false,
+		//Enable the strict search.
+		strictSearch: true,
+		//Indicate which field is an identity field.
+		idField : "id",
+		columns: col,
+		pagination:true,paginationShowPageGo: true
+	};
+
+	//表格
+	function initTable(){
+		$('#pageTable').bootstrapTable(opt);
+		$('#pageTable').bootstrapTable('hideColumn', 'id');
+	}
+	function refreshTable(){
+		$("#pageTable").bootstrapTable('refresh', opt);
+		$('#pageTable').bootstrapTable('hideColumn', 'id');
+	}
+
+	function sum(field,data){
+		if(data.length>0){
+			let quotaSum = parseFloat(data.reduce(function(sum, row) {
+				return sum + (+row[field]);
+			},0)).toFixed(2);//保留有效数字
+			return quotaSum;
+		}else{
+			return 0.0;
+		}
+	}
+	//批量删除
+	function delSel(){
+		var data = [];
+		$("#pageTable input[type='checkbox'][name!='btSelectAll']:checked").each(function(){
+			data.push($(this).val());
+		});
+		if(data.length==0){
+			pointLion.alertMsg("请选择要删除的数据!","danger",null,null);
+			return;
+		}
+		del(data.join(","));//执行删除
+	}
+	//删除
+	function del(ids){
+		pointLion.confimMsg("您是否要删除所选信息 ?<br/> 点击确认进行删除 , 点击取消取消该操作",null,function(){
+			//执行删除
+			var data = common_ajax.ajaxFunc("/admin/xd/xdrewardpunishmentdetail/delete",{"ids":ids}, "json", null);
+			//删除结果
+			if(data.success){
+				pointLion.alertMsg(data.message,"success",null,function(){
+					location.href = ctx+'/admin/xd/xdrewardpunishmentdetail/getListPage';//跳转到列表页
+				});
+			}else{
+				pointLion.alertMsg(data.message,"success",null,null);
+			}
+		});
+	};
+
+
+	function valueChange(b) {
+		//console.log(a)
+		console.log(b)
+		console.log($('#' + b).val());
+
+		let data = common_ajax.ajaxFunc("/admin/xd/xdrewardpunishmentdetail/updateCanUse",{"id":b,"val":$('#' + b).val()}, "json", null);
+		if(data.success){
+			pointLion.alertMsg(data.message,"success",null,function(){
+				location.href = ctx+'/admin/xd/xdrewardpunishmentdetail/getListPage';//跳转到列表页
+			});
+		}else{
+			pointLion.alertMsg(data.message,"success",null,null);
+		}
+
+	}
+
+	function createSelect(id,value){
+		let selectContent= '<select id="'+id+'" onchange="valueChange('+id+')"> <option value="是"'
+
+
+		if(value=='是'){
+			selectContent=selectContent	+"selected";
+		}
+		selectContent=	selectContent+'> 是 </option><option value="否"'
+
+		if(value=='否'){
+			selectContent=selectContent	+"selected";
+		}
+		selectContent=	selectContent+'> 否 </option> </select>'
+		/*	'> 是 </option><option value="否" > 否 </option> </select>'*/
+		return  selectContent;
+	}
+	//查询
+	function searchTable(){
+
+		/*	var name = encodeURIComponent($("#name").val());*/
+		let year=$('#year').val();
+		let emp_name =encodeURIComponent($("#emp_name").val());
+		let param = {
+			query: {
+				"year":year,
+				"emp_name":emp_name
+			}
+		}
+		// 刷新表格
+		$('#pageTable').bootstrapTable('refresh',param);
+	}
+
+
+	/***
+	 * 导出
+	 */
+	function exportExcel(){
+
+		var name = encodeURIComponent($("#name").val());
+		var serviceUnit = encodeURIComponent($("#serviceUnit").val());
+		var job = encodeURIComponent($("#job").val());
+		var addr = encodeURIComponent($("#addr").val());
+		var entryDate = $("#entryDate").val();
+		var departDate = $("#departDate").val();
+		location.href = "#(ctx)/admin/xd/xdrewardpunishmentdetail/exportExcel?name="+name+"&serviceUnit="+serviceUnit+"&job="+job+"&addr="+addr+"&entryDate="+entryDate+"&departDate="+departDate;
+	}
+
+	$(document).ready(function(){
+		$('.form_datetime').datepicker({format: 'yyyy-mm-dd',weekStart: 1,todayBtn:  1,autoclose: 1,language:  'zh-CN',todayHighlight: 1,forceParse: 0,clearBtn: true }).on('changeDate',null);
+		initTable();//初始化
+		/*let year='#(year)';
+		if(year){
+			$('#year').selectpicker('val',year.split(",")).trigger("change");
+		}*/
+			pointLion.initUploader("/admin/xd/xdrewardpunishmentdetail/importExcel",function(data){
+                if(data.success){
+                    pointLion.alertMsg("导入成功！","success",null,null);
+                    searchTable();
+                }else{
+                    pointLion.alertMsg(data.message,"danger",null,null);
+                }
+            });
+	});
+</script>
