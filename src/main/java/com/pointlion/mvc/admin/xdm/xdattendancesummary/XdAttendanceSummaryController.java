@@ -13,7 +13,6 @@ import com.pointlion.mvc.common.utils.office.excel.ExcelUtil;
 import com.pointlion.plugin.shiro.ShiroKit;
 import com.pointlion.util.CheckAttendanceUtil;
 import org.apache.commons.beanutils.BeanUtils;
-import org.apache.poi.POIXMLTypeLoader;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,7 +23,6 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.stream.Collectors;
 
 
 public class XdAttendanceSummaryController extends BaseController {
@@ -57,7 +55,8 @@ public class XdAttendanceSummaryController extends BaseController {
 		XdAttendanceSummary last = XdAttendanceSummary.dao.findFirst("select * from  xd_schedule_summary order by schedule_year_month desc");
 		setAttr("year",last.getScheduleYear());
 		setAttr("month",last.getScheduleMonth());*/
-
+		List<SysOrg> orgList = SysOrg.dao.find("select * from  sys_org where id<>'root' order by sort");
+		setAttr("orgs",orgList);
 		List<XdDict> units = XdDict.dao.find("select * from xd_dict where type ='unit' order by sortnum");
 		setAttr("units",units);
 		XdAttendanceSummary last = XdAttendanceSummary.dao.findFirst("select * from  xd_attendance_summary order by schedule_year_month desc");
@@ -134,13 +133,65 @@ public class XdAttendanceSummaryController extends BaseController {
 	public void save(){
 		XdAttendanceSummary o = getModel(XdAttendanceSummary.class);
 		o.update();
-		String deptValue = o.getDeptValue();
-		SysOrg org = SysOrg.dao.findById(deptValue);
-		String operate = org.getOperate();
-		String performRewardpunish = o.getPerformRewardpunish();
-		int i = Integer.valueOf(operate) + Integer.valueOf(performRewardpunish);
-		org.setOperate(String.valueOf(i));
-		org.update();
+
+		String ewardPunish = getPara("ewardPunish");
+		XdAttendanceSummary summary = XdAttendanceSummary.dao.findById(o.getId());
+		String scheduleMonth = summary.getScheduleMonth();
+		String scheduleYear = summary.getScheduleYear();
+
+		XdRewardPunishmentSummary rps = XdRewardPunishmentSummary.dao.findFirst(
+				"select  * from  xd_reward_punishment_summary where year='" + scheduleYear + "' and dept_id='" + summary.getDeptValue() + "'");
+		String performRewardpunish = o.getPerformRewardpunish()==null?"0":o.getPerformRewardpunish().trim();
+		if(!"".equals(performRewardpunish)&& Math.abs(Double.valueOf(performRewardpunish))>0){
+			XdRewardPunishmentDetail detail=new XdRewardPunishmentDetail();
+			detail.setYear(scheduleYear);
+			detail.setMonth(scheduleMonth);
+			detail.setDeptId(summary.getDeptValue());
+			detail.setDeptName(summary.getDeptName());
+			detail.setUnitId(summary.getUnitValue());
+			detail.setUnitName(summary.getUnitName());
+			detail.setProjectId(Integer.valueOf(summary.getProjectValue()));
+			detail.setProjectName(summary.getProjectName());
+			detail.setEmpName(summary.getEmpName());
+			XdEmployee emp = XdEmployee.dao.findFirst("select * from  xd_employee where  name='" + summary.getEmpName() + "'");
+			detail.setIdnum(emp==null?"":emp.getIdnum());
+			detail.setRewardPunishment(Double.valueOf(performRewardpunish));
+			detail.setRemarks(ewardPunish);
+			detail.setCanDistribution("否");
+			detail.setCreateDate(DateUtil.getCurrentTime());
+			detail.setCreateUser(ShiroKit.getUserId());
+			detail.save();
+			if(rps!=null){
+				rps.setQuota(rps.getQuota()+Double.valueOf(performRewardpunish));
+				rps.setDisableQuota(rps.getDisableQuota()+Double.valueOf(performRewardpunish));
+				rps.update();
+			}else{
+				rps=new XdRewardPunishmentSummary();
+				rps.setYear(scheduleYear);
+				rps.setMonth(scheduleMonth);
+				rps.setDeptId(summary.getDeptValue());
+				rps.setDeptName(summary.getDeptName());
+				rps.setQuota(Double.valueOf(performRewardpunish));
+				rps.setDisableQuota(Double.valueOf(performRewardpunish));
+				rps.setAbleQuota(0.0);
+				rps.save();
+			}
+		}else{
+
+			XdRewardPunishmentDetail first = XdRewardPunishmentDetail.dao.findFirst(
+					"select *from xd_reward_punishment_detail where year='" + scheduleYear + "' and  month='" + scheduleMonth + "' and emp_name='" + summary.getEmpName() + "'");
+			if(first!=null){
+				if(first.getCanDistribution().equals("是")){
+					rps.setQuota(rps.getQuota()-first.getRewardPunishment());
+					rps.setAbleQuota(rps.getAbleQuota()-first.getRewardPunishment());
+				}else{
+					rps.setQuota(rps.getQuota()-first.getRewardPunishment());
+					rps.setDisableQuota(rps.getDisableQuota()-first.getRewardPunishment());
+				}
+				rps.update();
+				first.delete();
+			}
+		}
 		renderSuccess();
 	}
 	/***
@@ -152,20 +203,26 @@ public class XdAttendanceSummaryController extends BaseController {
 		setAttr("view", view);
 		XdAttendanceSummary summary =service.getById(id);
 		String deptValue = summary.getDeptValue();
-		SysOrg org = SysOrg.dao.findById(deptValue);
+	/*	SysOrg org = SysOrg.dao.findById(deptValue);
 		String operate = org.getOperate();
-		int integer = Integer.valueOf(operate);
-		if(integer==0){
+		int integer = Integer.valueOf(operate);*/
+		String year = summary.getScheduleYear();
+		XdRewardPunishmentSummary rps = XdRewardPunishmentSummary.dao.findFirst(
+				"select  * from  xd_reward_punishment_summary where year='" + year + "' and dept_id='" + deptValue + "'");
+		double ableQuota = rps.getAbleQuota();
+		int ableQuota1 = (int) ableQuota;
+
+		if(ableQuota1==0){
 			setAttr("less","0");//最大
 			setAttr("greate","-2000000");//最小
-		}else if(integer<0){
-			setAttr("less",Math.abs(integer));//最大
+		}else if(ableQuota1<0){
+			setAttr("less",Math.abs(ableQuota1));//最大
 			setAttr("greate","-2000000");//最小
 		}
-		String scheduleYearMonth = summary.getScheduleYearMonth();
+		/*String scheduleYearMonth = summary.getScheduleYearMonth();
 		List<XdDayModel> xdDayModels = XdDayModel.dao.find("select * from  xd_day_model where id like '" + scheduleYearMonth + "%' order by id");
 		int daysNum=xdDayModels.size();
-		setAttr("daysNum",daysNum+1);
+		setAttr("daysNum",daysNum+1);*/
 
 		setAttr("o", summary);
 		setAttr("formModelName",StringUtil.toLowerCaseFirstOne(XdAttendanceSummary.class.getSimpleName()));

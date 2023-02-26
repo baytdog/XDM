@@ -184,6 +184,9 @@ public class _MappingKit {
 		arp.addMapping("xd_work_hour","id",XdWorkHour.class);
 		arp.addMapping("xd_reward_punishment_detail","id",XdRewardPunishmentDetail.class);
 		arp.addMapping("xd_reward_punishment_summary","id",XdRewardPunishmentSummary.class);
+		arp.addMapping("xd_seniority_allowance","id",XdSeniorityAllowance.class);
+		arp.addMapping("xd_anleave_plan","id",XdAnleavePlan.class);
+		arp.addMapping("xd_anleave_execute","id",XdAnleaveExecute.class);
 
 	}
 }

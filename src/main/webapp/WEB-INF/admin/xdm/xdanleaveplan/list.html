@@ -1,0 +1,270 @@
+<style>
+	.webuploader-pick{
+		padding: 0px 15px;
+		height: 33px;
+		line-height: 33px;
+	}
+</style>
+<div id="page-content">
+	<div class="col-sm-12 eq-box-sm">
+		<div class="panel">
+			<div class="panel panel-search">
+				<div class="panel-body">
+					<div class="form-inline">
+						<div class="form-group">
+							<select class="selectpicker form-control"  id="year"  >
+								<option value="">------请选择年份------</option>
+								<option value="2022">2022</option>
+								<option value="2023">2023</option>
+								<option value="2024">2024</option>
+								<option value="2025">2025</option>
+								<option value="2026">2026</option>
+								<option value="2027">2027</option>
+								<option value="2027">2028</option>
+								<option value="2027">2029</option>
+								<option value="2027">2030</option>
+							</select>
+						</div>
+						<!--<div class="form-group">
+							<div class="input-group date form_datetime">
+								<input id="departDate" placeholder="离职时间" class="form-control">
+								<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+							</div>
+						</div>-->
+						<div class="form-group">
+							<button class="btn btn-primary" type="button" onclick="searchTable()">搜索</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="panel ">
+				<div class="panel-body">
+					<!--<a id="add" class="btn btn-primary data-toolbar" href="#(ctx)/admin/xd/xdrewardpunishmentsummary/getEditPage?view=edit"><i class="demo-pli-add"></i> 添加</a>
+
+					<a id="export" class="btn btn-primary data-toolbar" onclick="exportExcel()" target="_blank"><i class="demo-pli-download-from-cloud"></i> 导出</a>-->
+					<a id="del" class="btn btn-danger data-toolbar" onclick="delSel()" href="javascript:void(0);"><i class="demo-pli-cross"></i> 批量删除</a>
+					<a id="filePicker"  href="javascript:void(0);" ><i class="demo-pli-add"></i> 导入</a>
+					<table id="pageTable" class="demo-add-niftycheck" data-toolbar="#del,#add,#export,#filePicker"
+					></table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+
+	var col = [[{field: 'checked', checkbox : true,valign:'middle',halign:"center", align: 'center',rowspan: 2 },
+		{field: 'dept_name', title: '部门',align: 'center',width:'120',valign:'middle',halign:"center",rowspan: 2},
+		{field: 'year', title: '年份', align: 'center',width:'80',valign:'middle',halign:"center", colspan: 1,rowspan: 2},
+		{field: 'anleave_days', title: '年假天数', align: 'center',width:'120',valign:'middle',halign:"center", colspan: 1,rowspan: 2 },
+		{field: '', title: '每月已休年假', align: 'center',valign:'middle',halign:"center", colspan: 12,rowspan: 1 },
+		{field: 'sum', title: '合计', align: 'center',width:'120',valign:'middle',halign:"center", colspan: 1,rowspan: 2 },
+		],
+			[
+				{field: 'month1', title: '1月', align: 'center'},
+				{field: 'month2', title: '2月', align: 'center'},
+				{field: 'month3', title: '3月', align: 'center'},
+				{field: 'month4', title: '4月', align: 'center'},
+				{field: 'month5', title: '5月', align: 'center'},
+				{field: 'month6', title: '6月', align: 'center'},
+				{field: 'month7', title: '7月', align: 'center'},
+				{field: 'month8', title: '8月', align: 'center'},
+				{field: 'month9', title: '9月', align: 'center'},
+				{field: 'month10', title: '10月', align: 'center'},
+				{field: 'month11', title: '11月', align: 'center'},
+				{field: 'month12', title: '12月', align: 'center'},
+				 ]
+
+
+
+	];
+	var opt = {
+		//请求方法
+		method: 'get',
+		//是否显示行间隔色
+		striped: true,
+		//是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+		cache: false,
+		//data-toolbar: "#demo-delete-row",
+		//是否显示分页（*）
+		pagination: true,
+		//是否启用排序
+		sortable: false,
+		//排序方式
+		sortOrder: "asc",
+		//初始化加载第一页，默认第一页
+		//我设置了这一项，但是貌似没起作用，而且我这默认是0,- -
+		//pageNumber:1,
+		//每页的记录行数（*）
+		pageSize: 10,
+		//可供选择的每页的行数（*）
+		pageList: [10, 25, 50, 100],
+		//这个接口需要处理bootstrap table传递的固定参数,并返回特定格式的json数据
+		url: ctx+"/admin/xd/xdanleaveplan/listData",
+		//默认值为 'limit',传给服务端的参数为：limit, offset, search, sort, order Else
+		//queryParamsType:'',
+		////查询参数,每次调用是会带上这个参数，可自定义
+		queryParams : function(params) {
+			return {
+				pageNumber: (params.offset/params.limit)+1,
+				pageSize: params.limit,
+				year:$('#year').val(),
+			};
+		},
+		//分页方式：client客户端分页，server服务端分页（*）
+		sidePagination: "server",
+		//是否显示搜索
+		search: false,
+		//Enable the strict search.
+		strictSearch: true,
+		//Indicate which field is an identity field.
+		idField : "id",
+		columns: col,
+	};
+
+	//表格
+	function initTable(){
+		$('#pageTable').bootstrapTable('destroy').bootstrapTable(opt);
+		$('#pageTable').bootstrapTable('hideColumn', 'id');
+	}
+	function refreshTable(){
+		$("#pageTable").bootstrapTable('destroy').bootstrapTable('refresh', opt);
+		$('#pageTable').bootstrapTable('hideColumn', 'id');
+	}
+
+	function sum(field,data){
+		if(data.length>0){
+			let quotaSum = parseFloat(data.reduce(function(sum, row) {
+				return sum + (+row[field]);
+			},0)).toFixed(2);//保留有效数字
+			return quotaSum;
+		}else{
+			return 0.0;
+		}
+	}
+	//批量删除
+	function delSel(){
+		var data = [];
+		$("#pageTable input[type='checkbox'][name!='btSelectAll']:checked").each(function(){
+			data.push($(this).val());
+		});
+		if(data.length==0){
+			pointLion.alertMsg("请选择要删除的数据!","danger",null,null);
+			return;
+		}
+		del(data.join(","));//执行删除
+	}
+	//删除
+	function del(ids){
+		pointLion.confimMsg("您是否要删除所选信息 ?<br/> 点击确认进行删除 , 点击取消取消该操作",null,function(){
+			//执行删除
+			var data = common_ajax.ajaxFunc("/admin/xd/xdanleaveplan/delete",{"ids":ids}, "json", null);
+			//删除结果
+			if(data.success){
+				pointLion.alertMsg(data.message,"success",null,function(){
+					location.href = ctx+'/admin/xd/xdanleaveplan/getListPage';//跳转到列表页
+				});
+			}else{
+				pointLion.alertMsg(data.message,"success",null,null);
+			}
+		});
+	};
+
+
+	function valueChange(b) {
+
+		let data = common_ajax.ajaxFunc("/admin/xd/xdanleaveplan/updateCanUse",{"id":b,"val":$('#' + b).val()}, "json", null);
+		if(data.success){
+			pointLion.alertMsg(data.message,"success",null,function(){
+				location.href = ctx+'/admin/xd/xdanleaveplan/getListPage';//跳转到列表页
+			});
+		}else{
+			pointLion.alertMsg(data.message,"success",null,null);
+		}
+
+	}
+
+	//查询
+	function searchTable(){
+
+		/*	var name = encodeURIComponent($("#name").val());*/
+		let year=$('#year').val();
+		let param = {
+			query: {
+				"year":year,
+			}
+		}
+		// 刷新表格
+		$('#pageTable').bootstrapTable('refresh',param);
+	}
+
+	function sum(field,data){
+		if(data.length>0){
+			let quotaSum = parseFloat(data.reduce(function(sum, row) {
+				return sum + (+row[field]);
+			},0)).toFixed(2);//保留有效数字
+			return quotaSum;
+		}else{
+			return 0.0;
+		}
+	}
+	/***
+	 * 导出
+	 */
+	function exportExcel(){
+
+		var name = encodeURIComponent($("#name").val());
+		var serviceUnit = encodeURIComponent($("#serviceUnit").val());
+		var job = encodeURIComponent($("#job").val());
+		var addr = encodeURIComponent($("#addr").val());
+		var entryDate = $("#entryDate").val();
+		var departDate = $("#departDate").val();
+		location.href = "#(ctx)/admin/xd/xdanleaveplan/exportExcel?name="+name+"&serviceUnit="+serviceUnit+"&job="+job+"&addr="+addr+"&entryDate="+entryDate+"&departDate="+departDate;
+	}
+
+	$(document).ready(function(){
+		$('.form_datetime').datepicker({format: 'yyyy-mm-dd',weekStart: 1,todayBtn:  1,autoclose: 1,language:  'zh-CN',todayHighlight: 1,forceParse: 0,clearBtn: true }).on('changeDate',null);
+		initTable();//初始化
+		let year='#(year)';
+		if(year){
+			$('#year').selectpicker('val',year.split(",")).trigger("change");
+		}
+		pointLion.initUploader("/admin/xd/xdanleaveplan/importExcel",function(data){
+			if(data.success){
+				pointLion.alertMsg("导入成功！","success",null,null);
+				searchTable();
+			}else{
+				pointLion.alertMsg(data.message,"danger",null,null);
+			}
+		});
+
+		//$(".fixed-table-footer>table>tbody>tr>td:first").css("background-color","red")
+		/*console.log($(".fixed-table-footer>table>tbody>tr").find("td").eq(0))
+		 $(".fixed-table-footer>table>tbody>tr").find("td")
+			 	.each(function () {
+			console.log(this)
+			$(this).addClass("bs-checkbox")
+
+		})*/
+
+		// css("background-color","red")
+		//console.log(	$(".fixed-table-footer")).css("background-color","red")
+
+	});
+
+	/*function footerStyle(column) {
+		console.log(column)
+		return {
+			css: { "width": "200px" }
+		};
+
+
+	}*/
+	/*function footerStyle(column) {
+		return {
+			//注意account是你要显示的那一列的对应的数据库字段名
+			month2:{css:{ color:'#dc3545' }}
+		}
+	}*/
+
+</script>

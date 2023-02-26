@@ -3,6 +3,8 @@ package com.pointlion.config.routes;
 import com.jfinal.config.Routes;
 import com.pointlion.mvc.admin.oa.dict.OaDictController;
 import com.pointlion.mvc.admin.xdm.xdanleave.XdAnleaveController;
+import com.pointlion.mvc.admin.xdm.xdanleaveexecute.XdAnleaveExecuteController;
+import com.pointlion.mvc.admin.xdm.xdanleaveplan.XdAnleavePlanController;
 import com.pointlion.mvc.admin.xdm.xdanleavesummary.XdAnleaveSummaryController;
 import com.pointlion.mvc.admin.xdm.xdattendance.XdAttendanceController;
 import com.pointlion.mvc.admin.xdm.xdattendancedetail.XdAttendanceDetailController;
@@ -27,6 +29,7 @@ import com.pointlion.mvc.admin.xdm.xdschedule.XdScheduleController;
 import com.pointlion.mvc.admin.xdm.xdscheduledetail.XdScheduleDetailController;
 import com.pointlion.mvc.admin.xdm.xdschedulesummary.XdScheduleSummaryController;
 import com.pointlion.mvc.admin.xdm.xdschoolinfo.XdSchoolinfoController;
+import com.pointlion.mvc.admin.xdm.xdseniorityallowance.XdSeniorityAllowanceController;
 import com.pointlion.mvc.admin.xdm.xdsettleovertime.XdSettleOvertimeController;
 import com.pointlion.mvc.admin.xdm.xdsettleovertimesummary.XdSettleOvertimeSummaryController;
 import com.pointlion.mvc.admin.xdm.xdshift.XdShiftController;
@@ -36,6 +39,7 @@ import com.pointlion.mvc.admin.xdm.xdworkhour.XdWorkHourController;
 import com.pointlion.mvc.common.model.XdAnleave;
 import com.pointlion.mvc.common.model.XdRecords;
 import com.pointlion.mvc.common.model.XdScheduleDetail;
+import com.pointlion.mvc.common.model.XdSeniorityAllowance;
 
 /**
  * @author thunoerobot
@@ -86,6 +90,9 @@ public class XDRoutes extends Routes {
         add("/admin/xd/xdcontractinfo", XdContractInfoController.class,"/xdcontractinfo");
         add("/admin/xd/xdrewardpunishmentdetail", XdRewardPunishmentDetailController.class,"/xdrewardpunishmentdetail");
         add("/admin/xd/xdrewardpunishmentsummary", XdRewardPunishmentSummaryController.class,"/xdrewardpunishmentsummary");
+        add("/admin/xd/xdseniorityallowance", XdSeniorityAllowanceController.class,"/xdseniorityallowance");
+        add("/admin/xd/xdanleaveplan", XdAnleavePlanController.class,"/xdanleaveplan");
+        add("/admin/xd/xdanleaveexecute", XdAnleaveExecuteController.class,"/xdanleaveexecute");
 
 
     }

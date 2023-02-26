@@ -223,7 +223,7 @@ public class XdOperUtil {
         int intDay = Integer.parseInt("33899");
         Date dd = DateUtils.addDays(calendar.getTime(),intDay);
         System.out.println(new SimpleDateFormat("yyyy-MM-dd").format(dd));*/
-
+/*
         double abc=31.1;
         String emd="31";
         System.out.println(Double.valueOf(emd.equals("")?"0":emd).intValue());
@@ -235,9 +235,10 @@ public class XdOperUtil {
         System.out.println(6 / 5);
 
 
-        System.out.println(LocalDate.parse("2023-10-10").plusDays(1).getMonth());
+        System.out.println(LocalDate.parse("2023-10-10").plusDays(1).getMonth());*/
 
-
+        String str = " 我是123一段测456abd试 空a格 的字符 串 ";
+        System.out.println("过滤出数字：" + str.replaceAll("\\s*","").replaceAll("[^(0-9)]",""));
     }
 
     public static void setChangeValue(Object obj,String fieldName,String newValue)  {
