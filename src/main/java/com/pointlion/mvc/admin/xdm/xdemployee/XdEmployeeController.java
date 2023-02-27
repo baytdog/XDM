@@ -36,8 +36,9 @@ public class XdEmployeeController extends BaseController {
 
 		}
 
-		List<XdDict> units = XdDict.dao.find("select *from xd_dict where type='unit' order by  sortnum");
-		setAttr("units",units);
+		Map<String, List<XdDict>> dictListByType = DictMapping.getDictListByType();
+		//	List<XdDict> units = XdDict.dao.find("select *from xd_dict where type='unit' order by  sortnum");
+		setAttr("units",	dictListByType.get("unit"));
 		List<XdProjects> projects = XdProjects.dao.find("select * from xd_projects where status='1' ");
 		setAttr("projects",projects);
 
@@ -49,7 +50,15 @@ public class XdEmployeeController extends BaseController {
 		for (SysOrg org : orgList) {
 			orgStr=orgStr+org.getId()+"="+org.getName()+",";
 		}
+		List<XdDict> dutyList = dictListByType.get("duty");
+		String dutyStr="";
+		for (XdDict duty : dutyList) {
+			dutyStr=dutyStr+duty.getValue()+"="+duty.getName()+",";
+		}
+
+
 		setAttr("orgStr",orgStr);
+		setAttr("dutyStr",dutyStr);
 		renderIframe("list.html");
     }
 	/***
@@ -1148,6 +1157,8 @@ public class XdEmployeeController extends BaseController {
 			printInfoVo.setEdutrainList(xdEdutrainList);
 			List<XdWorkExper> workExperList = XdWorkExper.dao.find("select * from xd_work_exper where eid='"+emp.getId()+"'");
 			printInfoVo.setWorkExperList(workExperList);
+			List<XdEmpCert> xdEmpCerts = XdEmpCert.dao.find("select * from  xd_emp_cert where eid='" + emp.getId() + "'");
+			printInfoVo.setCertList(xdEmpCerts);
 			list.add(printInfoVo);
 		}
 		renderJson(list);

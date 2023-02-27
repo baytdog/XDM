@@ -13,6 +13,9 @@ public class PrintInfoVo {
     private List<XdWorkExper> workExperList;
 
 
+    private List<XdEmpCert> certList;
+
+
     public XdEmployee getEmp() {
         return emp;
     }
@@ -35,6 +38,13 @@ public class PrintInfoVo {
 
     public void setWorkExperList(List<XdWorkExper> workExperList) {
         this.workExperList = workExperList;
+    }
+    public List<XdEmpCert> getCertList() {
+        return certList;
+    }
+
+    public void setCertList(List<XdEmpCert> certList) {
+        this.certList = certList;
     }
 
 

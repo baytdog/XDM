@@ -251,7 +251,7 @@ public abstract class BaseXdEmployee<M extends BaseXdEmployee<M>> extends Model<
 	public String getVocaqualifilevel() {
 		return getStr("vocaqualifilevel");
 	}
-
+	@NeedMapping(dictName = "duty")
 	public void setWorkstation(String workstation) {
 		set("workstation", workstation);
 	}

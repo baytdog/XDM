@@ -119,6 +119,17 @@
 		orgMap.set(item.split("=")[0], item.split("=")[1])
 
 	}
+	let dutyStr='#(dutyStr)';
+	console.log(dutyStr)
+	let duty = dutyStr.split(",");
+	let dutyMap = new Map();
+	for(let item of duty) {
+		/*if(item.value!=''){
+			projectMap.set(item.value, item.text);
+		}*/
+		dutyMap.set(item.split("=")[0], item.split("=")[1])
+
+	}
 
 	/*let orgMap = new Map();
 	for(let item of ops) {
@@ -156,7 +167,9 @@
 					   return "";
 				   }
 			   }},
-		{field: 'workstation', title: '岗位', align: 'center'},
+		{field: 'workstation', title: '岗位', align: 'center', formatter:function(value,row,index){
+				return dutyMap.get(value);
+			}},
 		{field: 'topedu', title: '最高学历', align: 'center', formatter:function(value,row,index){
 				   if(value=='1'){
 					   return "技工";
@@ -560,72 +573,212 @@
 		return returnStr;
 
 	}
+
+	function createCertList(item){
+		let returnStr;
+		console.log(item+"item")
+
+		if(item == null|| item == ""){
+			for (let i = 0; i < 5; i++) {
+				returnStr=returnStr+ `<tr>
+				<td style="height: 25px;">  </td><td  > </td>
+				<td colspan="2" >  </td>
+				<td  >  </td>
+				<td  >  </td>
+				</tr>`
+			}
+		}else{
+			if(item.length>=5) {
+				for (let i = 0; i < item.length; i++) {
+					let cert=item[i];
+					returnStr=returnStr+ `<tr>
+					<td style="height: 25px;"></td><td  >`+cert.certLevel+`</td>
+					<td colspan="2" >`+cert.certTile+` </td> <td  > `+cert.openDate+`</td>
+					<td  > `+cert.closeDate+`</td>
+					</tr>`;
+				}
+
+			}else{
+				for (let i = 0; i < item.length; i++) {
+					let cert=item[i];
+					console.log(cert)
+					returnStr=returnStr+ `<tr>
+					<td style="height: 25px;"> </td><td  >`+cert.certLevel+`</td>
+					<td colspan="2" >`+cert.certTile+` </td> <td  > `+cert.openDate+`</td>
+					<td  > `+cert.closeDate+`</td>
+					</tr>`;
+				}
+				for(let i = 0; i < 5-item.length; i++){
+					returnStr=returnStr+ `<tr>
+				<td style="height: 25px;">  </td><td  > </td>
+				<td colspan="2" > </td> <td  >  </td>
+				<td  >  </td>
+				</tr>`
+
+				}
+
+			}
+
+		}
+
+		return returnStr;
+
+	}
 	function contactFormInfo(item){
 		var emp=item.emp;
 		console.log(emp.cert_pic_id)
 		let edutrainList=item.edutrainList;
 
 		let workExperList=item.workExperList;
+		let certList=item.certList;
+		console.log("certList="+certList);
 /*		http://localhost:8080/XDM/admin/sys/attachment/lookFile?id=7e497badbe024c9ead49fe5ae51b9d97*/
 	var infos=	`
   <style>
      table, td, th { border: 1px solid black; border-style: solid; border-collapse: collapse; text-align: center; font-size: 15px; }
     .inner table, .inner td, .inner th { text-align: left; border: none; }
+    .tdh {font-family:微软雅黑;font-size: 15px; font-weight:bold;}
+    .tdhct {font-family:微软雅黑;font-size: 15px;}
+    .tr {height: 40px;}
   </style>
   <table border="1" style="width:100%;">
 
 
-	<caption>员工资料表</caption>
+	<caption style="font-family:微软雅黑;font-size: 26px;" >员工资料表<br/><br/></caption>
 
 
-    <tr>
-      <td rowspan="9" style="width:2%;">个人基本资料</td>
-      <td>姓      名</td> <td>`+emp.name+`</td>
-      <td>员工编号</td> <td>`+emp.empnum+`</td>
+    <tr class="tr">
+      <td rowspan="11" style="width:15%;" class="tdhct">个<br/>人<br/>基<br/>本<br/>资<br/>料</td>
+      <td class="tdh">姓 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;名</td> <td class="tdhct">`+emp.name+`</td>
+      <td class="tdh">员工编号</td> <td class="tdhct">`+emp.empnum+`</td>
+      <td rowspan="5" colspan="2"><img style="width: 100%;height: 200px;" id="" src="`+emp.cert_pic_id+`" /></td>
+    </tr>
+    <tr class="tr">
+     <td class="tdh" >性&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;别</td> <td class="tdhct">`+emp.gender+`</td>
+     <td  class="tdh" >婚姻状况</td> <td class="tdhct">`+emp.married+`</td>
+    </tr>
+    <tr class="tr">
+      <td class="tdh" >民   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 族</td> <td class="tdhct">`+emp.national+`</td>
+       <td class="tdh">政治面貌</td> <td  class="tdhct">`+emp.politicsstatus+`</td>
+	</tr>
+	<tr class="tr">
+      <td class="tdh" >出生日期</td> <td class="tdhct">`+emp.birthday+`</td>
+       <td class="tdh">年龄</td> <td  class="tdhct">`+emp.age+`</td>
+	</tr>
+	<tr class="tr">
+      <td class="tdh" >最高学历</td> <td class="tdhct">`+emp.topedu+`</td>
+       <td class="tdh">学位</td> <td  class="tdhct">`+emp.topdegree+`</td>
+	</tr>
+     <tr class="tr">
+      <td class="tdh">学历(非全日制)</td><td class="tdhct">`+emp.edubg1+`</td>
+      <td class="tdh">学校</td> <td class="tdhct">`+emp.school1+`</td>
+      <td class="tdh">专业</td> <td  class="tdhct">`+emp.major1+`</td>
+    </tr>
+     <tr class="tr">
+      <td  class="tdh">学历(全日制)</td><td  class="tdhct">`+emp.edubg2+`</td>
+      <td class="tdh" >学校</td> <td  class="tdhct">`+emp.school2+`</td>
+      <td  class="tdh">专业</td> <td  class="tdhct">`+emp.major2+`</td>
+    </tr>
+     <tr class="tr">
+     <td  class="tdh">身份证号码</td><td colspan="3" class="tdhct">`+emp.Idnum+`</td>
+      <td  class="tdh">户    籍</td> <td  class="tdhct">`+emp.censusregister+`</td>
+    </tr>
+    <tr class="tr">
+     <td  class="tdh">户籍地址</td><td colspan="3" class="tdhct">`+emp.censusregisteraddr+`</td>
+      <td  class="tdh">出 生 地</td> <td  class="tdhct">`+emp.birthplace+`</td>
+    </tr>
+      <tr class="tr">
+     <td  class="tdh">现 住 址</td><td colspan="3" class="tdhct">`+emp.presentaddr+`</td>
+      <td  class="tdh">籍    贯</td> <td  class="tdhct">`+emp.nativeplace+`</td>
+    </tr>
+     <tr class="tr">
+		  <td  class="tdh">联系方式</td>      <td  class="tdhct">`+emp.tel+`</td>
+		  <td class="tdh" >退休日期</td> <td  class="tdhct">`+emp.retiretime+`</td>
+		  <td  class="tdh">退伍军人</td> <td  class="tdhct">`+emp.issoldier+`</td>
+    </tr>
+
+  	<tr class="tr">
+    <td rowspan="6" style="width:2%;" class="tdhct">任<br/>职<br/>信<br/>息</td>
+      <td class="tdh">入职时间</td> <td  class="tdhct">`+emp.entrytime+`</td>
+      <td class="tdh">离职日期</td> <td class="tdhct">`+emp.departime+`</td>
+      <td class="tdh">就职状况</td> <td class="tdhct">`+emp.inductionstatus+`</td>
 
     </tr>
-    <tr>
-      <td style="width: 15%;" >民      族</td> <td style="width: 15%;">`+emp.national+`</td>
-      <td style="width: 15%;">政治面貌</td> <td  style="width: 15%;">`+emp.politicsstatus+`</td>
-      <td style="width: 15%;" >最高学历</td> <td style="width: 15%;">`+emp.topedu+`</td>
+    <tr class="tr">
+      <td class="tdh" >所属部门</td> <td class="tdhct" >`+emp.department+`</td>
+      <td  class="tdh">单元</td> <td  class="tdhct">`+emp.unitname+`</td>
+      <td class="tdh" >成本项目</td> <td class="tdhct" >`+emp.costitem+`</td>
     </tr>
-     <tr>
-      <td >学历(非全日制)</td><td>`+emp.edubg1+`</td>
-      <td >学校</td> <td>`+emp.school1+`</td>
-      <td >专业</td> <td  >`+emp.major1+`</td>
+     <tr class="tr">
+      <td class="tdh" >职   位</td>      <td class="tdhct">`+emp.position+`</td>
+      <td  class="tdh">专业技术等级</td> <td class="tdhct">`+emp.protechgrade+`</td>
+      <td  class="tdh">职业资格等级</td> <td class="tdhct">`+emp.vocaqualifilevel+`</td>
     </tr>
-     <tr>
-      <td  >学历(全日制)</td><td  >`+emp.edubg2+`</td>
-      <td  >学校</td> <td  >`+emp.school2+`</td>
-      <td  >专业</td> <td  >`+emp.major2+`</td>
+     <tr class="tr">
+      <td  class="tdh">工作岗位</td>      <td  class="tdhct">`+emp.workstation+`</td>
+      <td  class="tdh">专业技术职务</td> <td class="tdhct" >`+emp.protechposts+`</td>
+      <td  class="tdh">职业资格等级</td> <td  class="tdhct">`+emp.vocaQualifilevel1+`</td>
     </tr>
-     <tr>
-      <td  >特      长</td><td colspan="3">`+emp.specialty+`</td>
-      <td  >最高学位</td> <td  >`+emp.topdegree+`</td>
-    </tr> <tr>
-     <td  >身份证号码</td><td colspan="3">`+emp.Idnum+`</td>
-      <td  >户    籍</td> <td  >`+emp.censusregister+`</td>
-    </tr>
-     <tr>
-     <td  >户籍地址</td><td colspan="3">`+emp.censusregisteraddr+`</td>
-      <td  >出 生 地</td> <td  >`+emp.birthplace+`</td>
-    </tr> <tr>
-     <td  >现 住 址</td><td colspan="3">`+emp.presentaddr+`</td>
-      <td  >籍    贯</td> <td  >`+emp.nativeplace+`</td>
-    </tr>
-     <tr>
-      <td  >联系方式</td>      <td  >`+emp.tel+`</td>
-      <td  >退休日期</td> <td  >`+emp.retiretime+`</td>
-      <td  >退伍军人</td> <td  >`+emp.issoldier+`</td>
+     <tr class="tr">
+      <td  class="tdh">合同开始日期</td>      <td  class="tdhct">`+emp.contractstartdate+`</td>
+      <td  class="tdh">结束日期</td> <td class="tdhct" >`+emp.contractenddate+`</td>
+      <td  class="tdh">工 龄(年)</td> <td  class="tdhct">`+emp.seniority+`</td>
     </tr>
 
- 	<tr>
-
-   <td><img id="" src="`+emp.cert_pic_id+`" ></td>
+     <tr class="tr">
+      <td class="tdh" >合同期数</td>      <td class="tdhct" >`+emp.contractclauses+`</td>
+      <td class="tdh" >合同性质</td> <td  class="tdhct">`+emp.contractnature+`</td>
+      <td  class="tdh">参加工作时间</td> <td  class="tdhct">`+emp.worktime+`</td>
     </tr>
+
+
+	<tr class="tr">
+     <td rowspan="5" style="width:2%; " class="tdhct">其<br/>它<br/>信<br/>息</td>
+      <td class="tdh">紧急联系人</td> <td  class="tdhct">`+emp.emcontact+`</td>
+      <td class="tdh">紧急联系人电话</td> <td class="tdhct">`+emp.emcontact+`</td>
+      <td class="tdh">关系</td> <td class="tdhct"></td>
+    </tr>
+
+     <tr class="tr">
+      <td  class="tdh">特      长</td><td colspan="5" class="tdhct">`+emp.specialty+`</td>
+   	 </tr>
+ 	<tr class="tr">
+      <td class="tdhct"  style="text-align: left;" colspan="3">1.你有无家庭遗传病史? <input type="checkbox">有 <input type="checkbox">无</td>
+      <td  class="tdhct" style="text-align: left" colspan="3">2.你最近是否动过手术? <input type="checkbox">是 <input type="checkbox">否</td>
+    </tr>
+     <tr class="tr">
+      <td class="tdhct"  style="text-align: left;"  colspan="3">3.你是否受过刑事处罚? <input type="checkbox">是 <input type="checkbox">否</td>
+      <td class="tdhct"  style="text-align: left;"  colspan="3">4.你是否受过行政处罚? <input type="checkbox">是 <input type="checkbox">否</td>
+    </tr>
+     <tr class="tr">
+      <td  class="tdhct"  style="text-align: left;" colspan="3">5.你是否患过重大疾病? <input type="checkbox">是 <input type="checkbox">否</td>
+      <td  class="tdhct"  style="text-align: left;" colspan="3">6.你是否有工伤/职业病/伤残? <input type="checkbox">有 <input type="checkbox">无</td>
+    </tr>
+	 <tr class="tr" style="border: 0"><td colspan="7"></td></tr>
+	 <tr class="tr" style="border: 0" ><td colspan="7"></td></tr>
+
+
+	<tr class="tr">
+     <td rowspan="3" style="width:2%;"  class="tdhct">其<br/>它<br/>信<br/>息</td>
+      <td class="tdhct"  style="text-align: left;" colspan="3">7.你有无精神病史？<input type="checkbox">有 <input type="checkbox">无  </td>
+      <td class="tdhct"  style="text-align: left;"  colspan="3">8.你家族是否有精神病史？<input type="checkbox">是 <input type="checkbox">否</td>
+    </tr>
+
+        <tr class="tr">
+      <td class="tdhct"  style="text-align: left;" colspan="3">9.你是否有吸毒行为? <input type="checkbox">是 <input type="checkbox">否</td>
+      <td class="tdhct"  style="text-align: left;" colspan="3">10.你是否有酗酒习惯? <input type="checkbox">是 <input type="checkbox">否</td>
+    </tr>
+
+        <tr class="tr">
+      <td class="tdhct"  style="text-align: left;" colspan="3">11.若女士，你是否怀孕? <input type="checkbox">是 <input type="checkbox">否</td>
+      <td class="tdhct"  style="text-align: left;" colspan="3">12.怀孕日期：</td>
+    </tr>
+
+
+
 
    <tr>
-      <td rowspan="6" style="width:2%;">教育<br>&nbsp;/<br>培训经历</td>
+      <td rowspan="6" style="width:2%;" class="tdhct">教<br>育<br>&nbsp;/<br>培<br>训<br>经<br>历</td>
       <td  >入学日期</td>      <td  >毕业日期</td>
       <td colspan="2" >学校/培训机构名称</td> <td  >专业</td>
       <td  >学历</td>
@@ -633,7 +786,7 @@
 	eduList(edutrainList)
 			+`
      <tr>
-      <td rowspan="6" style="width:2%;">工作经历</td>
+      <td rowspan="6" style="width:2%;"  class="tdhct">工<br>作<br>经<br>历</td>
       <td  >入职日期</td>      <td  >离职日期</td>
       <td colspan="2" >服务单位名称</td> <td  >职务</td>
       <td  >地点</td>
@@ -641,57 +794,17 @@
     `+
 			workList(workExperList)
 			+`
-
-     <tr>
-    <td rowspan="7" style="width:2%;">任职信息</td>
-      <td >入职时间</td> <td  >`+emp.entrytime+`</td>
-      <td >离职日期</td> <td >`+emp.departime+`</td>
-      <td >就职状况</td> <td >`+emp.inductionstatus+`</td>
-
-    </tr>
     <tr>
-      <td style="width: 15%;" >所属部门</td> <td style="width: 15%;" >`+emp.department+`</td>
-      <td  style="width: 15%;">单元</td> <td  style="width: 15%;">`+emp.unitname+`</td>
-      <td style="width: 15%;" >成本项目</td> <td style="width: 15%;" >`+emp.costitem+`</td>
-    </tr>
-     <tr>
-      <td  >职   位</td>      <td  >`+emp.position+`</td>
-      <td  >专业技术等级</td> <td  >`+emp.protechgrade+`</td>
-      <td  >职业资格等级</td> <td  >`+emp.vocaqualifilevel+`</td>
-    </tr>
-     <tr>
-      <td  >工作岗位</td>      <td  >`+emp.workstation+`</td>
-      <td  >专业技术职务</td> <td  >`+emp.protechposts+`</td>
-      <td  >职业资格等级</td> <td  >`+emp.vocaQualifilevel1+`</td>
-    </tr>
-     <tr>
-      <td  >所持证书</td><td colspan="5">`+emp.certificates+`</td>
-
-    </tr>
-    <tr>
-      <td  >合同开始日期</td>      <td  >`+emp.contractstartdate+`</td>
-      <td  >结束日期</td> <td  >`+emp.contractenddate+`</td>
-      <td  >工 龄(年)</td> <td  >`+emp.seniority+`</td>
-    </tr>
-     <tr>
-      <td  >合同期数</td>      <td  >`+emp.contractclauses+`</td>
-      <td  >合同性质</td> <td  >`+emp.contractnature+`</td>
-      <td  >参加工作时间</td> <td  >`+emp.worktime+`</td>
-    </tr>
-
-     <td rowspan="3" style="width:2%;">其它信息</td>
-      <td >紧急联系人</td> <td  >`+emp.emcontact+`</td>
-      <td >招聘来源</td> <td >`+emp.recruitsource+`</td>
-      <td >困难员工</td> <td >`+emp.hardstaff+`</td>
-
-    </tr>
-    <tr>
-      <td style="width: 15%;height: 50px;" >调薪记录</td> <td colspan="5" >`+emp.saladjrecord+`</td>
-    </tr>
-     <tr>
-      <td style="width: 15%; height: 50px;" >异动记录</td> <td colspan="5" >`+emp.chrecord+`</td>
-    </tr>
-</table>`;
+ 	 <td rowspan="6" style="width:2%;"  class="tdhct">所<br>持<br>证<br>书</td>
+	  <td  >技术职务/等级</td>
+	  <td  >职业资格/等级</td>
+      <td colspan="2" >证书名称</td>
+      <td  >考证日期</td>
+      <td  >到期日</td>
+	</tr>
+	`+
+	createCertList(certList)
+	+`</table>`;
 	return  infos;
 	}
 
