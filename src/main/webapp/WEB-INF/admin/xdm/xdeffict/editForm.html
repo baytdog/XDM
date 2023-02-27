@@ -1,0 +1,101 @@
+<form id="editForm" class="panel-body form-horizontal form-padding">
+	<input id="scheduleId" type="hidden"  name="#(formModelName).id" class="form-control" value="#(o?o.id:'')">
+<!--	<div class="form-group">
+		<label class="col-md-2 control-label">工号</label>
+		<div class="col-md-10">
+			<input type="text"   name="#(formModelName).dept_num" value="#(o?o.dept_num:'')" readonly="readonly">
+		</div>
+	</div>-->
+
+	<div class="form-group">
+		<label class="col-md-1 control-label">工号</label>
+		<div class="col-md-3">
+			<input type="text"   name="#(formModelName).emp_num" class="form-control"  value="#(o?o.emp_num:'')"  readonly="readonly">
+		</div>
+		<label class="col-md-1 control-label">姓名</label>
+		<div class="col-md-3">
+			<input type="text"   name="#(formModelName).emp_name" class="form-control"  value="#(o?o.emp_name:'')" readonly="readonly">
+		</div>
+		<label class="col-md-1 control-label">入职日期</label>
+		<div class="col-md-3">
+			<input type="text"   name="#(formModelName).hire_date" class="form-control"  value="#(o?o.hire_date:'')" readonly="readonly">
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="col-md-1 control-label">变动前部门</label>
+		<div class="col-md-3">
+			<input type="text"   name="#(formModelName).old_dept_name" class="form-control"  value="#(o?o.old_dept_name:'')"  readonly="readonly">
+		</div>
+		<label class="col-md-1 control-label">变动前职位/岗位</label>
+		<div class="col-md-3">
+			<input type="text"   name="#(formModelName).old_pdName" class="form-control"  value="#(o?o.old_pdName:'')" readonly="readonly">
+		</div>
+		<label class="col-md-1 control-label">变动前星级</label>
+		<div class="col-md-3">
+			<input type="text"   name="#(formModelName).old_salary_level" class="form-control"  value="#(o?o.old_salary_level:'')" readonly="readonly">
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-1 control-label">变动前薪资</label>
+		<div class="col-md-3">
+			<input type="text"   name="#(formModelName).old_salary" class="form-control"  value="#(o?o.old_salary:'')"  readonly="readonly">
+		</div>
+		<label class="col-md-1 control-label">变动后部门</label>
+		<div class="col-md-3">
+			<input type="text"   name="#(formModelName).new_dept_name" class="form-control"  value="#(o?o.new_dept_name:'')" readonly="readonly">
+		</div>
+		<label class="col-md-1 control-label">变动后职位/岗位</label>
+		<div class="col-md-3">
+			<input type="text"   name="#(formModelName).new_pdName" class="form-control"  value="#(o?o.new_pdName:'')" readonly="readonly">
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-1 control-label">变动后星级</label>
+		<div class="col-md-3">
+			<input type="text"   name="#(formModelName).new_salary_level" class="form-control"  value="#(o?o.new_salary_level:'')"  readonly="readonly">
+		</div>
+		<label class="col-md-1 control-label">变动后薪资</label>
+		<div class="col-md-3">
+			<input type="text"   name="#(formModelName).new_salary" class="form-control"  value="#(o?o.new_salary:'')" readonly="readonly">
+		</div>
+		<label class="col-md-1 control-label">生效日期</label>
+		<div class="col-md-3">
+			<input type="text"   name="#(formModelName).effect_date" class="form-control"  value="#(o?o.effect_date:'')" readonly="readonly">
+		</div>
+	</div>
+
+	<div class="form-group">
+
+		<label class="col-md-1 control-label">调整原因</label>
+		<div class="col-md-11">
+			<input type="text"   name="#(formModelName).adjust_reason" class="form-control"  value="#(o?o.adjust_reason:'')" >
+		</div>
+	</div>
+	<div class="form-group">
+
+		<label class="col-md-1 control-label">其他说明</label>
+		<div class="col-md-11">
+			<input type="text"   name="#(formModelName).other_remarks" class="form-control"  value="#(o?o.other_remarks:'')" >
+		</div>
+	</div>
+
+	#if(view=='edit')
+	<div class="panel-footer">
+		<div class="row">
+			<div class="col-sm-12 " style="text-align: center">
+				<button class="btn btn-primary" type="submit" #if(view=='detail') disabled #end>保存</button>
+				<button class="btn btn-primary" type="button" onclick="window.history.back();" >返回</button>
+			</div>
+		</div>
+	</div>
+	#else
+	<div class="panel-footer">
+		<div class="row">
+			<div class="col-sm-12 " style="text-align: center">
+				<button class="btn btn-primary" type="button" onclick="window.history.back();" >返回</button>
+			</div>
+		</div>
+	</div>
+	#end
+</form>

@@ -25,6 +25,134 @@ public abstract class BaseXdEffict<M extends BaseXdEffict<M>> extends Model<M> i
 		return getStr("eid");
 	}
 
+	public void setEmpNum(String empNum) {
+		set("emp_num", empNum);
+	}
+	
+	public String getEmpNum() {
+		return getStr("emp_num");
+	}
+
+	public void setEmpName(String empName) {
+		set("emp_name", empName);
+	}
+	
+	public String getEmpName() {
+		return getStr("emp_name");
+	}
+
+	public void setHireDate(String hireDate) {
+		set("hire_date", hireDate);
+	}
+	
+	public String getHireDate() {
+		return getStr("hire_date");
+	}
+
+	public void setAdjustReason(String adjustReason) {
+		set("adjust_reason", adjustReason);
+	}
+	
+	public String getAdjustReason() {
+		return getStr("adjust_reason");
+	}
+
+	public void setOldDeptId(String oldDeptId) {
+		set("old_dept_id", oldDeptId);
+	}
+	
+	public String getOldDeptId() {
+		return getStr("old_dept_id");
+	}
+
+	public void setOldDeptName(String oldDeptName) {
+		set("old_dept_name", oldDeptName);
+	}
+	
+	public String getOldDeptName() {
+		return getStr("old_dept_name");
+	}
+
+	public void setOldPdvalue(String oldPdvalue) {
+		set("old_pdValue", oldPdvalue);
+	}
+	
+	public String getOldPdvalue() {
+		return getStr("old_pdValue");
+	}
+
+	public void setOldPdname(String oldPdname) {
+		set("old_pdName", oldPdname);
+	}
+	
+	public String getOldPdname() {
+		return getStr("old_pdName");
+	}
+
+	public void setOldSalaryLevel(String oldSalaryLevel) {
+		set("old_salary_level", oldSalaryLevel);
+	}
+	
+	public String getOldSalaryLevel() {
+		return getStr("old_salary_level");
+	}
+
+	public void setOldSalary(Double oldSalary) {
+		set("old_salary", oldSalary);
+	}
+	
+	public Double getOldSalary() {
+		return getDouble("old_salary");
+	}
+
+	public void setNewDeptId(String newDeptId) {
+		set("new_dept_id", newDeptId);
+	}
+	
+	public String getNewDeptId() {
+		return getStr("new_dept_id");
+	}
+
+	public void setNewDeptName(String newDeptName) {
+		set("new_dept_name", newDeptName);
+	}
+	
+	public String getNewDeptName() {
+		return getStr("new_dept_name");
+	}
+
+	public void setNewPdvalue(String newPdvalue) {
+		set("new_pdValue", newPdvalue);
+	}
+	
+	public String getNewPdvalue() {
+		return getStr("new_pdValue");
+	}
+
+	public void setNewPdname(String newPdname) {
+		set("new_pdName", newPdname);
+	}
+	
+	public String getNewPdname() {
+		return getStr("new_pdName");
+	}
+
+	public void setNewSalaryLevel(String newSalaryLevel) {
+		set("new_salary_level", newSalaryLevel);
+	}
+	
+	public String getNewSalaryLevel() {
+		return getStr("new_salary_level");
+	}
+
+	public void setNewSalary(Double newSalary) {
+		set("new_salary", newSalary);
+	}
+	
+	public Double getNewSalary() {
+		return getDouble("new_salary");
+	}
+
 	public void setValues(String values) {
 		set("values", values);
 	}
@@ -34,11 +162,19 @@ public abstract class BaseXdEffict<M extends BaseXdEffict<M>> extends Model<M> i
 	}
 
 	public void setEffectDate(String effectDate) {
-		set("effectDate", effectDate);
+		set("effect_date", effectDate);
 	}
 	
 	public String getEffectDate() {
-		return getStr("effectDate");
+		return getStr("effect_date");
+	}
+
+	public void setOtherRemarks(String otherRemarks) {
+		set("other_remarks", otherRemarks);
+	}
+	
+	public String getOtherRemarks() {
+		return getStr("other_remarks");
 	}
 
 	public void setFieldtype(Integer fieldtype) {
@@ -57,13 +193,14 @@ public abstract class BaseXdEffict<M extends BaseXdEffict<M>> extends Model<M> i
 		return getStr("status");
 	}
 
-	public void setRemarks(java.lang.String remarks) {
+	public void setRemarks(String remarks) {
 		set("remarks", remarks);
 	}
-
-	public java.lang.String getRemarks() {
+	
+	public String getRemarks() {
 		return getStr("remarks");
 	}
+
 	public void setCuser(String cuser) {
 		set("cuser", cuser);
 	}

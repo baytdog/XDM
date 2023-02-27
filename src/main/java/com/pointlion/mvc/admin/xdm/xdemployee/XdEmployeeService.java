@@ -1061,35 +1061,34 @@ public class XdEmployeeService{
 	}
 
 
-	public List<XdEmployee> getPrintInfos(String name,String empnum,String department
-	,String emprelation,String unitname,String costitem
-	,String inductionstatus,String departime,String checked,String selectedName
-	){
-		String userId = ShiroKit.getUserId();
+	public List<XdEmployee> getPrintInfos(String name,String empNum,String department
+	,String empRelation,String unitName,String costItem,String inductionStatus,String departTime,
+										  String checked,String selectedName){
+//		String userId = ShiroKit.getUserId();
 		String sql  = "select * from "+TABLE_NAME+" o where 1=1";
 		if(StrKit.notBlank(name)){
 			sql = sql + " and o.name like '%"+ name+"%'";
 		}
-		if(StrKit.notBlank(empnum)){
-			sql = sql + " and o.empnum like '%"+ empnum+"%'";
+		if(StrKit.notBlank(empNum)){
+			sql = sql + " and o.empnum like '%"+ empNum+"%'";
 		}
-		if(StrKit.notBlank(emprelation)){
-			sql = sql + " and o.emprelation like '%"+ emprelation+"%'";
+		if(StrKit.notBlank(empRelation)){
+			sql = sql + " and o.emprelation like '%"+ empRelation+"%'";
 		}
 		if(StrKit.notBlank(department)){
 			sql = sql + " and o.department = '"+ department+"'";
 		}
-		if(StrKit.notBlank(unitname)){
-			sql = sql + " and o.unitname = '"+ unitname+"'";
+		if(StrKit.notBlank(unitName)){
+			sql = sql + " and o.unitname = '"+ unitName+"'";
 		}
-		if(StrKit.notBlank(costitem)){
-			sql = sql + " and o.costitem = '"+ costitem+"'";
+		if(StrKit.notBlank(costItem)){
+			sql = sql + " and o.costitem = '"+ costItem+"'";
 		}
-		if(StrKit.notBlank(inductionstatus)){
-			sql=sql+ " and o.inductionstatus='"+inductionstatus+"'";
+		if(StrKit.notBlank(inductionStatus)){
+			sql=sql+ " and o.inductionstatus='"+inductionStatus+"'";
 		}
-		if(StrKit.notBlank(departime)){
-			sql=sql+ " and o.departime like '"+departime+"%'";
+		if(StrKit.notBlank(departTime)){
+			sql=sql+ " and o.departime like '"+departTime+"%'";
 		}
 
 
@@ -1103,7 +1102,7 @@ public class XdEmployeeService{
 					insql.replaceAll(",$","")
 					+")";
 		}
-		if(StrKit.notBlank(inductionstatus)||StrKit.notBlank(departime)){
+		if(StrKit.notBlank(inductionStatus)||StrKit.notBlank(departTime)){
 			sql = sql + " order by o.departime desc";
 		}else{
 			sql = sql + " order by o.empnum desc";

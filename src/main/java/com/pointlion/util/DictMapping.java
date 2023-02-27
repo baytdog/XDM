@@ -5,11 +5,14 @@ import com.pointlion.mvc.common.model.SysOrg;
 import com.pointlion.mvc.common.model.XdDict;
 import com.pointlion.mvc.common.model.XdOplogDetail;
 import com.pointlion.mvc.common.model.XdProjects;
+import org.apache.shiro.crypto.hash.Hash;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 /**
  * @Author: king
@@ -305,6 +308,24 @@ public class DictMapping {
         }
     }
 
+
+    public static Map<String,List<XdDict>> getDictListByType(){
+         List<XdDict> dictList = XdDict.dao.find("select * from xd_dict  order by type,sortnum");
+         Map<String,List<XdDict>> dictMap=new HashMap<>();
+        dictList.stream().forEach(xdDict -> {
+                String type = xdDict.getType();
+                if (dictMap.get(type)==null){
+                    List<XdDict> typeList=new ArrayList<>();
+                    typeList.add(xdDict);
+                    dictMap.put(type,typeList);
+                }else{
+                    List<XdDict> list = dictMap.get(type);
+                    list.add(xdDict);
+                    dictMap.put(type,list);
+                }
+        });
+        return  dictMap;
+    }
 
 
 

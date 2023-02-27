@@ -11,8 +11,8 @@
 <script>
     function save(){
         let gridData1 = grid1.getData();
-        let gridData2 = grid2.getData();
-        var data = common_ajax.ajaxFunc("/admin/xd/xdemployee/saveManager",$('#editForm').serialize()+"&gridData1="+mini.encode(gridData1)+"&gridData2="+mini.encode(gridData2), "json", null);
+       // let gridData2 = grid2.getData();
+        var data = common_ajax.ajaxFunc("/admin/xd/xdemployee/saveManager",$('#editForm').serialize()+"&gridData1="+mini.encode(gridData1), "json", null);
         if(data.success){
             pointLion.alertMsg("操作成功!" , "success" , "small" , function(){
                 location.href = ctx+'/admin/xd/xdemployee/getManagerListPage';//跳转到列表页
@@ -24,11 +24,10 @@
         }
     }
     function immEffect(){
-
         let gridData1 = grid1.getData();
-        let gridData2 = grid2.getData();
+       // let gridData2 = grid2.getData();
 
-        var data = common_ajax.ajaxFunc("/admin/xd/xdemployee/immediateEffect",$('#editForm').serialize()+"&gridData1="+mini.encode(gridData1)+"&gridData2="+mini.encode(gridData2), "json", null);
+        var data = common_ajax.ajaxFunc("/admin/xd/xdemployee/immediateEffect",$('#editForm').serialize()+"&gridData1="+mini.encode(gridData1), "json", null);
         if(data.success){
             pointLion.alertMsg("操作成功!" , "success" , "small" , function(){
                 location.href = ctx+'/admin/xd/xdemployee/getManagerListPage';//跳转到列表页
@@ -68,13 +67,13 @@
                         }
                     }
                 },
-               /* "salaryEffectDate": {
+                "effectDate": {
                     validators: {
                         notEmpty: {
-                            message: '*薪资生效日期不能为空'
+                            message: '*生效日期不能为空'
                         },
                     }
-                }*/
+                }
             }
         }).on("success.form.bv", function (e) {
             save();
@@ -88,7 +87,7 @@
     mini.parse();
 
     var grid1 = mini.get("datagrid1");
-    var grid2 = mini.get("datagrid2");
+   // var grid2 = mini.get("datagrid2");
 
     // var Genders = [{ id: 1, text: '男' }, { id: 2, text: '女'}];
     // var grade= [{id:0,text:'全日制'}, { id:1, text:'非全日制'}];
@@ -96,12 +95,10 @@
     $(function(){
 
         let employeeId=$("#employeeId").val();
-        let data = common_ajax.ajaxFunc("/admin/xd/records/getRecordsList", {"employeeId":employeeId,"filedType":"1"}, "json", null);
-
+        let data = common_ajax.ajaxFunc("/admin/xd/xdemployee/getEffectList", {"employeeId":employeeId}, "json", null);
         grid1.setData(data);
-        data = common_ajax.ajaxFunc("/admin/xd/records/getRecordsList", {"employeeId":employeeId,"filedType":"2"}, "json", null);
-
-        grid2.setData(data);
+      /*  data = common_ajax.ajaxFunc("/admin/xd/records/getRecordsList", {"employeeId":employeeId,"filedType":"2"}, "json", null);
+        grid2.setData(data);*/
     });
 
 </script>
@@ -239,6 +236,14 @@
         }
         $('#hardstaffSelect').on('changed.bs.select', function (e) {
             $('#position').val($('#hardstaffSelect').val())
+        });
+        //工作岗位
+        let workstation=$("#workstation").val();
+        if(workstation){
+            $('#workstationSelect').selectpicker('val',workstation.split(",")).trigger("change");
+        }
+        $('#workstationSelect').on('changed.bs.select', function (e) {
+            $('#workstation').val($('#workstationSelect').val())
         });
     })
 

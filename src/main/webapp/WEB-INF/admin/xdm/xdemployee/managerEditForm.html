@@ -455,22 +455,16 @@
                         <div class="form-group">
 
                             <label class="col-md-1 control-label">工作岗位</label>
-                            <div class="col-md-3">
-                                <input type="text"  name="#(formModelName).workstation" class="form-control"  value="#(o?o.workstation:'')"  >
-                            </div>
-                          <label class="col-md-1 control-label">岗位生效日期</label>
-                            <div class="input-group date form_datetime col-md-3" style="float:left">
-                                <input type="text" id="workEffectDate" name="workEffectDate" class="form-control"  value="#(workEffectDate)"    >
-                                <span class="input-group-addon"> <span class="glyphicon glyphicon-th"></span>
-								</span>
-                            </div>
+                            <input type="hidden"  id="workstation" name="#(formModelName).workstation" class="form-control"  value="#(o?o.workstation:'')"  >
+                                <div class="col-md-3">
+                                    <select id="workstationSelect"   title="请选择岗位"  class="selectpicker show-tick form-control" actionsBox="true"     data-live-search="true">
+                                        #for(duty:duties)
+                                        <option value="#(duty.value)">#(duty.name)</option>
+                                        #end
+                                    </select>
+                                </div>
 
-                            <label class="col-md-1 control-label">岗位备注</label>
-                            <div class="col-md-3">
-                                <input type="text"  id="workRemarks" name="workRemarks"  class="form-control"  value="#(workRemarks)"  >
-                            </div>
-                        </div>
-                        <div class="form-group">
+
                             <label class="col-md-1 control-label">薪资</label>
                             <div class="col-md-3">
                                 <input type="text"  name="#(formModelName).salary" class="form-control"  value="#(o?o.salary:'')"  >
@@ -480,29 +474,29 @@
                                 <input type="text"  name="#(formModelName).salary_level" class="form-control"  value="#(o?o.salary_level:'')"  >
                             </div>
 
-                            <label class="col-md-1 control-label">薪资生效日期</label>
+                        </div>
+                        <div class="form-group">
+
+
+                            <label class="col-md-1 control-label">生效日期</label>
                             <div class="input-group date form_datetime col-md-3" style="float:left">
-                                <input type="text" id="salaryEffectDate" name="salaryEffectDate" class="form-control"  value="#(salaryEffectDate)"    >
+                                <input type="text" id="effectDate" name="effectDate" class="form-control"  value="#(effectDate)"    >
                                 <span class="input-group-addon"> <span class="glyphicon glyphicon-th"></span>
 								</span>
                             </div>
-
+                            <label class="col-md-1 control-label">调整原因</label>
+                            <div class="col-md-3">
+                                <input type="text"  id="adjustReason" name="adjustReason"  class="form-control"  value="#(adjustReason)"  >
+                            </div>
+                            <label class="col-md-1 control-label">其他说明</label>
+                            <div class="col-md-3">
+                                <input type="text"  id="otherRemarks" name="otherRemarks"  class="form-control"  value="#(otherRemarks)"  >
+                            </div>
 
                         </div>
-                        <div class="form-group">
-                            <label class="col-md-1 control-label">薪资备注</label>
-                            <div class="col-md-11">
-                                <input type="text"  id="salaryRemarks" name="salaryRemarks"  class="form-control"  value="#(salaryRemarks)"  >
-                            </div>
-                        </div>
 
-                        <!--<div class="form-group">
-                            <label class="col-md-1 control-label">调薪记录</label>
-                            <div class="col-md-11">
-                                <textarea rows="5" name="#(formModelName).saladjrecord" class="form-control"   readonly >#(o.saladjrecord)</textarea>
-                            </div>
-                        </div>-->
-
+                        <br/>
+                        <br/>
                         <mini-datagrid id="datagrid1" class="mini-datagrid" style="width:100%;"
                                         idField="id"  allowResize="true"
                                        allowCellEdit="true" allowCellSelect="true" multiSelect="false"
@@ -511,32 +505,28 @@
 
                         >
                             <columns>
-                                <column type="indexcolumn"></column>
-                                <column name="effict_date" field="effict_date" width="100"  headerAlign="center"  dateFormat="yyyy-MM-dd" >生效日期
+                              <!--  <column type="indexcolumn"></column>-->
+                                <column name="adjust_reason"  field="adjust_reason" headerAlign="center"     >调整原因</column>
+                                <column name="old_dept_name" field="old_dept_name"    headerAlign="center" >变动前部门</column>
+<!--
+                                <column name="old_dept_name" field="old_dept_name" width="100"  headerAlign="center"  dateFormat="yyyy-MM-dd" >生效日期
                                 </column>
-                                <column name="old_value"  field="old_value" headerAlign="center"   width="150" >
-                                        原薪资
-                                </column>
-                                <column name="oldsallevel"  field="oldsallevel" headerAlign="center"   width="150" >
-                                    原星级
-                                </column>
-                                <column name="new_value"  field="new_value" headerAlign="center"   width="150" >
-                                    现薪资
-                                </column>
-                                <column name="newsallevel"  field="newsallevel" headerAlign="center"   width="150" >
-                                    现星级
-                                </column>
-                                <column name="remarks"  field="remarks" headerAlign="center"   width="150" >
-                                    备注
-                                    <editor>
-                                        <input property="editor" class="mini-textbox" style="width:100%;" _minWidth="200" />
-                                    </editor>
-                                </column>
+-->
+
+                                <column name="old_pdName"  field="old_pdName" headerAlign="center"     >变动前职位/岗位</column>
+                                <column name="old_salary_level"  field="old_salary_level" headerAlign="center"     >变动前星级</column>
+                                <column name="old_salary"  field="old_salary" headerAlign="center"     >变动前薪资</column>
+                                <column name="new_dept_name"  field="new_dept_name" headerAlign="center"     >变动后部门</column>
+                                <column name="new_pdName"  field="new_pdName" headerAlign="center"    >变动后职位/岗位</column>
+                                <column name="new_salary_level"  field="new_salary_level" headerAlign="center"     >变动后星级</column>
+                                <column name="new_salary"  field="new_salary" headerAlign="center"    >变动后薪资</column>
+                                <column name="effect_date"  field="effect_date" headerAlign="center"     dateFormat="yyyy-MM-dd" >生效日期</column>
+                                <column name="other_remarks"  field="other_remarks" headerAlign="center"    >其他说明</column>
                             </columns>
                         </mini-datagrid>
                         <br/>
                         <br/>
-                        <mini-datagrid id="datagrid2" class="mini-datagrid" style="width:100%;"
+                      <!--  <mini-datagrid id="datagrid2" class="mini-datagrid" style="width:100%;"
                                        url="" idField="id"  allowResize="true" pageSize="15"
                                        allowCellEdit="true" allowCellSelect="true" multiSelect="false"
                                        editNextOnEnterKey="true"  editNextRowCell="true"
@@ -567,7 +557,7 @@
                                     现星级
                                 </column>
                             </columns>
-                        </mini-datagrid>
+                        </mini-datagrid>-->
 
                         <!--<div class="form-group">
                             <label class="col-md-1 control-label">异动记录</label>

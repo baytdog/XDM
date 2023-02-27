@@ -197,8 +197,8 @@ public class XdEdutrainService{
 	public Map<String,Object> importExcel(List<List<String>> list) throws SQLException {
 		final List<String> message = new ArrayList<String>();
 		final Map<String,Object> result = new HashMap<String,Object>();
-		Map<String,String> orgMap= DictMapping.orgMapping("1");
-		Map<String,String> projectsMap=DictMapping.projectsMapping();
+		/*Map<String,String> orgMap= DictMapping.orgMapping("1");
+		Map<String,String> projectsMap=DictMapping.projectsMapping();*/
 		Map<String, Map<String, String>> dictMapping= DictMapping.dictMapping();
 		Map<String, String> eudMap = dictMapping.get("edu");
 		Db.tx(new IAtom() {
@@ -224,7 +224,7 @@ public class XdEdutrainService{
 							boolean flag=false;
 							int j=1;
 							while (true){
-								int k = j % 5;
+								int k = j % 6;
 								if(k==3 && "".equals(eduStr.get(j))){
 									flag=true;
 									break;
@@ -242,9 +242,12 @@ public class XdEdutrainService{
 										case 4:
 											edutrain.setMajor(eduStr.get(j)==null?"":eduStr.get(j));
 											break;
-										case 0:
+										case 5:
 											edutrain.setEdubg(eduStr.get(j)==null?"":eudMap.get(eduStr.get(j)));
-											edutrain.setGrade("1");
+											break;
+										case 0:
+//											edutrain.setEdubg(eduStr.get(j)==null?"":eudMap.get(eduStr.get(j)));
+											edutrain.setGrade("全日制".equals(eduStr.get(j))?"0":"1");
 											edutrain.setId(UuidUtil.getUUID());
 											edutrain.save();
 											break;

@@ -14,6 +14,7 @@ import com.pointlion.mvc.admin.xdm.xdcontractinfo.XdContractInfoController;
 import com.pointlion.mvc.admin.xdm.xddaymodel.XdDayModelController;
 import com.pointlion.mvc.admin.xdm.xddict.XdDictController;
 import com.pointlion.mvc.admin.xdm.xdedutrain.XdEdutrainController;
+import com.pointlion.mvc.admin.xdm.xdeffict.XdEffictController;
 import com.pointlion.mvc.admin.xdm.xdempcert.XdEmpCertController;
 import com.pointlion.mvc.admin.xdm.xdemployee.XdEmployeeController;
 import com.pointlion.mvc.admin.xdm.xdleave.XdLeaveController;
@@ -93,6 +94,7 @@ public class XDRoutes extends Routes {
         add("/admin/xd/xdseniorityallowance", XdSeniorityAllowanceController.class,"/xdseniorityallowance");
         add("/admin/xd/xdanleaveplan", XdAnleavePlanController.class,"/xdanleaveplan");
         add("/admin/xd/xdanleaveexecute", XdAnleaveExecuteController.class,"/xdanleaveexecute");
+        add("/admin/xd/xdeffict", XdEffictController.class,"/xdeffict");
 
 
     }

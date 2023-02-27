@@ -17,6 +17,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.function.Consumer;
 
@@ -1168,6 +1169,9 @@ public class XdEmployeeController extends BaseController {
 		setAttr("units",units);
 		List<XdProjects> projects = XdProjects.dao.find("select * from xd_projects where status='1' ");
 		setAttr("projects",projects);
+		List<SysOrg> orgList = SysOrg.dao.find("select * from sys_org where id <>'root' order by sort");
+		setAttr("depts",orgList);
+
 
 		renderIframe("managerList.html");
 	}
@@ -1179,10 +1183,9 @@ public class XdEmployeeController extends BaseController {
 		setAttr("view", view);
 		XdEmployee o = new XdEmployee();
 		o = service.getById(id);
-		List<XdEffict> xdEfficts = XdEffict.dao.find("select * from  xd_effict where status='0' and eid='" + id + "'");
+			/*List<XdEffict> xdEfficts = XdEffict.dao.find("select * from  xd_effict where status='0' and eid='" + id + "'");
 
-		if(xdEfficts!=null){
-
+	if(xdEfficts!=null){
 			for (XdEffict xdEffict : xdEfficts) {
 				if(xdEffict.getFieldtype()==1){
 					o.setWorkstation(xdEffict.getValues());
@@ -1194,38 +1197,52 @@ public class XdEmployeeController extends BaseController {
 					setAttr("salaryRemarks",xdEffict.getRemarks());
 				}
 			}
+		}*/
 
+		XdEffict effict = XdEffict.dao.findFirst("select * from  xd_effict where  eid='" + id + "' order by ctime desc");
+		if (effict != null) {
 
-
-
+			setAttr("effectDate",effict.getEffectDate());
+			setAttr("adjustReason",effict.getAdjustReason());
+			setAttr("otherRemarks",effict.getOtherRemarks());
 
 		}
 
 
+		Map<String, List<XdDict>> dictListByType = DictMapping.getDictListByType();
 
-
-		List<XdDict> ismarry = XdDict.dao.find("select * from xd_dict where type ='ismarry'");
+		List<XdDict> ismarry = dictListByType.get("ismarry");
+//				XdDict.dao.find("select * from xd_dict where type ='ismarry'");
 		setAttr("ismarry",ismarry);
-		List<XdDict> nations = XdDict.dao.find("select * from xd_dict where type ='nation' order by sortnum");
+		List<XdDict> nations = dictListByType.get("nation");
+//				XdDict.dao.find("select * from xd_dict where type ='nation' order by sortnum");
 		setAttr("nations",nations);
-		List<XdDict> polities = XdDict.dao.find("select * from xd_dict where type ='polity' order by sortnum");
+		List<XdDict> polities = dictListByType.get("polity");
+//				XdDict.dao.find("select * from xd_dict where type ='polity' order by sortnum");
 		setAttr("polities",polities);
-		List<XdDict> edus = XdDict.dao.find("select * from xd_dict where type ='edu' order by sortnum");
-		setAttr("edus",edus);
-		List<XdDict> officestatus = XdDict.dao.find("select * from xd_dict where type ='officestatus' order by sortnum");
-		setAttr("officestatus",officestatus);
+//		List<XdDict> edus = dictListByType.get("edu");
+//				XdDict.dao.find("select * from xd_dict where type ='edu' order by sortnum");
+		setAttr("edus",dictListByType.get("edu"));
+//		List<XdDict> officestatus = dictListByType.get("officestatus");
+//				XdDict.dao.find("select * from xd_dict where type ='officestatus' order by sortnum");
+		setAttr("officestatus",dictListByType.get("officestatus"));
 
 		List<SysOrg> sysOrgs = SysOrg.dao.find("select * from sys_org where id<>'root' order by sort");
 		setAttr("sysOrgs",sysOrgs);
-		List<XdDict> units = XdDict.dao.find("select * from xd_dict where type ='unit' order by sortnum");
-		setAttr("units",units);
+//		List<XdDict> units = dictListByType.get("unit");
+//				XdDict.dao.find("select * from xd_dict where type ='unit' order by sortnum");
+		setAttr("units",dictListByType.get("unit"));
 //		List<XdDict> projects = XdDict.dao.find("select * from xd_dict where type ='projects' order by sortnum");
 		List<XdProjects> projects = XdProjects.dao.find("select * from xd_projects where status='1'");
 		setAttr("projects",projects);
-		List<XdDict> position = XdDict.dao.find("select * from xd_dict where type ='position' order by sortnum");
+		List<XdDict> position = dictListByType.get("position");
+//				XdDict.dao.find("select * from xd_dict where type ='position' order by sortnum");
 		setAttr("position",position);
-		List<XdDict> hardstuff = XdDict.dao.find("select * from xd_dict where type ='hardstuff' order by sortnum");
-		setAttr("hardstuff",hardstuff);
+//		List<XdDict> hardstuff = dictListByType.get("hardstuff");
+//				XdDict.dao.find("select * from xd_dict where type ='hardstuff' order by sortnum");
+		setAttr("hardstuff",dictListByType.get("hardstuff"));
+//		List<XdDict> dutyList = dictListByType.get("duty");
+		setAttr("duties",dictListByType.get("duty"));
 
 		setAttr("o", o);
 		setAttr("formModelName",StringUtil.toLowerCaseFirstOne(XdEmployee.class.getSimpleName()));
@@ -1234,7 +1251,7 @@ public class XdEmployeeController extends BaseController {
 
 
 
-	public void saveManager(){
+	public void saveManagerBak(){
 		XdEmployee o = getModel(XdEmployee.class);
 		String id = o.getId();
 		XdEmployee employee = XdEmployee.dao.findById(id);
@@ -1312,6 +1329,58 @@ public class XdEmployeeController extends BaseController {
 		}
 		renderSuccess();
 	}
+	public void saveManager(){
+		XdEmployee o = getModel(XdEmployee.class);
+		String id = o.getId();
+		XdEmployee employee = XdEmployee.dao.findById(id);
+		String today = DateTimeFormatter.ofPattern("yyyy-MM-dd").format(LocalDate.now());
+		String effectDate = getPara("effectDate");
+		String adjustReason = getPara("adjustReason");
+		String otherRemarks = getPara("otherRemarks");
+		List<XdEffict> effictsList = XdEffict.dao.find("select * from  xd_effict where eid='" + o.getId() + "' and  status ='0'");
+		for (XdEffict xdEffict : effictsList) {
+			xdEffict.setStatus("2");
+			xdEffict.setOveruser(ShiroKit.getUserId());
+			xdEffict.setOvertime(DateUtil.getCurrentTime());
+			xdEffict.update();
+		}
+
+
+		XdEffict xdEffict=new XdEffict();
+		xdEffict.setEid(o.getId());
+		xdEffict.setEmpNum(o.getEmpnum());
+		xdEffict.setEmpName(o.getName());
+		xdEffict.setHireDate(o.getEntrytime());
+		xdEffict.setOldDeptId(employee.getDepartment());
+		SysOrg org = SysOrg.dao.findById(employee.getDepartment());
+		xdEffict.setOldDeptName(org==null?"":org.getName());
+		xdEffict.setOldPdvalue(employee.getWorkstation());
+		Map<String, Map<String, String>> stringMapMap = DictMapping.dictMappingValueToName();
+		Map<String, String> duty = stringMapMap.get("duty");
+		xdEffict.setOldPdname(duty.get(employee.getWorkstation()));
+		xdEffict.setOldSalaryLevel(employee.getSalaryLevel());
+		xdEffict.setOldSalary(Double.valueOf(employee.getSalary()));
+		xdEffict.setNewDeptId(o.getDepartment());
+		org = SysOrg.dao.findById(employee.getDepartment());
+		xdEffict.setNewDeptName(org.getName());
+		xdEffict.setNewPdvalue(o.getWorkstation());
+		xdEffict.setNewPdname(duty.get(o.getWorkstation()));
+		xdEffict.setNewSalaryLevel(o.getSalaryLevel());
+		xdEffict.setNewSalary(Double.valueOf(o.getSalary()));
+		if(today.equals(effectDate)){
+			xdEffict.setStatus("1");
+			o.update();
+		}else{
+			xdEffict.setStatus("0");
+		}
+		xdEffict.setAdjustReason(adjustReason);
+		xdEffict.setOtherRemarks(otherRemarks);
+		xdEffict.setEffectDate(effectDate);
+		xdEffict.setCtime(DateUtil.getCurrentTime());
+		xdEffict.setCuser(ShiroKit.getUserId());
+		xdEffict.save();
+		renderSuccess();
+	}
 
 
 	/**
@@ -1323,6 +1392,150 @@ public class XdEmployeeController extends BaseController {
 	 * @Return void
 	 */
 	public void immediateEffect(){
+		XdEmployee o = getModel(XdEmployee.class);
+		String id = o.getId();
+		XdEmployee employee = XdEmployee.dao.findById(id);
+		String effectDate = getPara("effectDate");
+		String adjustReason = getPara("adjustReason");
+		String otherRemarks = getPara("otherRemarks");
+		List<XdEffict> effictsList = XdEffict.dao.find("select * from  xd_effict where eid='" + o.getId() + "' and  status ='0'");
+		for (XdEffict xdEffict : effictsList) {
+			xdEffict.setStatus("2");
+			xdEffict.setOveruser(ShiroKit.getUserId());
+			xdEffict.setOvertime(DateUtil.getCurrentTime());
+			xdEffict.update();
+		}
+
+
+		XdEffict xdEffict=new XdEffict();
+		xdEffict.setEid(o.getId());
+		xdEffict.setEmpNum(o.getEmpnum());
+		xdEffict.setEmpName(o.getName());
+		xdEffict.setHireDate(o.getEntrytime());
+		xdEffict.setOldDeptId(employee.getDepartment());
+		SysOrg org = SysOrg.dao.findById(employee.getDepartment());
+		xdEffict.setOldDeptName(org==null?"":org.getName());
+		xdEffict.setOldPdvalue(employee.getWorkstation());
+		Map<String, Map<String, String>> stringMapMap = DictMapping.dictMappingValueToName();
+		Map<String, String> duty = stringMapMap.get("duty");
+		xdEffict.setOldPdname(duty.get(employee.getWorkstation()));
+		xdEffict.setOldSalaryLevel(employee.getSalaryLevel());
+		xdEffict.setOldSalary(Double.valueOf(employee.getSalary()));
+		xdEffict.setNewDeptId(o.getDepartment());
+		org = SysOrg.dao.findById(employee.getDepartment());
+		xdEffict.setNewDeptName(org.getName());
+		xdEffict.setNewPdvalue(o.getWorkstation());
+		xdEffict.setNewPdname(duty.get(o.getWorkstation()));
+		xdEffict.setNewSalaryLevel(o.getSalaryLevel());
+		xdEffict.setNewSalary(Double.valueOf(o.getSalary()));
+		xdEffict.setStatus("1");
+		xdEffict.setAdjustReason(adjustReason);
+		xdEffict.setOtherRemarks(otherRemarks);
+		xdEffict.setEffectDate(effectDate);
+		xdEffict.setCtime(DateUtil.getCurrentTime());
+		xdEffict.setCuser(ShiroKit.getUserId());
+		xdEffict.save();
+		String chrecord = o.getChrecord();
+		if(chrecord!=null && !"".equals(chrecord) && !chrecord.endsWith(";")){
+			 chrecord=chrecord+";";
+		}
+		int size = XdEffict.dao.find("select * from  xd_effict where eid='" + o.getId() + "' and  status ='1'").size();
+		String[] dateArr = effectDate.split("-");
+		chrecord=chrecord+size+"、"+dateArr[0]+"年"+dateArr[1]+"月"+xdEffict.getNewDeptName()+xdEffict.getNewPdname();
+		if(xdEffict.getOtherRemarks()!=null && !"".equals(xdEffict.getOtherRemarks())){
+			chrecord=chrecord+"("+xdEffict.getOtherRemarks()+")";
+		}
+		chrecord=chrecord+";";
+		o.setChrecord(chrecord);
+		o.update();
+
+	/*		List<XdEffict> xdEfficts = XdEffict.dao.find("select * from  xd_effict where fieldtype='1' and status='0' and eid='" + id + "'");
+			xdEfficts.stream().forEach( xdEffict-> {
+					xdEffict.setOvertime(DateUtil.getCurrentTime());
+					xdEffict.setStatus("2");
+					xdEffict.setOveruser(ShiroKit.getUserId());
+					xdEffict.update();
+			});*/
+			/*XdEffict xde = new XdEffict();
+			xde.setEid(id);
+			xde.setValues(o.getWorkstation());
+			xde.setFieldtype(1);
+			xde.setEffectDate(workEffectDate);
+			xde.setCtime(DateUtil.getCurrentTime());
+			xde.setCuser(ShiroKit.getUserId());
+			xde.setStatus("1");
+			xde.setRemarks(workRemarks);
+*/
+
+		/*	XdRecords records=new XdRecords();
+			records.setEffictDate(workEffectDate);
+			records.setEid(id);
+			records.setFieldType(2);
+			records.setOldValue(employee.getWorkstation()==null?"":employee.getWorkstation());
+			records.setNewValue(o.getWorkstation());
+			records.setRemarks(workRemarks);
+			records.setCtime(DateUtil.getCurrentTime());
+			records.setCuser(ShiroKit.getUserId());
+			records.save();*/
+
+		/*	employee.setWorkstation(o.getWorkstation());
+			employee.update();
+			xde.save();*/
+
+		/*if(salaryEffectDate!=null&&!salaryEffectDate.trim().equals("")) {
+			List<XdEffict> xdEfficts = XdEffict.dao.find("select * from  xd_effict where fieldtype='2' and status='0' and eid='" + id + "'");
+			xdEfficts.stream().forEach( xdEffict-> {
+				xdEffict.setOvertime(DateUtil.getCurrentTime());
+				xdEffict.setStatus("2");
+				xdEffict.setOveruser(ShiroKit.getUserId());
+				xdEffict.update();
+			});
+			XdEffict xdsalary = new XdEffict();
+			xdsalary.setEid(id);
+			xdsalary.setValues(String.valueOf(o.getSalary()));
+			xdsalary.setFieldtype(2);
+			xdsalary.setEffectDate(salaryEffectDate);
+			xdsalary.setCtime(DateUtil.getCurrentTime());
+			xdsalary.setCuser(ShiroKit.getUserId());
+			xdsalary.setStatus("1");
+			xdsalary.setRemarks(salaryRemarks);
+
+			XdRecords records=new XdRecords();
+			records.setEid(id);
+			records.setEffictDate(salaryEffectDate);
+			records.setFieldType(1);
+			records.setOldValue(String.valueOf(employee.getSalary()));
+			records.setNewValue(String.valueOf(o.getSalary()));
+			records.setOldsallevel(employee.getSalaryLevel()==null?"":employee.getSalaryLevel());
+			records.setNewsallevel(o.getSalaryLevel()==null?"":o.getSalaryLevel());
+			records.setRemarks(salaryRemarks);
+			records.setCtime(DateUtil.getCurrentTime());
+			records.setCuser(ShiroKit.getUserId());
+			records.save();
+
+			employee.setSalary(o.getSalary());
+			employee.setSalaryLevel(o.getSalaryLevel());
+			employee.update();
+			xdsalary.save();
+		}*/
+
+
+		/*if(gridList1.size()!=0){
+			for (int i = 0; i < gridList1.size(); i++) {
+				XdRecords records = gridList1.get(i);
+				records.update();
+			}
+		}
+		if(gridList2.size()!=0){
+			for (int i = 0; i < gridList2.size(); i++) {
+				XdRecords records = gridList2.get(i);
+				records.update();
+			}
+		}*/
+		renderSuccess();
+
+	}
+	public void immediateEffectBak(){
 		XdEmployee o = getModel(XdEmployee.class);
 		String id = o.getId();
 		XdEmployee employee = XdEmployee.dao.findById(id);
@@ -1423,5 +1636,13 @@ public class XdEmployeeController extends BaseController {
 		}
 		renderSuccess();
 
+	}
+
+
+	public void getEffectList(){
+		String employeeId = getPara("employeeId");
+//		List<XdRecords> list = service.getRecordsList(employeeId,filedType);
+		List<XdEffict> xdEffictList = XdEffict.dao.find("select * from  xd_effict where eid='" + employeeId + "' order by ctime desc");
+		renderJson(xdEffictList);
 	}
 }
