@@ -3,17 +3,22 @@ package com.pointlion.mvc.admin.xdm.xdanleavesummary;
 import com.jfinal.kit.StrKit;
 import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.plugin.activerecord.Record;
+import com.jfinal.upload.UploadFile;
 import com.pointlion.mvc.common.base.BaseController;
 import com.pointlion.mvc.common.model.SysOrg;
 import com.pointlion.mvc.common.model.SysUser;
 import com.pointlion.mvc.common.model.XdAnleaveSummary;
 import com.pointlion.mvc.common.model.XdEmployee;
 import com.pointlion.mvc.common.utils.StringUtil;
+import com.pointlion.mvc.common.utils.office.excel.ExcelUtil;
 import com.pointlion.plugin.shiro.ShiroKit;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 
 public class XdAnleaveSummaryController extends BaseController {
@@ -22,6 +27,9 @@ public class XdAnleaveSummaryController extends BaseController {
 	 * get list page
 	 */
 	public void getListPage(){
+		List<SysOrg> orgList = SysOrg.dao.find("select * from  sys_org where id<>'root' order by sort");
+		setAttr("orgs",orgList);
+
 		renderIframe("list.html");
     }
 	/***
@@ -83,6 +91,18 @@ public class XdAnleaveSummaryController extends BaseController {
 		service.deleteByIds(ids);
     	renderSuccess("操作成功!");
     }
+
+
+	public void importExcel() throws IOException, SQLException {
+		UploadFile file = getFile("file","/content");
+		List<List<String>> list = ExcelUtil.excelToStringList(file.getFile().getAbsolutePath());
+		Map<String,Object> result = service.importExcel(list);
+		if((Boolean)result.get("success")){
+			renderSuccess((String)result.get("message"));
+		}else{
+			renderError((String)result.get("message"));
+		}
+	}
 
 	
 }

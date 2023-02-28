@@ -437,4 +437,10 @@ public class XdOperUtil {
         emp.update();
     }
 
+    public static XdEmployee getEmpInfo(String name){
+
+
+        return  XdEmployee.dao.findById("select * from xd_employee where name ='"+name+"'");
+    }
+
 }

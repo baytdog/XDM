@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class XdScheduleSummaryService{
@@ -104,7 +103,7 @@ public class XdScheduleSummaryService{
 			@Override
 			public boolean run() throws SQLException {
 				try{
-					if(list.size()>4){
+					if(list.size()>3){
 						SimpleUser user = ShiroKit.getLoginUser();
 						String creatTime = DateUtil.getCurrentTime();
 						List<String> title = list.get(0);
@@ -159,7 +158,7 @@ public class XdScheduleSummaryService{
 
 						double curMonHours=(workHours==null?0:workHours.getWorkHour());//当月工时
 						Class superclass = XdScheduleSummary.class.getSuperclass();
-						for(int i = 4;i<list.size();i++){//从第四行开始取
+						for(int i = 3;i<list.size();i++){//从第四行开始取
 							String otFlags="";
 							String modifyFlags="";
 							String tips="";
@@ -169,45 +168,62 @@ public class XdScheduleSummaryService{
 							XdScheduleSummary scheduleSummary=new XdScheduleSummary();
 							String summaryId = UuidUtil.getUUID();
 							scheduleSummary.setId(summaryId);
-							String department = summaryList.get(1);
+							String department = summaryList.get(0);
 							String departId = orgMapping.get(department);
 							scheduleSummary.setDeptName(department);
 							scheduleSummary.setDeptValue(departId);
-							String unitName = summaryList.get(2);
+							String unitName = summaryList.get(1);
 							String unitValue = unitMap.get(unitName);
 							scheduleSummary.setUnitName(unitName);
 							scheduleSummary.setUnitValue(unitValue);
-							String projectName = summaryList.get(3);
+							String projectName = summaryList.get(2);
 							String projectValue = projectsMap.get(projectName);
 							scheduleSummary.setProjectName(projectName);
 							scheduleSummary.setProjectValue(projectValue);
-							String empNum = summaryList.get(4);
+							String empNum = summaryList.get(3);
 							scheduleSummary.setEmpNum(empNum);
-							String empName = summaryList.get(5);
+							String empName = summaryList.get(4);
 							XdEmployee emp = XdEmployee.dao.findFirst("select * from  xd_employee where name='" + empName + "'");
 							scheduleSummary.setEmpName(empName);
 							scheduleSummary.setEmpId(emp==null?"":emp.getId());
-							String workStation = summaryList.get(6);
+							String workStation = summaryList.get(5);
 							scheduleSummary.setWorkStation(workStation);
 
-							XdScheduleSummary lastMonSummary = XdScheduleSummary.dao.findFirst("select * from xd_schedule_summary " +
-									"where emp_name='" + empName + "' " +
-									"and  schedule_year='" + lastYear + "'" +
-									"and schedule_month='" + lastMonth + "'");
+
 
 							modifyFlags=modifyFlags+","+"0";
 							tips=tips+","+"0";
+
+							String lastMonLastDayValue = summaryList.get(6);
+							scheduleSummary.setDay00(lastMonLastDayValue);
+							if(sb.indexOf(xdDayModels.get(0).getId())!=-1){
+								otFlags=otFlags+","+"1";
+							}else{
+								otFlags=otFlags+","+"0";
+							}
+
+							if(!lastMonLastDayValue.equals("")){
+								XdShift xdShift = nameShiftObjMap.get(lastMonLastDayValue);
+								if(xdShift!=null && xdShift.getBusitime()!=null && !xdShift.getBusitime().equals("")){
+									if("1".equals(xdShift.getSpanDay())){
+										//跨天
+										if(sb.indexOf(yearMonth + "01")!=-1){
+											othours+=Double.valueOf(xdShift.getSpanHours());//加班时间
+										}else{
+											work_hour+=Double.valueOf(xdShift.getSpanHours());//出勤时间
+										}
+									}
+								}
+
+							}
+
+
+							/*XdScheduleSummary lastMonSummary = XdScheduleSummary.dao.findFirst("select * from xd_schedule_summary " +
+									"where emp_name='" + empName + "' " +
+									"and  schedule_year='" + lastYear + "'" +
+									"and schedule_month='" + lastMonth + "'");
 							if(lastMonSummary==null){
 								otFlags=otFlags+","+"0";
-							/*	if(xdDayModels.get(0).getId().startsWith(yearMonth)){
-									otFlags=otFlags+","+"0";
-								}else{
-									if(sb.indexOf(xdDayModels.get(0).getId())!=-1){
-										otFlags=otFlags+","+"1";
-									}else{
-										otFlags=otFlags+","+"0";
-									}
-								}*/
 								scheduleSummary.setDay00("");
 							}else{
 								Method getLastMonLastDay = superclass.getMethod("getDay" + lastDay);
@@ -230,18 +246,19 @@ public class XdScheduleSummaryService{
 										}
 									}
 								}
-							}
+							}*/
 
 							Method setMethod=null;
 							String ymdNoLine="";
 							String ymdInLine="";
+							String cellValue="";
 							for (int j = 1; j <=daysNum; j++) {
 								modifyFlags=modifyFlags+","+"0";
 								tips=tips+","+"0";
 
-								String cellValue = summaryList.get(6 + j);
-								System.out.println(j);
-								System.out.println(cellValue);
+								 cellValue = summaryList.get(6 + j).trim();
+								/*System.out.println(j);
+								System.out.println(cellValue);*/
 								if(j<10){
 									setMethod = superclass.getMethod("setDay0" + j,String.class);
 									ymdNoLine = yearMonth + '0' + j;
@@ -342,6 +359,8 @@ public class XdScheduleSummaryService{
 													work_hour+=Double.valueOf(xdShift.getHours());
 													otFlags=otFlags+","+"0";
 												}
+											}else{
+												otFlags=otFlags+","+"0";
 											}
 										}
 									}else{
@@ -352,7 +371,7 @@ public class XdScheduleSummaryService{
 								}
 							}
 
-							scheduleSummary.setRemarks(summaryList.get(38));
+							//scheduleSummary.setRemarks(summaryList.get(38));
 							scheduleSummary.setCurMonHours(curMonHours);
 							scheduleSummary.setWorkHour(work_hour);
 							scheduleSummary.setOthours(0.0);

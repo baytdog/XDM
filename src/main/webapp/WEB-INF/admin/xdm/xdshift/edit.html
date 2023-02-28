@@ -36,10 +36,13 @@
 
 	$(function () {
 		let spanDay=$("#spanDay").val();
+		console.log(spanDay)
 		if(spanDay){
 			$('#spanDaySelect').selectpicker('val',spanDay.split(",")).trigger("change");
 		}else{
-			spanDay=0;
+			spanDay="0";
+			console.log(spanDay)
+			$("#spanDay").val("0");
 			$('#spanDaySelect').selectpicker('val',spanDay.split(",")).trigger("change");
 		}
 
