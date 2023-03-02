@@ -29,8 +29,13 @@ public class XdTotalTimeOnlineController extends BaseController {
 	 * get list page
 	 */
 	public void getListPage(){
+		String days = getPara("days", "");
+		if(StrKit.notBlank(days)){
+			setAttr("now", days);
+		}else{
 
-		setAttr("now", DateTimeFormatter.ofPattern("yyyy-MM-dd").format(LocalDate.now()));
+			setAttr("now", DateTimeFormatter.ofPattern("yyyy-MM-dd").format(LocalDate.now()));
+		}
 		renderIframe("list.html");
     }
 	/***
@@ -45,6 +50,7 @@ public class XdTotalTimeOnlineController extends BaseController {
 		String endhours = getPara("endhours","");
 		String endmin = getPara("endmin","00");
 
+		keepPara("work_date");
     	if(StrKit.notBlank(hours)){
 			Page<Record> page = service.getPage(Integer.valueOf(curr),Integer.valueOf(pageSize),work_date,hours,min,endhours,endmin);
 			renderPage(page.getList(),"",page.getTotalRow());
@@ -87,15 +93,26 @@ public class XdTotalTimeOnlineController extends BaseController {
     	setAttr("formModelName",StringUtil.toLowerCaseFirstOne(XdTotalTimeOnline.class.getSimpleName()));
 		renderIframe("edit.html");
     }
-    /***
-     * del
-     * @throws Exception
-     */
-    public void delete() throws Exception{
-		String ids = getPara("ids");
-		service.deleteByIds(ids);
-    	renderSuccess("ɾ���ɹ�!");
-    }
 
+
+	public void getOnlineListPage(){
+
+		setAttr("now", DateTimeFormatter.ofPattern("yyyy-MM-dd").format(LocalDate.now()));
+		setAttr("id",getPara("id"));
+		setAttr("field",getPara("field"));
+		setAttr("days",getPara("days"));
+//		keepPara("id","field","days");
+		renderIframe("listWork.html");
+	}
+
+	public void listOnlineData(){
+		String curr = getPara("pageNumber");
+		String pageSize = getPara("pageSize");
+		String id = getPara("id","");
+		String field = getPara("field","");
+		String days = getPara("days","");
+		Page<Record> page = service.getOnlinePage(Integer.valueOf(curr),Integer.valueOf(pageSize), days,id,field);
+		renderPage(page.getList(),"",page.getTotalRow());
+	}
 	
 }

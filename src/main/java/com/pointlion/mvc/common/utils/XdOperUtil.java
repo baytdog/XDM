@@ -240,6 +240,14 @@ public class XdOperUtil {
         String str = " 我是123一段测456abd试 空a格 的字符 串 ";
         System.out.println("过滤出数字：" + str.replaceAll("\\s*","").replaceAll("[^(0-9)]",""));
         System.out.println(3 % 6);
+        String [] strArr={"a","a","b","b","c"};
+        Set<String> hashSet = new HashSet();
+        hashSet.addAll(Arrays.asList(strArr));
+        System.out.println(hashSet.toString());
+        for (String s : hashSet) {
+            System.out.println(s);
+
+        }
     }
 
     public static void setChangeValue(Object obj,String fieldName,String newValue)  {

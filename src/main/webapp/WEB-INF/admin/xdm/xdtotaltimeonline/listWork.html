@@ -1,0 +1,191 @@
+<style>
+    .webuploader-pick{
+        padding: 0px 15px;
+        height: 33px;
+        line-height: 33px;
+    }
+</style>
+<div id="page-content">
+    <div class="col-sm-12 eq-box-sm">
+        <div class="panel">
+            <div class="panel ">
+                <div class="panel-body">
+                    <a id="reBack" class="btn btn-primary data-toolbar" href="#(ctx)/admin/xd/xdtotaltimeonline/getListPage?days=#(days)">返回</a>
+                    <table id="pageTable" class="demo-add-niftycheck table table-bordered" data-toolbar="#reBack"
+                           data-search="true"
+                           data-show-refresh="true"
+                           data-show-toggle="true"
+                           data-show-columns="true"
+                           data-sort-name="id"
+                           data-page-list="[5, 10, 20]"
+                           data-page-size="5"
+                           datawindow.history.back()-pagination="true" data-show-pagination-switch="true" ></table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+    let eid="#(id)"
+
+    console.log(eid)
+    let days="#(days)"
+    console.log(days)
+    let field="#(field)"
+    console.log(field);
+
+    var col = [
+        {field: 'dept_name', title: '部门', align: 'center'},
+        {field: 'project_name', title: '项目', align: 'center'},
+        {field: 'emp_num', title: '工号', align: 'center'},
+        {field: 'emp_name', title: '姓名', align: 'center'},
+        {field: 'shift', title: '班次', align: 'center'},
+        ];
+    var opt = {
+        //请求方法
+        method: 'get',
+        //是否显示行间隔色
+        striped: true,
+        //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+        cache: false,
+        //data-toolbar: "#demo-delete-row",
+        //是否显示分页（*）
+        pagination: true,
+        //是否启用排序
+        sortable: false,
+        //排序方式
+        sortOrder: "asc",
+        //初始化加载第一页，默认第一页
+        //我设置了这一项，但是貌似没起作用，而且我这默认是0,- -
+        //pageNumber:1,
+        //每页的记录行数（*）
+        pageSize: 10,
+        //可供选择的每页的行数（*）
+        pageList: [10, 25, 50, 100],
+        //这个接口需要处理bootstrap table传递的固定参数,并返回特定格式的json数据
+        url: ctx+"/admin/xd/xdtotaltimeonline/listOnlineData",
+        //默认值为 'limit',传给服务端的参数为：limit, offset, search, sort, order Else
+        //queryParamsType:'',
+        ////查询参数,每次调用是会带上这个参数，可自定义
+        queryParams : function(params) {
+            return {
+                pageNumber: (params.offset/params.limit)+1,
+                pageSize: params.limit,
+                "id":eid,
+                "field":field,
+                "days":days,
+            };
+        },
+        //分页方式：client客户端分页，server服务端分页（*）
+        sidePagination: "server",
+        //是否显示搜索
+        search: false,
+        //Enable the strict search.
+        strictSearch: true,
+        //Indicate which field is an identity field.
+        idField : "id",
+        columns: col,
+        pagination:true,paginationShowPageGo: true
+    };
+
+    //表格
+    function initTable(){
+        $('#pageTable').bootstrapTable(opt);
+        $('#pageTable').bootstrapTable('hideColumn', 'id');
+    }
+    function refreshTable(){
+        $("#pageTable").bootstrapTable('refresh', opt);
+        $('#pageTable').bootstrapTable('hideColumn', 'id');
+    }
+
+    //批量删除
+    function delSel(){
+        var data = [];
+        $("#pageTable input[type='checkbox'][name!='btSelectAll']:checked").each(function(){
+            data.push($(this).val());
+        });
+        if(data.length==0){
+            pointLion.alertMsg("请选择要删除的数据!","danger",null,null);
+            return;
+        }
+        del(data.join(","));//执行删除
+    }
+    //删除
+    function del(ids){
+        pointLion.confimMsg("您是否要删除所选信息 ?<br/> 点击确认进行删除 , 点击取消取消该操作",null,function(){
+            //执行删除
+            var data = common_ajax.ajaxFunc("/admin/xd/xdsettleovertimesummary/delete",{"ids":ids}, "json", null);
+            //删除结果
+            if(data.success){
+                pointLion.alertMsg(data.message,"success",null,function(){
+                    location.href = ctx+'/admin/xd/xdsettleovertimesummary/getListPage';//跳转到列表页
+                });
+            }else{
+                pointLion.alertMsg(data.message,"success",null,null);
+            }
+        });
+    };
+
+    //查询
+    function searchTable(){
+        let work_date = $("#work_date").val();
+        let hours =$("#hours").val();
+        let min =	$("#minus").val();
+        var param = {
+            query: {
+                "work_date":work_date,
+                "hours":hours,
+                "min":min,
+            }
+        }
+        // 刷新表格
+        $('#pageTable').bootstrapTable('refresh',param);
+    }
+
+    $(document).ready(function(){
+        $('.form_datetime').datepicker({format: 'yyyy-mm-dd',weekStart: 1,todayBtn:  1,autoclose: 1,language:  'zh-CN',todayHighlight: 1,forceParse: 0,clearBtn: true }).on('changeDate',null);
+        initTable();//初始化
+
+        pointLion.initUploader("/admin/xd/xdsettleovertimesummary/importExcel",function(data){
+            if(data.success){
+                pointLion.alertMsg("导入成功！","success",null,null);
+                searchTable();
+            }else{
+                pointLion.alertMsg(data.message,"danger",null,null);
+            }
+        });
+    });
+    /***
+     * 导出
+     */
+
+    function exportExcel(){
+
+        let dept = $("#dept").val();
+        let emp_name =encodeURIComponent($("#emp_name").val());
+        let unitname = $("#unitname").val();
+        let year =$("#year").val();
+        let month =	$("#month").val();
+        /*	if(year==''||month==''){
+                pointLion.alertMsg("请选择年月！","success",null,null);
+                return;
+            }*/
+        location.href = "#(ctx)/admin/xd/xdsettleovertimesummary/exportExcel?dept="+dept+"&emp_name="+emp_name+"&unitname="+unitname+"&year="+year+"&month="+month;
+    }
+    //导出加班分摊
+    function exportApportionExcel(){
+
+        let dept = $("#dept").val();
+        let emp_name =encodeURIComponent($("#emp_name").val());
+        let unitname = $("#unitname").val();
+        let year =$("#year").val();
+        let month =	$("#month").val();
+        /*	if(year==''||month==''){
+                pointLion.alertMsg("请选择年月！","success",null,null);
+                return;
+            }*/
+        location.href = "#(ctx)/admin/xd/xdsettleovertimesummary/exportApportionExcel?dept="+dept+"&emp_name="+emp_name+"&unitname="+unitname+"&year="+year+"&month="+month;
+    }
+
+</script>
