@@ -1,0 +1,301 @@
+<style>
+	.webuploader-pick{
+		padding: 0px 15px;
+		height: 33px;
+		line-height: 33px;
+	}
+</style>
+<div id="page-content">
+	<div class="col-sm-12 eq-box-sm">
+		<div class="panel">
+			<div class="panel panel-search">
+				<div class="panel-body">
+					<div class="form-inline">
+
+						<div class="form-group">
+							<div class="input-group date form_datetime">
+								<input id="work_date" placeholder="日期" class="form-control" value="#(now)">
+								<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<input id="hours" placeholder="开始时" class="form-control">
+							<input id="minus" placeholder="开始分" class="form-control">
+							至
+							<input id="endhours" placeholder="结束时" class="form-control">
+							<input id="endminus" placeholder="结束分" class="form-control">
+						</div>
+
+
+						<div class="form-group">
+							<button class="btn btn-primary" type="button" onclick="searchTable()">搜索</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="panel ">
+				<div class="panel-body">
+					<a id="add" class="btn btn-primary data-toolbar" href="#(ctx)/admin/xd/xdsettleovertimesummary/getEditPage?view=edit"><i class="demo-pli-add"></i> 添加</a>
+					<a id="del" class="btn btn-danger data-toolbar" onclick="delSel()" href="javascript:void(0);"><i class="demo-pli-cross"></i> 批量删除</a>
+					<a id="filePicker"  href="javascript:void(0);" ><i class="demo-pli-add"></i> 导入</a>
+					<table id="pageTable" class="demo-add-niftycheck table table-bordered" data-toolbar="#del,#add,#filePicker,#export"
+						   data-search="true"
+						   data-show-refresh="true"
+						   data-show-toggle="true"
+						   data-show-columns="true"
+						   data-sort-name="id"
+						   data-page-list="[5, 10, 20]"
+						   data-page-size="5"
+						   data-pagination="true" data-show-pagination-switch="true" ></table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+
+	var col = [
+
+		[{field: 'dept_name', title: '部门', align: 'center',valign: 'middle',rowspan:2,width:80},
+		{field: 'project_name', title: '项目', align: 'center',valign: 'middle',rowspan:2,width:80},
+			{field: 'time1', title: '0:00', align: 'center',width:80},
+			{field: 'time2', title: '1:00', align: 'center',width:80},
+			{field: 'time3', title: '2:00', align: 'center',width:80},
+			{field: 'time4', title: '3:00', align: 'center',width:80},
+			{field: 'time5', title: '4:00', align: 'center',width:80},
+			{field: 'time6', title: '5:00', align: 'center',width:80},
+			{field: 'time7', title: '6:00', align: 'center',width:80},
+			{field: 'time8', title: '7:00', align: 'center',width:80},
+			{field: 'time9', title: '8:00', align: 'center',width:80},
+			{field: 'time10', title: '9:00', align: 'center',width:80},
+			{field: 'time11', title: '10:00', align: 'center',width:80},
+			{field: 'time12', title: '11:00', align: 'center',width:80},
+			{field: 'time13', title: '12:00', align: 'center',width:80},
+			{field: 'time14', title: '13:00', align: 'center',width:80},
+			{field: 'time15', title: '14:00', align: 'center',width:80},
+			{field: 'time16', title: '15:00', align: 'center',width:80},
+			{field: 'time17', title: '16:00', align: 'center',width:80},
+			{field: 'time18', title: '17:00', align: 'center',width:80},
+			{field: 'time19', title: '18:00', align: 'center',width:80},
+			{field: 'time20', title: '19:00', align: 'center',width:80},
+			{field: 'time21', title: '20:00', align: 'center',width:80},
+			{field: 'time22', title: '21:00', align: 'center',width:80},
+			{field: 'time23', title: '22:00', align: 'center',width:80},
+			{field: 'time24', title: '23:00', align: 'center',width:80},
+				],[
+
+			{field: 'time1', title: '1:00', align: 'center'},
+			{field: 'time2', title: '2:00', align: 'center'},
+			{field: 'time3', title: '3:00', align: 'center'},
+			{field: 'time4', title: '4:00', align: 'center'},
+			{field: 'time5', title: '5:00', align: 'center'},
+			{field: 'time6', title: '6:00', align: 'center'},
+			{field: 'time7', title: '7:00', align: 'center'},
+			{field: 'time8', title: '8:00', align: 'center'},
+			{field: 'time9', title: '9:00', align: 'center'},
+			{field: 'time10', title: '10:00', align: 'center'},
+			{field: 'time11', title: '11:00', align: 'center'},
+			{field: 'time12', title: '12:00', align: 'center'},
+			{field: 'time13', title: '13:00', align: 'center'},
+			{field: 'time14', title: '14:00', align: 'center'},
+			{field: 'time15', title: '15:00', align: 'center'},
+			{field: 'time16', title: '16:00', align: 'center'},
+			{field: 'time17', title: '17:00', align: 'center'},
+			{field: 'time18', title: '18:00', align: 'center'},
+			{field: 'time19', title: '19:00', align: 'center'},
+			{field: 'time20', title: '20:00', align: 'center'},
+			{field: 'time21', title: '21:00', align: 'center'},
+			{field: 'time22', title: '22:00', align: 'center'},
+			{field: 'time23', title: '23:00', align: 'center'},
+			{field: 'time24', title: '0:00', align: 'center'},
+		]
+
+	];
+	var opt = {
+		//请求方法
+		method: 'get',
+		//是否显示行间隔色
+		striped: true,
+		//是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+		cache: false,
+		//data-toolbar: "#demo-delete-row",
+		//是否显示分页（*）
+		pagination: true,
+		//是否启用排序
+		sortable: false,
+		//排序方式
+		sortOrder: "asc",
+		//初始化加载第一页，默认第一页
+		//我设置了这一项，但是貌似没起作用，而且我这默认是0,- -
+		//pageNumber:1,
+		//每页的记录行数（*）
+		pageSize: 10,
+		//可供选择的每页的行数（*）
+		pageList: [10, 25, 50, 100],
+		//这个接口需要处理bootstrap table传递的固定参数,并返回特定格式的json数据
+		url: ctx+"/admin/xd/xdtotaltimeonline/listData",
+		//默认值为 'limit',传给服务端的参数为：limit, offset, search, sort, order Else
+		//queryParamsType:'',
+		////查询参数,每次调用是会带上这个参数，可自定义
+		queryParams : function(params) {
+			return {
+				pageNumber: (params.offset/params.limit)+1,
+				pageSize: params.limit,
+				"work_date":$("#work_date").val(),
+				"hours":$("#hours").val(),
+				"min":$("#minus").val(),
+				"endhours":$("#endhours").val(),
+				"endmin":$("#endminus").val(),
+			};
+		},
+		//分页方式：client客户端分页，server服务端分页（*）
+		sidePagination: "server",
+		//是否显示搜索
+		search: false,
+		//Enable the strict search.
+		strictSearch: true,
+		//Indicate which field is an identity field.
+		idField : "id",
+		columns: col,
+		pagination:true,paginationShowPageGo: true
+	};
+
+	//表格
+	function initTable(){
+		$('#pageTable').bootstrapTable('destroy').bootstrapTable(opt);
+		$('#pageTable').bootstrapTable('hideColumn', 'id');
+	}
+	function refreshTable(){
+		$("#pageTable").bootstrapTable('destroy').bootstrapTable('refresh', opt);
+		$('#pageTable').bootstrapTable('hideColumn', 'id');
+	}
+
+	//批量删除
+	function delSel(){
+		var data = [];
+		$("#pageTable input[type='checkbox'][name!='btSelectAll']:checked").each(function(){
+			data.push($(this).val());
+		});
+		if(data.length==0){
+			pointLion.alertMsg("请选择要删除的数据!","danger",null,null);
+			return;
+		}
+		del(data.join(","));//执行删除
+	}
+	//删除
+	function del(ids){
+		pointLion.confimMsg("您是否要删除所选信息 ?<br/> 点击确认进行删除 , 点击取消取消该操作",null,function(){
+			//执行删除
+			var data = common_ajax.ajaxFunc("/admin/xd/xdsettleovertimesummary/delete",{"ids":ids}, "json", null);
+			//删除结果
+			if(data.success){
+				pointLion.alertMsg(data.message,"success",null,function(){
+					location.href = ctx+'/admin/xd/xdsettleovertimesummary/getListPage';//跳转到列表页
+				});
+			}else{
+				pointLion.alertMsg(data.message,"success",null,null);
+			}
+		});
+	};
+
+	//查询
+	function searchTable(){
+		let work_date = $("#work_date").val();
+		let hours =$("#hours").val();
+		let min =	$("#minus").val();
+		let endhours =$("#endhours").val();
+		let endmin =$("#endminus").val();
+		var param = {
+			query: {
+				"work_date":work_date,
+				"hours":hours,
+				"min":min,
+				"endhours":endhours,
+				"endmin":endmin
+
+			}
+		}
+		let title='';
+		if(!endhours){
+			if(min){
+				title=hours+":"+min;
+			}else{
+				title=hours+":00";
+			}
+
+		}else{
+			if(min){
+				title=hours+":"+min;
+			}else{
+				title=hours+":00";
+			}
+			console.log(endmin)
+			if(endmin){
+				title=title+"-"+endhours+":"+endmin;
+			}else{
+				title=title+"-"+endhours+":00";
+			}
+		}
+
+
+	if(hours){
+		let col1 =[{field: 'dept_name', title: '部门', align: 'center',valign: 'middle',width:80},
+			{field: 'project_name', title: '项目', align: 'center',valign: 'middle',width:80},
+			{field: 'time25', title: title, align: 'center',width:80}];
+
+		opt.columns=col1;
+	}else {
+		opt.columns=col;
+	}
+		initTable();
+		// 刷新表格
+	//	$('#pageTable').bootstrapTable('refresh',param);
+	}
+
+	$(document).ready(function(){
+		$('.form_datetime').datepicker({format: 'yyyy-mm-dd',weekStart: 1,todayBtn:  1,autoclose: 1,language:  'zh-CN',todayHighlight: 1,forceParse: 0,clearBtn: true }).on('changeDate',null);
+		initTable();//初始化
+
+		pointLion.initUploader("/admin/xd/xdsettleovertimesummary/importExcel",function(data){
+			if(data.success){
+				pointLion.alertMsg("导入成功！","success",null,null);
+				searchTable();
+			}else{
+				pointLion.alertMsg(data.message,"danger",null,null);
+			}
+		});
+	});
+	/***
+	 * 导出
+	 */
+
+	function exportExcel(){
+
+		let dept = $("#dept").val();
+		let emp_name =encodeURIComponent($("#emp_name").val());
+		let unitname = $("#unitname").val();
+		let year =$("#year").val();
+		let month =	$("#month").val();
+		/*	if(year==''||month==''){
+                pointLion.alertMsg("请选择年月！","success",null,null);
+                return;
+            }*/
+		location.href = "#(ctx)/admin/xd/xdsettleovertimesummary/exportExcel?dept="+dept+"&emp_name="+emp_name+"&unitname="+unitname+"&year="+year+"&month="+month;
+	}
+	//导出加班分摊
+	function exportApportionExcel(){
+
+		let dept = $("#dept").val();
+		let emp_name =encodeURIComponent($("#emp_name").val());
+		let unitname = $("#unitname").val();
+		let year =$("#year").val();
+		let month =	$("#month").val();
+		/*	if(year==''||month==''){
+                pointLion.alertMsg("请选择年月！","success",null,null);
+                return;
+            }*/
+		location.href = "#(ctx)/admin/xd/xdsettleovertimesummary/exportApportionExcel?dept="+dept+"&emp_name="+emp_name+"&unitname="+unitname+"&year="+year+"&month="+month;
+	}
+
+</script>

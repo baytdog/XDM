@@ -187,6 +187,8 @@ public class _MappingKit {
 		arp.addMapping("xd_seniority_allowance","id",XdSeniorityAllowance.class);
 		arp.addMapping("xd_anleave_plan","id",XdAnleavePlan.class);
 		arp.addMapping("xd_anleave_execute","id",XdAnleaveExecute.class);
+		arp.addMapping("xd_total_time_online","id",XdTotalTimeOnline.class);
+		arp.addMapping("xd_total_online_shifts","id",XdTotalOnlineShifts.class);
 
 	}
 }
