@@ -1,7 +1,10 @@
 package com.pointlion.mvc.admin.xdm.xdtotaltimeonline;
 
+import java.io.File;
+import java.io.UnsupportedEncodingException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -114,5 +117,21 @@ public class XdTotalTimeOnlineController extends BaseController {
 		Page<Record> page = service.getOnlinePage(Integer.valueOf(curr),Integer.valueOf(pageSize), days,id,field);
 		renderPage(page.getList(),"",page.getTotalRow());
 	}
-	
+
+	public void exportExcel() throws UnsupportedEncodingException {
+
+		String workDate=getPara("workDate","");
+
+		String path = this.getSession().getServletContext().getRealPath("")+"/upload/export/"+ DateUtil.format(new Date(),21)+".xlsx";
+		File file = service.exportExcel(path,workDate);
+		renderFile(file);
+	}
+	public void exportEmpExcel() throws UnsupportedEncodingException {
+
+		String workDate=getPara("workDate","");
+
+		String path = this.getSession().getServletContext().getRealPath("")+"/upload/export/"+ DateUtil.format(new Date(),21)+".xlsx";
+		File file = service.exportEmpExcel(path,workDate);
+		renderFile(file);
+	}
 }

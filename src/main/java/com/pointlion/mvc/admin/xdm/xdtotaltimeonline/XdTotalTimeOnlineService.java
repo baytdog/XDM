@@ -1,20 +1,21 @@
 package com.pointlion.mvc.admin.xdm.xdtotaltimeonline;
 
+import cn.hutool.poi.excel.ExcelWriter;
 import com.jfinal.aop.Before;
 import com.jfinal.kit.StrKit;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.plugin.activerecord.Record;
 import com.jfinal.plugin.activerecord.tx.Tx;
-import com.pointlion.mvc.common.model.XdAttendanceSummary;
-import com.pointlion.mvc.common.model.XdShift;
-import com.pointlion.mvc.common.model.XdTotalOnlineShifts;
-import com.pointlion.mvc.common.model.XdTotalTimeOnline;
+import com.pointlion.mvc.common.model.*;
 import com.pointlion.mvc.common.utils.DateUtil;
 import com.pointlion.mvc.common.utils.UuidUtil;
+import com.pointlion.mvc.common.utils.office.excel.ExcelUtil;
 import com.pointlion.plugin.shiro.ShiroKit;
 import com.pointlion.util.CheckAttendanceUtil;
+import com.pointlion.util.DictMapping;
 
+import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
@@ -514,5 +515,144 @@ public class XdTotalTimeOnlineService{
     		o.delete();
     	}
 	}
-	
+
+
+
+	public File exportExcel(String path, String workDate){
+		String sql  = " from "+TABLE_NAME+" o   where 1=1";
+
+		sql = sql + " order by dept_name, sortnum";
+
+
+		List<XdTotalTimeOnline> list = XdTotalTimeOnline.dao.find(" select * "+sql);//查询全部
+
+		String title=workDate+"在岗统计";
+		List<List<String>> rows = new ArrayList<List<String>>();
+		List<String> titleRow=new ArrayList<String>();
+		titleRow.add(title);
+		rows.add(titleRow);
+
+		List<String> first = new ArrayList<String>();
+		List<String> second = new ArrayList<String>();
+		first.add("部门");
+		first.add("项目");
+		second.add("");
+		second.add("");
+		for (int j = 0; j <24 ; j++) {
+			first.add(j+":00");
+			if(j<23){
+				second.add(j+1+":00");
+			}
+		}
+
+		second.add("0:00");
+		rows.add(first);
+		rows.add(second);
+
+		Class<? super XdTotalTimeOnline> superclass = XdTotalTimeOnline.class.getSuperclass();
+		for(int j = 0; j < list.size(); j++){
+			List<String> row = new ArrayList<String>();
+			XdTotalTimeOnline online = list.get(j);
+			row.add(online.getDeptName());
+			row.add(online.getProjectName());
+			for (int i = 1; i <25 ; i++) {
+				try {
+					Method method = superclass.getMethod("getTime" + i);
+					 int num = (int)method.invoke(online);
+					row.add(String.valueOf(num));
+				} catch (NoSuchMethodException e) {
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					e.printStackTrace();
+				} catch (InvocationTargetException e) {
+					e.printStackTrace();
+				}
+			}
+
+
+
+
+			rows.add(row);
+		}
+		//File file = ExcelUtil.attendanceFile(path,rows,xdDayModels.size());
+
+
+		ExcelWriter writer = cn.hutool.poi.excel.ExcelUtil.getWriter(path);
+		writer.write(rows, true);
+		int size = rows.get(1).size();
+		writer.merge(0,0,0,size-1,rows.get(0).get(0),false);
+		writer.merge(1,2,0,0,rows.get(1).get(0),false);
+		writer.merge(1,2,1,1,rows.get(1).get(1),false);
+		//关闭writer，释放内存
+		writer.close();
+		return new File(path);
+		//return file;
+	}
+
+
+	public File exportEmpExcel(String path, String workDate){
+		String[] ymd = workDate.split("-");
+		String ym = ymd[0] + ymd[1];
+
+		String sql  = " select * from  xd_attendance_summary" +
+				" where schedule_year_month='"+ym+"' and day"+ymd[2]+" !='' order by dept_name";
+
+
+
+		List<XdAttendanceSummary> list = XdAttendanceSummary.dao.find(sql);//查询全部
+
+		String title=workDate+"在岗人员信息";
+		List<List<String>> rows = new ArrayList<List<String>>();
+		List<String> titleRow=new ArrayList<String>();
+		titleRow.add(title);
+		rows.add(titleRow);
+
+		List<String> first = new ArrayList<String>();
+		first.add("部门");
+		first.add("项目");
+		first.add("姓名");
+		first.add("工号");
+		first.add("班次");
+		rows.add(first);
+		Map<String, XdShift>  nameToXdShiftMap = CheckAttendanceUtil.shfitsMap();
+
+		Class<? super XdAttendanceSummary> superclass = XdAttendanceSummary.class.getSuperclass();
+		for(int j = 0; j < list.size(); j++){
+			List<String> row = new ArrayList<String>();
+			XdAttendanceSummary summary = list.get(j);
+			try {
+				Method method = superclass.getMethod("getDay" + ymd[2]);
+				String shiftName = (String)method.invoke(summary);
+				XdShift shift = nameToXdShiftMap.get(shiftName);
+				if(shift.getBusitime()!=null && !"".equals(shift.getBusitime())){
+					row.add(summary.getDeptName());
+					row.add(summary.getProjectName());
+					row.add(summary.getEmpName());
+					row.add(summary.getEmpNum());
+					row.add(shiftName);
+					rows.add(row);
+				}
+			} catch (NoSuchMethodException e) {
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				e.printStackTrace();
+			} catch (InvocationTargetException e) {
+				e.printStackTrace();
+			}
+
+		}
+		//File file = ExcelUtil.attendanceFile(path,rows,xdDayModels.size());
+
+
+		ExcelWriter writer = cn.hutool.poi.excel.ExcelUtil.getWriter(path);
+		writer.write(rows, true);
+		int size = rows.get(1).size();
+		writer.merge(0,0,0,size-1,rows.get(0).get(0),false);
+	/*	writer.merge(1,2,0,0,rows.get(1).get(0),false);
+		writer.merge(1,2,1,1,rows.get(1).get(1),false);*/
+		//关闭writer，释放内存
+		writer.close();
+		return new File(path);
+		//return file;
+	}
 }

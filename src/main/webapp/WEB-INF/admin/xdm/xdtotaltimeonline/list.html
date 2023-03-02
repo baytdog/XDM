@@ -39,7 +39,9 @@
 					<!--<a id="add" class="btn btn-primary data-toolbar" href="#(ctx)/admin/xd/xdsettleovertimesummary/getEditPage?view=edit"><i class="demo-pli-add"></i> 添加</a>
 					<a id="del" class="btn btn-danger data-toolbar" onclick="delSel()" href="javascript:void(0);"><i class="demo-pli-cross"></i> 批量删除</a>
 					<a id="filePicker"  href="javascript:void(0);" ><i class="demo-pli-add"></i> 导入</a>-->
-					<table id="pageTable" class="demo-add-niftycheck table table-bordered" data-toolbar="#del,#add,#filePicker,#export"
+					<a id="export" class="btn btn-primary data-toolbar" onclick="exportExcel()" target="_blank"><i class="demo-pli-download-from-cloud"></i> 导出</a>
+					<a id="exportEmp" class="btn btn-primary data-toolbar" onclick="exportEmpExcel()" target="_blank"><i class="demo-pli-download-from-cloud"></i> 导出人员信息</a>
+					<table id="pageTable" class="demo-add-niftycheck table table-bordered" data-toolbar="#export,#exportEmp,#filePicker,#export"
 						   ></table>
 				</div>
 			</div>
@@ -268,30 +270,14 @@
 
 	function exportExcel(){
 
-		let dept = $("#dept").val();
-		let emp_name =encodeURIComponent($("#emp_name").val());
-		let unitname = $("#unitname").val();
-		let year =$("#year").val();
-		let month =	$("#month").val();
-		/*	if(year==''||month==''){
-                pointLion.alertMsg("请选择年月！","success",null,null);
-                return;
-            }*/
-		location.href = "#(ctx)/admin/xd/xdsettleovertimesummary/exportExcel?dept="+dept+"&emp_name="+emp_name+"&unitname="+unitname+"&year="+year+"&month="+month;
+		let workDate = $("#work_date").val();
+		location.href = "#(ctx)/admin/xd/xdtotaltimeonline/exportExcel?workDate="+workDate;
 	}
 	//导出加班分摊
-	function exportApportionExcel(){
+	function exportEmpExcel(){
 
-		let dept = $("#dept").val();
-		let emp_name =encodeURIComponent($("#emp_name").val());
-		let unitname = $("#unitname").val();
-		let year =$("#year").val();
-		let month =	$("#month").val();
-		/*	if(year==''||month==''){
-                pointLion.alertMsg("请选择年月！","success",null,null);
-                return;
-            }*/
-		location.href = "#(ctx)/admin/xd/xdsettleovertimesummary/exportApportionExcel?dept="+dept+"&emp_name="+emp_name+"&unitname="+unitname+"&year="+year+"&month="+month;
+		let workDate = $("#work_date").val();
+		location.href = "#(ctx)/admin/xd/xdtotaltimeonline/exportEmpExcel?workDate="+workDate;
 	}
 
 </script>
