@@ -119,4 +119,15 @@ public class CheckAttendanceUtil {
 
         return  XdOvertimeSummary.dao.find(sql);
     }
+
+
+    /*public static void rollBackAttendanceRelation(String year,String month,String empName){
+        String ym=year+month;
+        XdAttendanceSummary summary = XdAttendanceSummary.dao.findFirst("select * from  xd_attendance_summary " +
+                "where schedule_year_month='"+ym+"' and  emp_name='"+empName+"'");
+
+
+
+
+    }*/
 }

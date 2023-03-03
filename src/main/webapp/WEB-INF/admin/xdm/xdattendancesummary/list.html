@@ -363,6 +363,7 @@
 		initTable();//初始化
 
 		pointLion.initUploader("/admin/xd/xdattendancesummary/importExcel",function(data){
+			pointLion.loading();
 			if(data.success){
 				pointLion.alertMsg("导入成功！","success",null,null);
 				//searchTable();

@@ -148,7 +148,7 @@ public class MainConfig extends JFinalConfig {
 //		me.add(new AMSRoutes());//资产路由
 		me.add(new SysRoutes());//系统管理路由
 		me.add(new GrapRoutes());//爬取网站数据路由
-		me.add(new MobileRoutes());//手机端管理路由
+		//me.add(new MobileRoutes());//手机端管理路由
 		me.add(new XDRoutes());
 		//me.setBaseViewPath("/WEB-INF/admin/home");
 	}

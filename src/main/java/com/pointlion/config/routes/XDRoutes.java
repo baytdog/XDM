@@ -8,6 +8,7 @@ import com.pointlion.mvc.admin.xdm.xdanleaveplan.XdAnleavePlanController;
 import com.pointlion.mvc.admin.xdm.xdanleavesummary.XdAnleaveSummaryController;
 import com.pointlion.mvc.admin.xdm.xdattendance.XdAttendanceController;
 import com.pointlion.mvc.admin.xdm.xdattendancedetail.XdAttendanceDetailController;
+import com.pointlion.mvc.admin.xdm.xdattendancesheet.XdAttendanceSheetController;
 import com.pointlion.mvc.admin.xdm.xdattendancesummary.XdAttendanceSummaryController;
 import com.pointlion.mvc.admin.xdm.xdcertificate.XdCertificateController;
 import com.pointlion.mvc.admin.xdm.xdcontractinfo.XdContractInfoController;
@@ -97,6 +98,7 @@ public class XDRoutes extends Routes {
         add("/admin/xd/xdanleaveexecute", XdAnleaveExecuteController.class,"/xdanleaveexecute");
         add("/admin/xd/xdeffict", XdEffictController.class,"/xdeffict");
         add("/admin/xd/xdtotaltimeonline", XdTotalTimeOnlineController.class,"/xdtotaltimeonline");
+        add("/admin/xd/xdattendancesheet", XdAttendanceSheetController.class,"/xdattendancesheet");
 
 
     }

@@ -14,7 +14,6 @@ import com.pointlion.mvc.common.utils.office.excel.ExcelUtil;
 import com.pointlion.plugin.shiro.ShiroKit;
 import com.pointlion.plugin.shiro.ext.SimpleUser;
 import com.pointlion.util.DictMapping;
-import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
@@ -28,8 +27,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class XdScheduleSummaryService{
-	public static final XdScheduleSummaryService me = new XdScheduleSummaryService();
+public class XdScheduleSummaryServiceBak {
+	public static final XdScheduleSummaryServiceBak me = new XdScheduleSummaryServiceBak();
 	public static final String TABLE_NAME = XdScheduleSummary.tableName;
 
 	/***
@@ -115,13 +114,12 @@ public class XdScheduleSummaryService{
 							month="0"+month;
 						}
 						String yearMonth=year+month;
-						String yearMonthInLin=year+"-"+month;
 
 						String lastMonLastDay = DateTimeFormatter.ofPattern("yyyy-MM-dd").format(LocalDate.parse(year+"-"+month+"-01").minusDays(1));
-					/*	String[] split = lastMonLastDay.split("-");
+						String[] split = lastMonLastDay.split("-");
 						String lastYear=split[0];
 						String lastMonth=split[1];
-						String lastDay=split[2];*/
+						String lastDay=split[2];
 
 						List<XdDayModel> xdDayModels = XdDayModel.dao.find("select * from  xd_day_model  where id like '" + yearMonth + "%' or days='"+lastMonLastDay+" ' order by id");
 						int daysNum=xdDayModels.size();
@@ -152,8 +150,6 @@ public class XdScheduleSummaryService{
 
 						List <XdOvertimeSummary>overTimeList =new ArrayList();
 						List <XdScheduleSummary>scheduleSummaryList =new ArrayList();
-						List <XdSettleOvertimeSummary>settleOvertimeSummaryList =new ArrayList();
-
 						//List <XdScheduleDetail>scheduleDetailList =new ArrayList();
 //						XdDayModel lastMonLastDay = XdDayModel.dao.findFirst("select * from  xd_day_model where id like '" + lastMonth + "%' order by id desc");
 						//lastmonlastday.getYear()
@@ -200,13 +196,11 @@ public class XdScheduleSummaryService{
 
 							String lastMonLastDayValue = summaryList.get(6);
 							scheduleSummary.setDay00(lastMonLastDayValue);
-							/*if(sb.indexOf(xdDayModels.get(0).getId())!=-1){
+							if(sb.indexOf(xdDayModels.get(0).getId())!=-1){
 								otFlags=otFlags+","+"1";
 							}else{
 								otFlags=otFlags+","+"0";
-							}*/
-
-							otFlags=otFlags+","+"0";
+							}
 
 							if(!lastMonLastDayValue.equals("")){
 								XdShift xdShift = nameShiftObjMap.get(lastMonLastDayValue);
@@ -224,6 +218,35 @@ public class XdScheduleSummaryService{
 							}
 
 
+							/*XdScheduleSummary lastMonSummary = XdScheduleSummary.dao.findFirst("select * from xd_schedule_summary " +
+									"where emp_name='" + empName + "' " +
+									"and  schedule_year='" + lastYear + "'" +
+									"and schedule_month='" + lastMonth + "'");
+							if(lastMonSummary==null){
+								otFlags=otFlags+","+"0";
+								scheduleSummary.setDay00("");
+							}else{
+								Method getLastMonLastDay = superclass.getMethod("getDay" + lastDay);
+								String  lastMonShift = (String)getLastMonLastDay.invoke(lastMonSummary);
+								scheduleSummary.setDay00(lastMonShift);
+
+								String lastFlags = lastMonSummary.getOtflags().substring(lastMonSummary.getOtflags().length() - 1);
+								otFlags=otFlags+","+lastFlags;
+
+								if(lastMonShift!=null ||!lastMonShift.equals("")){
+									XdShift xdShift = nameShiftObjMap.get(lastMonShift);
+									if(xdShift!=null){
+										if(xdShift.getSpanDay().equals("1")){
+											//跨天
+											if(sb.indexOf(yearMonth + "01")!=-1){
+												othours+=Double.valueOf(xdShift.getSpanHours());//加班时间
+											}else{
+												work_hour+=Double.valueOf(xdShift.getSpanHours());//出勤时间
+											}
+										}
+									}
+								}
+							}*/
 
 							Method setMethod=null;
 							String ymdNoLine="";
@@ -232,7 +255,6 @@ public class XdScheduleSummaryService{
 							for (int j = 1; j <=daysNum; j++) {
 								modifyFlags=modifyFlags+","+"0";
 								tips=tips+","+"0";
-								otFlags=otFlags+","+"0";
 
 								 cellValue = summaryList.get(6 + j).trim();
 								/*System.out.println(j);
@@ -277,11 +299,11 @@ public class XdScheduleSummaryService{
 												ots.setCreateDate(DateUtil.getCurrentTime());
 												overTimeList.add(ots);
 												othours+=Double.valueOf(xdShift.getCurdayHours());
-												//otFlags=otFlags+","+"1";
+												otFlags=otFlags+","+"1";
 											}else{
 												//跨天当天不是法定假日
 												work_hour+=Double.valueOf(xdShift.getCurdayHours());
-												//otFlags=otFlags+","+"0";
+												otFlags=otFlags+","+"0";
 											}
 											//是跨天且第二天是法定假日
 											LocalDate nextLocalDate = LocalDate.parse(ymdInLine).plusDays(1);
@@ -332,20 +354,20 @@ public class XdScheduleSummaryService{
 													xdOvertimeSummary.setCreateDate(DateUtil.getCurrentTime());
 													overTimeList.add(xdOvertimeSummary);
 													othours+=Double.valueOf(xdShift.getHours());
-													//otFlags=otFlags+","+"1";
+													otFlags=otFlags+","+"1";
 												}else{
 													work_hour+=Double.valueOf(xdShift.getHours());
-													//otFlags=otFlags+","+"0";
+													otFlags=otFlags+","+"0";
 												}
 											}else{
-												//otFlags=otFlags+","+"0";
+												otFlags=otFlags+","+"0";
 											}
 										}
 									}else{
-										//otFlags=otFlags+","+"0";
+										otFlags=otFlags+","+"0";
 									}
 								}else {
-									//otFlags=otFlags+","+"0";
+									otFlags=otFlags+","+"0";
 								}
 							}
 
@@ -367,21 +389,10 @@ public class XdScheduleSummaryService{
 
 						}
 
-						/*for (XdOvertimeSummary overtimeSummary : overTimeList) {
-							XdSettleOvertimeSummary settleOvertimeSummary=new XdSettleOvertimeSummary();
-							BeanUtils.copyProperties(settleOvertimeSummary,overtimeSummary);
-							settleOvertimeSummary.setId(null);
-							settleOvertimeSummaryList.add(settleOvertimeSummary);
-						}
-*/
-						for (XdScheduleSummary scheduleSummary : scheduleSummaryList) {
-							Db.delete("delete from xd_schedule_summary where emp_name='"+scheduleSummary.getEmpName()+"' and schedule_year_month='"+yearMonth+"'");
-							Db.delete("delete  from  xd_overtime_summary where emp_name='"+scheduleSummary.getEmpName()+"' and super_days like '"+yearMonthInLin+"%'");
-						}
 
 						Db.batchSave(overTimeList,overTimeList.size());
 						Db.batchSave(scheduleSummaryList,scheduleSummaryList.size());
-						/*Db.batchSave(settleOvertimeSummaryList,settleOvertimeSummaryList.size());*/
+						//Db.batchSave(scheduleDetailList,scheduleDetailList.size());
 
 						if(result.get("success")==null){
 							result.put("success",true);//正常执行完毕

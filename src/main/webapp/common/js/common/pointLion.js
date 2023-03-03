@@ -237,7 +237,7 @@ var pointLion = function(){
 		/***
 		 * 通用单个文件上传
 		 */
-		var initUploader = function(url,callback){	if(url==null||url.length==0){
+		var initUploader = function(url,callback){ 	if(url==null||url.length==0){
 			url = '/admin/upload/upload';
 		}
 		var uploader = WebUploader.create({

@@ -34,34 +34,34 @@ public class _MappingKit {
 		//办公的
 		arp.addMapping("act_re_model", "ID_", ActReModel.class);//流程模型
 		arp.addMapping("act_re_procdef", "ID_", ActReProcdef.class);
-		arp.addMapping("v_tasklist", "TASKID", VTasklist.class);//任务--视图
-		arp.addMapping("v_email", "id", VEmail.class);//任务--视图
+//		arp.addMapping("v_tasklist", "TASKID", VTasklist.class);//任务--视图
+//		arp.addMapping("v_email", "id", VEmail.class);//任务--视图
 		//arp.addMapping("v_hotline_letter", "id", VHotlineLetter.class);//任务--视图
 		
 		arp.addMapping("oa_notice", "id", OaNotice.class);//通知公告
 		arp.addMapping("oa_notice_user", "id", OaNoticeUser.class);//通知公告收
-		arp.addMapping("oa_bumph", "id", OaBumph.class);//公文
-		arp.addMapping("oa_bumph_org", "id", OaBumphOrg.class);//公文主送抄送单位
-		arp.addMapping("oa_bumph_org_user", "id", OaBumphOrgUser.class);//公文主送抄送人员表
-		arp.addMapping("oa_apply_business_travel", "id", OaApplyBusinessTravel.class);//出差申请
-		arp.addMapping("oa_apply_business_travel_report", "id", OaApplyBusinessTravelReport.class);//出差申请报告
-		arp.addMapping("oa_apply_buy", "id", OaApplyBuy.class);//采购申请
-		arp.addMapping("oa_apply_business_card", "id", OaApplyBusinessCard.class);//名片印刷申请
-		arp.addMapping("oa_apply_borrow_money", "id", OaApplyBorrowMoney.class);//借款申请
-		arp.addMapping("oa_apply_cost", "id", OaApplyCost.class);//费用申请
-		arp.addMapping("oa_apply_common", "id", OaApplyCommon.class);//通用申请
-		arp.addMapping("oa_apply_custom", "id", OaApplyCustom.class);//自定义流程
-		arp.addMapping("oa_apply_buy_item", "id", OaApplyBuyItem.class);//采购申请明细
-		arp.addMapping("oa_apply_leave", "id", OaApplyLeave.class);//请假
-		arp.addMapping("oa_apply_use_car", "id", OaApplyUseCar.class);//车辆借用
-		arp.addMapping("oa_apply_hotel", "id", OaApplyHotel.class);//宾馆预定申请
-		arp.addMapping("oa_apply_office_object_buy", "id", OaApplyOfficeObjectBuy.class);//办公用品申购
-		arp.addMapping("oa_apply_office_object", "id", OaApplyOfficeObject.class);//办公用品申领
-		arp.addMapping("oa_apply_seal", "id", OaApplySeal.class);//用章申请
-		arp.addMapping("oa_apply_train_ticket", "id", OaApplyTrainTicket.class);//车船票申请
-		arp.addMapping("oa_apply_usercar_work", "id", OaApplyUsercarWork.class);//私车公用补贴申请
-		arp.addMapping("oa_apply_gift", "id", OaApplyGift.class);//礼品申请
-		arp.addMapping("oa_apply_meetroom", "id", OaApplyMeetroom.class);//会议室申请
+//		arp.addMapping("oa_bumph", "id", OaBumph.class);//公文
+//		arp.addMapping("oa_bumph_org", "id", OaBumphOrg.class);//公文主送抄送单位
+//		arp.addMapping("oa_bumph_org_user", "id", OaBumphOrgUser.class);//公文主送抄送人员表
+//		arp.addMapping("oa_apply_business_travel", "id", OaApplyBusinessTravel.class);//出差申请
+//		arp.addMapping("oa_apply_business_travel_report", "id", OaApplyBusinessTravelReport.class);//出差申请报告
+//		arp.addMapping("oa_apply_buy", "id", OaApplyBuy.class);//采购申请
+//		arp.addMapping("oa_apply_business_card", "id", OaApplyBusinessCard.class);//名片印刷申请
+//		arp.addMapping("oa_apply_borrow_money", "id", OaApplyBorrowMoney.class);//借款申请
+//		arp.addMapping("oa_apply_cost", "id", OaApplyCost.class);//费用申请
+//		arp.addMapping("oa_apply_common", "id", OaApplyCommon.class);//通用申请
+//		arp.addMapping("oa_apply_custom", "id", OaApplyCustom.class);//自定义流程
+//		arp.addMapping("oa_apply_buy_item", "id", OaApplyBuyItem.class);//采购申请明细
+//		arp.addMapping("oa_apply_leave", "id", OaApplyLeave.class);//请假
+//		arp.addMapping("oa_apply_use_car", "id", OaApplyUseCar.class);//车辆借用
+//		arp.addMapping("oa_apply_hotel", "id", OaApplyHotel.class);//宾馆预定申请
+//		arp.addMapping("oa_apply_office_object_buy", "id", OaApplyOfficeObjectBuy.class);//办公用品申购
+//		arp.addMapping("oa_apply_office_object", "id", OaApplyOfficeObject.class);//办公用品申领
+//		arp.addMapping("oa_apply_seal", "id", OaApplySeal.class);//用章申请
+//		arp.addMapping("oa_apply_train_ticket", "id", OaApplyTrainTicket.class);//车船票申请
+//		arp.addMapping("oa_apply_usercar_work", "id", OaApplyUsercarWork.class);//私车公用补贴申请
+//		arp.addMapping("oa_apply_gift", "id", OaApplyGift.class);//礼品申请
+//		arp.addMapping("oa_apply_meetroom", "id", OaApplyMeetroom.class);//会议室申请
 		arp.addMapping("oa_apply_user_change_station", "id", OaApplyUserChangeStation.class);//调岗
 		arp.addMapping("oa_apply_user_dimission", "id", OaApplyUserDimission.class);//离职
 		arp.addMapping("oa_apply_user_regular", "id", OaApplyUserRegular.class);//转正
@@ -80,14 +80,14 @@ public class _MappingKit {
 		arp.addMapping("oa_apply_work_overtime", "id", OaApplyWorkOvertime.class);//加班申请
 		arp.addMapping("oa_flow_carbon_c", "id", OaFlowCarbonC.class);//流程抄送
 		//资产管理的
-		arp.addMapping("ams_asset", "id", AmsAsset.class);//资产管理
-		arp.addMapping("ams_asset_allot", "id", AmsAssetAllot.class);//资产调配
-		arp.addMapping("ams_asset_borrow", "id", AmsAssetBorrow.class);//资产借用
-		arp.addMapping("ams_asset_dispose", "id", AmsAssetDispose.class);//资产处置
-		arp.addMapping("ams_asset_need", "id", AmsAssetNeed.class);//资产需求
-		arp.addMapping("ams_asset_receive", "id", AmsAssetReceive.class);//资产领用
-		arp.addMapping("ams_asset_repair", "id", AmsAssetRepair.class);//资产报修
-		arp.addMapping("ams_asset_sign_in", "id", AmsAssetSignIn.class);//资产录入
+//		arp.addMapping("ams_asset", "id", AmsAsset.class);//资产管理
+//		arp.addMapping("ams_asset_allot", "id", AmsAssetAllot.class);//资产调配
+//		arp.addMapping("ams_asset_borrow", "id", AmsAssetBorrow.class);//资产借用
+//		arp.addMapping("ams_asset_dispose", "id", AmsAssetDispose.class);//资产处置
+//		arp.addMapping("ams_asset_need", "id", AmsAssetNeed.class);//资产需求
+//		arp.addMapping("ams_asset_receive", "id", AmsAssetReceive.class);//资产领用
+//		arp.addMapping("ams_asset_repair", "id", AmsAssetRepair.class);//资产报修
+//		arp.addMapping("ams_asset_sign_in", "id", AmsAssetSignIn.class);//资产录入
 		//客户管理的
 		arp.addMapping("crm_customer", "id", CrmCustomer.class);//客户管理
 		arp.addMapping("crm_customer_company", "id", CrmCustomerCompany.class);//客户公司管理
@@ -189,6 +189,8 @@ public class _MappingKit {
 		arp.addMapping("xd_anleave_execute","id",XdAnleaveExecute.class);
 		arp.addMapping("xd_total_time_online","id",XdTotalTimeOnline.class);
 		arp.addMapping("xd_total_online_shifts","id",XdTotalOnlineShifts.class);
+		arp.addMapping("xd_logs_leave","id",XdLogsLeave.class);
+		arp.addMapping("xd_attendance_sheet","id",XdAttendanceSheet.class);
 
 	}
 }

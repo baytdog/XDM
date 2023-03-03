@@ -1,0 +1,187 @@
+                <div id="page-content">
+			        <div class="col-sm-12 eq-box-sm">
+						<div class="panel">
+							<div class="panel panel-search">
+								<div class="panel-body">
+									<div class="form-inline">
+										<div class="form-group">
+											<select class="selectpicker form-control"  id="dept"  >
+												<option value="">------请选择部门------</option>
+												#for(org:orgs)
+												<option value="#(org.id)">#(org.name)</option>
+												#end
+											</select>
+										</div>
+										<div class="form-group">
+											<select class="selectpicker form-control"  id="year"  >
+												<option value="">------请选择年份------</option>
+												<option value="2023">2023年</option>
+												<option value="2024">2024年</option>
+												<option value="2025">2025年</option>
+												<option value="2026">2026年</option>
+												<option value="2027">2027年</option>
+												<option value="2028">2028年</option>
+											</select>
+										</div>
+										<div class="form-group">
+											<select class="selectpicker form-control"  id="month"  >
+												<option value="">------请选择月份------</option>
+												<option value="01">1月</option>
+												<option value="02">2月</option>
+												<option value="03">3月</option>
+												<option value="04">4月</option>
+												<option value="05">5月</option>
+												<option value="06">6月</option>
+												<option value="07">7月</option>
+												<option value="08">8月</option>
+												<option value="09">9月</option>
+												<option value="10">10月</option>
+												<option value="11">11月</option>
+												<option value="12">12月</option>
+											</select>
+										</div>
+										<div class="form-group">
+											<button class="btn btn-primary" type="button" onclick="searchTable()">搜索</button>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="panel ">
+								<div class="panel-body">
+									<a id="add" class="btn btn-primary data-toolbar" href="#(ctx)/admin/xdattendancesheet/getEditPage?view=edit"><i class="demo-pli-add"></i> 添加</a>
+									<a id="del" class="btn btn-danger data-toolbar" onclick="delSel()" href="javascript:void(0);"><i class="demo-pli-cross"></i> 批量删除</a>
+									<table id="pageTable" class="demo-add-niftycheck" data-toolbar="#del,#add"
+										   data-search="true"
+										   data-show-refresh="true"
+										   data-show-toggle="true"
+										   data-show-columns="true"
+										   data-sort-name="id"
+										   data-page-list="[5, 10, 20]"
+										   data-page-size="5"
+										   data-pagination="true" data-show-pagination-switch="true" ></table>
+								</div>
+							</div>
+			        	</div>
+                	</div>
+				</div>
+<script>
+	
+	var col = [
+
+		   {field: 'year_month', title: '年月', align: 'center'},
+		   {field: 'dept_name', title: '部门', align: 'center'},
+		   {field: 'unit_name', title: '单元', align: 'center'},
+		   {field: 'project_name', title: '项目', align: 'center'},
+		   {field: 'emp_num', title: '工号', align: 'center'},
+		   {field: 'emp_name', title: '姓名', align: 'center'},
+		   {field: 'ordinary_ot', title: '平时加班', align: 'center'},
+		   {field: 'tday_weekend_ot', title: '双休日加班', align: 'center'},
+		   {field: 'national_ot', title: '节假日加班', align: 'center'},
+		   {field: 'duty_charge', title: '值班费', align: 'center'},
+		   {field: 'mid_shifts', title: '中班天数', align: 'center'},
+		   {field: 'night_shifts', title: '夜班天数', align: 'center'},
+		   {field: 'hightemp_allowance', title: '高温费', align: 'center'},
+		   {field: 'seniority_allowance', title: '工龄津贴', align: 'center'},
+		   {field: 'should_workdays', title: '每月应工作天数', align: 'center'},
+		   {field: 'sick_leave', title: '病假天数', align: 'center'},
+		   {field: 'casual_leave', title: '事假天数', align: 'center'},
+		   {field: 'absence_duty', title: '新离缺勤天数', align: 'center'},
+		   {field: 'absent_work', title: '旷工天数', align: 'center'},
+		   {field: 'reward_punish', title: '绩效奖惩', align: 'center'},
+		   {field: 'rest_anleave', title: '年假天数', align: 'center'},
+
+
+	   
+	   {field: 'control', title: '操作', align: 'left', width:'200',
+	       formatter:function(value,row,index){
+	           	//通过formatter可以自定义列显示的内容
+	           	//value：当前field的值，即id
+	           	//row：当前行的数据
+	           	var a = '<a class="label label-table label-success" href="'+ctx+'/admin/xdattendancesheet/getEditPage?id='+row.id+'&view=detail" >查看</a>&nbsp;';
+	           	a = a + '<a class="label label-table label-success" href="'+ctx+'/admin/xdattendancesheet/getEditPage?id='+row.id+'&view=edit" >编辑</a>&nbsp;';
+				a = a + '<a class="label label-table label-danger" onclick="del(\''+row.id+'\')" href="javascript:void(0);" >删除</a>';
+	           	return a;
+	       }
+	   }];
+	var opt = {
+		    //请求方法
+			   method: 'get',
+			    //是否显示行间隔色
+			   striped: true,
+			   //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）     
+			   cache: false,  
+			   //data-toolbar: "#demo-delete-row",
+			   //是否显示分页（*）  
+			   pagination: true,   
+			    //是否启用排序  
+			   sortable: false,    
+			    //排序方式 
+			   sortOrder: "asc",    
+			   //初始化加载第一页，默认第一页
+			   //我设置了这一项，但是貌似没起作用，而且我这默认是0,- -
+			   //pageNumber:1,   
+			   //每页的记录行数（*）   
+			   pageSize: 10,  
+			   //可供选择的每页的行数（*）    
+			   pageList: [10, 25, 50, 100],
+			   //这个接口需要处理bootstrap table传递的固定参数,并返回特定格式的json数据  
+			   url: ctx+"/admin/xd/xdattendancesheet/listData",
+			   //默认值为 'limit',传给服务端的参数为：limit, offset, search, sort, order Else
+			   //queryParamsType:'',   
+			   ////查询参数,每次调用是会带上这个参数，可自定义                         
+			   queryParams : function(params) {
+			       return {
+			             pageNumber: (params.offset/params.limit)+1,
+			             pageSize: params.limit,
+					     deptId:$("#dept").val(),
+					     year:$("#year").val(),
+					   	month:$("#month").val(),
+
+			           };
+			   },
+			   //分页方式：client客户端分页，server服务端分页（*）
+			   sidePagination: "server",
+			   //是否显示搜索
+			   search: false,  
+			   //Enable the strict search.    
+			   strictSearch: true,
+			   //Indicate which field is an identity field.
+			   idField : "id",
+			   columns: col,
+			   pagination:true,paginationShowPageGo: true
+			}; 
+		
+	//表格
+	function initTable(){
+		$('#pageTable').bootstrapTable(opt);
+		$('#pageTable').bootstrapTable('hideColumn', 'id');
+	}
+	function refreshTable(){
+		$("#pageTable").bootstrapTable('refresh', opt);
+		$('#pageTable').bootstrapTable('hideColumn', 'id');
+	}
+	
+
+	//查询
+	function searchTable(){
+
+		let deptId=$("#dept").val();
+				let	year=$("#year").val();
+				let	month=$("#month").val();
+
+		let param = {
+			query: {
+				"deptId":deptId,
+				"year":year,
+				"month":month
+			}
+		}
+		// 刷新表格
+		$('#pageTable').bootstrapTable('refresh',param);
+	}
+
+	$(document).ready(function(){
+		$('.form_datetime').datepicker({format: 'yyyy-mm-dd',weekStart: 1,todayBtn:  1,autoclose: 1,language:  'zh-CN',todayHighlight: 1,forceParse: 0,clearBtn: true }).on('changeDate',null);
+		initTable();//初始化
+	});
+</script>
