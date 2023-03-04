@@ -24,7 +24,7 @@
 			excluded:[":disabled"],
 			live: 'enabled',
 			fields: {
-				"#(formModelName).dept_value": {
+				"#(formModelName).emp_name": {
 					trigger: 'change',
 					validators: {
 						notEmpty: {
@@ -32,26 +32,47 @@
 						}
 					}
 				},
-				"#(formModelName).shedule_year": {
+				"#(formModelName).project_id": {
 					trigger: 'change',
 					validators: {
 						notEmpty: {
-							message: '*年份不能为空'
+							message: '*项目不能为空'
 						}
 					}
 				},
-				"#(formModelName).shedule_month": {
+				"#(formModelName).apply_type": {
 					trigger: 'change',
 					validators: {
 						notEmpty: {
-							message: '*月份不能为空'
+							message: '*类型不能为空'
 						}
 					}
 				},
-				"#(formModelName).approver_id": {
+				"#(formModelName).apply_date": {
 					validators: {
 						notEmpty: {
-							message: '*审批人不能为空'
+							message: '*申请日期不能为空'
+						}
+					}
+				},
+				"#(formModelName).apply_start": {
+					validators: {
+						notEmpty: {
+							message: '*开始时间不能为空'
+						}
+					}
+				},
+				"#(formModelName).apply_end": {
+					validators: {
+						notEmpty: {
+							message: '*结束时间不能为空'
+						}
+					}
+				},
+				"#(formModelName).apply_hours": {
+					validators: {
+						notEmpty: {
+							message: '*时长不能为空'
 						}
 					}
 				},
@@ -258,8 +279,18 @@ $(function () {
 		$("#dept_name").val(data.orgName);
 		$("#emp_num").val(data.empNum);
 		$("#emp_idnum").val(data.idnum);
-
+		resetVali()
 		//$('#ename').val($('#enameSelect option:selected').text())
 
+	});
+
+	let apply_type=$("#apply_type").val();
+	if(apply_type){
+		$('#applyTypeSelect').selectpicker('val',apply_type.split(",")).trigger("change");
+	}
+
+	$('#applyTypeSelect').on('changed.bs.select', function (e) {
+		$('#apply_type').val($('#applyTypeSelect').val())
+		resetVali()
 	});
 </script>

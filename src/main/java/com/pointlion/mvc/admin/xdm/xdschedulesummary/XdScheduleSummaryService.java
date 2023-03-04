@@ -13,6 +13,7 @@ import com.pointlion.mvc.common.utils.UuidUtil;
 import com.pointlion.mvc.common.utils.office.excel.ExcelUtil;
 import com.pointlion.plugin.shiro.ShiroKit;
 import com.pointlion.plugin.shiro.ext.SimpleUser;
+import com.pointlion.util.CheckAttendanceUtil;
 import com.pointlion.util.DictMapping;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -144,9 +145,8 @@ public class XdScheduleSummaryService{
 						//Map<String, String> holidaysMap = xdDayModels.stream().collect(Collectors.toMap(XdDayModel::getId, XdDayModel::getHolidays));
 
 
-						List<XdShift> xdShifts = XdShift.dao.find("select * from  xd_shift");
-						Map<String, XdShift> nameShiftObjMap = xdShifts.stream().collect(Collectors.toMap(XdShift::getShiftname, xdShift -> xdShift));
-
+//							List<XdShift> xdShifts = XdShift.dao.find("select * from  xd_shift");
+						Map<String, XdShift> nameShiftObjMap =CheckAttendanceUtil.shfitsMap();
 						XdWorkHour workHours = XdWorkHour.dao.findFirst("select * from  xd_work_hour where year='" + year + "' and  month='" + month + "'");
 
 
@@ -235,8 +235,6 @@ public class XdScheduleSummaryService{
 								otFlags=otFlags+","+"0";
 
 								 cellValue = summaryList.get(6 + j).trim();
-								/*System.out.println(j);
-								System.out.println(cellValue);*/
 								if(j<10){
 									setMethod = superclass.getMethod("setDay0" + j,String.class);
 									ymdNoLine = yearMonth + '0' + j;

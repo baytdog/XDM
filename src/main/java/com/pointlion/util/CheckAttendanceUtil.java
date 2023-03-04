@@ -107,7 +107,7 @@ public class CheckAttendanceUtil {
         return  XdOvertimeSummary.dao.find(sql);
     }*/
 
-    public static  List<XdOvertimeSummary> getOtSummaryList(String yearMonth,String applyType){
+    public static  List<XdOvertimeSummary> getOtSummaryList(String yearMonth,String applyType,String source){
         String sql="select * from  xd_overtime_summary where 1=1 ";
 
         if(StrKit.notBlank(yearMonth)){
@@ -115,6 +115,9 @@ public class CheckAttendanceUtil {
         }
         if(StrKit.notBlank(applyType)){
             sql=sql+" and apply_type='"+applyType+"'";
+        }
+        if(StrKit.notBlank(source)){
+            sql=sql+" and source='"+source+"'";
         }
 
         return  XdOvertimeSummary.dao.find(sql);

@@ -385,7 +385,8 @@ public class XdAttendanceSummaryService{
 										}
 
 										//加班结算开始//调整开始============================================
-
+										String idNum=emp==null?"":emp.getIdnum();
+										String partValues=","+empNum+","+idNum+","+attendanceSummary.getDeptValue()+","+attendanceSummary.getDeptName()+","+attendanceSummary.getProjectValue()+","+attendanceSummary.getProjectName();
 										if(sb.indexOf(ymdNoLine)!=-1){
 											//当天是法定节日
 											holidays++;
@@ -393,10 +394,10 @@ public class XdAttendanceSummaryService{
 											if("1".equals(shift.getSpanDay())){
 												//法定节日且跨天
 												nationlOTHours+= shift.getCurdayHours();
-												settleMap.put(empName+","+ymdInLine+","+shift.getBusitime()+","+"24:00",shift.getCurdayHours()+","+ymdInLine);
+												settleMap.put(empName+","+ymdInLine+","+shift.getBusitime()+","+"24:00",shift.getCurdayHours()+","+ymdInLine+partValues);
 												if(sb.indexOf(nextDay.replaceAll("-",""))!=-1){
 													//跨天第二天是法定节日
-													settleMap.put(empName+","+nextDay+","+"0:00"+","+shift.getUnbusitime(),shift.getSpanHours()+","+ymdInLine);
+													settleMap.put(empName+","+nextDay+","+"0:00"+","+shift.getUnbusitime(),shift.getSpanHours()+","+ymdInLine+partValues);
 													if(j<daysNum){
 														nationlOTHours+= shift.getSpanHours();
 													}
@@ -410,7 +411,7 @@ public class XdAttendanceSummaryService{
 												//不跨天
 												nationlOTHours+= Double.valueOf(shift.getHours());
 
-												settleMap.put(empName+","+ymdInLine+","+shift.getBusitime()+","+shift.getUnbusitime(),shift.getHours()+","+ymdInLine);
+												settleMap.put(empName+","+ymdInLine+","+shift.getBusitime()+","+shift.getUnbusitime(),shift.getHours()+","+ymdInLine+partValues);
 											}
 
 										}else{
@@ -428,7 +429,7 @@ public class XdAttendanceSummaryService{
 													//第二天是法定节日
 
 
-													settleMap.put(empName+","+nextDay+","+"0:00"+","+shift.getUnbusitime(),shift.getSpanHours()+","+ymdInLine);
+													settleMap.put(empName+","+nextDay+","+"0:00"+","+shift.getUnbusitime(),shift.getSpanHours()+","+ymdInLine+partValues);
 
 
 													if(j<daysNum){
@@ -559,7 +560,7 @@ public class XdAttendanceSummaryService{
 							//XdAnleaveSummary.dao.findFirst("select  * from  xd_anleave_summary where  emp_name='' and year=''");
 
 							if(shift18A){
-								createRcp(year, month, middleShiftDays, nightShiftDays, monthWorkDays, attendanceSummary, emp);
+								createRcp(year, month, middleShiftDays, nightShiftDays, monthWorkDays, attendanceSummary, emp,empName);
 							}
 
 
@@ -602,6 +603,7 @@ public class XdAttendanceSummaryService{
 							attendanceSheet.setSummaryId(summaryId);
 							attendanceSheet.setYear(Integer.valueOf(year));
 							attendanceSheet.setMonth(Integer.valueOf(month));
+							attendanceSheet.setYearMonth(year+month);
 							attendanceSheet.setDeptId(attendanceSummary.getDeptValue());
 							attendanceSheet.setDeptName(attendanceSummary.getDeptName());
 							attendanceSheet.setUnitId(attendanceSummary.getUnitValue());
@@ -610,7 +612,7 @@ public class XdAttendanceSummaryService{
 							attendanceSheet.setProjectName(attendanceSummary.getProjectName());
 							attendanceSheet.setEmpName(attendanceSummary.getEmpName());
 							attendanceSheet.setEmpNum(attendanceSummary.getEmpNum());
-							attendanceSheet.setIdNum(emp.getIdnum());
+							attendanceSheet.setIdNum(emp==null?"":emp.getIdnum());
 							attendanceSheet.setOrdinaryOt(String.valueOf(ordinaryOTHours));
 							attendanceSheet.setNationalOt(String.valueOf(nationlOTHours));
 							attendanceSheet.setDutyCharge(String.valueOf(dutyCharge));
@@ -625,8 +627,8 @@ public class XdAttendanceSummaryService{
 							attendanceSheet.setAbsenceDuty(String.valueOf(newLeaveDays));
 							attendanceSheet.setAbsentWork(String.valueOf(absenteeismDays));
 							attendanceSheet.setRestAnleave(String.valueOf(alreayAnnualLeave));
-							attendanceSheet.setHireDate(emp.getEntrytime());
-							attendanceSheet.setLeaveDate(emp.getDepartime());
+							attendanceSheet.setHireDate(emp==null?"":emp.getEntrytime());
+							attendanceSheet.setLeaveDate(emp==null?"":emp.getDepartime());
 							attendanceSheet.setCreatTime(DateUtil.getCurrentTime());
 							attendanceSheet.setCreateUser(ShiroKit.getUserId());
 							sheetList.add(attendanceSheet);
@@ -706,46 +708,39 @@ public class XdAttendanceSummaryService{
 
 
 
-						List<XdOvertimeSummary> otSummaryList = CheckAttendanceUtil.getOtSummaryList(year + "-" + month, "0");
+						List<XdOvertimeSummary> otSummaryList = CheckAttendanceUtil.getOtSummaryList(year + "-" + month, "0","0");
 
 						for (XdOvertimeSummary os : otSummaryList) {
 							String key= os.getEmpName()+","+os.getApplyDate()
 									+","+os.getApplyStart()+","+os.getApplyEnd();
-							if(settleMap.get(key)==null){
-								XdSettleOvertimeSummary sos=new XdSettleOvertimeSummary();
-								BeanUtils.copyProperties(sos,os);
-								sos.setId(null);
-								sos.setCreateDate(DateUtil.getCurrentTime());
-								sos.setCreateUser(ShiroKit.getUserId());
-								sos.save();
-
-							}else{
-								XdSettleOvertimeSummary sos=new XdSettleOvertimeSummary();
-								BeanUtils.copyProperties(sos,os);
-								sos.setId(null);
-								sos.setCreateUser(ShiroKit.getUserId());
-								sos.setCreateDate(DateUtil.getCurrentTime());
-								sos.setActHours(Double.valueOf(os.getApplyHours()));
-								sos.setActStart(os.getApplyStart());
-								sos.setActEnd(os.getApplyEnd());
-								sos.setSuperDays(settleMap.get(key).split(",")[1]);
-								sos.save();
+							if(settleMap.get(key)!=null)
+							{
+								os.setActStart(os.getApplyStart());
+								os.setActEnd(os.getApplyEnd());
+								os.setActHours(os.getApplyHours());
+								os.update();
 								settleMap.remove(key);
+
 							}
-
 						}
-
+//						","+empNum+","+emp.getIdnum()+","+attendanceSummary.getDeptValue()+","+attendanceSummary.getDeptName()+","+attendanceSummary.getProjectValue()+","+attendanceSummary.getProjectName();
 						Set<String> set = settleMap.keySet();
 						for (String settle : set) {
 							String[] keyArr=settle.split(",");
 							String value = settleMap.get(settle);
 							String[] valueArr = value.split(",");
-							XdSettleOvertimeSummary sos=new XdSettleOvertimeSummary();
+							XdOvertimeSummary sos=new XdOvertimeSummary();
 							sos.setEmpName(keyArr[0]);
+							sos.setEmpNum(valueArr[2]);
+							sos.setEmpIdnum(valueArr[3]);
+							sos.setDeptId(valueArr[4]);
+							sos.setDeptName(valueArr[5]);
+							sos.setProjectId(valueArr[6]);
+							sos.setProjectName(valueArr[7]);
 							sos.setApplyDate(keyArr[1]);
 							sos.setActStart(keyArr[2]);
 							sos.setActEnd(keyArr[3]);
-							sos.setActHours(Double.valueOf(valueArr[0]));
+							sos.setActHours(valueArr[0]);
 							sos.setApplyType("0");
 							sos.setSuperDays(valueArr[1]);
 							sos.setCreateDate(DateUtil.getCurrentTime());
@@ -776,7 +771,7 @@ public class XdAttendanceSummaryService{
 		return result;
 	}
 
-	private void createRcp(String year, String month, int middleShiftDays, int nightShiftDays, int monthWorkDays, XdAttendanceSummary attendanceSummary, XdEmployee emp) {
+	private void createRcp(String year, String month, int middleShiftDays, int nightShiftDays, int monthWorkDays, XdAttendanceSummary attendanceSummary, XdEmployee emp,String empName) {
 		XdRcpSummary rcp = new XdRcpSummary();
 		rcp.setSummaryId(attendanceSummary.getId());
 		rcp.setDeptValue(attendanceSummary.getDeptValue());
@@ -785,7 +780,7 @@ public class XdAttendanceSummaryService{
 		rcp.setUnitName(attendanceSummary.getUnitName());
 		rcp.setProjectValue(attendanceSummary.getProjectValue());
 		rcp.setProjectName(attendanceSummary.getProjectName());
-		rcp.setEmpName(emp.getName());
+		rcp.setEmpName(empName);
 		rcp.setIdnum(emp == null ? "" : emp.getIdnum());
 		rcp.setWorStation(attendanceSummary.getWorkStation());
 		rcp.setShfitName("18A");
@@ -1316,7 +1311,7 @@ public class XdAttendanceSummaryService{
 						totleExecute.update();
 
 
-						List<XdOvertimeSummary> otSummaryList = CheckAttendanceUtil.getOtSummaryList(year + "-" + month, "0");
+						List<XdOvertimeSummary> otSummaryList = CheckAttendanceUtil.getOtSummaryList(year + "-" + month, "0", "0");
 
 						for (XdOvertimeSummary os : otSummaryList) {
 							String key= os.getEmpName()+","+os.getApplyDate()
@@ -1403,7 +1398,11 @@ public class XdAttendanceSummaryService{
 			Db.delete("delete from  xd_attendance_detail where attendid_id='" + oldSummary.getId() + "'");
 			Db.delete("delete from  xd_attendance_sheet where summary_id='"+ oldSummary.getId() +"'");
 			String deptId=oldSummary.getDeptValue();
-			Double alreayAnnualLeave = Double.valueOf(attendanceDays.getRestanleaveDays());
+			Double alreayAnnualLeave=0.0;
+			if(attendanceDays!=null){
+				alreayAnnualLeave= Double.valueOf(attendanceDays.getRestanleaveDays());
+			}
+
 			if(alreayAnnualLeave>0){
 				if(deptId!=null && !"".equals(deptId)){
 					XdAnleaveExecute	execute	 = XdAnleaveExecute.dao.findFirst("select * from  xd_anleave_execute where year='"+year+"' and dept_id='"+deptId+"'");
@@ -1433,8 +1432,10 @@ public class XdAttendanceSummaryService{
 
 			oldSummary.delete();
 
-			Db.delete("delete from  xd_settle_overtime_summary where emp_name ='"+empName+"' and  super_days like '"+yearMonthInLine+"%'");
-
+			//Db.delete("delete from  xd_settle_overtime_summary where emp_name ='"+empName+"' and  super_days like '"+yearMonthInLine+"%'");
+			Db.update("update xd_overtime_summary set act_start=NULL,act_end=NULL,act_hours=NULL" +
+					" where source='0'  and emp_name='"+empName+"' and  project_id='"+oldSummary.getProjectValue()+"' and super_days like '"+yearMonthInLine+"%'");
+			Db.delete("delete from  xd_overtime_summary  where source='0'  and emp_name='"+empName+"' and apply_start is null and super_days like '"+yearMonthInLine+"%'");
 		}
 	}
 
@@ -2025,7 +2026,7 @@ public class XdAttendanceSummaryService{
 				/*		for (String s : set) {
 							System.out.println("============"+s+settleMap.get(s).toString());
 						}*/
-						List<XdOvertimeSummary> otSummaryList = CheckAttendanceUtil.getOtSummaryList(year + "-" + month, "0");
+						List<XdOvertimeSummary> otSummaryList = CheckAttendanceUtil.getOtSummaryList(year + "-" + month, "0", "0");
 
 						for (XdOvertimeSummary os : otSummaryList) {
 							String key= os.getEmpName()+","+os.getApplyDate()

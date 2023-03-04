@@ -76,7 +76,7 @@ public class HomeController extends BaseController {
 			renderIframe("/WEB-INF/admin/home/personalhome.html");
 		}else {
 //			人员修改审批
-			String empSql = " select * from   xd_steps s where  s.orgid ='"+ShiroKit.getUserOrgId()+"' and  s.finished='N'";
+			String empSql = " select * from   xd_steps s where  s.orgid ='"+ShiroKit.getUserOrgId()+"' and s.stype='1' and s.finished='N'";
 			int empSize = Db.find(empSql).size();
 			setAttr("empSize",empSize);
 			String employeeSql="select * from xd_employee";
@@ -163,6 +163,16 @@ public class HomeController extends BaseController {
 
 			int attendanceSize = Db.find(attendanceSql).size();
 			setAttr("attendanceSize",attendanceSize);
+			//考勤
+			String sheetSql="";
+			if(sysUser.getOrgid().equals("1")){
+				sheetSql = " select * from   xd_steps s where s.stype='7'  and s.orgid ='"+ShiroKit.getUserOrgId()+"' and  s.finished='N'";
+			}else{
+				sheetSql = " select * from   xd_steps s where s.stype='7'  and s.userid ='"+ShiroKit.getUserId()+"' and  s.finished='N'";
+			}
+
+			int sheetSize = Db.find(sheetSql).size();
+			setAttr("sheetSize",sheetSize);
 
 			//加班申请
 			String overTimeSql="";

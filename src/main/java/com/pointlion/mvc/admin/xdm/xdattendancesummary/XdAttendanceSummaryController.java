@@ -558,23 +558,33 @@ public class XdAttendanceSummaryController extends BaseController {
 				}
 
 
-				List<XdSettleOvertimeSummary> settleList = XdSettleOvertimeSummary.dao.find("select * from  xd_settle_overtime_summary " +
-						"where emp_name='"+summary.getEmpName()+
-						"' and super_days='"+dayModels.get(index).getDays()+"'");
-				for (XdSettleOvertimeSummary settle : settleList) {
-					settle.delete();
+				List<XdOvertimeSummary> settleList = XdOvertimeSummary.dao.find(
+						"select * from  xd_overtime_summary where emp_name='"+summary.getEmpName()+
+								"' and source='1' and super_days='"+dayModels.get(index).getDays()+"'");
+
+				for (XdOvertimeSummary settle : settleList) {
+					if(settle.getApplyStart()==null|| "".equals(settle.getApplyStart())){
+						settle.delete();
+					}else{
+						settle.setActHours("");
+						settle.setActEnd("");
+						settle.setActHours("");
+						settle.update();
+					}
 				}
 
 
 				XdShift shift = nameShiftObjMap.get(modValue);
+
 				XdEmployee emp = XdEmployee.dao.findFirst("select * from xd_employee where name ='" + summary.getEmpName() + "'");
 
 				String indexDayId = dayModels.get(index).getId();
 				String indexDays = dayModels.get(index).getDays();
 				String startTime = (shift==null?"": shift.getBusitime());
+
 				List<XdOvertimeSummary> otsList = XdOvertimeSummary.dao.find("select * from xd_overtime_summary" +
 						" where super_days='" + indexDays
-						+ "' and emp_name='" + summary.getEmpName()+"'");
+						+ "' and emp_name='" + summary.getEmpName()+"' and source='1'");
 
 
 				StringBuffer needSettle= new StringBuffer();
@@ -605,10 +615,10 @@ public class XdAttendanceSummaryController extends BaseController {
 
 					}else{
 						if(sb.indexOf(indexDayId)!=-1){
-							settleMap.put(indexDays+","+shift.getBusitime()+","+shift.getBusitime(),shift.getHours()+",0");
+							settleMap.put(indexDays+","+shift.getBusitime()+","+shift.getUnbusitime(),shift.getHours()+",0");
 						}else{
 							if("on".equals(overtime)){
-								settleMap.put(indexDays+","+shift.getBusitime()+","+shift.getBusitime(),shift.getHours()+",1");
+								settleMap.put(indexDays+","+shift.getBusitime()+","+shift.getUnbusitime(),shift.getHours()+",1");
 							}
 						}
 					}
@@ -618,19 +628,15 @@ public class XdAttendanceSummaryController extends BaseController {
 
 					String ovStr = ots.getApplyDate() + "," + ots.getApplyStart() + "," + ots.getApplyEnd();
 
-					XdSettleOvertimeSummary sos= new XdSettleOvertimeSummary();
-					BeanUtils.copyProperties(sos,ots);
+//					XdOvertimeSummary sos= new XdOvertimeSummary();
+//					BeanUtils.copyProperties(sos,ots);
 					if(settleMap.get(ovStr)!=null){
-						sos.setId(null);
-						sos.setActHours(Double.valueOf(ots.getApplyHours()));
-						sos.setActStart(ots.getApplyStart());
-						sos.setActEnd(ots.getApplyEnd());
-						sos.setApplyType(settleMap.get(ovStr).split(",")[1]);
-						sos.save();
+						ots.setActHours(ots.getApplyHours());
+						ots.setActStart(ots.getApplyStart());
+						ots.setActEnd(ots.getApplyEnd());
+						//sos.setApplyType(settleMap.get(ovStr).split(",")[1]);
+						ots.update();
 						settleMap.remove(ovStr);
-					}else{
-						sos.setId(null);
-						sos.save();
 					}
 				}
 				Set<String> keySet = settleMap.keySet();
@@ -639,11 +645,11 @@ public class XdAttendanceSummaryController extends BaseController {
 					String s = settleMap.get(key);
 					String[] split1 = s.split(",");
 
-					XdSettleOvertimeSummary sots= new XdSettleOvertimeSummary();
+					XdOvertimeSummary sots= new XdOvertimeSummary();
 					sots.setApplyDate(split[0]);
 					sots.setActStart(split[1]);
 					sots.setActEnd(split[2]);
-					sots.setActHours(Double.valueOf(split1[0]));
+					sots.setActHours(split1[0]);
 					sots.setApplyType(split1[1]);
 					sots.setSuperDays(indexDays);
 					sots.setEmpName(summary.getEmpName());
@@ -816,14 +822,18 @@ public class XdAttendanceSummaryController extends BaseController {
 					summary.setPremonAccbalancehours(xdAttendanceSummaries.get(1).getPremonAccbalancehours());//上月累计工时=上个月的工时结余
 				}
 				//计算加班时长 开始
-				List<XdSettleOvertimeSummary> ovList =	XdSettleOvertimeSummary.dao.find(
-						"select * from  xd_settle_overtime_summary where emp_name='"+summary.getEmpName()+
+				List<XdOvertimeSummary> ovList =	XdOvertimeSummary.dao.find(
+						"select * from  xd_overtime_summary where emp_name='"+summary.getEmpName()+
 								"' and apply_date like '"+yearMonth+"%'");
-				for (XdSettleOvertimeSummary ovs : ovList) {
+				for (XdOvertimeSummary ovs : ovList) {
+					String hours="0";
+					if(ovs.getActHours()!=null && !"".equals(ovs.getActHours())){
+						hours=ovs.getActHours();
+					}
 					if(ovs.getApplyType().equals("0")){
-						naOTHours+=ovs.getActHours();
+						naOTHours+=Double.valueOf(hours);
 					}else{
-						othours+=ovs.getActHours();
+						othours+=Double.valueOf(hours);
 					}
 				}
 				//计算加班时长结束

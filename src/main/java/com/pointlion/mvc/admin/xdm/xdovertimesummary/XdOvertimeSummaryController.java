@@ -32,19 +32,51 @@ public class XdOvertimeSummaryController extends BaseController {
 
 		renderIframe("list.html");
     }
+
+	public void getSettleListPage(){
+
+		List<XdProjects> projects = XdProjects.dao.find("select * from  xd_projects");
+		setAttr("projects",projects);
+
+
+		renderIframe("settleList.html");
+	}
+
+
+	public void getSettleEditPage(){
+		String id = getPara("id");
+		String view = getPara("view");
+		setAttr("view", view);
+		XdOvertimeSummary summary =service.getById(id);
+		setAttr("o", summary);
+		List<XdEmployee> emps = XdEmployee.dao.find("select * from  xd_employee order by empnum");
+		setAttr("emps",emps);
+		List<SysOrg> orgList = SysOrg.dao.find("select * from  sys_org");
+		setAttr("orgList",orgList);
+		List<XdProjects> projects = XdProjects.dao.find("select * from  xd_projects");
+
+		setAttr("projects",projects);
+		setAttr("formModelName",StringUtil.toLowerCaseFirstOne(XdOvertimeSummary.class.getSimpleName()));
+		renderIframe("settleEdit.html");
+	}
+
 	/***
      * list page data
      **/
     public void listData() throws UnsupportedEncodingException {
-    	String curr = getPara("pageNumber");
+		System.out.println(getPara("otType"));
+		String otType  =getPara("otType");
+		String curr = getPara("pageNumber");
     	String pageSize = getPara("pageSize");
 		String dept = getPara("dept","");
 		String project = getPara("project","");
-		String emp_name = java.net.URLDecoder.decode(getPara("emp_name",""),"UTF-8");
+		System.out.println(getPara("emp_name", ""));
+		String empName = java.net.URLDecoder.decode(getPara("emp_name",""),"UTF-8");
+
 		String emp_num = getPara("emp_num","");
 		String apply_date = getPara("apply_date","");
 		String overtimeType = getPara("overtimeType","");
-    	Page<Record> page = service.getPage(Integer.valueOf(curr),Integer.valueOf(pageSize),dept,project,emp_name,emp_num,apply_date,overtimeType);
+    	Page<Record> page = service.getPage(Integer.valueOf(curr),Integer.valueOf(pageSize),dept,project,empName,emp_num,apply_date,overtimeType,otType);
     	renderPage(page.getList(),"",page.getTotalRow());
     }
     /***
@@ -127,41 +159,193 @@ public class XdOvertimeSummaryController extends BaseController {
 			XdScheduleSummary scheduleSummary =
 					XdScheduleSummary.dao.findFirst("select * from  xd_schedule_summary where emp_name='"+o.getEmpName()
 							+"' and schedule_year='" + ymd[0]+ "' and schedule_month='" + ymd[1] + "'");
+			if(scheduleSummary!=null){
+				String tips = scheduleSummary.getTips();
+				String[] tipsArr = tips.split(",");
+				String indexTip = tipsArr[index];
+				if("0".equals(indexTip)){
+					tipsArr[index]=o.getApplyStart()+"-"+o.getApplyEnd();
+				}else{
+					tipsArr[index]=tipsArr[index]+o.getApplyStart()+"-"+o.getApplyEnd();
+				}
+				String sb="";
+				for (String s : tipsArr) {
+					sb=sb+s+",";
+				}
+				if("0".equals(o.getApplyType())){
+					Double natOthours = scheduleSummary.getNatOthours();
+					scheduleSummary.setNatOthours(natOthours + Double.valueOf(o.getApplyHours()));
+				}else{
+					Double othours = scheduleSummary.getOthours();
+					scheduleSummary.setOthours(othours + Double.valueOf(o.getApplyHours()));
+				}
 
-			String tips = scheduleSummary.getTips();
+
+
+
+				scheduleSummary.setTips(sb.replaceAll(",$",""));
+				scheduleSummary.update();
+			}
+
+
+			//tipsArr[index]=
+
+			XdOvertimeSummary first = XdOvertimeSummary.dao.findFirst("select *from  xd_overtime_summary  " +
+					"where source='2' and act_start='" + o.getApplyStart() + "' and apply_date='" + o.getApplyDate()
+					+ "' and  act_end='" + o.getApplyEnd() + "' and apply_type='" + o.getApplyType() + "'");
+			if(first==null){
+				o.setSource("2");
+				o.setCreateDate(DateUtil.getCurrentTime());
+				o.setCreateUser(ShiroKit.getUserId());
+				o.save();
+			}else{
+				first.setApplyStart(o.getApplyStart());
+				first.setApplyEnd(o.getApplyEnd());
+				first.setApplyHours(o.getApplyHours());
+				first.update();
+			}
+
+    	}
+    	renderSuccess();
+    }
+
+	public void saveSettle(){
+		XdOvertimeSummary o = getModel(XdOvertimeSummary.class);
+
+	/*	XdOvertimeSummary overtimeSummary = XdOvertimeSummary.dao.
+				findFirst("select * from  xd_overtime_summary where apply_date='"+o.getApplyDate()
+						+"' and emp_name='"+o.getEmpName()+"' and apply_type='"+o.getApplyType()
+						+"' and  apply_start='"+o.getActStart()+"' and apply_end='"+o.getActEnd()+"' and ");
+
+		if(overtimeSummary!=null){
+			o.setApplyStart(overtimeSummary.getApplyStart());
+			o.setApplyEnd(overtimeSummary.getApplyEnd());
+			o.setApplyHours(Double.valueOf(overtimeSummary.getApplyHours()));
+		}*/
+		String days = o.getApplyDate();
+		String[] ymd=null;
+		if (days != null) {
+			ymd = days.split("-");
+		}
+
+
+		if(o.getId()!=null){
+
+			/*XdSettleOvertimeSummary summary = XdSettleOvertimeSummary.dao.findById(o.getId());
+			String applyDate = summary.getApplyDate();
+			String[] appDateArr = applyDate.split("-");
+			int oldIndex = Integer.parseInt(appDateArr[2]);
+			XdAttendanceSummary attendanceSummary =
+					XdAttendanceSummary.dao.findFirst("select * from  xd_attendance_summary where emp_name='"+summary.getEmpName()
+							+"' and schedule_year='" + appDateArr[0]+ "' and schedule_month='" + appDateArr[1] + "'");
+			String[] oldTips = attendanceSummary.getTips().split(",");
+			String oldTip = oldTips[oldIndex];
+			oldTip=oldTip.replaceAll(summary.getActStart()+"-"+summary.getActEnd(),"");
+			if("".equals(oldTip)){
+				oldTip="0";
+			}
+			oldTips[oldIndex]=oldTip;
+			oldTip="";
+			for (String tip : oldTips) {
+				oldTip=oldTip+tip+",";
+			}
+			attendanceSummary.setTips(oldTip.replaceAll(",$",""));
+
+
+			if("0".equals(summary.getApplyType())){
+				//Double aDouble = Double.valueOf(summary.getApplyHours());
+				attendanceSummary.setNatOthours(attendanceSummary.getNatOthours()-summary.getActHours());
+			}else{
+				attendanceSummary.setOthours(attendanceSummary.getOthours()-summary.getActHours());
+			}
+			attendanceSummary.update();
+
+
+			attendanceSummary =XdAttendanceSummary.dao.findFirst("select * from  xd_attendance_summary where emp_name='"+o.getEmpName()
+					+"' and schedule_year='" + ymd[0]+ "' and schedule_month='" + ymd[1] + "'");
+			int index = Integer.parseInt(ymd[2]);
+			String tips = attendanceSummary.getTips();
 			String[] tipsArr = tips.split(",");
 			String indexTip = tipsArr[index];
 			if("0".equals(indexTip)){
-				tipsArr[index]=o.getApplyStart()+"-"+o.getApplyEnd();
+				tipsArr[index]=o.getActStart()+"-"+o.getActEnd();
 			}else{
-				tipsArr[index]=tipsArr[index]+o.getApplyStart()+"-"+o.getApplyEnd();
+				tipsArr[index]=tipsArr[index]+o.getActStart()+"-"+o.getActEnd();
 			}
 			String sb="";
 			for (String s : tipsArr) {
 				sb=sb+s+",";
 			}
+			attendanceSummary.setTips(sb.replaceAll(",$",""));
+
 			if("0".equals(o.getApplyType())){
-				Double natOthours = scheduleSummary.getNatOthours();
-				scheduleSummary.setNatOthours(natOthours + Double.valueOf(o.getApplyHours()));
+				//Double aDouble = Double.valueOf(summary.getApplyHours());
+				attendanceSummary.setNatOthours(attendanceSummary.getNatOthours()+o.getActHours());
 			}else{
-				Double othours = scheduleSummary.getOthours();
-				scheduleSummary.setOthours(othours + Double.valueOf(o.getApplyHours()));
+				attendanceSummary.setOthours(attendanceSummary.getOthours()+o.getActHours());
+			}
+			attendanceSummary.update();
+			o.update();
+*/
+
+		}else{
+
+			int index = Integer.parseInt(ymd[2]);
+			XdAttendanceSummary attendanceSummary =
+					XdAttendanceSummary.dao.findFirst("select * from  xd_attendance_summary where emp_name='"+o.getEmpName()
+							+"' and schedule_year='" + ymd[0]+ "' and schedule_month='" + ymd[1] + "'");
+
+			if(attendanceSummary!=null){
+				String tips = attendanceSummary.getTips();
+				String[] tipsArr = tips.split(",");
+				String indexTip = tipsArr[index];
+				if("0".equals(indexTip)){
+					tipsArr[index]=o.getActStart()+"-"+o.getActEnd();
+				}else{
+					tipsArr[index]=tipsArr[index]+o.getActStart()+"-"+o.getActEnd();
+				}
+				String sb="";
+				for (String s : tipsArr) {
+					sb=sb+s+",";
+				}
+				if("0".equals(o.getApplyType())){
+					//Double natOthours = attendanceSummary.getNatOthours();
+					attendanceSummary.setNatOthours(attendanceSummary.getNatOthours() + Double.valueOf(o.getActHours()));
+				}else{
+					//Double othours = attendanceSummary.getOthours();
+					attendanceSummary.setOthours(attendanceSummary.getOthours() + Double.valueOf(o.getActHours()));
+				}
+
+
+
+
+				attendanceSummary.setTips(sb.replaceAll(",$",""));
+				attendanceSummary.update();
 			}
 
 
+			XdOvertimeSummary first = XdOvertimeSummary.dao.findFirst("select *from  xd_overtime_summary  " +
+					"where source='2' and apply_start='" + o.getActStart() + "' and apply_date='" + o.getApplyDate()
+					+ "' and  apply_end='" + o.getActEnd() + "' and apply_type='" + o.getApplyType() + "'");
+			if(first==null){
+				o.setSource("2");
+				o.setCreateDate(DateUtil.getCurrentTime());
+				o.setCreateUser(ShiroKit.getUserId());
+				o.save();
+			}else{
+				first.setActStart(o.getActStart());
+				first.setActEnd(o.getActStart());
+				first.setActHours(o.getActHours());
+				first.update();
+			}
+			/*o.setCreateDate(DateUtil.getCurrentTime());
+			o.setCreateUser(ShiroKit.getUserId());
+			o.save();*/
+		}
 
+		renderSuccess();
+	}
 
-			scheduleSummary.setTips(sb.replaceAll(",$",""));
-			scheduleSummary.update();
-
-			//tipsArr[index]=
-			o.setSource("2");
-			o.setCreateDate(DateUtil.getCurrentTime());
-    		o.setCreateUser(ShiroKit.getUserId());
-    		o.save();
-    	}
-    	renderSuccess();
-    }
     /***
      * edit page
      */
@@ -192,6 +376,11 @@ public class XdOvertimeSummaryController extends BaseController {
     public void delete() throws Exception{
 		String ids = getPara("ids");
 		service.deleteByIds(ids);
+    	renderSuccess("操作成功!");
+    }
+    public void deleteSettle() throws Exception{
+		String ids = getPara("ids");
+		service.deleteSettleByIds(ids);
     	renderSuccess("操作成功!");
     }
 
@@ -229,10 +418,11 @@ public class XdOvertimeSummaryController extends BaseController {
 		String year=getPara("year","");
 		String month = getPara("month","");
 		String overtimeType = getPara("overtimeType","");
+		String otType = getPara("otType","");
 		String emp_name = new String(getPara("emp_name","").getBytes("ISO-8859-1"), "utf-8");
 
 		String path = this.getSession().getServletContext().getRealPath("")+"/upload/export/"+ DateUtil.format(new Date(),21)+".xlsx";
-		File file = service.exportExcel(path,dept,project,year,month,emp_name,overtimeType);
+		File file = service.exportExcel(path,dept,project,year,month,emp_name,overtimeType,otType);
 		renderFile(file);
 	}
 	
@@ -284,6 +474,21 @@ public class XdOvertimeSummaryController extends BaseController {
 		renderJson(jsonObject);
 
 
+	}
+
+
+
+	public void exportApportionExcel() throws UnsupportedEncodingException {
+
+		String dept=getPara("dept","");
+		String unitname=getPara("unitname","");
+		String year=getPara("year","");
+		String month = getPara("month","");
+		String emp_name = new String(getPara("emp_name","").getBytes("ISO-8859-1"), "utf-8");
+
+		String path = this.getSession().getServletContext().getRealPath("")+"/upload/export/"+ DateUtil.format(new Date(),21)+".xlsx";
+		File file = service.exportApportionExcel(path,dept,unitname,year,month,emp_name);
+		renderFile(file);
 	}
 
 }

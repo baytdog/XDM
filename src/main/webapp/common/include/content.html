@@ -33,7 +33,8 @@
 
 	<div class="con_bg5 f_l" onclick="retireTip()"><p>退休到期 <span>#(retireEmpEndSize)</span> 人 </p></div>
 	<div class="con_bg6 f_l" onclick="certExpiredTip()"><p>证书到期<span>#(certExpiredSize)</span>条</p></div>
-	<div class="con_bg3 f_l" onclick=""><p>请假<span>0</span>份</p></div>
+<!--	<div class="con_bg3 f_l" onclick=""><p>请假<span>0</span>份</p></div>-->
+	<div class="con_bg3 f_l" onclick="checkAttend()"><p>考勤<span>#(sheetSize)</span>份</p></div>
 	<div class="con_bg4 f_l" onclick="attendanceTip()"><p>出勤<span>#(attendanceSize)</span>份</p></div>
     <div class="f_clear"></div>
 
@@ -100,6 +101,10 @@
 		window.location.href="#(ctx)/admin/xd/xdrcp/getHomeRcpListPage";
 	}
 
+	//考勤
+	function checkAttend(){
+		window.location.href="#(ctx)/admin/xd/xdattendancesheet/getHomeSheetListPage";
+	}
 
  	//历史
  	function  history(){

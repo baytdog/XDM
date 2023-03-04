@@ -300,9 +300,6 @@ public class XdScheduleSummaryController extends BaseController {
 				method.invoke(scheduleSummary, modValue);
 				String day = field.replace("day", "");
 				int index = Integer.parseInt(day);
-				/*List<XdShift> xdShifts = XdShift.dao.find("select * from  xd_shift");
-				Map<String, XdShift> nameShiftObjMap = xdShifts.stream().collect(Collectors.toMap(XdShift::getShiftname, xdShift -> xdShift));
-*/
 
 				Map<String, XdShift> nameShiftObjMap= CheckAttendanceUtil.shfitsMap();
 
@@ -409,10 +406,18 @@ public class XdScheduleSummaryController extends BaseController {
 
 				List<XdOvertimeSummary> applyList =	XdOvertimeSummary.dao.find(
 						"select * from  xd_overtime_summary where emp_name='"+scheduleSummary.getEmpName()+
-								"' and super_days='"+xdDayModels.get(index).getDays()+"'");
+								"' and source='1' and super_days='"+xdDayModels.get(index).getDays()+"'");
 
 				for (XdOvertimeSummary overtimeSummary : applyList) {
-					overtimeSummary.delete();
+					if(overtimeSummary.getActStart()==null || "".equals(overtimeSummary.getActStart())){
+						overtimeSummary.delete();
+					}else{
+						overtimeSummary.setApplyStart("");
+						overtimeSummary.setApplyEnd("");
+						overtimeSummary.setApplyHours("");
+						overtimeSummary.update();
+					}
+
 				}
 
 				XdShift shift = nameShiftObjMap.get(modValue);
@@ -422,6 +427,7 @@ public class XdScheduleSummaryController extends BaseController {
 
 					if(sb.indexOf(xdDayModels.get(index).getId())!=-1 ||"on".equals(overtime)){
 						XdEmployee emp = XdEmployee.dao.findFirst("select * from xd_employee where name ='" + scheduleSummary.getEmpName() + "'");
+
 						XdOvertimeSummary ots=new XdOvertimeSummary();
 						ots.setEmpNum(scheduleSummary.getEmpNum());
 						ots.setEmpName(scheduleSummary.getEmpName());
@@ -445,12 +451,25 @@ public class XdScheduleSummaryController extends BaseController {
 						ots.setSuperDays(xdDayModels.get(index).getDays());
 						if(sb.indexOf(xdDayModels.get(index).getId())!=-1){
 							ots.setApplyType("0");
-							ots.setSource("0");
 						}else{
-							ots.setSource("1");
 							ots.setApplyType("1");
 						}
-						ots.save();
+
+						ots.setSource("1");
+
+
+						XdOvertimeSummary overtimeSummary = XdOvertimeSummary.dao.findFirst("select *from  xd_overtime_summary " +
+								" where source='1' and act_start='" + ots.getApplyStart()+"' and apply_date='"+ots.getApplyDate()
+								+ "' and  act_end='" + ots.getApplyEnd() + "' and super_days='" + ots.getSuperDays() + "'");
+						if(overtimeSummary==null){
+							ots.save();
+						}else{
+							overtimeSummary.setApplyStart(ots.getApplyStart());
+							overtimeSummary.setApplyEnd(ots.getApplyEnd());
+							overtimeSummary.setApplyHours(ots.getApplyHours());
+							overtimeSummary.update();
+						}
+
 
 					}
 
@@ -476,12 +495,24 @@ public class XdScheduleSummaryController extends BaseController {
 							ots.setSuperDays(xdDayModels.get(index).getDays());
 							if(sb.indexOf(nextDayStr.replaceAll("-",""))!=-1){
 								ots.setApplyType("0");
-								ots.setSource("0");
 							}else{
-								ots.setSource("1");
 								ots.setApplyType("1");
 							}
-							ots.save();
+							ots.setSource("1");
+
+							XdOvertimeSummary overtimeSummary = XdOvertimeSummary.dao.findFirst("select *from  xd_overtime_summary " +
+									" where source='1' and act_start='" + ots.getApplyStart()+"' and apply_date='"+ots.getApplyDate()
+									+ "' and  act_end='" + ots.getApplyEnd() + "' and super_days='" + ots.getSuperDays() + "'");
+							if(overtimeSummary==null){
+								ots.save();
+							}else{
+								overtimeSummary.setApplyStart(ots.getApplyStart());
+								overtimeSummary.setApplyEnd(ots.getApplyEnd());
+								overtimeSummary.setApplyHours(ots.getApplyHours());
+								overtimeSummary.update();
+							}
+
+							//ots.save();
 						}
 					}
 				}
@@ -528,9 +559,9 @@ public class XdScheduleSummaryController extends BaseController {
 								"' and apply_date like '"+yearMonth+"%'");
 				for (XdOvertimeSummary overtimeSummary : ovList) {
 					if(overtimeSummary.getApplyType().equals("0")){
-						natOTHours+=Double.valueOf(overtimeSummary.getApplyHours());
+						natOTHours+=Double.valueOf(overtimeSummary.getApplyHours().equals("")?"0":overtimeSummary.getApplyHours());
 					}else{
-						othours+=Double.valueOf(overtimeSummary.getApplyHours());
+						othours+=Double.valueOf(overtimeSummary.getApplyHours().equals("")?"0":overtimeSummary.getApplyHours());
 					}
 				}
 				returnOtHour=natOTHours+","+othours;

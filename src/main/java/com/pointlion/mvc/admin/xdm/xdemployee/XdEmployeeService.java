@@ -45,7 +45,7 @@ public class XdEmployeeService{
 
 		String sql  = " from "+TABLE_NAME+" o where 1=1";
 		if(!"1".equals(userOrgId)){
-			sql=sql+" and cuser='"+ShiroKit.getUserId()+"'";
+			//sql=sql+" and cuser='"+ShiroKit.getUserId()+"'";
 		}
 		if(StrKit.notBlank(name)){
 			sql = sql + " and o.name like '%"+ name+"%'";

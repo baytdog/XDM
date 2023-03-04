@@ -27,7 +27,7 @@ public class XdStepsService{
 	 */
 	public Page<Record> getPage(int pnum,int psize,String startTime,String endTime,String applyUser){
 		String userId = ShiroKit.getUserId();
-		String sql  = " from "+TABLE_NAME+" o   where finished='N'";
+		String sql  = " from "+TABLE_NAME+" o   where finished='N' and stype='1'";
 		if("1".equals(ShiroKit.getUserOrgId())){
 			sql=sql+" and o.orgid=1";
 		}else{

@@ -20,10 +20,7 @@ import java.io.File;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class XdOvertimeSummaryService{
 	public static final XdOvertimeSummaryService me = new XdOvertimeSummaryService();
@@ -39,8 +36,11 @@ public class XdOvertimeSummaryService{
 	/***
 	 * get page
 	 */
-	public Page<Record> getPage(int pnum,int psize,String dept,String project,String emp_name,String emp_num,String apply_date,String overtimeType){
-		String sql  = " from "+TABLE_NAME+" o   where 1=1";
+	public Page<Record> getPage(int pNum,int pSize,String dept,String project,String emp_name,String emp_num,String apply_date,String overtimeType,String otType){
+		String sql  =" from "+TABLE_NAME+" o   where 1=1";
+		if(otType.equals("1")){
+			sql = sql + " and o.apply_start is not null and o.apply_start !='' ";
+		}
 		if(StrKit.notBlank(dept)){
 			sql = sql + " and o.dept_id='"+dept+"'";
 		}
@@ -73,7 +73,7 @@ public class XdOvertimeSummaryService{
 		}
 
 		sql = sql + " order by o.emp_num ";
-		return Db.paginate(pnum, psize, " select * ", sql);
+		return Db.paginate(pNum, pSize, " select * ", sql);
 	}
 	
 	/***
@@ -120,9 +120,73 @@ public class XdOvertimeSummaryService{
 			}
 
 
-    		o.delete();
+
+			if(o.getActStart()!=null && !"".equals(o.getActStart())){
+				o.setApplyStart("");
+				o.setApplyEnd("");
+				o.setApplyHours("");
+				o.update();
+			}else{
+				o.delete();
+			}
+
     	}
 	}
+
+
+
+
+	@Before(Tx.class)
+	public void deleteSettleByIds(String ids){
+		String idArr[] = ids.split(",");
+		for(String id : idArr){
+			XdOvertimeSummary o = me.getById(id);
+
+			String[] appDateArr = o.getApplyDate().split("-");
+
+			int oldIndex = Integer.parseInt(appDateArr[2]);
+
+			XdAttendanceSummary attendanceSummary =
+					XdAttendanceSummary.dao.findFirst("select * from  xd_attendance_summary where emp_name='"+o.getEmpName()
+							+"' and schedule_year='" + appDateArr[0]+ "' and schedule_month='" + appDateArr[1] + "'");
+			if(attendanceSummary!=null){
+				String[] oldTips = attendanceSummary.getTips().split(",");
+
+				String oldTip = oldTips[oldIndex];
+				oldTip=oldTip.replaceAll(o.getActStart()+"-"+o.getActEnd(),"");
+				if("".equals(oldTip)){
+					oldTip="0";
+				}
+				oldTips[oldIndex]=oldTip;
+
+				oldTip="";
+				for (String tip : oldTips) {
+					oldTip=oldTip+tip+",";
+				}
+				attendanceSummary.setTips(oldTip.replaceAll(",$",""));
+
+				if("0".equals(o.getApplyType())){
+					attendanceSummary.setNatOthours(attendanceSummary.getNatOthours()- Double.valueOf(o.getActHours()));
+				}else{
+					attendanceSummary.setOthours(attendanceSummary.getOthours()-Double.valueOf(o.getActHours()));
+				}
+
+				attendanceSummary.update();
+			}
+
+			if(o.getApplyStart()!=null && !"".equals(o.getApplyStart())){
+				o.setActStart("");
+				o.setActEnd("");
+				o.setActHours("");
+				o.update();
+			}else{
+				o.delete();
+			}
+
+		}
+	}
+
+
 
 	public Map<String,Object> importExcel(List<List<String>> list) throws SQLException {
 		final List<String> message = new ArrayList<String>();
@@ -206,8 +270,11 @@ public class XdOvertimeSummaryService{
 	}
 
 
-	public File exportExcel(String path, String dept, String project, String year, String month, String emp_name,String overtimeType){
-		String sql  = " from "+TABLE_NAME+" o   where 1=1";
+	public File exportExcel(String path, String dept, String project, String year, String month, String emp_name,String overtimeType,String otType){
+		String sql  = " from "+TABLE_NAME+" o   where apply_start is not null  and apply_start!='' ";
+		if(otType.equals("2")){
+			sql  = " from "+TABLE_NAME+" o   where  1=1 ";
+		}
 		if(StrKit.notBlank(dept)){
 			sql = sql + " and o.dept_id='"+ dept+"'";
 		}
@@ -335,9 +402,16 @@ public class XdOvertimeSummaryService{
 			}else{
 				row.add(applyType);
 			}
-			row.add(summary.getActStart());
-			row.add(summary.getActEnd());
-			row.add(summary.getActHours());
+			if(otType.equals("2")){
+				row.add(summary.getActStart());
+				row.add(summary.getActEnd());
+				row.add(summary.getActHours());
+			}else{
+				row.add("");
+				row.add("");
+				row.add("");
+			}
+
 			row.add(summary.getRemarks());
 
 			if(summary.getApplyHours()==null ||summary.getApplyHours().equals("")){
@@ -667,5 +741,100 @@ public class XdOvertimeSummaryService{
 		File file = ExcelUtil.overtimeFile(path,rows);
 		return file;
 	}
+
+
+	public File exportApportionExcel(String path, String dept, String unitname, String year, String month, String emp_name){
+		String sql  = " from "+TABLE_NAME+" o   where 1=1";
+	/*	if(StrKit.notBlank(dept)){
+			sql = sql + " and o.dept_id='"+ dept+"'";
+		}*/
+
+		sql = sql + " order by o.create_date desc,emp_num";
+
+
+		List<XdOvertimeSummary> list = XdOvertimeSummary.dao.find(" select * "+sql);//查询全部
+
+
+		List<List<String>> rows = new ArrayList<List<String>>();
+
+
+		Map<String, Map<String, String>> dictMap = DictMapping.dictMappingValueToName();
+		Map<String, String> unit = dictMap.get("unit");
+
+		List<String> first = new ArrayList<String>();
+		first.add("部门");
+		first.add("单元");
+		first.add("加班项目");
+		first.add("姓名");
+		first.add("身份证号");
+		first.add("平时加班");
+		first.add("国定加班");
+
+
+
+		rows.add(first);
+		double applyOvertime=0;
+
+		DecimalFormat df = new DecimalFormat("0.00");
+		Map<String,Double> comOTmap=new HashMap<>();
+		Map<String,Double> natOTmap=new HashMap<>();
+		Map<String,XdOvertimeSummary> map =new HashMap<>();
+		double actOvertime=0;
+		for(int j = 0; j < list.size(); j++){
+			XdOvertimeSummary summary = list.get(j);
+			//if(map.get(summary.getEmpName())==null){
+			String empName = summary.getEmpName();
+			map.put(empName,summary);
+			if(summary.getApplyType().equals("1")){
+				double comOT = comOTmap.get(empName) == null ? 0 : comOTmap.get(empName);
+				comOT+=summary.getActHours()==null?0:Double.valueOf(summary.getActHours());
+				comOTmap.put(empName,comOT);
+			}else{
+
+				double natOT = natOTmap.get(empName) == null ? 0 : natOTmap.get(empName);
+				natOT+=summary.getActHours()==null?0:Double.valueOf(summary.getActHours());
+				natOTmap.put(empName,natOT);
+				//natOTmap.put(empName,(summary.getActHours()==null?0:Double.valueOf(summary.getActHours())));
+			}
+		}
+
+		Set<String> empNameSet = map.keySet();
+		double sumComOTHours=0;
+		double sumNaOTHours=0;
+
+		for (String empName : empNameSet) {
+			List<String> row = new ArrayList<String>();
+			XdOvertimeSummary settleOvertimeSummary = map.get(empName);
+
+			Double comHours = (comOTmap.get(empName)==null? 0.0 :comOTmap.get(empName));
+			Double natHours = (natOTmap.get(empName)==null? 0.0 :natOTmap.get(empName));
+			sumComOTHours+=comHours;
+			sumNaOTHours+=natHours;
+			row.add(settleOvertimeSummary.getDeptName());
+			XdEmployee emp = XdEmployee.dao.findFirst("select * from  xd_employee where name='" + empName + "'");
+			row.add(emp==null?"":emp.getUnitname());
+			row.add(settleOvertimeSummary.getProjectName());
+			row.add(empName);
+			row.add(emp==null?"":emp.getIdnum());
+			row.add(String.valueOf(comHours));
+			row.add(String.valueOf(natHours));
+			rows.add(row);
+
+		}
+
+
+		List<String> footFirstRow = new ArrayList<String>();
+		footFirstRow.add("合计");
+		footFirstRow.add("");
+		footFirstRow.add("");
+		footFirstRow.add("");
+		footFirstRow.add("");
+		footFirstRow.add(String.valueOf(sumComOTHours));
+		footFirstRow.add(String.valueOf(sumNaOTHours));
+		rows.add(footFirstRow);
+		File file = ExcelUtil.listToFile(path,rows);
+		return file;
+	}
+
 
 }

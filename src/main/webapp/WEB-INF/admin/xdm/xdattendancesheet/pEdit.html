@@ -1,0 +1,84 @@
+<link href="#(ctx)/common/plugins/jquery-ui/scripts/miniui/themes/default/miniui.css" rel="stylesheet"/>
+<div id="page-content">
+    <div class="col-lg-12">
+        <div class="panel">
+
+            #@buildFormPanelContainer("考勤表","/WEB-INF/admin/xdm/xdattendancesheet/pEditForm.html")
+        </div>
+    </div>
+</div>
+<script>
+    function save(){
+        var data = common_ajax.ajaxFunc("/admin/xd/xdattendancesheet/save", $('#editForm').serialize(), "json", null);
+        if(data.success){
+            pointLion.alertMsg("保存成功!" , "success" , "small" , function(){
+                location.href = ctx+'/admin/xd/xdattendancesheet/getListPage';//跳转到列表页
+            },data);
+        }else{
+            pointLion.alertMsg(data.message , "danger" , "small" , function(){
+                $(".btn").removeAttr("disabled");
+            },data);
+        }
+    }
+    $(document).ready(function() {
+        $('#editForm').bootstrapValidator({
+            fields: {
+            }
+        }).on("success.form.bv", function (e) {
+            save();
+            return false;//阻止表单跳转
+        });
+    });
+    mini.parse();
+
+
+
+
+    let grid = mini.get("datagrid1");
+    let opList='#(opList)';
+    console.log(opList)
+    grid.setData(mini.decode(opList));
+    function pass(){
+
+
+        let data = common_ajax.ajaxFunc("/admin/xd/xdattendancesheet/pass",$('#editForm').serialize(), "json", null);
+        if(data.success){
+            pointLion.alertMsg("操作成功!" , "success" , "small" , function(){
+                    location.href = ctx + '/admin/xd/xdattendancesheet/getHomeSheetListPage';//跳转到列表页
+            },data);
+        }else{
+            pointLion.alertMsg(data.message , "danger" , "small" , function(){
+                $(".btn").removeAttr("disabled");
+            },data);
+        }
+    }
+    function sure(){
+
+
+        let data = common_ajax.ajaxFunc("/admin/xd/xdattendancesheet/sure",$('#editForm').serialize(), "json", null);
+        if(data.success){
+            pointLion.alertMsg("操作成功!" , "success" , "small" , function(){
+                    location.href = ctx + '/admin/xd/xdattendancesheet/getHomeSheetListPage';//跳转到列表页
+            },data);
+        }else{
+            pointLion.alertMsg(data.message , "danger" , "small" , function(){
+                $(".btn").removeAttr("disabled");
+            },data);
+        }
+    }
+    function noPass(){
+
+        let data = common_ajax.ajaxFunc("/admin/xd/xdattendancesheet/noPass",$('#editForm').serialize(), "json", null);
+        if(data.success){
+            pointLion.alertMsg("操作成功!" , "success" , "small" , function(){
+
+                    location.href = ctx+'/admin/xd/xdattendancesheet/getHomeSheetListPage';//跳转到列表页
+            },data);
+        }else{
+            pointLion.alertMsg(data.message , "danger" , "small" , function(){
+                $(".btn").removeAttr("disabled");
+            },data);
+        }
+
+    }
+</script>

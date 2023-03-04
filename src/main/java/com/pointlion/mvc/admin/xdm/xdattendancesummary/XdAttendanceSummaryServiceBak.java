@@ -693,7 +693,7 @@ public class XdAttendanceSummaryServiceBak {
 				/*		for (String s : set) {
 							System.out.println("============"+s+settleMap.get(s).toString());
 						}*/
-						List<XdOvertimeSummary> otSummaryList = CheckAttendanceUtil.getOtSummaryList(year + "-" + month, "0");
+						List<XdOvertimeSummary> otSummaryList = CheckAttendanceUtil.getOtSummaryList(year + "-" + month, "0", "0");
 
 						for (XdOvertimeSummary os : otSummaryList) {
 							String key= os.getEmpName()+","+os.getApplyDate()
@@ -1358,7 +1358,7 @@ public class XdAttendanceSummaryServiceBak {
 				/*		for (String s : set) {
 							System.out.println("============"+s+settleMap.get(s).toString());
 						}*/
-						List<XdOvertimeSummary> otSummaryList = CheckAttendanceUtil.getOtSummaryList(year + "-" + month, "0");
+						List<XdOvertimeSummary> otSummaryList = CheckAttendanceUtil.getOtSummaryList(year + "-" + month, "0", "0");
 
 						for (XdOvertimeSummary os : otSummaryList) {
 							String key= os.getEmpName()+","+os.getApplyDate()
