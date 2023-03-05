@@ -11,6 +11,7 @@ import com.pointlion.mvc.admin.xdm.xdattendancedetail.XdAttendanceDetailControll
 import com.pointlion.mvc.admin.xdm.xdattendancesheet.XdAttendanceSheetController;
 import com.pointlion.mvc.admin.xdm.xdattendancesummary.XdAttendanceSummaryController;
 import com.pointlion.mvc.admin.xdm.xdcertificate.XdCertificateController;
+import com.pointlion.mvc.admin.xdm.xdcertlog.XdCertLogController;
 import com.pointlion.mvc.admin.xdm.xdcontractinfo.XdContractInfoController;
 import com.pointlion.mvc.admin.xdm.xddaymodel.XdDayModelController;
 import com.pointlion.mvc.admin.xdm.xddict.XdDictController;
@@ -99,6 +100,7 @@ public class XDRoutes extends Routes {
         add("/admin/xd/xdeffict", XdEffictController.class,"/xdeffict");
         add("/admin/xd/xdtotaltimeonline", XdTotalTimeOnlineController.class,"/xdtotaltimeonline");
         add("/admin/xd/xdattendancesheet", XdAttendanceSheetController.class,"/xdattendancesheet");
+        add("/admin/xd/xdcertlog", XdCertLogController.class,"/xdcertlog");
 
 
     }

@@ -1,0 +1,30 @@
+	<div id="page-content">
+			<div class="col-lg-12">
+		        <div class="panel">
+					#@buildFormPanelContainer("持证变动信息","/WEB-INF/admin/xdm/xdcertlog/editForm.html")
+		        </div>
+		    </div>
+	</div>
+	<script>
+		function save(){
+			var data = common_ajax.ajaxFunc("/admin/xdcertlog/save", $('#editForm').serialize(), "json", null);
+			if(data.success){
+				pointLion.alertMsg("����ɹ�!" , "success" , "small" , function(){
+					location.href = ctx+'/admin/xdcertlog/getListPage';//��ת���б�ҳ
+				},data);
+			}else{
+				pointLion.alertMsg(data.message , "danger" , "small" , function(){
+					$(".btn").removeAttr("disabled");
+				},data);
+			}
+		}
+		$(document).ready(function() {
+			$('#editForm').bootstrapValidator({
+	            fields: {
+	            }
+	        }).on("success.form.bv", function (e) {
+	            save();
+	            return false;//��ֹ����ת
+	        });
+		});
+	</script>

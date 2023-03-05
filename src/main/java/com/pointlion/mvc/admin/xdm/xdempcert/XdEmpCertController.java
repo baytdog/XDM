@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.SyncFailedException;
 import java.io.UnsupportedEncodingException;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.function.Consumer;
@@ -35,6 +36,16 @@ public class XdEmpCertController extends BaseController {
 		List<XdEmpCert> snyList = XdEmpCert.dao.find("select  DISTINCT sny from xd_emp_cert order by sny");
 		setAttr("snyList",snyList);
 
+		List<SysOrg> orgList = SysOrg.dao.find("select * from  sys_org where id <>'root' order by sort");
+		setAttr("orgList",orgList);
+		List<XdDict> certLevelList = XdDict.dao.find("select * from xd_dict where  type ='certLevel' order by sortnum");
+		setAttr("certLevelList",certLevelList);
+		String sertStr="";
+		Map<String,String> map =new HashMap<>();
+		for (XdDict dict : certLevelList) {
+			sertStr=sertStr+dict.getValue()+"="+dict.getName()+",";
+		}
+		setAttr("sertStr",sertStr);
 		renderIframe("list.html");
     }
 	/***
@@ -59,12 +70,30 @@ public class XdEmpCertController extends BaseController {
     public void save(){
     	XdEmpCert o = getModel(XdEmpCert.class);
 		XdEmpCert cert = XdEmpCert.dao.findById(o.getId());
+
+
+		XdCertLog log =new XdCertLog();
+
+		SimpleDateFormat sdf =new SimpleDateFormat("yyyy-MM-dd");
+		String[] ymd = sdf.format(new Date()).split("-");
+		log.setYear(Integer.valueOf(ymd[0]));
+		log.setMonth(Integer.valueOf(ymd[1]));
+		log.setEid(o.getEid());
+		log.setEname(o.getEname());
+		log.setCertTitle(o.getCertTile());
+		log.setDeptId(o.getDepartment());
+		SysOrg org = SysOrg.dao.findById(o.getDepartment());
+		log.setDeptName(org==null?"":org.getName());
+
+		log.setNum(1);
+		log.setCreateDate(DateUtil.getCurrentTime());
+		log.setCreateUser(ShiroKit.getUserId());
 		if(cert!=null){
 			String closeDate = o.getCloseDate();
 			if("长期".equals(closeDate)){
 				o.setSny("长期");
 				o.setSn("长期");
-			}else if(!"".equals(closeDate.trim())){
+			}else if(closeDate!=null &&!"".equals(closeDate.trim())){
 				String ny = closeDate.replaceFirst("-", "年").replaceFirst("-", "月").substring(0, 8);
 				System.out.println(ny);
 				String n = ny.substring(0,5);
@@ -72,9 +101,25 @@ public class XdEmpCertController extends BaseController {
 				o.setSny(ny);
 				o.setSn(n);
 			}
+
+			if(o.getValidateDate()!=null && !o.getValidateDate().equals("")){
+				o.setCloseDate(o.getValidateDate());
+			}
 			o.update();
 			XdOplogSummary summary = XdOperUtil.logSummary(UuidUtil.getUUID(), cert.getId(), o, cert, XdOperEnum.U.name(), XdOperEnum.UNAPPRO.name());
 			summary.save();
+
+			if(cert.getValidateDate()!=null && !cert.getValidateDate().equals(o.getValidateDate()) ){
+
+				log.setNum(0);
+				log.setLogType("审证复证");
+			}
+
+			if(o.getCertLevel()!=null && cert.getCertLevel()!=null && !o.getCertLevel().equals(cert.getCertLevel())){
+				log.setLogType("中级替换");
+				log.setNum(-1);
+			}
+
 		}else{
 			String closeDate = o.getCloseDate();
 			if("长期".equals(closeDate)){
@@ -91,8 +136,19 @@ public class XdEmpCertController extends BaseController {
 			o.setStatus("1");
 			o.save();
 			XdOperUtil.logSummary(o.getId(),o, XdOperEnum.C.name(),XdOperEnum.UNAPPRO.name(),0);
-    	}
 
+			/*String eid = o.getEid();
+			XdEmployee employee = XdEmployee.dao.findById(eid);
+			String certificates = employee.getCertificates();
+			if(certificates!=null ||certificates.equals("")){
+				employee.setCertificates(o.getCertTile());
+			}else{
+				employee.setCertificates(employee+"、"+o.getCertTile());
+			}*/
+			log.setLogType("新增");
+
+		}
+		log.save();
 		XdOperUtil.updateEmpCert(o);
     	renderSuccess();
     }
@@ -252,5 +308,27 @@ public class XdEmpCertController extends BaseController {
 		setAttr("formModelName",StringUtil.toLowerCaseFirstOne(XdEmpCert.class.getSimpleName()));
 		renderIframe("editWarning.html");
 	}
+
+
+	public void getUserinfo(){
+
+
+		XdEmployee emp = XdEmployee.dao.findById(getPara("id"));
+
+		SysOrg org = SysOrg.dao.findById(emp.getDepartment());
+		//XdProjects project = XdProjects.dao.findById(emp.getCostitem());
+
+		cn.hutool.json.JSONObject jsonObject=new cn.hutool.json.JSONObject();
+		//jsonObject.put("empNum",emp.getEmpnum());
+
+		jsonObject.put("idnum",emp.getIdnum());
+		jsonObject.put("orgId",emp.getDepartment());
+		/*jsonObject.put("projectId",project.getId()+"");
+		jsonObject.put("projectName",project.getProjectName());*/
+		renderJson(jsonObject);
+
+
+	}
+
 
 }

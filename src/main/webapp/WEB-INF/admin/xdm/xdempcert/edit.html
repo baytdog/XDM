@@ -2,11 +2,10 @@
 <div id="page-content">
 	<div class="col-lg-12">
 		<div class="panel">
-			#include("editForm.html")
+			#@buildFormPanelContainer("证书管理","/WEB-INF/admin/xdm/xdempcert/editForm.html")
 		</div>
 	</div>
 </div>
-
 
 <script>
 	function save(){
@@ -121,6 +120,15 @@
 			$('#certstatus').val($('#certstatusSelect').val())
 		});
 
+		let holder=$("#holder").val();
+		if(holder){
+			$('#holderSelect').selectpicker('val',holder.split(",")).trigger("change");
+		}
+
+		$('#holderSelect').on('changed.bs.select', function (e) {
+			$('#holder').val($('#holderSelect').val())
+		});
+
 
 
 
@@ -133,8 +141,17 @@
 			$('#eid').val($('#enameSelect').val())
 			$('#ename').val($('#enameSelect option:selected').text())
 
+			var data = common_ajax.ajaxFunc("/admin/xd/xdempcert/getUserinfo",{"id":$('#enameSelect').val()}, "json", null);
+
+			$("#idnum").val(data.idnum);
+			$('#departmentSelect').selectpicker('val',data.orgId.split(",")).trigger("change");
+
 		});
 	})
+
+	function toCloseDate(){
+		alert("1111")
+	}
 </script>
 
 

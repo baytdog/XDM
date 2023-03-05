@@ -33,44 +33,68 @@ public abstract class BaseXdCertificate<M extends BaseXdCertificate<M>> extends 
 		return getStr("num");
 	}
 
-	public void setPid(java.lang.String pid) {
+	public void setPid(String pid) {
 		set("pid", pid);
 	}
-
-	public java.lang.String getPid() {
+	
+	public String getPid() {
 		return getStr("pid");
 	}
 
-	public void setPcertificateTitle(java.lang.String pcertificateTitle) {
+	public void setPcertificateTitle(String pcertificateTitle) {
 		set("pcertificateTitle", pcertificateTitle);
 	}
-
-	public java.lang.String getPcertificateTitle() {
+	
+	public String getPcertificateTitle() {
 		return getStr("pcertificateTitle");
 	}
 
+	public void setProfessional(Integer professional) {
+		set("professional", professional);
+	}
+	
+	public Integer getProfessional() {
+		return getInt("professional");
+	}
+
 	public void setHaveCertificate(Integer haveCertificate) {
-		set("haveCertificate", haveCertificate);
+		set("have_certificate", haveCertificate);
 	}
 	
 	public Integer getHaveCertificate() {
-		return getInt("haveCertificate");
+		return getInt("have_certificate");
 	}
 
-	public void setHaveEndDate(Integer haveEndDate) {
-		set("haveEndDate", haveEndDate);
+	public void setHaveEnddate(Integer haveEnddate) {
+		set("have_enddate", haveEnddate);
 	}
 	
-	public Integer getHaveEndDate() {
-		return getInt("haveEndDate");
+	public Integer getHaveEnddate() {
+		return getInt("have_enddate");
 	}
 
-	public void setContinuEdu(Integer continuEdu) {
-		set("continuEdu", continuEdu);
+	public void setContinueEdu(Integer continueEdu) {
+		set("continue_edu", continueEdu);
 	}
 	
-	public Integer getContinuEdu() {
-		return getInt("continuEdu");
+	public Integer getContinueEdu() {
+		return getInt("continue_edu");
+	}
+
+	public void setOtherIndustries(String otherIndustries) {
+		set("other_industries", otherIndustries);
+	}
+	
+	public String getOtherIndustries() {
+		return getStr("other_industries");
+	}
+
+	public void setCertType(String certType) {
+		set("cert_type", certType);
+	}
+	
+	public String getCertType() {
+		return getStr("cert_type");
 	}
 
 	public void setCtime(String ctime) {

@@ -1,12 +1,10 @@
-<link href="#(ctx)/common/plugins/jquery-ui/scripts/miniui/themes/default/miniui.css" rel="stylesheet"/>
 <div id="page-content">
 	<div class="col-lg-12">
 		<div class="panel">
-			#include("editForm.html")
+			#@buildFormPanelContainer("证书分类","/WEB-INF/admin/xdm/xdcertificate/editForm.html")
 		</div>
 	</div>
 </div>
-
 
 <script>
 	function save(){
@@ -24,59 +22,61 @@
 	}
 	$(document).ready(function() {
 		$('#editForm').bootstrapValidator({
+			excluded:[":disabled"],
+			live: 'enabled',
 			fields: {
+				"#(formModelName).certificateTitle": {
+					trigger: 'change',
+					validators: {
+						notEmpty: {
+							message: '*证书名称不能为空'
+						}
+					}
+				},
+				"#(formModelName).cert_type": {
+					trigger: 'change',
+					validators: {
+						notEmpty: {
+							message: '*证书类型不能为空'
+						}
+					}
+				},
+				"#(formModelName).apply_type": {
+					trigger: 'change',
+					validators: {
+						notEmpty: {
+							message: '*类型不能为空'
+						}
+					}
+				},
 			}
 		}).on("success.form.bv", function (e) {
 			save();
 			return false;//阻止表单跳转
 		});
 	});
+
+	function resetValidate(){
+		if(!$("#editForm").data('bootstrapValidator').isValid()) {
+			$("#editForm").data('bootstrapValidator').resetForm();
+			$(".btn").removeAttr("disabled");
+		}
+	}
 </script>
 
 <script>
-
-
-
-
 	$(function(){
 
-		let haveCertificate=$("#haveCertificate").val();
-		if(haveCertificate){
-			$('#haveCertificateSelect').selectpicker('val',haveCertificate.split(",")).trigger("change");
+		let certType=$("#certType").val();
+		if(certType){
+			$('#typeSelect').selectpicker('val',certType.split(",")).trigger("change");
 		}
 
-		$('#haveCertificateSelect').on('changed.bs.select', function (e) {
-			$('#haveCertificate').val($('#haveCertificateSelect').val())
+		$('#typeSelect').on('changed.bs.select', function (e) {
+			$('#certType').val($('#typeSelect').val());
+			resetValidate();
 		});
 
-		let haveEndDate=$("#haveEndDate").val();
-		if(haveEndDate){
-			$('#haveEndDateSelect').selectpicker('val',haveEndDate.split(",")).trigger("change");
-		}
-
-		$('#haveEndDateSelect').on('changed.bs.select', function (e) {
-			$('#haveEndDate').val($('#haveEndDateSelect').val())
-		});
-
-		let continuEdu=$("#continuEdu").val();
-		if(continuEdu){
-			$('#continuEduSelect').selectpicker('val',continuEdu.split(",")).trigger("change");
-		}
-
-		$('#continuEduSelect').on('changed.bs.select', function (e) {
-			$('#continuEdu').val($('#continuEduSelect').val())
-		});
-
-		let pid=$("#pid").val();
-		if(pid){
-			$('#certSelect').selectpicker('val',pid.split(",")).trigger("change");
-		};
-
-		$('#certSelect').on('changed.bs.select', function (e) {
-			$('#pid').val($('#certSelect').val())
-			$('#pcertificateTitle').val($('#certSelect option:selected').text())
-
-		});
 	})
 </script>
 

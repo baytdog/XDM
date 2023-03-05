@@ -25,12 +25,16 @@ import com.pointlion.plugin.shiro.ShiroKit;
 
 public class XdCertificateController extends BaseController {
 	public static final XdCertificateService service = XdCertificateService.me;
-	public static WorkFlowService wfservice = WorkFlowService.me;
 	/***
 	 * get list page
 	 */
 	public void getListPage(){
 		renderIframe("list.html");
+    }
+	public void getDetailListPage(){
+		System.out.println(getPara("certType"));
+		keepPara("certType");
+		renderIframe("listDetail.html");
     }
 	/***
      * list page data
@@ -38,11 +42,15 @@ public class XdCertificateController extends BaseController {
     public void listData() throws UnsupportedEncodingException {
     	String curr = getPara("pageNumber");
     	String pageSize = getPara("pageSize");
+    	Page<Record> page = service.getPage(Integer.valueOf(curr),Integer.valueOf(pageSize));
+    	renderPage(page.getList(),"",page.getTotalRow());
+    }
+    public void detailListData() throws UnsupportedEncodingException {
+    	String curr = getPara("pageNumber");
+    	String pageSize = getPara("pageSize");
 		String title = java.net.URLDecoder.decode(getPara("title",""),"UTF-8");
-		String haveCertificate = java.net.URLDecoder.decode(getPara("haveCertificate",""),"UTF-8");
-		String haveEndDate = java.net.URLDecoder.decode(getPara("haveEndDate",""),"UTF-8");
-		String continuEdu = java.net.URLDecoder.decode(getPara("continuEdu",""),"UTF-8");
-    	Page<Record> page = service.getPage(Integer.valueOf(curr),Integer.valueOf(pageSize),title,haveCertificate,haveEndDate,continuEdu);
+		String certType = java.net.URLDecoder.decode(getPara("certType",""),"UTF-8");
+    	Page<Record> page = service.getPage(Integer.valueOf(curr),Integer.valueOf(pageSize),title,certType);
     	renderPage(page.getList(),"",page.getTotalRow());
     }
     /***

@@ -15,12 +15,9 @@
 						<div class="form-group">
 							<select class="selectpicker form-control"  id="dept"  >
 								<option value="">------请选择部门------</option>
-								<option value="1">人力资源部</option>
-								<option value="2">外场单元部</option>
-								<option value="3">设施一部</option>
-								<option value="4">内场单元部</option>
-								<option value="5">工程/设施二部</option>
-								<option value="887163179b6c4eaabd06c44e47e41f92">职能部门</option>
+								#for(org:orgList)
+								<option value="#(org.id)">#(org.name)</option>
+								#end
 							</select>
 						</div>
 						<div class="form-group">
@@ -90,48 +87,58 @@
 </div>
 <script>
 
-	var col = [{field: 'checked', checkbox : true, align: 'center'},
+	let deptOps=$('#dept option')
+	let deptMap = new Map();
+	for(let item of deptOps) {
+		if(item.value!=''){
+			deptMap.set(item.value, item.text);
+		}
+	}
+
+
+	let certLevelList='#(sertStr)';
+	let certLevel = certLevelList.split(",");
+	let certLevelMap = new Map();
+	for(let item of certLevel) {
+		/*if(item.value!=''){
+			projectMap.set(item.value, item.text);
+		}*/
+		console.log(item.name)
+		certLevelMap.set(item.split("=")[0], item.split("=")[1])
+
+	}
+	console.log(certLevelMap);
+	let col = [{field: 'checked', checkbox : true, align: 'center'},
 
 		{field: 'department', title: '部门', align: 'center',
 			formatter:function(value,row,index){
-				if(value=='1'){
-					return "人力资源部";
-				}else if(value=='2'){
-					return "外场单元部";
-				}else if(value=='3'){
-					return "设施一部";
-				}else if(value=='4'){
-					return "内场单元部";
-				}else if(value=='5'){
-					return "工程/设施二部";
-				}else if(value=='887163179b6c4eaabd06c44e47e41f92'){
-					return "职能部门";
-				}else{
-					return "";
-				}
+
+				return deptMap.get(value)
 			}
 		},
 		{field: 'ename', title: '姓名', align: 'center'},
 		{field: 'certTile', title: '证书名称', align: 'center'},
 		{field: 'certLevel', title: '证书等级', align: 'center',
 			formatter:function(value,row,index){
-				if(value=='1'){
-					return "A1";
-				}else if(value=='2'){
-					return "A2";
-				}else if(value=='3'){
-					return "B1";
-				}else if(value=='4'){
-					return "B2";
-				}else if(value=='5'){
-					return "D";
-				}else if(value=='6'){
-					return "E";
-				}else if(value=='6'){
-					return "F";
-				}else{
-					return "";
+			if(value){
+				let  returnVal="";
+				let split = value.split(",");
+				for (let i = 0; i < split.length; i++) {
+					console.log(certLevelMap.get(split[i]))
+					if(certLevelMap.get(split[i]).indexOf("级")!=-1){
+						returnVal=returnVal+"/"+certLevelMap.get(split[i])
+					}else{
+						returnVal=returnVal+certLevelMap.get(split[i])
+					}
+
 				}
+				if(returnVal.indexOf("级")!=-1){
+					return returnVal.slice(1);
+				}
+
+				return returnVal;
+			}
+			return value;
 			}
 		},
 		{field: 'certAuthName', title: '发证机关', align: 'center'},

@@ -9,23 +9,37 @@
     <div class="col-sm-12 eq-box-sm">
         <div class="panel">
             <div class="panel panel-search">
-                <!--<div class="panel-body">
+                <div class="panel-body">
                     <div class="form-inline">
                         <div class="form-group">
                             <input id="title" placeholder="证书名称" class="form-control">
                         </div>
+                        <!-- <div class="form-group">
+                             <div class="input-group date form_datetime">
+                                 <input id="searchStartTime" placeholder="开始时间" class="form-control">
+                                 <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+                             </div>
+                         </div>
+                         <div class="form-group">
+                             <div class="input-group date form_datetime">
+                                 <input id="searchEndTime" placeholder="结束时间" class="form-control">
+                                 <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+                             </div>
+                         </div>-->
                         <div class="form-group">
                             <button class="btn btn-primary" type="button" onclick="searchTable()">搜索</button>
                         </div>
                     </div>
-                </div>-->
+                </div>
             </div>
             <div class="panel ">
                 <div class="panel-body">
                     <a id="add" class="btn btn-primary data-toolbar" href="#(ctx)/admin/xd/xdcertificate/getEditPage?view=edit"><i class="demo-pli-add"></i> 添加</a>
-                   <!-- <a id="filePicker"  href="javascript:void(0);" ><i class="demo-pli-add"></i> 导入</a>-->
-                    <table id="pageTable" class="demo-add-niftycheck" data-toolbar="#del,#add,#filePicker"
-                          ></table>
+                    <a id="del" class="btn btn-danger data-toolbar" onclick="delSel()" href="javascript:void(0);"><i class="demo-pli-cross"></i> 批量删除</a>
+                    <a id="reBack" class="btn btn-primary data-toolbar"  href="#(ctx)/admin/xd/xdcertificate/getListPage" > 返回</a>
+                    <!-- <a id="filePicker"  href="javascript:void(0);" ><i class="demo-pli-add"></i> 导入</a>-->
+                    <table id="pageTable" class="demo-add-niftycheck" data-toolbar="#del,#add,#filePicker,#reBack"
+                           ></table>
                 </div>
             </div>
         </div>
@@ -33,25 +47,45 @@
 </div>
 <script>
 
-    var col = [
+    var col = [{field: 'checked', checkbox : true, align: 'center'},
 
-        {field: 'cert_type', title: '类型', align: 'center' ,
+        {field: 'certificateTitle', title: '证书名称', align: 'center'},
+        {field: 'cert_type', title: '证书类型', align: 'center',
             formatter:function(value,row,index){
-                if(value=='1'){
-                    return "专业技术（职称）";
-                }else if(value=='2'){
-                    return "职业资格证书";
-                }else if(value=='3'){
-                    return "有到期日证书";
-                }else if(value=='4'){
-                    return "继续教育";
-                }else{
-                    return "其他行业类证书";
+            let type = value.split(",");
+            let returnValue="";
+                for (let i = 0; i < type.length; i++) {
+
+                    if(type[i]=='1'){
+                        returnValue=returnValue+","+"专业技术（职称）" ;
+                    }else if(type[i]=='2'){
+                        returnValue=returnValue+","+ "职业资格证书";
+                    }else if(type[i]=='3'){
+                        returnValue=returnValue+","+ "有到期日证书";
+                    }else if(type[i]=='4'){
+                        returnValue=returnValue+","+ "继续教育";
+                    }else{
+                        returnValue=returnValue+","+ "其他行业类证书";
+                    }
                 }
-            }},
-        {field: 'count_num', title: '数量', align: 'center' },
-        ];
-    let opt = {
+              return returnValue.slice(1);
+            }
+        },
+ /*       {field: 'num', title: '编号', align: 'center'},*/
+
+
+        {field: 'control', title: '操作', align: 'left', width:'200',
+            formatter:function(value,row,index){
+                //通过formatter可以自定义列显示的内容
+                //value：当前field的值，即id
+                //row：当前行的数据
+               /* var a = '<a class="label label-table label-success" href="'+ctx+'/admin/xd/xdcertificate/getEditPage?id='+row.id+'&view=detail" >查看</a>&nbsp;';
+                a = a + '<a class="label label-table label-success" href="'+ctx+'/admin/xd/xdcertificate/getEditPage?id='+row.id+'&view=edit" >编辑</a>&nbsp;';*/
+                let a ='<a class="label label-table label-danger" onclick="del(\''+row.id+'\')" href="javascript:void(0);" >删除</a>';
+                return a;
+            }
+        }];
+    var opt = {
         //请求方法
         method: 'get',
         //是否显示行间隔色
@@ -73,7 +107,7 @@
         //可供选择的每页的行数（*）
         pageList: [10, 25, 50, 100],
         //这个接口需要处理bootstrap table传递的固定参数,并返回特定格式的json数据
-        url: ctx+"/admin/xd/xdcertificate/listData",
+        url: ctx+"/admin/xd/xdcertificate/detailListData?certType=#(certType)",
         //默认值为 'limit',传给服务端的参数为：limit, offset, search, sort, order Else
         //queryParamsType:'',
         ////查询参数,每次调用是会带上这个参数，可自定义
@@ -92,9 +126,7 @@
         //Indicate which field is an identity field.
         idField : "id",
         columns: col,
-        pagination:true,paginationShowPageGo: true,
-        onClickRow:function (row) {  window.location.href= '#(ctx)/admin/xd/xdcertificate/getDetailListPage?certType='+row.cert_type
-        },
+        pagination:true,paginationShowPageGo: true
     };
 
     //表格

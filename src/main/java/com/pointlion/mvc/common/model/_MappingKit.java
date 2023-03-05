@@ -191,6 +191,7 @@ public class _MappingKit {
 		arp.addMapping("xd_total_online_shifts","id",XdTotalOnlineShifts.class);
 		arp.addMapping("xd_logs_leave","id",XdLogsLeave.class);
 		arp.addMapping("xd_attendance_sheet","id",XdAttendanceSheet.class);
+		arp.addMapping("xd_cert_log","id",XdCertLog.class);
 
 	}
 }

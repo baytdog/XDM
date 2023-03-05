@@ -105,6 +105,14 @@ public abstract class BaseXdEmpCert<M extends BaseXdEmpCert<M>> extends Model<M>
 		return getStr("closeDate");
 	}
 
+	public void setValidateDate(String validateDate) {
+		set("validate_date", validateDate);
+	}
+	
+	public String getValidateDate() {
+		return getStr("validate_date");
+	}
+
 	public void setIdnum(String idnum) {
 		set("idnum", idnum);
 	}
@@ -121,12 +129,12 @@ public abstract class BaseXdEmpCert<M extends BaseXdEmpCert<M>> extends Model<M>
 		return getStr("certnum");
 	}
 
-	public void setRemak(String remak) {
-		set("remak", remak);
+	public void setHolder(String holder) {
+		set("holder", holder);
 	}
 	
-	public String getRemak() {
-		return getStr("remak");
+	public String getHolder() {
+		return getStr("holder");
 	}
 
 	public void setCertstatus(String certstatus) {
@@ -135,6 +143,14 @@ public abstract class BaseXdEmpCert<M extends BaseXdEmpCert<M>> extends Model<M>
 	
 	public String getCertstatus() {
 		return getStr("certstatus");
+	}
+
+	public void setRemak(String remak) {
+		set("remak", remak);
+	}
+	
+	public String getRemak() {
+		return getStr("remak");
 	}
 
 	public void setSny(String sny) {

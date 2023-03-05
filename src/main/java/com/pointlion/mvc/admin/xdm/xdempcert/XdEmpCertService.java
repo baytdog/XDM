@@ -19,9 +19,13 @@ import org.apache.commons.lang3.StringUtils;
 import javax.swing.*;
 import java.io.File;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.function.Consumer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 public class XdEmpCertService{
@@ -90,6 +94,25 @@ public class XdEmpCertService{
     		XdEmpCert o = me.getById(id);
     		o.delete();
 			XdOperUtil.updateEmpCert(o);
+
+			XdCertLog log =new XdCertLog();
+
+			SimpleDateFormat sdf =new SimpleDateFormat("yyyy-MM-dd");
+			String[] ymd = sdf.format(new Date()).split("-");
+			log.setYear(Integer.valueOf(ymd[0]));
+			log.setMonth(Integer.valueOf(ymd[1]));
+			log.setEid(o.getEid());
+			log.setEname(o.getEname());
+			log.setCertTitle(o.getCertTile());
+			log.setNum(1);
+			log.setDeptId(o.getDepartment());
+			SysOrg org = SysOrg.dao.findById(o.getDepartment());
+			log.setDeptName(org==null?"":org.getName());
+			log.setLogType("删除");
+			log.setCreateDate(DateUtil.getCurrentTime());
+			log.setCreateUser(ShiroKit.getUserId());
+			log.save();
+
     	}
 	}
 
@@ -105,6 +128,13 @@ public class XdEmpCertService{
 					if(list.size()>1){
 						SimpleUser user = ShiroKit.getLoginUser();
 						String time = DateUtil.getCurrentTime();
+						Map<String,String> certLevelMap=new HashMap<>();
+						XdDict.dao.find("select * from xd_dict where  type ='certLevel' ").stream().forEach(new Consumer<XdDict>() {
+							@Override
+							public void accept(XdDict xdDict) {
+								certLevelMap.put(xdDict.getName(),xdDict.getValue());
+							}
+						});
 						for(int i = 1;i<list.size();i++){//从第二行开始取
 							List<String> empCertStr = list.get(i);
 							XdEmpCert empCert=new XdEmpCert();
@@ -136,48 +166,44 @@ public class XdEmpCertService{
 								empCert.setCertTile(certName);
 							}
 							String level = empCertStr.get(4);
-							String  levles="";
-							if(level.contains("A1")){
-								XdDict dict = XdDict.dao.findFirst("select * from xd_dict where  type ='certLevel' and name ='A1'");
-								levles=levles+","+dict.getValue();
-							}
-							if(level.contains("A2")){
-								XdDict dict = XdDict.dao.findFirst("select * from xd_dict where  type ='certLevel' and name ='A2'");
-								levles=levles+","+dict.getValue();
-							}
-							if(level.contains("B1")){
-								XdDict dict = XdDict.dao.findFirst("select * from xd_dict where  type ='certLevel' and name ='B1'");
-								levles=levles+","+dict.getValue();
-							}
-							if(level.contains("B2")){
-								XdDict dict = XdDict.dao.findFirst("select * from xd_dict where  type ='certLevel' and name ='B2'");
-								levles=levles+","+dict.getValue();
-							}
-							if(level.contains("D")){
-								XdDict dict = XdDict.dao.findFirst("select * from xd_dict where  type ='certLevel' and name ='D'");
-								levles=levles+","+dict.getValue();
-							}
-							if(level.contains("E")){
-								XdDict dict = XdDict.dao.findFirst("select * from xd_dict where  type ='certLevel' and name ='E'");
-								levles=levles+","+dict.getValue();
-							}
-							if(level.contains("F")){
-								XdDict dict = XdDict.dao.findFirst("select * from xd_dict where  type ='certLevel' and name ='F'");
-								levles=levles+","+dict.getValue();
 
-							}
-							String levels = levles.replaceAll("^,","");
-							empCert.setCertLevel(levels);
+							String  levels= dealCertLevel(level,certLevelMap);
+
+							empCert.setCertLevel(levels.replaceAll("^,",""));
 							String auth = empCertStr.get(5);
 							XdDict licenseAuth = XdDict.dao.findFirst("select * from xd_dict where  type  = 'licenseauth' and name ='" + auth + "'");
+							if(licenseAuth!=null){
+								empCert.setCertAuthValue(Integer.valueOf(licenseAuth.getValue()));
+								empCert.setCertAuthName(auth);
+							}else {
+								empCert.setCertAuthName(auth);
+							}
+//							XdOperUtil.numToDateFormat(empStr.get(16))
 
-							empCert.setCertAuthValue(Integer.valueOf(licenseAuth.getValue()));
-							empCert.setCertAuthName(auth);
 							String opendate = empCertStr.get(6);
 							empCert.setOpenDate(opendate);
+
 							String validity = empCertStr.get(7);
 							empCert.setValidity(validity);
-							if(empCertStr.get(8).contains("-")){
+							String cell8 = empCertStr.get(8);
+							if(!"".equals(cell8)){
+								if(!cell8.contains("-") && !containChinese(cell8)){
+									cell8=	XdOperUtil.numToDateFormat(cell8);
+								}
+							}
+							String cell9 = empCertStr.get(9);
+							if(!"".equals(cell9)){
+								if(cell9.contains("-") || containChinese(cell9)){
+									cell8=cell9;
+								}else{
+									cell9=	XdOperUtil.numToDateFormat(cell9);
+									cell8=cell9;
+								}
+
+							}
+							empCert.setCloseDate(cell8);
+							empCert.setValidateDate(cell9);
+							/*if(empCertStr.get(8).contains("-")){
 								empCert.setCloseDate(empCertStr.get(8));
 							}else{
 								try {
@@ -188,36 +214,66 @@ public class XdEmpCertService{
 										LocalDate localDate = parse.plusMonths(Integer.valueOf(validity) * 12);
 										LocalDate localDate1 = localDate.minusDays(1);
 										empCert.setCloseDate(localDate1.toString());
-
 									}
 								} catch (NumberFormatException e) {
 									e.printStackTrace();
 									empCert.setCloseDate(empCertStr.get(8));
 								}
 							}
-
+*/
 							//String closedate = empCertStr.get(8);
 
 							//empCert.setCloseDate(closedate);
-							String idnum = empCertStr.get(9);
+							String idnum = empCertStr.get(10);
 							empCert.setIdnum(idnum);
-							String certnum = empCertStr.get(10);
+							String certnum = empCertStr.get(11);
 							empCert.setCertnum(certnum);
-							String remark = empCertStr.get(11);
+							String holder = empCertStr.get(12);
+							if(!"".equals(holder)){
+								if("员工持有".equals(holder)){
+									holder="0";
+								}else{
+									holder="1";
+								}
+							}
+							empCert.setHolder(holder);
+							String remark = empCertStr.get(13);
 							empCert.setRemak(remark);
-							String certstatus = empCertStr.get(12);
+							/*String certstatus = empCertStr.get(12);
 							if(certstatus!=null && !"".equals(certstatus)){
 								if(certstatus.contains("复印件")){
 									empCert.setCertstatus("0");
 								}else{
 									empCert.setCertstatus("1");
 								}
+							}*/
+							if(cell8.contains("-")){
+								String[] ymd = cell8.split("-");
+
+								empCert.setSny(ymd[0]+"年"+ymd[1]+"月");
+							}else{
+								empCert.setSny(cell8);
 							}
-							String sny = empCertStr.get(16);
-							empCert.setSny(sny);
-							String sn = empCertStr.get(17);
-							empCert.setSn(sn);
+							/*String sny = empCertStr.get(16);
+							empCert.setSny(sny);*/
+							/*String sn = empCertStr.get(17);
+							empCert.setSn(sn);*/
 							empCert.save();
+							if(emp!=null){
+								String certificates = emp.getCertificates();
+								if(certificates!=null && !"".equals(certificates)){
+									if(!certificates.contains(empCert.getCertTile())){
+										certificates=certificates+"、"+empCert.getCertTile();
+									}
+								}else{
+									certificates=empCert.getCertTile();
+								}
+								emp.setCertificates(certificates);
+								emp.update();
+							}
+
+
+
 						}
 						if(result.get("success")==null){
 							result.put("success",true);//正常执行完毕
@@ -239,6 +295,51 @@ public class XdEmpCertService{
 			}
 		});
 		return result;
+	}
+
+	private boolean  containChinese(String str){
+		Pattern p = Pattern.compile("[\u4e00-\u9fa5]");
+		String s = "adbdi地老天荒work";
+		Matcher m = p.matcher(str);
+	 return m.find();
+	}
+
+	private String dealCertLevel(String level,Map<String,String> certLevelMap) {
+		String levles = "";
+		if(level.contains("A1")){
+			levles=levles+","+certLevelMap.get("A1");
+		}
+		if(level.contains("A2")){
+			levles=levles+","+certLevelMap.get("A2");
+		}
+		if(level.contains("B1")){
+			levles=levles+","+certLevelMap.get("B1");
+		}
+		if(level.contains("B2")){
+			levles=levles+","+certLevelMap.get("B2");
+		}
+		if(level.contains("D")){
+			levles=levles+","+certLevelMap.get("D");
+		}
+		if(level.contains("E")){
+			levles=levles+","+certLevelMap.get("E");
+		}
+		if(level.contains("F")){
+			levles=levles+","+certLevelMap.get("F");
+		}
+		if(level.contains("级")){
+			if(level.contains("/")){
+				String[] split = level.split("/");
+				for (String s : split) {
+					levles=levles+","+certLevelMap.get(s);
+				}
+
+			}else{
+				levles=certLevelMap.get("B2");
+			}
+
+		}
+		return levles;
 	}
 
 	public File exportExcel(String path, String name, String trainOrgname, String major, String edubg, String enrolldate, String graduatdate){

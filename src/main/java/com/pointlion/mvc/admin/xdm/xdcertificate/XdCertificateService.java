@@ -25,9 +25,9 @@ public class XdCertificateService{
 	/***
 	 * get page
 	 */
-	public Page<Record> getPage(int pnum,int psize,String title,String haveCertificate,String haveEndDate,String continuEdu){
+	public Page<Record> getPage(int pNum,int pSize,String title,String certType){
 		String userId = ShiroKit.getUserId();
-		String sql  = " from "+TABLE_NAME+" o   where 1=1";
+		String sql  = " from "+TABLE_NAME+" o   where cert_type like '%"+certType+"%'";
 		/*if(StrKit.notBlank(startTime)){
 			sql = sql + " and o.create_time>='"+ DateUtil.formatSearchTime(startTime,"0")+"'";
 		}
@@ -37,19 +37,33 @@ public class XdCertificateService{
 		if(StrKit.notBlank(title)){
 			sql = sql + " and o.certificateTitle like '%"+title+"%'";
 		}
-		if(StrKit.notBlank(haveCertificate)){
-			sql = sql + " and o.haveCertificate ='"+haveCertificate+"'";
-		}
-		if(StrKit.notBlank(haveEndDate)){
-			sql = sql + " and o.haveEndDate = '"+haveEndDate+"'";
-		}
-		if(StrKit.notBlank(continuEdu)){
-			sql = sql + " and o.continuEdu = '"+continuEdu+"'";
-		}
-		sql = sql + " order by o.ctime desc";
-		return Db.paginate(pnum, psize, " select * ", sql);
+		sql = sql + " order by o.certificateTitle";
+		return Db.paginate(pNum, pSize, " select * ", sql);
 	}
 	
+	public Page<Record> getPage(int pNum,int pSize){
+		String sql  = "  from  (" +
+				"select 1 as cert_type,count(*) as count_num  from  xd_certificate where cert_type like '%1%'" +
+				" UNION " +
+				"select 2 as cert_type,count(*) as count_num from  xd_certificate where cert_type like '%2%'" +
+				" UNION " +
+				"select 3 as cert_type,count(*) as count_num from  xd_certificate where cert_type like '%3%' " +
+				" UNION " +
+				"select 4 as cert_type,count(*) as count_num from  xd_certificate where cert_type like '%4%' " +
+				" UNION " +
+				"select 5 as cert_type,count(*)  as count_num from  xd_certificate where cert_type like '%5%' " +
+				") as total ";
+		/*if(StrKit.notBlank(startTime)){
+			sql = sql + " and o.create_time>='"+ DateUtil.formatSearchTime(startTime,"0")+"'";
+		}
+		if(StrKit.notBlank(endTime)){
+			sql = sql + " and o.create_time<='"+DateUtil.formatSearchTime(endTime,"1")+"'";
+		}*/
+
+		sql = sql + " order by cert_type";
+		return Db.paginate(pNum, pSize, "select *", sql);
+	}
+
 	/***
 	 * del
 	 * @param ids

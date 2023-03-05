@@ -19,6 +19,8 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @Author: king
@@ -247,6 +249,17 @@ public class XdOperUtil {
         for (String s : hashSet) {
             System.out.println(s);
 
+        }
+
+        Pattern p = Pattern.compile("[\u4e00-\u9fa5]");
+        String s = "adbdi地老天荒work";
+        s = "包含";
+        Matcher m = p.matcher(s);
+        if(m.find()) {
+            System.out.println("包含");
+            // 如果字符串中含有中文，m.find()判断为true
+        }else{
+            System.out.println("不包含");
         }
     }
 
