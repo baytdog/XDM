@@ -77,22 +77,24 @@
 	       align: 'center',
 	       formatter:function(value,row,index){
 	    	   if(value=="1"){
-	        	   return "主管";
+	        	   return "总经理";
 	           }else if(value=="2"){
-	        	   return "综合管家";
+	        	   return "副总经理";
 	           }else if(value=="3"){
-	        	   return "科员";
+	        	   return "副经理";
+	           }else if(value=="4"){
+	        	   return "经理";
+	           }else if(value=="5"){
+	        	   return "工程管家";
 	           }else if(value=="6"){
-	        	   return "副科";
+	        	   return "人事专员";
 	           }else if(value=="7"){
-	        	   return "主任、党委副书记";
+	        	   return "主管";
 	           }else if(value=="8"){
-	        	   return "党委书记、副主任";
+	        	   return "专员";
 	           }else if(value=="9"){
-	        	   return "副主任、党委委员";
-	           }else if(value=="10"){
-	        	   return "纪委书记、工会主席、党委委员";
-	           }else{
+				   return "综合管家";
+			   }else{
 	        	   return "-";
 	           }
 	       }

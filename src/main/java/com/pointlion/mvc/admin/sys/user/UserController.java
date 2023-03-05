@@ -199,6 +199,8 @@ public class UserController extends BaseController {
     	}
 		List<XdDict> units = XdDict.dao.find("select * from xd_dict where type ='unit' order by sortnum");
 		setAttr("units",units);
+		List<XdProjects> projects = XdProjects.dao.find("select *from  xd_projects");
+		setAttr("projects",projects);
 
 		List<XdEmployee> emps = XdEmployee.dao.find("select * from  xd_employee");
 		setAttr("emps",emps);
@@ -466,8 +468,24 @@ public class UserController extends BaseController {
 		}
     	renderSuccess();
     }
-    
-    
-    
+
+
+	public void getUserinfo(){
+
+
+		XdEmployee emp = XdEmployee.dao.findById(getPara("id"));
+
+		//XdProjects project = XdProjects.dao.findById(emp.getCostitem());
+
+		cn.hutool.json.JSONObject jsonObject=new cn.hutool.json.JSONObject();
+		//jsonObject.put("empNum",emp.getEmpnum());
+
+		jsonObject.put("projetId",emp.getCostitem());
+		/*jsonObject.put("projectId",project.getId()+"");
+		jsonObject.put("projectName",project.getProjectName());*/
+		renderJson(jsonObject);
+
+
+	}
     
 }

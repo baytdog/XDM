@@ -29,6 +29,46 @@
 		                    </div>
 		                </div>
 						<div class="form-group">
+							<label class="col-md-2 control-label">用户姓名</label>
+							<!-- <div class="col-md-9">
+                                 <input type="text"  name="sysUser.name" class="form-control"  value="#(o?o.name:'')">
+                                 <small class="help-block">请输入用户姓名</small>
+                             </div>-->
+
+
+							<input type="hidden" id="emp_id" name="sysUser.emp_id" value="#(o?o.emp_id:'')">
+							<input type="hidden" id="name" name="sysUser.name" value="#(o?o.name:'')">
+							<div class="col-md-9">
+								<select id="enameSelect"   title="请选择员工"  class="selectpicker show-tick form-control" actionsBox="true"  disable  data-live-search="true">
+									#for(emp:emps)
+									<option value="#(emp.id)">#(emp.name)</option>
+									#end
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-md-2 control-label">用户登录名</label>
+							<div class="col-md-9">
+								<input type="text"  name="sysUser.username" class="form-control"  value="#(o?o.username:'')">
+								<small class="help-block">请输入登录名(用来登录系统)</small>
+							</div>
+						</div>
+						<!--      <div class="form-group">
+                                 <label class="col-md-2 control-label">密码</label>
+                                 <div class="col-md-9">
+                                     <input type="password"  name="sysUser.password" class="form-control"  value="" #if(o) placeholder="如果您不想修改密码,请将此项留空!" #end >
+                                     <small class="help-block">请输入密码</small>
+                                 </div>
+                             </div>
+                             <div class="form-group">
+                                 <label class="col-md-2 control-label">密码确认</label>
+                                 <div class="col-md-9">
+                                     <input type="password"  name="password2" class="form-control"  value="" #if(o) placeholder="如果您不想修改密码,请将此项留空!" #end>
+                                     <small class="help-block">请再次输入密码</small>
+                                 </div>
+                             </div> -->
+
+						<!--<div class="form-group">
 							<label class="col-md-2 control-label">单元</label>
 							<input type="hidden" id="unit_value" name="sysUser.unit_value" value="#(o?o.unit_value:'')">
 							<input type="hidden" id="unit_name" name="sysUser.unit_name" value="#(o?o.unit_name:'')">
@@ -41,46 +81,21 @@
 								<small class="help-block">请选择所属单元</small>
 							</div>
 
-						</div>
-		                <div class="form-group">
-		                    <label class="col-md-2 control-label">用户登录名</label>
-		                    <div class="col-md-9">
-		                        <input type="text"  name="sysUser.username" class="form-control"  value="#(o?o.username:'')">
-		                        <small class="help-block">请输入登录名(用来登录系统)</small>
-		                    </div>
-		                </div>
-		           <!--      <div class="form-group">
-		                    <label class="col-md-2 control-label">密码</label>
-		                    <div class="col-md-9">
-		                        <input type="password"  name="sysUser.password" class="form-control"  value="" #if(o) placeholder="如果您不想修改密码,请将此项留空!" #end >
-		                        <small class="help-block">请输入密码</small>
-		                    </div>
-		                </div>
-		                <div class="form-group">
-		                    <label class="col-md-2 control-label">密码确认</label>
-		                    <div class="col-md-9">
-		                        <input type="password"  name="password2" class="form-control"  value="" #if(o) placeholder="如果您不想修改密码,请将此项留空!" #end>
-		                        <small class="help-block">请再次输入密码</small>
-		                    </div>
-		                </div> -->
-		                <div class="form-group">
-		                    <label class="col-md-2 control-label">用户姓名</label>
-		                   <!-- <div class="col-md-9">
-		                        <input type="text"  name="sysUser.name" class="form-control"  value="#(o?o.name:'')">
-		                        <small class="help-block">请输入用户姓名</small>
-		                    </div>-->
-
-
-							<input type="hidden" id="emp_id" name="sysUser.emp_id" value="#(o?o.emp_id:'')">
-							<input type="hidden" id="name" name="sysUser.name" value="#(o?o.name:'')">
+						</div>-->
+						<div class="form-group">
+							<label class="col-md-2 control-label">可操作项目</label>
+							<input type="hidden" id="projects" name="sysUser.oper_project" value="#(o?o.oper_project:'')">
 							<div class="col-md-9">
-								<select id="enameSelect"   title="请选择员工"  class="selectpicker show-tick form-control" actionsBox="true"  disable  data-live-search="true">
-									#for(emp:emps)
-									<option value="#(emp.id)">#(emp.name)</option>
+								<select id="projectSelect"   title="请选择"  class="selectpicker show-tick form-control" actionsBox="true"  multiple disable  data-live-search="true">
+									#for(project:projects)
+									<option value="#(project.id)">#(project.project_name)</option>
 									#end
 								</select>
+								<small class="help-block">请选择可操作项目</small>
 							</div>
-		                </div>
+
+						</div>
+
 		                <div class="form-group">
 	                    	<label class="col-md-2 control-label">性别</label>
                             <div class="col-md-9">
@@ -459,8 +474,13 @@
 			$('#emp_id').val($('#enameSelect').val())
 			$('#name').val($('#enameSelect option:selected').text())
 
+
+			var data = common_ajax.ajaxFunc("/admin/sys/user/getUserinfo",{"id":$('#enameSelect').val()}, "json", null);
+
+			$('#projectSelect').selectpicker('val',data.projetId.split(",")).trigger("change");
+
 		});
-		let unit_value=$("#unit_value").val();
+		/*let unit_value=$("#unit_value").val();
 		if(unit_value){
 			$('#unitnameSelect').selectpicker('val',unit_value.split(",")).trigger("change");
 		};
@@ -468,6 +488,15 @@
 		$('#unitnameSelect').on('changed.bs.select', function (e) {
 			$('#unit_value').val($('#unitnameSelect').val())
 			$('#unit_name').val($('#unitnameSelect option:selected').text())
+
+		});*/
+		let projects=$("#projects").val();
+		if(projects){
+			$('#projectSelect').selectpicker('val',projects.split(",")).trigger("change");
+		};
+
+		$('#projectSelect').on('changed.bs.select', function (e) {
+			$('#projects').val($('#projectSelect').val())
 
 		});
 	})

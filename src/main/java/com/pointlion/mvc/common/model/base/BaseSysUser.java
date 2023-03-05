@@ -9,220 +9,236 @@ import com.jfinal.plugin.activerecord.IBean;
 @SuppressWarnings("serial")
 public abstract class BaseSysUser<M extends BaseSysUser<M>> extends Model<M> implements IBean {
 
-	public void setId(java.lang.String id) {
+	public void setId(String id) {
 		set("id", id);
 	}
-
-	public java.lang.String getId() {
-		return get("id");
+	
+	public String getId() {
+		return getStr("id");
 	}
 
-	public void setSort(java.lang.Long sort) {
-		set("sort", sort);
-	}
-
-	public java.lang.Long getSort() {
-		return get("sort");
-	}
-
-	public void setUsername(java.lang.String username) {
+	public void setUsername(String username) {
 		set("username", username);
 	}
-
-	public java.lang.String getUsername() {
-		return get("username");
+	
+	public String getUsername() {
+		return getStr("username");
 	}
 
-	public void setPassword(java.lang.String password) {
+	public void setPassword(String password) {
 		set("password", password);
 	}
-
-	public java.lang.String getPassword() {
-		return get("password");
+	
+	public String getPassword() {
+		return getStr("password");
 	}
 
-	public void setName(java.lang.String name) {
+	public void setName(String name) {
 		set("name", name);
 	}
-
-	public java.lang.String getName() {
-		return get("name");
+	
+	public String getName() {
+		return getStr("name");
 	}
 
-	public void setSex(java.lang.String sex) {
+	public void setSex(String sex) {
 		set("sex", sex);
 	}
-
-	public java.lang.String getSex() {
-		return get("sex");
-	}
 	
-	public void setStatus(java.lang.String status) {
+	public String getSex() {
+		return getStr("sex");
+	}
+
+	public void setStatus(String status) {
 		set("status", status);
 	}
-
-	public java.lang.String getStatus() {
-		return get("status");
+	
+	public String getStatus() {
+		return getStr("status");
 	}
 
-	public void setOrgid(java.lang.String orgid) {
+	public void setOrgid(String orgid) {
 		set("orgid", orgid);
 	}
-
-	public java.lang.String getOrgid() {
-		return get("orgid");
+	
+	public String getOrgid() {
+		return getStr("orgid");
 	}
 
-	public void setStationid(java.lang.String stationid) {
+	public void setStationid(String stationid) {
 		set("stationid", stationid);
 	}
-
-	public java.lang.String getStationid() {
-		return get("stationid");
+	
+	public String getStationid() {
+		return getStr("stationid");
 	}
 
-	public void setEmail(java.lang.String email) {
+	public void setEmail(String email) {
 		set("email", email);
 	}
-
-	public java.lang.String getEmail() {
-		return get("email");
+	
+	public String getEmail() {
+		return getStr("email");
 	}
 
-	public void setIdcard(java.lang.String idcard) {
+	public void setIdcard(String idcard) {
 		set("idcard", idcard);
 	}
-
-	public java.lang.String getIdcard() {
-		return get("idcard");
+	
+	public String getIdcard() {
+		return getStr("idcard");
 	}
 
-	public void setIsAdmin(java.lang.String is_admin) {
-		set("is_admin", is_admin);
-	}
-
-	public java.lang.String getIsAdmin() {
-		return get("is_admin");
+	public void setIsAdmin(String isAdmin) {
+		set("is_admin", isAdmin);
 	}
 	
-	public void setMobile(java.lang.String mobile) {
+	public String getIsAdmin() {
+		return getStr("is_admin");
+	}
+
+	public void setSort(Long sort) {
+		set("sort", sort);
+	}
+	
+	public Long getSort() {
+		return getLong("sort");
+	}
+
+	public void setMobile(String mobile) {
 		set("mobile", mobile);
 	}
-
-	public java.lang.String getMobile() {
-		return get("mobile");
-	}
 	
-	public void setImg(java.lang.String img) {
+	public String getMobile() {
+		return getStr("mobile");
+	}
+
+	public void setImg(String img) {
 		set("img", img);
 	}
-
-	public java.lang.String getImg() {
-		return get("img");
-	}
 	
-	public void setType(java.lang.String type) {
+	public String getImg() {
+		return getStr("img");
+	}
+
+	public void setType(String type) {
 		set("type", type);
 	}
+	
+	public String getType() {
+		return getStr("type");
+	}
 
-	public java.lang.String getType() {
-		return get("type");
+	public void setEntryDate(String entryDate) {
+		set("entry_date", entryDate);
 	}
 	
-	public void setEntryDate(java.lang.String entry_date) {
-		set("entry_date", entry_date);
+	public String getEntryDate() {
+		return getStr("entry_date");
 	}
 
-	public java.lang.String getEntryDate() {
-		return get("entry_date");
+	public void setBirthDate(String birthDate) {
+		set("birth_date", birthDate);
 	}
 	
-	public void setYearHoliday(java.lang.String year_holiday) {
-		set("year_holiday", year_holiday);
+	public String getBirthDate() {
+		return getStr("birth_date");
 	}
 
-	public java.lang.String getYearHoliday() {
-		return get("year_holiday");
+	public void setYearHoliday(String yearHoliday) {
+		set("year_holiday", yearHoliday);
 	}
 	
-	public void setInCompanyDate(java.lang.String in_company_date) {
-		set("in_company_date", in_company_date);
+	public String getYearHoliday() {
+		return getStr("year_holiday");
 	}
 
-	public java.lang.String getInCompanyDate() {
-		return get("in_company_date");
+	public void setSignNamePic(String signNamePic) {
+		set("sign_name_pic", signNamePic);
+	}
+	
+	public String getSignNamePic() {
+		return getStr("sign_name_pic");
 	}
 
-	public void setDimissionDate(java.lang.String dimission_date) {
-		set("dimission_date", dimission_date);
+	public void setInCompanyDate(String inCompanyDate) {
+		set("in_company_date", inCompanyDate);
+	}
+	
+	public String getInCompanyDate() {
+		return getStr("in_company_date");
 	}
 
-	public java.lang.String getDimissionDate() {
-		return get("dimission_date");
+	public void setDimissionDate(String dimissionDate) {
+		set("dimission_date", dimissionDate);
+	}
+	
+	public String getDimissionDate() {
+		return getStr("dimission_date");
 	}
 
-	public void setExperience(java.lang.String experience) {
+	public void setExperience(String experience) {
 		set("experience", experience);
 	}
-
-	public java.lang.String getExperience() {
-		return get("experience");
+	
+	public String getExperience() {
+		return getStr("experience");
 	}
 
-	public void setEduExperience(java.lang.String edu_experience) {
-		set("edu_experience", edu_experience);
-	}
-
-	public java.lang.String getEduExperience() {
-		return get("edu_experience");
-	}
-
-	public void setWorkNum(java.lang.String work_num) {
-		set("work_num", work_num);
-	}
-
-	public java.lang.String getWorkNum() {
-		return get("work_num");
+	public void setEduExperience(String eduExperience) {
+		set("edu_experience", eduExperience);
 	}
 	
-	public void setBirthDate(java.lang.String birth_date) {
-		set("birth_date", birth_date);
+	public String getEduExperience() {
+		return getStr("edu_experience");
 	}
 
-	public java.lang.String getBirthDate() {
-		return get("birth_date");
+	public void setWorkNum(String workNum) {
+		set("work_num", workNum);
 	}
 	
-	public void setPosition(java.lang.String position) {
+	public String getWorkNum() {
+		return getStr("work_num");
+	}
+
+	public void setPosition(String position) {
 		set("position", position);
 	}
-
-	public java.lang.String getPosition() {
-		return get("position");
+	
+	public String getPosition() {
+		return getStr("position");
 	}
-	public void setUnitValue(java.lang.String unitValue) {
+
+	public void setUnitValue(String unitValue) {
 		set("unit_value", unitValue);
 	}
-
-	public java.lang.String getUnitValue() {
+	
+	public String getUnitValue() {
 		return getStr("unit_value");
 	}
 
-	public void setUnitName(java.lang.String unitName) {
+	public void setUnitName(String unitName) {
 		set("unit_name", unitName);
 	}
-
-	public java.lang.String getUnitName() {
+	
+	public String getUnitName() {
 		return getStr("unit_name");
 	}
 
-	public void setEmpId(java.lang.String empId) {
+	public void setEmpId(String empId) {
 		set("emp_id", empId);
 	}
-
-	public java.lang.String getEmpId() {
+	
+	public String getEmpId() {
 		return getStr("emp_id");
 	}
-	
-}
 
+	public void setOperProject(String operProject) {
+		set("oper_project", operProject);
+	}
+	
+	public String getOperProject() {
+		return getStr("oper_project");
+	}
+
+}

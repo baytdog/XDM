@@ -46,6 +46,18 @@ public class XdEmployeeService{
 		String sql  = " from "+TABLE_NAME+" o where 1=1";
 		if(!"1".equals(userOrgId)){
 			//sql=sql+" and cuser='"+ShiroKit.getUserId()+"'";
+
+			SysUser otherUser = SysUser.dao.findById(ShiroKit.getUserId());
+			String instr="";
+			if(otherUser.getOperProject()!=null){
+				String[] split = otherUser.getOperProject().split(",");
+				for (String s : split) {
+					instr=instr+",'"+s+"'";
+				}
+			}
+			instr=instr.replaceAll("^,","");
+
+			sql=sql+" and costitem in ("+instr+")";
 		}
 		if(StrKit.notBlank(name)){
 			sql = sql + " and o.name like '%"+ name+"%'";

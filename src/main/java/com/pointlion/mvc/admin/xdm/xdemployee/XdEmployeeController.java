@@ -39,8 +39,31 @@ public class XdEmployeeController extends BaseController {
 		Map<String, List<XdDict>> dictListByType = DictMapping.getDictListByType();
 		//	List<XdDict> units = XdDict.dao.find("select *from xd_dict where type='unit' order by  sortnum");
 		setAttr("units",	dictListByType.get("unit"));
-		List<XdProjects> projects = XdProjects.dao.find("select * from xd_projects where status='1' ");
-		setAttr("projects",projects);
+
+		if(!"1".equals(userOrgId)){
+
+			SysUser otherUser = SysUser.dao.findById(ShiroKit.getUserId());
+			String instr="";
+			if(otherUser.getOperProject()!=null){
+				String[] split = otherUser.getOperProject().split(",");
+				for (String s : split) {
+					instr=instr+",'"+s+"'";
+				}
+			}
+			instr=instr.replaceAll("^,","");
+			if(!instr.equals("")){
+				List<XdProjects> projects = XdProjects.dao.find("select * from xd_projects where status='1' and  id in ("+instr+")");
+				setAttr("projects",projects);
+			}else{
+
+				List<XdProjects> projects = XdProjects.dao.find("select * from xd_projects where status='1' ");
+				setAttr("projects",projects);
+			}
+		}else{
+			List<XdProjects> projects = XdProjects.dao.find("select * from xd_projects where status='1' ");
+			setAttr("projects",projects);
+		}
+
 
 		List<SysOrg> orgList = SysOrg.dao.find("select * from  sys_org where id !='root' order by sort");
 
