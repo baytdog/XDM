@@ -49,15 +49,24 @@ public class XdEmployeeService{
 
 			SysUser otherUser = SysUser.dao.findById(ShiroKit.getUserId());
 			String instr="";
-			if(otherUser.getOperProject()!=null){
+			if(otherUser.getOperProject()!=null && !otherUser.getOperProject().equals("")){
 				String[] split = otherUser.getOperProject().split(",");
 				for (String s : split) {
 					instr=instr+",'"+s+"'";
 				}
-			}
-			instr=instr.replaceAll("^,","");
+				instr=instr.replaceAll("^,","");
 
-			sql=sql+" and costitem in ("+instr+")";
+				sql=sql+" and costitem in ("+instr+")";
+			}
+			sql = sql + " and o.department = '"+ userOrgId+"'";
+		}else {
+			if(StrKit.notBlank(department)){
+				sql = sql + " and o.department = '"+ department+"'";
+			}
+		}
+
+		if(StrKit.notBlank(costitem)){
+			sql = sql + " and o.costitem = '"+ costitem+"'";
 		}
 		if(StrKit.notBlank(name)){
 			sql = sql + " and o.name like '%"+ name+"%'";
@@ -69,15 +78,11 @@ public class XdEmployeeService{
 		if(StrKit.notBlank(emprelation)){
 			sql = sql + " and o.emprelation like '%"+ emprelation+"%'";
 		}
-		if(StrKit.notBlank(department)){
-			sql = sql + " and o.department = '"+ department+"'";
-		}
+
 		if(StrKit.notBlank(unitname)){
 			sql = sql + " and o.unitname = '"+ unitname+"'";
 		}
-		if(StrKit.notBlank(costitem)){
-			sql = sql + " and o.costitem = '"+ costitem+"'";
-		}
+
 		if(StrKit.notBlank(inductionstatus)){
 			sql=sql+ " and o.inductionstatus='"+inductionstatus+"'";
 		}

@@ -33,7 +33,16 @@ public class XdAttendanceSheetService{
 	 */
 	public Page<Record> getPage(int pnum,int psize,String deptId,String year,String month,String empName){
 		String userId = ShiroKit.getUserId();
+		String userOrgId = ShiroKit.getUserOrgId();
+
+
 		String sql  = " from "+TABLE_NAME+" o  where 1=1";
+
+		if(!"1".equals(userOrgId)){
+
+			//sql = sql + " and o.create_user='"+ userId+"'";
+			sql = sql + " and o.dept_id='"+ userOrgId+"'";
+		}
 		if(StrKit.notBlank(deptId)){
 			sql = sql + " and o.dept_id='"+ deptId+"'";
 		}

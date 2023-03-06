@@ -41,7 +41,13 @@ public class XdEdutrainService{
 	public Page<Record> getPage(int pnum,int psize,String name,String trainOrgname,String major,String edubg,String enrolldate,String graduatdate){
 		String userId = ShiroKit.getUserId();
 		String sql  = " from "+TABLE_NAME+" o  where 1=1";
-	//	sql = sql + SysRoleOrg.dao.getRoleOrgSql(userId) ;
+		String userOrgId = ShiroKit.getUserOrgId();
+		if(userOrgId.equals("1")){
+		}else{
+			sql = sql + " and eid in (select id from  xd_employee where department='"+userOrgId+"')";
+		}
+
+
 		if(StrKit.notBlank(name)){
 			sql = sql + " and o.ename like '%"+name+"%'";
 		}

@@ -42,6 +42,12 @@ public class XdRcpSummaryService{
 	 */
 	public Page<Record> getPage(int pnum,int psize,String dept,String unit,String project,String empName,String workstation){
 		String sql  = " from "+TABLE_NAME+" o    where 1=1";
+
+		String userOrgId = ShiroKit.getUserOrgId();
+		if(!"1".equals(userOrgId)){
+			sql = sql + " and o.dept_value='"+userOrgId+"'";
+		}
+
 		if(StrKit.notBlank(dept)){
 			sql = sql + " and o.dept_value='"+dept+"'";
 		}

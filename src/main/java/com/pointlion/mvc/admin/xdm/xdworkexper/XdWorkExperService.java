@@ -45,11 +45,10 @@ public class XdWorkExperService{
 		String userId = ShiroKit.getUserId();
 		String sql  = " from "+TABLE_NAME+" o   where 1=1";
 		//sql = sql + SysRoleOrg.dao.getRoleOrgSql(userId) ;
-
-		if(ShiroKit.getUserOrgId().equals("1")){
-
+		String userOrgId = ShiroKit.getUserOrgId();
+		if(userOrgId.equals("1")){
 		}else{
-
+			sql = sql + " and eid in (select id from  xd_employee where department='"+userOrgId+"')";
 		}
 		if (StrKit.notBlank(name)) {
 			sql = sql + " and o.ename like '%"+name +"%'";

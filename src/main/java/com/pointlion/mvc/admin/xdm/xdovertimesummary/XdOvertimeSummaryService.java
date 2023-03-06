@@ -38,6 +38,10 @@ public class XdOvertimeSummaryService{
 	 */
 	public Page<Record> getPage(int pNum,int pSize,String dept,String project,String emp_name,String emp_num,String apply_date,String overtimeType,String otType){
 		String sql  =" from "+TABLE_NAME+" o   where 1=1";
+		String userOrgId = ShiroKit.getUserOrgId();
+		if(!"1".equals(userOrgId)){
+			sql = sql + " and o.dept_id='"+userOrgId+"'";
+		}
 		if(otType.equals("1")){
 			sql = sql + " and o.apply_start is not null and o.apply_start !='' ";
 		}

@@ -50,6 +50,11 @@ public class XdAttendanceSummaryService{
 	 */
 	public Page<Record> getPage(int pnum,int psize,String dept,String emp_name,String unitname,String year,String month){
 		String sql  = " from "+TABLE_NAME+" o where 1=1";
+		String userOrgId = ShiroKit.getUserOrgId();
+		if(!"1".equals(userOrgId)){
+//			sql = sql + " and o.create_user='"+ ShiroKit.getUserId()+"'";
+			sql = sql + " and o.dept_value='"+ userOrgId+"'";
+		}
 		if(StrKit.notBlank(dept)){
 			sql = sql + " and o.dept_value='"+ dept+"'";
 		}
@@ -552,6 +557,8 @@ public class XdAttendanceSummaryService{
 							attendanceSummary.setFlags(modifyFlags.replaceAll("^,",""));
 							attendanceSummary.setOtflags(otFlags.replaceAll("^,",""));
 							attendanceSummary.setTips(tips.replaceAll("^,",""));
+							attendanceSummary.setCreateDate(DateUtil.getCurrentTime());
+							attendanceSummary.setCreateUser(ShiroKit.getUserId());
 							//attendanceSummary.save();
 							attendanceSummaryList.add(attendanceSummary);
 

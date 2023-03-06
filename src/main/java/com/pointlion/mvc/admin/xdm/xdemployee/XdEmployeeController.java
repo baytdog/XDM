@@ -44,21 +44,22 @@ public class XdEmployeeController extends BaseController {
 
 			SysUser otherUser = SysUser.dao.findById(ShiroKit.getUserId());
 			String instr="";
-			if(otherUser.getOperProject()!=null){
+			if(otherUser.getOperProject()!=null && !otherUser.getOperProject().equals("")){
 				String[] split = otherUser.getOperProject().split(",");
 				for (String s : split) {
 					instr=instr+",'"+s+"'";
 				}
-			}
-			instr=instr.replaceAll("^,","");
-			if(!instr.equals("")){
-				List<XdProjects> projects = XdProjects.dao.find("select * from xd_projects where status='1' and  id in ("+instr+")");
-				setAttr("projects",projects);
-			}else{
+				instr=instr.replaceAll("^,","");
+				if(!instr.equals("")){
+					List<XdProjects> projects = XdProjects.dao.find("select * from xd_projects where status='1' and  id in ("+instr+")");
+					setAttr("projects",projects);
+				}else{
 
-				List<XdProjects> projects = XdProjects.dao.find("select * from xd_projects where status='1' ");
-				setAttr("projects",projects);
+					List<XdProjects> projects = XdProjects.dao.find("select * from xd_projects where status='1' ");
+					setAttr("projects",projects);
+				}
 			}
+
 		}else{
 			List<XdProjects> projects = XdProjects.dao.find("select * from xd_projects where status='1' ");
 			setAttr("projects",projects);
@@ -78,10 +79,15 @@ public class XdEmployeeController extends BaseController {
 		for (XdDict duty : dutyList) {
 			dutyStr=dutyStr+duty.getValue()+"="+duty.getName()+",";
 		}
+		List<XdDict> eduList = dictListByType.get("edu");
+		String edu = JSONUtil.listToJson(eduList);
+		List<XdDict> positionList = dictListByType.get("position");
 
-
+		String positions = JSONUtil.listToJson(positionList);
+		setAttr("eduStr",edu);
 		setAttr("orgStr",orgStr);
 		setAttr("dutyStr",dutyStr);
+		setAttr("positions",positions);
 		renderIframe("list.html");
     }
 	/***

@@ -120,7 +120,6 @@
 
 	}
 	let dutyStr='#(dutyStr)';
-	console.log(dutyStr)
 	let duty = dutyStr.split(",");
 	let dutyMap = new Map();
 	for(let item of duty) {
@@ -130,13 +129,18 @@
 		dutyMap.set(item.split("=")[0], item.split("=")[1])
 
 	}
-
-	/*let orgMap = new Map();
-	for(let item of ops) {
-		if(item.value!=''){
-			projectMap.set(item.value, item.text);
-		}
-	}*/
+	let eduStr='#(eduStr)';
+	let educationMap = new Map();
+	let eudObj=JSON.parse(eduStr)
+	for(let edu of eudObj) {
+		 educationMap.set(edu.value,edu.name);
+	}
+	let positions='#(positions)';
+	let positionsMap = new Map();
+	let positionObj=JSON.parse(positions)
+	for(let position of positionObj) {
+		positionsMap.set(position.value,position.name);
+	}
 	var col = [{field: 'checked', checkbox : true, align: 'center'},
 		{field: 'empnum', title: '员工编号', align: 'center'},
 		{field: 'name', title: '姓名', align: 'center'},
@@ -159,33 +163,14 @@
 		{field: 'age', title: '年龄', align: 'center'},
 		{field: 'emprelation', title: '员工关系', align: 'center'},
 		{field: 'position', title: '职位', align: 'center', formatter:function(value,row,index){
-				   if(value=='1'){
-					   return "主管";
-				   }else if(value=='2'){
-					   return "综合管家";
-				   }else {
-					   return "";
-				   }
+				   return positionsMap.get(value);
 			   }},
 		{field: 'workstation', title: '岗位', align: 'center', formatter:function(value,row,index){
 				return dutyMap.get(value);
 			}},
 		{field: 'topedu', title: '最高学历', align: 'center', formatter:function(value,row,index){
-				   if(value=='1'){
-					   return "技工";
-				   }else if(value=='2'){
-					   return "职高";
-				   }else if(value=='3'){
-					   return "中专";
-				   }else if(value=='4'){
-					   return "高中";
-				   }else if(value=='5'){
-					   return "大专";
-				   }else if(value=='6'){
-					   return "本科";
-				   }else {
-					   return "";
-				   }
+
+				  return  educationMap.get(value);
 			   }},
 	    {field: 'control', title: '操作', align: 'left', width:'200',
 	       formatter:function(value,row,index){
@@ -200,7 +185,7 @@
 	           	return a;
 	       }
 	   }];
-	var opt = {
+	let opt = {
 		    //请求方法
 			   method: 'get',
 			    //是否显示行间隔色

@@ -45,6 +45,11 @@ public class XdScheduleSummaryService{
 	 */
 	public Page<Record> getPage(int pnum,int psize,String dept,String unitname,String emp_name,String year,String month){
 		String sql  = " from "+TABLE_NAME+" o where 1=1";
+		String userOrgId = ShiroKit.getUserOrgId();
+		if(!"1".equals(userOrgId)){
+			//sql = sql + " and o.create_user='"+ ShiroKit.getUserId()+"'";
+			sql = sql + " and o.dept_value='"+ userOrgId+"'";
+		}
 		if(StrKit.notBlank(dept)){
 			sql = sql + " and o.dept_value='"+ dept+"'";
 		}

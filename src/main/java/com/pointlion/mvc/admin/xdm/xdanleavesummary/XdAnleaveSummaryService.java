@@ -35,6 +35,10 @@ public class XdAnleaveSummaryService{
 	 */
 	public Page<Record> getPage(int pnum,int psize,String name,String dept,String year){
 		String sql  = " from "+TABLE_NAME+" o    where 1=1";
+		String userOrgId = ShiroKit.getUserOrgId();
+		if(!"1".equals(userOrgId)){
+			sql = sql + " and o.dept_id='"+userOrgId+"'";
+		}
 		if(StrKit.notBlank(name)){
 			sql = sql + " and o.emp_name like '%"+ name+"%'";
 		}

@@ -40,6 +40,11 @@ public class XdAnleavePlanService{
 	public Page<Record> getPage(int pnum,int psize,String year){
 		String userId = ShiroKit.getUserId();
 		String sql  = " from "+TABLE_NAME+" o    where 1=1";
+		String userOrgId = ShiroKit.getUserOrgId();
+		if(!"1".equals(userOrgId)){
+
+			sql = sql + " and o.dept_id='"+userOrgId+"'";
+		}
 		if(StrKit.notBlank(year)){
 			sql = sql + " and o.year='"+year+"'";
 		}
