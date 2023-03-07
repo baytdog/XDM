@@ -1,33 +1,34 @@
 package com.pointlion.mvc.admin.xdm.xdempcert;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.SyncFailedException;
-import java.io.UnsupportedEncodingException;
-import java.sql.SQLException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.util.*;
-import java.util.function.Consumer;
-
-import com.jfinal.aop.Before;
 import com.jfinal.kit.StrKit;
 import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.plugin.activerecord.Record;
 import com.jfinal.upload.UploadFile;
 import com.pointlion.enums.XdOperEnum;
 import com.pointlion.mvc.common.base.BaseController;
-import com.pointlion.mvc.admin.oa.workflow.WorkFlowService;
 import com.pointlion.mvc.common.model.*;
-import com.pointlion.mvc.common.utils.*;
-import com.pointlion.mvc.admin.oa.common.OAConstants;
+import com.pointlion.mvc.common.utils.DateUtil;
+import com.pointlion.mvc.common.utils.StringUtil;
+import com.pointlion.mvc.common.utils.UuidUtil;
+import com.pointlion.mvc.common.utils.XdOperUtil;
 import com.pointlion.mvc.common.utils.office.excel.ExcelUtil;
 import com.pointlion.plugin.shiro.ShiroKit;
+import com.pointlion.util.DictMapping;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 public class XdEmpCertController extends BaseController {
 	public static final XdEmpCertService service = XdEmpCertService.me;
+	private  static final Map<String, List<XdDict>> dictListByType = DictMapping.getDictListByType();
 	/***
 	 * get list page
 	 */
@@ -38,7 +39,8 @@ public class XdEmpCertController extends BaseController {
 
 		List<SysOrg> orgList = SysOrg.dao.find("select * from  sys_org where id <>'root' order by sort");
 		setAttr("orgList",orgList);
-		List<XdDict> certLevelList = XdDict.dao.find("select * from xd_dict where  type ='certLevel' order by sortnum");
+		List<XdDict> certLevelList = dictListByType.get("certLevel");
+//				XdDict.dao.find("select * from xd_dict where  type ='certLevel' order by sortnum");
 		setAttr("certLevelList",certLevelList);
 		String sertStr="";
 		Map<String,String> map =new HashMap<>();
@@ -70,10 +72,7 @@ public class XdEmpCertController extends BaseController {
     public void save(){
     	XdEmpCert o = getModel(XdEmpCert.class);
 		XdEmpCert cert = XdEmpCert.dao.findById(o.getId());
-
-
 		XdCertLog log =new XdCertLog();
-
 		SimpleDateFormat sdf =new SimpleDateFormat("yyyy-MM-dd");
 		String[] ymd = sdf.format(new Date()).split("-");
 		log.setYear(Integer.valueOf(ymd[0]));
@@ -84,7 +83,6 @@ public class XdEmpCertController extends BaseController {
 		log.setDeptId(o.getDepartment());
 		SysOrg org = SysOrg.dao.findById(o.getDepartment());
 		log.setDeptName(org==null?"":org.getName());
-
 		log.setNum(1);
 		log.setCreateDate(DateUtil.getCurrentTime());
 		log.setCreateUser(ShiroKit.getUserId());
@@ -95,9 +93,7 @@ public class XdEmpCertController extends BaseController {
 				o.setSn("长期");
 			}else if(closeDate!=null &&!"".equals(closeDate.trim())){
 				String ny = closeDate.replaceFirst("-", "年").replaceFirst("-", "月").substring(0, 8);
-				System.out.println(ny);
 				String n = ny.substring(0,5);
-				System.out.println(n);
 				o.setSny(ny);
 				o.setSn(n);
 			}
@@ -109,15 +105,27 @@ public class XdEmpCertController extends BaseController {
 			XdOplogSummary summary = XdOperUtil.logSummary(UuidUtil.getUUID(), cert.getId(), o, cert, XdOperEnum.U.name(), XdOperEnum.UNAPPRO.name());
 			summary.save();
 
-			if(cert.getValidateDate()!=null && !cert.getValidateDate().equals(o.getValidateDate()) ){
-
+			if(cert.getValidateDate()!=null && !cert.getValidateDate().equals("") && !cert.getValidateDate().equals(o.getValidateDate()) ){
+				log.setId(null);
 				log.setNum(0);
 				log.setLogType("审证复证");
+				log.save();
 			}
 
 			if(o.getCertLevel()!=null && cert.getCertLevel()!=null && !o.getCertLevel().equals(cert.getCertLevel())){
-				log.setLogType("中级替换");
+				List<XdDict> dicts = XdDict.dao.find("select * from xd_dict where  type ='certLevel'  order by sortnum");
+				Map<String,String> levelMap =new HashMap<>();
+				dicts.forEach(dict->levelMap.put(dict.getValue(),dict.getName()));
+				log.setId(null);
+				String[] levelArr = o.getCertLevel().split(",");
+				String chiLevel="";
+				for (String level : levelArr) {
+					chiLevel=chiLevel+levelMap.get(level);
+				}
+
+				log.setLogType(chiLevel+"替换");
 				log.setNum(-1);
+				log.save();
 			}
 
 		}else{
@@ -127,9 +135,7 @@ public class XdEmpCertController extends BaseController {
 				o.setSn("长期");
 			}else if(!"".equals(closeDate.trim())){
 				String ny = closeDate.replaceFirst("-", "年").replaceFirst("-", "月").substring(0, 8);
-				System.out.println(ny);
 				String n = ny.substring(0,5);
-				System.out.println(n);
 				o.setSny(ny);
 				o.setSn(n);
 			}
@@ -137,18 +143,11 @@ public class XdEmpCertController extends BaseController {
 			o.save();
 			XdOperUtil.logSummary(o.getId(),o, XdOperEnum.C.name(),XdOperEnum.UNAPPRO.name(),0);
 
-			/*String eid = o.getEid();
-			XdEmployee employee = XdEmployee.dao.findById(eid);
-			String certificates = employee.getCertificates();
-			if(certificates!=null ||certificates.equals("")){
-				employee.setCertificates(o.getCertTile());
-			}else{
-				employee.setCertificates(employee+"、"+o.getCertTile());
-			}*/
 			log.setLogType("新增");
+			log.save();
 
 		}
-		log.save();
+
 		XdOperUtil.updateEmpCert(o);
     	renderSuccess();
     }
@@ -178,11 +177,12 @@ public class XdEmpCertController extends BaseController {
 		List<XdCertificate> xdCertificates = XdCertificate.dao.find("select * from xd_certificate");
 		setAttr("certs",xdCertificates);
 
-		List<XdDict> certLevels = XdDict.dao.find("select * from xd_dict where  type='certLevel' order by sortnum");
-		setAttr("certLevels",certLevels);
+//		List<XdDict> certLevels =XdDict.dao.find("select * from xd_dict where  type='certLevel' order by sortnum");
 
-		List<XdDict> licenseAuths = XdDict.dao.find("select * from xd_dict where  type='licenseauth' order by sortnum");
-		setAttr("licenseAuths",licenseAuths);
+		setAttr("certLevels",dictListByType.get("certLevel"));
+
+//		List<XdDict> licenseAuths = XdDict.dao.find("select * from xd_dict where  type='licenseauth' order by sortnum");
+		setAttr("licenseAuths",dictListByType.get("licenseauth"));
 
 		setAttr("o", o);
     	setAttr("formModelName",StringUtil.toLowerCaseFirstOne(XdEmpCert.class.getSimpleName()));

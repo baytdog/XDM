@@ -17,7 +17,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.function.Consumer;
 
@@ -1373,6 +1372,48 @@ public class XdEmployeeController extends BaseController {
 		XdEmployee o = getModel(XdEmployee.class);
 		String id = o.getId();
 		XdEmployee employee = XdEmployee.dao.findById(id);
+		String effectDate = getPara("effectDate");
+		String adjustReason = getPara("adjustReason");
+		String otherRemarks = getPara("otherRemarks");
+		List<XdEffict> effictsList = XdEffict.dao.find("select * from  xd_effict where eid='" + o.getId() + "' and  status ='0'");
+		for (XdEffict xdEffict : effictsList) {
+			xdEffict.setStatus("2");
+			xdEffict.setOveruser(ShiroKit.getUserId());
+			xdEffict.setOvertime(DateUtil.getCurrentTime());
+			xdEffict.update();
+		}
+		Map<String, Map<String, String>> stringMapMap = DictMapping.dictMappingValueToName();
+		Map<String, String> duty = stringMapMap.get("duty");
+		XdEffict effict=new XdEffict();
+		effict.setEid(o.getId());
+		effict.setEmpNum(o.getEmpnum());
+		effict.setEmpName(o.getName());
+		effict.setHireDate(o.getEntrytime());
+		effict.setAdjustReason(adjustReason);
+		effict.setOldDeptId(employee.getDepartment());
+		SysOrg org = SysOrg.dao.findById(employee.getDepartment());
+		effict.setOldDeptName(org.getName());
+		effict.setOldPdvalue(employee.getWorkstation());
+		effict.setOldPdname(duty.get(employee.getWorkstation()));
+		effict.setOldSalaryLevel(employee.getSalaryLevel());
+		effict.setOldSalary(Double.valueOf(employee.getSalary()));
+		effict.setNewDeptId(o.getDepartment());
+		org = SysOrg.dao.findById(o.getDepartment());
+		effict.setNewDeptName(org.getName());
+		effict.setNewPdvalue(o.getWorkstation());
+		effict.setNewPdname(duty.get(o.getWorkstation()));
+		effict.setNewSalaryLevel(o.getSalaryLevel());
+		effict.setNewSalary(o.getSalary().doubleValue());
+		effict.setEffectDate(effectDate);
+		effict.setOtherRemarks(otherRemarks);
+		effict.setStatus("0");
+		effict.setCuser(ShiroKit.getUserId());
+		effict.setCtime(DateUtil.getCurrentTime());
+		effict.save();
+
+		/*XdEmployee o = getModel(XdEmployee.class);
+		String id = o.getId();
+		XdEmployee employee = XdEmployee.dao.findById(id);
 		String today = DateTimeFormatter.ofPattern("yyyy-MM-dd").format(LocalDate.now());
 		String effectDate = getPara("effectDate");
 		String adjustReason = getPara("adjustReason");
@@ -1418,7 +1459,7 @@ public class XdEmployeeController extends BaseController {
 		xdEffict.setEffectDate(effectDate);
 		xdEffict.setCtime(DateUtil.getCurrentTime());
 		xdEffict.setCuser(ShiroKit.getUserId());
-		xdEffict.save();
+		xdEffict.save();*/
 		renderSuccess();
 	}
 
@@ -1475,18 +1516,36 @@ public class XdEmployeeController extends BaseController {
 		xdEffict.setCtime(DateUtil.getCurrentTime());
 		xdEffict.setCuser(ShiroKit.getUserId());
 		xdEffict.save();
-		String chrecord = o.getChrecord();
-		if(chrecord!=null && !"".equals(chrecord) && !chrecord.endsWith(";")){
-			 chrecord=chrecord+";";
+
+		if(!employee.getWorkstation().equals(o.getWorkstation())){
+			String chrecord = o.getChrecord();
+			if(chrecord!=null && !"".equals(chrecord) && !chrecord.endsWith(";")){
+				chrecord=chrecord+";";
+			}
+			int size = XdEffict.dao.find("select * from  xd_effict where eid='" + o.getId() + "' and  status ='1'").size();
+//			String[] dateArr = effectDate.split("-");
+//			chrecord=chrecord+size+"、"+dateArr[0]+"年"+dateArr[1]+"月"+xdEffict.getNewDeptName()+xdEffict.getNewPdname();
+			chrecord=chrecord+size+"、"+xdEffict.getNewDeptName()+xdEffict.getNewPdname()+effectDate;
+			if(xdEffict.getOtherRemarks()!=null && !"".equals(xdEffict.getOtherRemarks())){
+				chrecord=chrecord+"("+xdEffict.getOtherRemarks()+")";
+			}
+			chrecord=chrecord+";";
+			o.setChrecord(chrecord);
 		}
-		int size = XdEffict.dao.find("select * from  xd_effict where eid='" + o.getId() + "' and  status ='1'").size();
-		String[] dateArr = effectDate.split("-");
-		chrecord=chrecord+size+"、"+dateArr[0]+"年"+dateArr[1]+"月"+xdEffict.getNewDeptName()+xdEffict.getNewPdname();
-		if(xdEffict.getOtherRemarks()!=null && !"".equals(xdEffict.getOtherRemarks())){
-			chrecord=chrecord+"("+xdEffict.getOtherRemarks()+")";
+		if(employee.getSalary()!=o.getSalary()){
+			String salaryRecord = o.getSaladjrecord();
+			if(salaryRecord!=null && !"".equals(salaryRecord) && !salaryRecord.endsWith(";")){
+				salaryRecord=salaryRecord+";";
+			}
+			int size = XdEffict.dao.find("select * from  xd_effict where eid='" + o.getId() + "' and  status ='1'").size();
+			salaryRecord=salaryRecord+size+"、"+xdEffict.getNewSalaryLevel()+xdEffict.getNewSalary()+effectDate;
+			if(xdEffict.getOtherRemarks()!=null && !"".equals(xdEffict.getOtherRemarks())){
+				salaryRecord=salaryRecord+"("+xdEffict.getOtherRemarks()+")";
+			}
+			salaryRecord=salaryRecord+";";
+//			o.setChrecord(chrecord);
+			o.setSaladjrecord(salaryRecord);
 		}
-		chrecord=chrecord+";";
-		o.setChrecord(chrecord);
 		o.update();
 
 	/*		List<XdEffict> xdEfficts = XdEffict.dao.find("select * from  xd_effict where fieldtype='1' and status='0' and eid='" + id + "'");

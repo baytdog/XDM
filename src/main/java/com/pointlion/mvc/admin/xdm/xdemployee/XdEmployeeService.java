@@ -84,7 +84,12 @@ public class XdEmployeeService{
 		}
 
 		if(StrKit.notBlank(inductionstatus)){
-			sql=sql+ " and o.inductionstatus='"+inductionstatus+"'";
+//			sql=sql+ " and o.inductionstatus='"+inductionstatus+"'";
+			if(inductionstatus.equals("1")){
+				sql=sql+ " and o.status='0'";
+			}else{
+				sql=sql+ " and o.status='1'";
+			}
 		}
 		if(StrKit.notBlank(departime)){
 			sql=sql+ " and o.departime like '"+departime+"%'";

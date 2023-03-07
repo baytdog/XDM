@@ -100,14 +100,9 @@
 	let certLevel = certLevelList.split(",");
 	let certLevelMap = new Map();
 	for(let item of certLevel) {
-		/*if(item.value!=''){
-			projectMap.set(item.value, item.text);
-		}*/
-		console.log(item.name)
 		certLevelMap.set(item.split("=")[0], item.split("=")[1])
 
 	}
-	console.log(certLevelMap);
 	let col = [{field: 'checked', checkbox : true, align: 'center'},
 
 		{field: 'department', title: '部门', align: 'center',
@@ -124,18 +119,15 @@
 				let  returnVal="";
 				let split = value.split(",");
 				for (let i = 0; i < split.length; i++) {
-					console.log(certLevelMap.get(split[i]))
 					if(certLevelMap.get(split[i]).indexOf("级")!=-1){
 						returnVal=returnVal+"/"+certLevelMap.get(split[i])
 					}else{
 						returnVal=returnVal+certLevelMap.get(split[i])
 					}
-
 				}
 				if(returnVal.indexOf("级")!=-1){
 					return returnVal.slice(1);
 				}
-
 				return returnVal;
 			}
 			return value;
@@ -145,10 +137,20 @@
 		{field: 'openDate', title: '发证日期', align: 'center'},
 		{field: 'validity', title: '有效期/年', align: 'center'},
 		{field: 'closeDate', title: '到期日', align: 'center'},
+		{field: 'validate_date', title: '审复证/教育时间', align: 'center'},
 		{field: 'idnum', title: '身份证号', align: 'center'},
 		{field: 'certnum', title: '证书编号', align: 'center'},
+		{field: 'holder', title: '证书持有', align: 'center',formatter:function(value,row,index){
+				if(value=='1'){
+					return "公司持有";
+				}else if(value=='0'){
+					return "员工持有";
+				}else{
+					return "";
+				}
+			}},
 		{field: 'remak', title: '备注', align: 'center'},
-		{field: 'certstatus', title: '证件说明', align: 'center',
+	/*	{field: 'certstatus', title: '证件说明', align: 'center',
 			formatter:function(value,row,index){
 				if(value=='1'){
 					return "原件";
@@ -158,8 +160,8 @@
 					return "";
 				}
 			}
-		},
-		{field: 'control', title: '操作', align: 'left', width:'200',
+		},*/
+		{field: 'control', title: '操作', align: 'center', width:'180',
 			formatter:function(value,row,index){
 				//通过formatter可以自定义列显示的内容
 				//value：当前field的值，即id

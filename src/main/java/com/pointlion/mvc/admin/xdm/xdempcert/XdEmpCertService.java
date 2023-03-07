@@ -129,12 +129,8 @@ public class XdEmpCertService{
 						SimpleUser user = ShiroKit.getLoginUser();
 						String time = DateUtil.getCurrentTime();
 						Map<String,String> certLevelMap=new HashMap<>();
-						XdDict.dao.find("select * from xd_dict where  type ='certLevel' ").stream().forEach(new Consumer<XdDict>() {
-							@Override
-							public void accept(XdDict xdDict) {
-								certLevelMap.put(xdDict.getName(),xdDict.getValue());
-							}
-						});
+						XdDict.dao.find("select * from xd_dict where  type ='certLevel' ")
+								.stream().forEach(xdDict->certLevelMap.put(xdDict.getName(),xdDict.getValue()));
 						for(int i = 1;i<list.size();i++){//从第二行开始取
 							List<String> empCertStr = list.get(i);
 							XdEmpCert empCert=new XdEmpCert();
@@ -335,7 +331,7 @@ public class XdEmpCertService{
 				}
 
 			}else{
-				levles=certLevelMap.get("B2");
+				levles=certLevelMap.get(level);
 			}
 
 		}
