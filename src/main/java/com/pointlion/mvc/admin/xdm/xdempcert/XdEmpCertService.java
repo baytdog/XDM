@@ -8,25 +8,20 @@ import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.plugin.activerecord.Record;
 import com.jfinal.plugin.activerecord.tx.Tx;
 import com.pointlion.mvc.common.model.*;
+import com.pointlion.mvc.common.utils.DateUtil;
 import com.pointlion.mvc.common.utils.UuidUtil;
 import com.pointlion.mvc.common.utils.XdOperUtil;
 import com.pointlion.mvc.common.utils.office.excel.ExcelUtil;
 import com.pointlion.plugin.shiro.ShiroKit;
-import com.pointlion.mvc.common.utils.DateUtil;
 import com.pointlion.plugin.shiro.ext.SimpleUser;
 import org.apache.commons.lang3.StringUtils;
 
-import javax.swing.*;
 import java.io.File;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.*;
-import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Stream;
 
 public class XdEmpCertService{
 	public static final XdEmpCertService me = new XdEmpCertService();
@@ -42,8 +37,8 @@ public class XdEmpCertService{
 	/***
 	 * get page
 	 */
-	public Page<Record> getPage(int pnum,int psize,String dept,String name,String certTitle,String certAuth,String sny,String ctime){
-		String userId = ShiroKit.getUserId();
+	public Page<Record> getPage(int pNum,int pSize,String dept,String name,String certTitle,String certAuth,String sny,String ctime){
+//		String userId = ShiroKit.getUserId();
 		String sql  = " from "+TABLE_NAME+" o where status='1'";
 		if(StrKit.notBlank(dept)){
 			sql = sql + " and o.department = '"+dept+"'";
@@ -52,10 +47,10 @@ public class XdEmpCertService{
 			sql = sql + " and o.ename like '%"+name+"%'";
 		}
 		if(StrKit.notBlank(certTitle)){
-			sql = sql + " and o.certTile like '%"+certTitle+"%'";
+			sql = sql + " and o.certid = '"+certTitle+"'";
 		}
 		if(StrKit.notBlank(certAuth)){
-			sql = sql + " and o.certAuthName like '%"+certAuth+"%'";
+			sql = sql + " and o.certauthvalue = '"+certAuth+"'";
 		}
 		if(StrKit.notBlank(sny)){
 			sql = sql + " and o.sny ='"+sny+"'";
@@ -64,11 +59,11 @@ public class XdEmpCertService{
 			sql = sql + " and o.ctime  like '"+ctime+"%'";
 		}
 		sql = sql + " order by o.ctime desc";
-		return Db.paginate(pnum, psize, " select * ", sql);
+		return Db.paginate(pNum, pSize, " select * ", sql);
 	}
 
 
-	public Page<Record> getPage(int pnum,int psize,String dept,String sny){
+	public Page<Record> getPage(int pNum,int pSize,String dept,String sny){
 		String userId = ShiroKit.getUserId();
 		String sql  = " from "+TABLE_NAME+" o  where status='1' and o.closeDate  is not null and (TO_DAYS(str_to_date(o.closeDate, '%Y-%m-%d')) - TO_DAYS(now()))<180";
 
@@ -80,7 +75,7 @@ public class XdEmpCertService{
 		}
 
 		sql = sql + " order by o.closeDate ";
-		return Db.paginate(pnum, psize, "  select o.*, TO_DAYS(str_to_date(o.closeDate, '%Y-%m-%d')) - TO_DAYS(now()) diffdate ,o.closeDate endtime", sql);
+		return Db.paginate(pNum, pSize, "  select o.*, TO_DAYS(str_to_date(o.closeDate, '%Y-%m-%d')) - TO_DAYS(now()) diffdate ,o.closeDate endtime", sql);
 	}
 
 	/***
@@ -423,11 +418,11 @@ public class XdEmpCertService{
 	}
 	public File exportExcel(String path, String certTitle){
 
-		String sql  = "select * from "+TABLE_NAME+" o   where 1=1";
+		String sql  = "select * from "+TABLE_NAME+" o   where status='1'";
 		if(StrKit.notBlank(certTitle)){
-			sql = sql + " and o.certTile like '%"+certTitle+"%'";
+			sql = sql + " and o.certId = '"+certTitle+"'";
 		}
-		sql = sql + " order by o.ctime desc,o.eid";
+		sql = sql + " order by o.department,certTile";
 
 
 		List<XdEmpCert> xdEmpCerts = XdEmpCert.dao.find(sql);
@@ -437,10 +432,11 @@ public class XdEmpCertService{
 		List<List<String>> rows = new ArrayList<List<String>>();
 		List<String> first = new ArrayList<String>();
 		List<String> second = new ArrayList<String>();
-		if(xdEmpCerts==null){
-			first.add(certTitle);
+		if(StrKit.notBlank(certTitle)){
+			XdCertificate certType = XdCertificate.dao.findById(certTitle);
+			first.add(certType.getCertificateTitle());
 		}else{
-			first.add(xdEmpCerts.get(0).getCertTile());
+			first.add("公司所有证书");
 		}
 
 
@@ -453,10 +449,12 @@ public class XdEmpCertService{
 		second.add("发证日期");
 		second.add("有效期/年");
 		second.add("到期日");
+		second.add("审证复证/继续教育\n" +
+				"时间");
 		second.add("身份证号码");
 		second.add("证书编号");
-		second.add("备注");
-		second.add("");
+		second.add("备注1");
+		second.add("备注2");
 		rows.add(first);
 		rows.add(second);
 		for (int i = 0; i < xdEmpCerts.size(); i++) {
@@ -483,10 +481,17 @@ public class XdEmpCertService{
 			row.add(empCert.getOpenDate());
 			row.add(empCert.getValidity());
 			row.add(empCert.getCloseDate());
+			row.add(empCert.getValidateDate());
 			row.add(empCert.getIdnum());
 			row.add(empCert.getCertnum());
-			row.add(empCert.getRemak());
-			String certstatus = empCert.getCertstatus();
+			String holder = empCert.getHolder();
+			if(holder==null){
+				row.add("");
+			}else{
+				row.add("0".equals(holder)?"员工持有":"公司持有");
+			}
+
+			/*String certstatus = empCert.getCertstatus();
 			if(certstatus==null|| certstatus.equals("")){
 				certstatus="";
 			}else{
@@ -496,7 +501,9 @@ public class XdEmpCertService{
 					certstatus="纸质复印件";
 				}
 			}
-			row.add(certstatus);
+			row.add(certstatus);*/
+
+			row.add(empCert.getRemak());
 
 			rows.add(row);
 		}

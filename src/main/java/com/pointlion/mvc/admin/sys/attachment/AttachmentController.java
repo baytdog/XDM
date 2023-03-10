@@ -28,7 +28,7 @@ import com.pointlion.util.MyPicRender;
 
 public class AttachmentController extends BaseController {
 	public static final AttachmentService service = AttachmentService.me;
-	private static  final String baseUrl ="D:\\apache-tomcat-8.5.83";
+	private static  final String baseUrl ="D:\\apache-tomcat-7.0.82";
 	/***
 	 * 列表页面
 	 */

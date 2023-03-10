@@ -2,6 +2,7 @@ package com.pointlion.mvc.common.utils.office.excel;
 
 import cn.hutool.poi.excel.ExcelWriter;
 import cn.hutool.poi.excel.StyleSet;
+import cn.hutool.poi.excel.style.StyleUtil;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.*;
@@ -255,10 +256,33 @@ public class ExcelUtil {
     public static File empCertByTitleFile(String path,List<List<String>> rows){
         //通过工具类创建writer
         ExcelWriter writer = cn.hutool.poi.excel.ExcelUtil.getWriter(path);
+        StyleSet styleSet = writer.getStyleSet();
+        CellStyle headCellStyle = styleSet.getHeadCellStyle();
+//        StyleUtil.setColor(headCellStyle, IndexedColors.YELLOW, FillPatternType.SOLID_FOREGROUND);
 
-        writer.write(rows, true);
+        Font font = writer.createFont();
+        font.setBold(false);
+//        font.setColor(Font.COLOR_RED);
+        font.setItalic(false);
+        font.setFontName("仿宋");
+        font.setFontHeightInPoints((short) 10);
+        writer.getStyleSet().setFont(font, false);
 
-        writer.merge(0,0,0,12,rows.get(0).get(0),false);
+        writer.writeHeadRow(rows.get(0));
+        writer.writeHeadRow(rows.get(1));
+        writer.write(rows.subList(2,rows.size()));
+        for (int i = 0; i < rows.get(1).size(); i++) {
+            writer.autoSizeColumn(i);
+        }
+        writer.merge(0,0,0,rows.get(2).size()-1,rows.get(0).get(0),true);
+        writer.setRowHeight(0,50);
+
+        for (int j = 1; j < rows.size(); j++) {
+            writer.setRowHeight(j,30);
+        }
+
+
+
 
         //关闭writer，释放内存
         writer.close();

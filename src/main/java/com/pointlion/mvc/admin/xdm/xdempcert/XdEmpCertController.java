@@ -42,6 +42,15 @@ public class XdEmpCertController extends BaseController {
 		List<XdDict> certLevelList = dictListByType.get("certLevel");
 //				XdDict.dao.find("select * from xd_dict where  type ='certLevel' order by sortnum");
 		setAttr("certLevelList",certLevelList);
+
+		List<XdCertificate> certList = XdCertificate.dao.find("select * from xd_certificate where cert_type is not null order by cert_type");
+
+		setAttr("certList",certList);
+
+		List<XdDict> licenseAuthList = dictListByType.get("licenseauth");
+		setAttr("licenseAuths",licenseAuthList);
+
+
 		String sertStr="";
 		Map<String,String> map =new HashMap<>();
 		for (XdDict dict : certLevelList) {
@@ -59,8 +68,8 @@ public class XdEmpCertController extends BaseController {
 
 		String dept =  getPara("dept","");
 		String name = java.net.URLDecoder.decode(getPara("name",""),"UTF-8");
-		String certTitle = java.net.URLDecoder.decode(getPara("certTitle",""),"UTF-8");
-		String certAuth = java.net.URLDecoder.decode(getPara("certAuth",""),"UTF-8");
+		String certTitle = getPara("certTitle","");
+		String certAuth = getPara("certAuth","");
 		String sny = java.net.URLDecoder.decode(getPara("sny",""),"UTF-8");
 		String ctime = java.net.URLDecoder.decode(getPara("ctime",""),"UTF-8");
     	Page<Record> page = service.getPage(Integer.valueOf(curr),Integer.valueOf(pageSize),dept,name,certTitle,certAuth,sny,ctime);
@@ -237,7 +246,7 @@ public class XdEmpCertController extends BaseController {
 	public void exportExcel2() throws UnsupportedEncodingException {
 
 //		String certTitle = java.net.URLDecoder.decode(getPara("certTitle",""),"utf-8");
-		String certTitle = new String(getPara("certTitle","").getBytes("ISO-8859-1"), "utf-8");
+		String certTitle = getPara("certTitle","");
 		String path = this.getSession().getServletContext().getRealPath("")+"/upload/export/"+ DateUtil.format(new Date(),21)+".xlsx";
 		File file = service.exportExcel(path,certTitle);
 		renderFile(file);

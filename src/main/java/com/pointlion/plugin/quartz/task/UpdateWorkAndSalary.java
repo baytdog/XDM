@@ -37,11 +37,21 @@ public class UpdateWorkAndSalary implements Job {
                 employee.setSalaryLevel(xdEffict.getNewSalaryLevel());
                 if(!employee.getWorkstation().equals(xdEffict.getNewPdvalue())){
                     String chrecord = employee.getChrecord();
-                    if(chrecord!=null && !"".equals(chrecord) && !chrecord.endsWith(";")){
+                 /*   if(chrecord!=null && !"".equals(chrecord) && !chrecord.endsWith(";")){
                         chrecord=chrecord+";";
+                    }*/
+//                    int size = XdEffict.dao.find("select * from  xd_effict where eid='" + employee.getId() + "' and  status ='1'").size();
+                    int size=0;
+                    if(chrecord==null || "".equals(chrecord)){
+                        size=1;
+                        chrecord="";
+                    }else{
+                        if(!chrecord.endsWith(";")){
+                            chrecord=chrecord+";";
+                        }
+                        size=chrecord.split("、").length;
                     }
-                    int size = XdEffict.dao.find("select * from  xd_effict where eid='" + employee.getId() + "' and  status ='1'").size();
-                    chrecord=chrecord+size+"、"+xdEffict.getNewDeptName()+xdEffict.getNewPdname()+effectDate;
+                    chrecord=chrecord+" "+size+"、"+xdEffict.getNewDeptName()+xdEffict.getNewPdname()+effectDate;
                     if(xdEffict.getOtherRemarks()!=null && !"".equals(xdEffict.getOtherRemarks())){
                         chrecord=chrecord+"("+xdEffict.getOtherRemarks()+")";
                     }
@@ -53,8 +63,18 @@ public class UpdateWorkAndSalary implements Job {
                     if(salaryRecord!=null && !"".equals(salaryRecord) && !salaryRecord.endsWith(";")){
                         salaryRecord=salaryRecord+";";
                     }
-                    int size = XdEffict.dao.find("select * from  xd_effict where eid='" + employee.getId() + "' and  status ='1'").size();
-                    salaryRecord=salaryRecord+size+"、"+xdEffict.getNewSalaryLevel()+xdEffict.getNewSalary()+effectDate;
+//                    int size = XdEffict.dao.find("select * from  xd_effict where eid='" + employee.getId() + "' and  status ='1'").size();
+                    int size=0;
+                    if(salaryRecord==null || "".equals(salaryRecord)){
+                        size=1;
+                        salaryRecord="";
+                    }else{
+                        if(!salaryRecord.endsWith(";")){
+                            salaryRecord=salaryRecord+";";
+                        }
+                        size=salaryRecord.split("、").length;
+                    }
+                    salaryRecord=salaryRecord+" "+size+"、"+xdEffict.getNewSalaryLevel()+xdEffict.getNewSalary()+"\t"+effectDate;
                     if(xdEffict.getOtherRemarks()!=null && !"".equals(xdEffict.getOtherRemarks())){
                         salaryRecord=salaryRecord+"("+xdEffict.getOtherRemarks()+")";
                     }

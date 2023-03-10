@@ -1519,13 +1519,25 @@ public class XdEmployeeController extends BaseController {
 
 		if(!employee.getWorkstation().equals(o.getWorkstation())){
 			String chrecord = o.getChrecord();
-			if(chrecord!=null && !"".equals(chrecord) && !chrecord.endsWith(";")){
+		/*	if(chrecord!=null && !"".equals(chrecord) && !chrecord.endsWith(";")){
 				chrecord=chrecord+";";
-			}
-			int size = XdEffict.dao.find("select * from  xd_effict where eid='" + o.getId() + "' and  status ='1'").size();
+			}*/
+			//int size = XdEffict.dao.find("select * from  xd_effict where eid='" + o.getId() + "' and  status ='1'").size();
 //			String[] dateArr = effectDate.split("-");
 //			chrecord=chrecord+size+"、"+dateArr[0]+"年"+dateArr[1]+"月"+xdEffict.getNewDeptName()+xdEffict.getNewPdname();
-			chrecord=chrecord+size+"、"+xdEffict.getNewDeptName()+xdEffict.getNewPdname()+effectDate;
+			int size=0;
+			if(chrecord==null || "".equals(chrecord)){
+				size=1;
+				chrecord="";
+			}else{
+				if(!chrecord.endsWith(";")){
+					chrecord=chrecord+";";
+				}
+				size=chrecord.split("、").length;
+			}
+
+
+			chrecord=chrecord+" "+size+"、"+xdEffict.getNewDeptName()+xdEffict.getNewPdname()+effectDate;
 			if(xdEffict.getOtherRemarks()!=null && !"".equals(xdEffict.getOtherRemarks())){
 				chrecord=chrecord+"("+xdEffict.getOtherRemarks()+")";
 			}
@@ -1534,11 +1546,23 @@ public class XdEmployeeController extends BaseController {
 		}
 		if(employee.getSalary()!=o.getSalary()){
 			String salaryRecord = o.getSaladjrecord();
-			if(salaryRecord!=null && !"".equals(salaryRecord) && !salaryRecord.endsWith(";")){
+			/*if(salaryRecord!=null && !"".equals(salaryRecord) && !salaryRecord.endsWith(";")){
 				salaryRecord=salaryRecord+";";
+			}*/
+			//int size = XdEffict.dao.find("select * from  xd_effict where eid='" + o.getId() + "' and  status ='1'").size();
+			int size=0;
+			if(salaryRecord==null || salaryRecord.equals("")){
+				size=1;
+				salaryRecord="";
+			}else{
+				if(!salaryRecord.endsWith(";")){
+					salaryRecord=salaryRecord+";";
+				}
+				size=salaryRecord.split("、").length;
 			}
-			int size = XdEffict.dao.find("select * from  xd_effict where eid='" + o.getId() + "' and  status ='1'").size();
-			salaryRecord=salaryRecord+size+"、"+xdEffict.getNewSalaryLevel()+xdEffict.getNewSalary()+effectDate;
+
+
+			salaryRecord=salaryRecord+" "+size+"、"+xdEffict.getNewSalaryLevel()+xdEffict.getNewSalary()+"\t"+effectDate;
 			if(xdEffict.getOtherRemarks()!=null && !"".equals(xdEffict.getOtherRemarks())){
 				salaryRecord=salaryRecord+"("+xdEffict.getOtherRemarks()+")";
 			}
