@@ -197,6 +197,7 @@ public class XdOvertimeSummaryController extends BaseController {
 				o.setSource("2");
 				o.setCreateDate(DateUtil.getCurrentTime());
 				o.setCreateUser(ShiroKit.getUserId());
+				o.setSuperDays(o.getApplyType());
 				o.save();
 			}else{
 				first.setApplyStart(o.getApplyStart());
@@ -331,6 +332,7 @@ public class XdOvertimeSummaryController extends BaseController {
 				o.setSource("2");
 				o.setCreateDate(DateUtil.getCurrentTime());
 				o.setCreateUser(ShiroKit.getUserId());
+				o.setSuperDays( o.getApplyType());
 				o.save();
 			}else{
 				first.setActStart(o.getActStart());

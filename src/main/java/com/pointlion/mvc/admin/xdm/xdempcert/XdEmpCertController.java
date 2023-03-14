@@ -229,17 +229,17 @@ public class XdEmpCertController extends BaseController {
 	}
 
 
-	public void exportExcel() throws UnsupportedEncodingException {
+	public void exportExcel() {
 
 
-		String name = java.net.URLDecoder.decode(getPara("name",""),"UTF-8");
+		/*String name = java.net.URLDecoder.decode(getPara("name",""),"UTF-8");
 		String serviceUnit = java.net.URLDecoder.decode(getPara("serviceUnit",""),"UTF-8");
 		String job = java.net.URLDecoder.decode(getPara("job",""),"UTF-8");
 		String addr = java.net.URLDecoder.decode(getPara("addr",""),"UTF-8");
 		String entryDate =  getPara("entryDate","");
-		String departDate =  getPara("departDate","");
+		String departDate =  getPara("departDate","");*/
 		String path = this.getSession().getServletContext().getRealPath("")+"/upload/export/"+ DateUtil.format(new Date(),21)+".xlsx";
-		File file = service.exportExcel(path,name,serviceUnit,job,addr,entryDate,departDate);
+		File file = service.exportExcel(path);
 		renderFile(file);
 	}
 	

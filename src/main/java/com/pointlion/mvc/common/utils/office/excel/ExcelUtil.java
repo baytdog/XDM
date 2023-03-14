@@ -205,9 +205,18 @@ public class ExcelUtil {
     public static File empCertFile(String path,List<List<String>> rows){
         //通过工具类创建writer
         ExcelWriter writer = cn.hutool.poi.excel.ExcelUtil.getWriter(path);
+   /*     StyleSet styleSet = writer.getStyleSet();
+
+        Font font = writer.createFont();
+        font.setBold(false);
+        font.setItalic(false);
+        font.setFontName("仿宋");
+        font.setFontHeightInPoints((short) 10);
+        writer.getStyleSet().setFont(font, false);
+
+        writer.writeHeadRow(rows.get(0));*/
 
         writer.write(rows, true);
-
         Sheet sheet = writer.getSheet();
 
 
@@ -247,6 +256,14 @@ public class ExcelUtil {
         writer.writeCellValue(6, 1, sumeb);
         writer.writeCellValue(7, 1, sumzn);
 
+        /*writer.setRowHeight(0,50);
+
+        for (int j = 1; j < rows.size(); j++) {
+            writer.setRowHeight(j,30);
+        }
+        for (int i = 0; i < rows.get(2).size(); i++) {
+            writer.autoSizeColumn(i);
+        }*/
 
         //关闭writer，释放内存
         writer.close();

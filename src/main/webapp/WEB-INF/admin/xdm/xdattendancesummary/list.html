@@ -7,6 +7,59 @@
 	.table{
 		table-layout: fixed;
 	}
+
+
+	::-webkit-scrollbar
+	{
+		width: 5px;
+		height: 15px;
+		background-color: #F5F5F5;
+	}
+
+
+	/*.fixed-table-header {
+		border-right: solid 1px #ddd;
+		border-top: solid 1px #ddd;
+	}
+	.fixed-table-header table  {
+		border-top: solid 0px #ddd !important;
+		margin-top:-1px;
+	}*/
+	/*::-webkit-scrollbar {//滚动条的宽度
+	!*width:9px;*!
+		height:190px;
+	}*/
+
+	/*p.fixed-table-scroll-inner {
+		width: 100%;
+		height: 200px;
+		background-color: red;
+	}*/
+
+/*	.scroll-top.in {
+		background-color: #00B83F;
+		color: #fff;
+	}*/
+
+/*	::-webkit-scrollbar-thumb
+	{
+		!*border-radius: 10px;  *!
+		-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+		background-color: yellow;
+	}*/
+
+
+
+	/*	div.fixed-table-scroll-outer {
+            top: 0;
+            left: 0;
+            visibility: hidden;
+            width: 200px;
+            height: 150px;
+            overflow: hidden;
+            background-color: yellow;
+        }*/
+
 </style>
 <div id="page-content">
 	<div class="col-sm-12 eq-box-sm">
@@ -34,6 +87,7 @@
 						<div class="form-group">
 							<input id="emp_name" placeholder="姓名" class="form-control">
 						</div>
+
 						<div class="form-group">
 							<select class="selectpicker form-control"  id="year"  >
 								<option value="">------请选择年份------</option>
@@ -45,6 +99,8 @@
 								<option value="2028">2028年</option>
 							</select>
 						</div>
+
+
 						<div class="form-group">
 							<select class="selectpicker form-control"  id="month"  >
 								<option value="">------请选择月份------</option>
@@ -71,7 +127,7 @@
 				</div>
 			</div>
 			<div class="panel ">
-				<div class="panel-body">
+				<div class="panel-body"  >
 					<!--				<a id="add" class="btn btn-primary data-toolbar" href="#(ctx)/admin/xd/xdattendancesummary/getEditPage?view=edit"><i class="demo-pli-add"></i> 添加</a>-->
 					<a id="del" class="btn btn-danger data-toolbar" onclick="delSel()" href="javascript:void(0);"><i class="demo-pli-cross"></i> 批量删除</a>
 					<a id="filePicker"  href="javascript:void(0);" ><i class="demo-pli-add"></i> 导入</a>
@@ -79,16 +135,85 @@
 					<a id="rewardPunish" class="btn btn-primary data-toolbar" onclick="exportRewardPunish()" target="_blank"><i class="demo-pli-download-from-cloud"></i> 导出绩效奖惩</a>
 					<a id="checkIn" class="btn btn-primary data-toolbar" onclick="exportCheckIn()" target="_blank"><i class="demo-pli-download-from-cloud"></i> 导出考勤</a>
 					<a id="onDuty" class="btn btn-primary data-toolbar" onclick="exportOnDuty()" target="_blank"><i class="demo-pli-download-from-cloud"></i> 导出值班汇总</a>
-					<table id="pageTable" class="demo-add-niftycheck table "
-						   data-toolbar="#del,#add,#filePicker,#export,#rewardPunish,#checkIn,#onDuty"
-						   data-width="90px"
-						   ></table>
+						<table id="pageTable" class="demo-add-niftycheck table "
+							   data-toolbar="#del,#add,#filePicker,#export,#rewardPunish,#checkIn,#onDuty"
+							   data-width="90px"
+						></table>
 				</div>
 			</div>
 		</div>
 	</div>
 </div>
+<div class="modal fade " id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content panel "  >
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title" id="myModalLabel">班次调整</h4>
+			</div>
+			<div class="modal-body panel-body ">
+				<form id="editFormp" class="form-horizontal">
 
+					<div class="form-group">
+
+						<label class="col-md-2 control-label">姓名</label>
+						<div class="col-md-4">
+							<input type="text"  name="empName" class="form-control"  id="empName" readonly="readonly"  >
+						</div>
+						<label class="col-md-2 control-label">第几天</label>
+						<div class="col-md-4">
+							<input type="hidden" id="oldValue" name="oldValue" class="form-control"   readonly="readonly"  >
+							<input type="hidden" id="index" name="index" class="form-control"   readonly="readonly"  >
+							<input type="hidden" id="id" name="id" class="form-control"   readonly="readonly"  >
+							<input type="hidden" id="field" name="field" class="form-control"   readonly="readonly"  >
+							<input type="text" id="days" name="days" class="form-control"   readonly="readonly"  >
+						</div>
+					</div>
+					<div class="form-group">
+
+						<label class="col-md-2 control-label">班次</label>
+						<div class="col-md-4">
+							<input    type="hidden"  id="shift"  style="width: 20px;height: 20px;margin-top: 10px;">
+							<select class="selectpicker form-control"  id="shiftSelect"  data-live-search="true" >
+								<option value="">------请选择班次------</option>
+								#for(shift:shiftList)
+								<option value="#(shift.shiftname)">#(shift.shiftname)</option>
+								#end
+							</select>
+						</div>
+						<label class="col-md-2 control-label">全天加班</label>
+						<div class="col-md-4">
+							<input    type="checkbox" style="width: 20px;height: 20px;margin-top: 10px;" name="ovtime">
+						</div>
+
+					</div>
+					<div class="form-inline">
+						<label class="col-md-2 control-label">加班时间</label>
+
+						<input id="startHour" type="number"   oninput="if(value>23||value<0)value=23;if(value<=23&& value>=0) value=parseInt(value)"  class="form-control" min="1" max="10" style="width: 99px;"><span style="font-size: 16px;font-weight:bold">&nbsp;:&nbsp;</span><input id="startMin" type="number"   oninput="if(value>59||value<0)value=59;if(value<=9&& value>=0 && value.length>=1) value='0'+parseInt(value);if(value<=59&& value>=10) value=parseInt(value)" class="form-control" style="width: 99px;">
+						<span style="font-size: 16px;padding-left: 5px;padding-right: 5px;">&nbsp;至&nbsp;</span>
+						<input id="endHour" type="number"   oninput="if(value>23||value<0)value=23;if(value<=23&& value>=0) value=parseInt(value)"  class="form-control" style="width: 98px;"><span style="font-size: 16px;font-weight:bold">&nbsp;:&nbsp;</span><input id="endMin" type="number"   oninput="if(value>59||value<0)value=59;if(value<=9&& value>=0 && value.length>=1) value='0'+parseInt(value);if(value<=59&& value>=10) value=parseInt(value)" class="form-control" style="width: 99px;">
+
+					</div>
+
+					<div class="form-group">
+
+						<label class="col-md-2 control-label">加班时长</label>
+						<div class="col-md-4">
+							<input type="number"  name="otHour" class="form-control"  id="otHour"   >
+						</div>
+					</div>
+
+
+				</form>
+			</div>
+			<div class="modal-footer" style="text-align: center;">
+				<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+				<button type="button" class="btn btn-primary"  onclick="modSave()">保存</button>
+			</div>
+		</div>
+	</div>
+</div>
 <script>
 
 	function createTable(daysNum,weekLists,holidayLists){
@@ -223,6 +348,7 @@
 	holidayLists=holidayLists.replace("[","").replace("]","").split(",")
 	createTable(daysNum,weekLists,holidayLists);
 	var opt = {
+		height: 690,
 		//请求方法
 		method: 'get',
 		//是否显示行间隔色
@@ -240,9 +366,9 @@
 		//我设置了这一项，但是貌似没起作用，而且我这默认是0,- -
 		//pageNumber:1,
 		//每页的记录行数（*）
-		pageSize: 10,
+		pageSize: 25,
 		//可供选择的每页的行数（*）
-		pageList: [10, 25, 50, 100],
+		pageList: [25, 50, 100,200,400],
 		//这个接口需要处理bootstrap table传递的固定参数,并返回特定格式的json数据
 		url: ctx+"/admin/xd/xdattendancesummary/listData",
 		//默认值为 'limit',传给服务端的参数为：limit, offset, search, sort, order Else
@@ -459,10 +585,134 @@
 				$("input[name='btSelectItem']").prop('checked',false);
 			}
 		});
+
+
 	})
 </script>
 
+
+
+
 <script>
+$(function () {
+
+	let shift=$("#shift").val();
+	if(shift){
+		$('#shiftSelect').selectpicker('val',shift.split(",")).trigger("change");
+	}
+	$('#shiftSelect').on('changed.bs.select', function (e) {
+		$('#shift').val($('#shiftSelect').val())
+	});
+})
+
+function modSave(){
+	let shift = $('#shift').val();
+	let id = $('#id').val();
+	let index = $('#index').val();
+	let field = $('#field').val();
+	let oldValue = $('#oldValue').val();
+	let startHour = $('#startHour').val();
+	let endHour = $('#endHour').val();
+	let startMin = $('#startMin').val();
+	let endMin = $('#endMin').val();
+	let otHour = $('#otHour').val();
+	let overtime = $("input[name='ovtime']:checked").val();
+	console.log(shift)
+	console.log(overtime)
+	console.log(id)
+	console.log(index)
+	console.log(field)
+	console.log(oldValue)
+	console.log(startHour)
+	console.log(endHour)
+	console.log(startMin)
+	console.log(endMin)
+	console.log(otHour)
+	let start="";
+	let end="";
+	if(startHour){
+		if(startMin){
+			start=startHour+":"+startMin;
+		}else {
+			start=startHour+":00";
+		}
+
+	}
+	if(endHour){
+		if(endMin){
+			end=endHour+":"+endMin;
+		}else {
+			end=endHour+":00";
+		}
+
+	}
+	console.log(start)
+	console.log(end)
+	//return;
+
+	let data = common_ajax.ajaxFunc("/admin/xd/xdattendancesummary/updateCell",{"id":id,"oldValue":oldValue,"modValue":shift,"overtime":overtime,"field":field,"type":"1","start":start,"end":end,"otHour":otHour}, "json", null);
+	console.log("-----"+data.message)
+	let resu1tOtArr= data.message.split(",")
+	$('#pageTable').bootstrapTable('updateCell', {
+		index: index,
+		field: "nat_othours",
+		value: resu1tOtArr[0]
+	})
+	$('#pageTable').bootstrapTable('updateCell', {
+		index: index,
+		field: "othours",
+		value:  resu1tOtArr[1]
+	})
+
+	$('#myModal').modal('hide');
+}
+
+	function shfitsModify(index, field, value,row) {
+		$($("#myModal")).modal("show");
+
+		$("#empName").val(row.emp_name)
+		let fieldNum = field.replace("day","");
+		$("#days").val(fieldNum)
+		$("#id").val(row.id)
+		$("#oldValue").val(value)
+		$("#index").val(index)
+		$("#field").val(field)
+
+		console.log(value)
+		if(value) {
+			$('#shiftSelect').selectpicker('val', value.split(",")).trigger("change");
+		}
+
+		let otArr = row.otflags.split(",");
+		if(otArr[parseInt(fieldNum)]=='1'){
+			$("input[name='ovtime']").prop('checked',true);
+		}else{
+			$("input[name='ovtime']").prop('checked',false);
+		}
+
+		$('#startHour').val("");
+		$('#endHour').val("");
+		$('#startMin').val("");
+		$('#endMin').val("");
+		$('#otHour').val("");
+
+
+		let data = common_ajax.ajaxFunc("/admin/xd/xdattendancesummary/getOvTime",{"id":row.id,"field":field}, "json", null);
+		console.log(data);
+		if(data.success){
+
+			let otArrHour=data.message.split(",")
+			$('#startHour').val(otArrHour[0]);
+			$('#startMin').val(otArrHour[1]);
+			$('#endHour').val(otArrHour[2]);
+			$('#endMin').val(otArrHour[3]);
+			$('#otHour').val(otArrHour[4]);
+		}
+
+	}
+
+</script>
+<!--<script>
 	let shifts="#(shifts)";
 	let shiftsArr = shifts.split(",");
 	let shiftOptions="";
@@ -499,8 +749,8 @@
 					'<div class="form-group"> ' +
 					'<label class="col-md-4 control-label" for="shift">班次</label> ' +
 					'<div class="col-md-4"> ' +
-					'<select class=" form-control"  id="shift"   data-live-search="true"  >'+
-					'<option value="">------班次------</option>'+
+					'<select class="form-control"  id="shift"   data-live-search="true"  >'+
+					'<option value="">&#45;&#45;&#45;&#45;&#45;&#45;班次&#45;&#45;&#45;&#45;&#45;&#45;</option>'+
 					shiftOptions+
 					'</select>'+
 					'</div> ' +
@@ -583,4 +833,4 @@
 			}
 		});
 	}
-</script>
+</script>-->

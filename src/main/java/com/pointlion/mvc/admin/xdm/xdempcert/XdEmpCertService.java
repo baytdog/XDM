@@ -333,41 +333,20 @@ public class XdEmpCertService{
 		return levles;
 	}
 
-	public File exportExcel(String path, String name, String trainOrgname, String major, String edubg, String enrolldate, String graduatdate){
+	public File exportExcel(String path){
 
-	/*	String userId = ShiroKit.getUserId();
-		String sql  = "from "+TABLE_NAME+" o   where 1=1";
-		if(StrKit.notBlank(name)){
-			sql = sql + " and o.ename like '%"+name+"%'";
-		}
-		if(StrKit.notBlank(trainOrgname)){
-			sql = sql + " and o.trainOrgname like '%"+trainOrgname+"%'";
-		}
-		if(StrKit.notBlank(major)){
-			sql = sql + " and o.major like '%"+major+"%'";
-		}
-		if(StrKit.notBlank(edubg)){
-			sql = sql + " and o.edubg like '%"+edubg+"%'";
-		}
-		if(StrKit.notBlank(enrolldate)){
-			sql = sql + " and o.enrolldate = '"+enrolldate+"'";
-		}
-		if(StrKit.notBlank(graduatdate)){
-			sql = sql + " and o.graduatdate = '"+graduatdate+"'";
-		}
-		sql = sql + " order by o.ctime desc,o.eid";*/
 
 	String sql=" select ct.certTile," +
-			"sum(case ct.department when '4' then  ct.count else 0 end) '内场单元部'," +
-			"sum(case ct.department when '2' then  ct.count else 0 end) '外场单元部'," +
-			"sum(case ct.department when '3' then  ct.count else 0 end) '设施一部'," +
-			"sum(case ct.department when '5' then ct.count else 0 end) '工程/设施二部'," +
-			"sum(case ct.department when '887163179b6c4eaabd06c44e47e41f92' then  ct.count else 0 end) '职能部门'" +
-			"from (select certTile,department,count(*)  as count from xd_emp_cert  where certTile is not null group by certTile,department) ct group by certTile" ;
-
-
-
-
+			"sum(case ct.name when '内场单元部' then  ct.count else 0 end) '内场单元部'," +
+			"sum(case ct.name when '外场单元部' then  ct.count else 0 end) '外场单元部'," +
+			"sum(case ct.name when '设施一部' then  ct.count else 0 end) '设施一部'," +
+			"sum(case ct.name when '工程/设施二部' then ct.count else 0 end) '工程/设施二部'," +
+			"sum(case ct.name when '职能部门' then  ct.count else 0 end) '职能部门'" +
+			"from (SELECT c.certTile,o.`name`,count(*) AS count " +
+			"FROM xd_emp_cert c left join sys_org o " +
+			" on c.department=o.id" +
+			" WHERE certTile IS NOT NULL " +
+			" GROUP BY c.certTile,o.`name`) ct group by certTile" ;
 
 		List<List<String>> rows = new ArrayList<List<String>>();
 		List<String> first = new ArrayList<String>();
@@ -422,7 +401,7 @@ public class XdEmpCertService{
 		if(StrKit.notBlank(certTitle)){
 			sql = sql + " and o.certId = '"+certTitle+"'";
 		}
-		sql = sql + " order by o.department,certTile";
+		sql = sql + " order by certTile,o.department";
 
 
 		List<XdEmpCert> xdEmpCerts = XdEmpCert.dao.find(sql);
