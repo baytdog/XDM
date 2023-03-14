@@ -54,53 +54,47 @@
                                         #end
 						            </li>-->
 									<!-- ！！！动态菜单！！！开始！！！下面受到权限控制，使用sql查询出来的 -->
-										#for(a:mlist)
-								<!-- 			<li class="list-header">#(a.name)</li> -->
-											#for(b:a.children)
-											
-												#if(b.name=='内部邮箱')
-												<a class="open-menu" href="#(ctx)/admin/oa/email/getListPage">
-                                             	<i class="demo-psi-repair"></i>
-                                                <span class="menu-title">
-                                                    <strong>#(b.name)</strong>
-                                                </span>
-                                          		  </a>
-                                          		#else if(b.name=='部门主页')  
-													<a class="open-menu" href="#(ctx)/admin/oa/departnotices/getDepartPage">
-		                                             	<i class="demo-psi-repair"></i>
-		                                                <span class="menu-title">
-		                                                    <strong>#(b.name)</strong>
-		                                                </span>
-	                                          		 </a>
-												#else
-											
-											
-												<li>
-													<a href="#">
-									                    #if(b.icon)
-												  			<i class="#(b.icon)"></i>
-												  		#else
-												  			<i class="demo-psi-repair"></i>
-												  		#end
-									                    <span class="menu-title">#(b.name)</span>
-														<i class="arrow"></i>
-									                </a>
-									                #if(b.children)
-									                	<ul class="collapse">
-										                	#for(c:b.children)
-                                                                #if("tab"==setting.index_page_type)
-											                        <li><a class="open-menu" href="#(ctx)#(c.url)">#(c.name)</a></li>
-                                                                #elseif("single"==setting.index_page_type)
-                                                                    <li><a class="open-menu" href="javascript:void(0)" onclick="openNewPage('#(ctx)#(c.url)','#(c.name)')">#(c.name)</a></li>
-                                                                #end
-										                	#end
-										                </ul>
-									                #end
-									            </li>
-									            
-									            #end
-											#end
-										#end
+                                    #for(a:mlist)
+                                    <li>
+                                        <a href="#">
+                                            #if(a.icon)
+                                            <i class="#(a.icon)"></i>
+                                            #else
+                                            <i class="demo-psi-repair"></i>
+                                            #end
+                                            <span class="menu-title">#(a.name)</span>
+                                            <i class="arrow"></i>
+                                        </a>
+                                        #if(a.children)
+                                        <ul class="collapse">
+                                            #for(b:a.children)
+                                                 #if(b.url)
+                                                 <li ><a class="open-menu" href="#(ctx)#(b.url)">#(b.name)</a></li>
+                                                #else
+                                                <li>
+
+                                                    <a href="#" >
+
+                                                        <span class="menu-title">#(b.name)</span>
+                                                        <i class="arrow"></i>
+
+                                                    </a>
+                                                    <ul>
+                                                        #if(b.children)
+                                                            #for(c:b.children)
+                                                            <li style="padding-left: 20px"><a class="open-menu" href="#(ctx)#(c.url)">#(c.name)</a></li>
+                                                            #end
+                                                        #end
+                                                    </ul>
+                                                </li>
+                                                #end
+                                            #end
+                                        </ul>
+                                        #end
+                                    </li>
+
+
+                                    #end
 											<li class="list-header" style="margin-bottom: 110px;"></li><!-- 占位 -->
 									<!-- ！！！动态菜单！！！结束！！！ -->
 						        </ul>
