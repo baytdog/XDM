@@ -1,29 +1,22 @@
 package com.pointlion.mvc.admin.sys.attachment;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Consumer;
-
-import javax.servlet.http.HttpServletResponse;
-
-import com.pointlion.mvc.common.model.*;
-import org.apache.commons.io.FileUtils;
-
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.plugin.activerecord.Record;
 import com.jfinal.upload.UploadFile;
 import com.pointlion.mvc.common.base.BaseController;
+import com.pointlion.mvc.common.model.*;
 import com.pointlion.mvc.common.utils.DateUtil;
 import com.pointlion.mvc.common.utils.RzUtils;
 import com.pointlion.mvc.common.utils.UuidUtil;
 import com.pointlion.plugin.shiro.ShiroKit;
 import com.pointlion.util.MyPicRender;
+import org.apache.commons.io.FileUtils;
+
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class AttachmentController extends BaseController {

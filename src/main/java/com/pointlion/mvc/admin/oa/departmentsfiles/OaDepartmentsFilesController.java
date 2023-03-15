@@ -17,7 +17,6 @@ import com.pointlion.plugin.shiro.ShiroKit;
 
 public class OaDepartmentsFilesController extends BaseController {
 	public static final OaDepartmentsFilesService service = OaDepartmentsFilesService.me;
-	public static WorkFlowService wfservice = WorkFlowService.me;
 	/***
 	 * get list page
 	 */
@@ -26,7 +25,12 @@ public class OaDepartmentsFilesController extends BaseController {
 		
 		setAttr("way", getPara("way", ""));
 		keepPara("way");
-		
+		if(ShiroKit.getUserOrgId().equals("1")){
+			setAttr("canDo",true);
+		}else{
+			setAttr("canDo",false);
+		}
+
 		renderIframe("list.html");
     }
 	
@@ -116,30 +120,6 @@ public class OaDepartmentsFilesController extends BaseController {
 		String ids = getPara("ids");
 		service.deleteByIds(ids);
     	renderSuccess("删除成功!");
-    }
-    /***
-     * submit
-     */
-    public void startProcess(){
-    	String id = getPara("id");
-    	OaDepartmentsFiles o = OaDepartmentsFiles.dao.getById(id);
-		String insId = wfservice.startProcess(id, o,null,null);
-    	o.update();
-    	renderSuccess("submit success");
-    }
-    /***
-     * callBack
-     */
-    public void callBack(){
-    	String id = getPara("id");
-    	try{
-    		OaDepartmentsFiles o = OaDepartmentsFiles.dao.getById(id);
-        	o.update();
-    		renderSuccess("callback success");
-    	}catch(Exception e){
-    		e.printStackTrace();
-    		renderError("callback fail");
-    	}
     }
 
 	

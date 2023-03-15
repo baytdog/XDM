@@ -1,6 +1,7 @@
 package com.pointlion.config.routes;
 
 import com.jfinal.config.Routes;
+import com.pointlion.mvc.admin.oa.departmentsfiles.OaDepartmentsFilesController;
 import com.pointlion.mvc.admin.oa.dict.OaDictController;
 import com.pointlion.mvc.admin.xdm.xdanleave.XdAnleaveController;
 import com.pointlion.mvc.admin.xdm.xdanleaveexecute.XdAnleaveExecuteController;
@@ -101,6 +102,9 @@ public class XDRoutes extends Routes {
         add("/admin/xd/xdtotaltimeonline", XdTotalTimeOnlineController.class,"/xdtotaltimeonline");
         add("/admin/xd/xdattendancesheet", XdAttendanceSheetController.class,"/xdattendancesheet");
         add("/admin/xd/xdcertlog", XdCertLogController.class,"/xdcertlog");
+
+
+
 
 
     }

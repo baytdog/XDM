@@ -36,6 +36,34 @@ public class XdCertificateController extends BaseController {
 		keepPara("certType");
 		renderIframe("listDetail.html");
     }
+	/**
+	 * @Method getAllCertPage
+	 * @param :
+	 * @Date 2023/3/15 20:29
+	 * @Description  所有证书统计列表界面
+	 * @Author king
+	 * @Version  1.0
+	 * @Return void
+	 */
+    public void getAllCertPage(){
+		renderIframe("certTotalList.html");
+	}
+
+	/**
+	 * @Method listCertTotalData
+	 * @param :
+	 * @Date 2023/3/15 20:30
+	 * @Description  所有证书统计列表数据查询
+	 * @Author king
+	 * @Version  1.0
+	 * @Return void
+	 */
+    public void listCertTotalData() throws UnsupportedEncodingException {
+    	String curr = getPara("pageNumber");
+    	String pageSize = getPara("pageSize");
+    	Page<Record> page = service.getCertTotalData(Integer.valueOf(curr),Integer.valueOf(pageSize));
+    	renderPage(page.getList(),"",page.getTotalRow());
+    }
 	/***
      * list page data
      **/

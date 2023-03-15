@@ -49,24 +49,10 @@ public class OaDepartmentsFilesService{
 		
 		String userId = ShiroKit.getUserId();
 
-		String sql  = " from "+TABLE_NAME1+" o   where create_user_id='"+userId+"'  and  moduel_from='"+ShiroKit.getUserOrgId()+"'";
-	/*	if(Constants.DEPARTHOME.indexOf(username)!=-1) {
-			
-			sql  = " from "+TABLE_NAME1+" o   where   business_id in (select  id from oa_departments_files)";
-		}
-		*/
+//		String sql  = " from "+TABLE_NAME1+" o   where create_user_id='"+userId+"'  and  moduel_from='"+ShiroKit.getUserOrgId()+"'";
+		String sql  = " from "+TABLE_NAME1+" o   where   moduel_from='1'";
+
 		
-		
-		//String sql  = " from "+TABLE_NAME1+" o   where create_user_id='"+userId+"'  and  moduel_from='"+ShiroKit.getUserOrgId()+"'";
-		if(StrKit.notBlank(startTime)){
-			sql = sql + " and o.create_time>='"+ DateUtil.formatSearchTime(startTime,"0")+"'";
-		}
-		if(StrKit.notBlank(endTime)){
-			sql = sql + " and o.create_time<='"+DateUtil.formatSearchTime(endTime,"1")+"'";
-		}
-		if(StrKit.notBlank(fileName)){
-			sql = sql + " and o.file_name  like '%"+fileName+"%'";
-		}
 		sql = sql + " order by o.create_time desc";
 		return Db.paginate(pnum, psize, " select * ", sql);
 	}

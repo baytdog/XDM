@@ -126,7 +126,9 @@
         //Indicate which field is an identity field.
         idField : "id",
         columns: col,
-        pagination:true,paginationShowPageGo: true
+        pagination:true,paginationShowPageGo: true,
+        onClickRow:function (row) {  window.location.href= '#(ctx)/admin/xd/xdempcert/getListPage?certType='+row.certificateTitle
+        },
     };
 
     //表格

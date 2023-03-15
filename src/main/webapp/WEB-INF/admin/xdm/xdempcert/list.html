@@ -23,6 +23,7 @@
 						<div class="form-group">
 							<input id="name" placeholder="姓名" class="form-control">
 						</div>
+						#if(certId=="")
 						<div class="form-group">
 							<select class="selectpicker form-control"  id="certTitle"  data-live-search="true">
 								<option value="">------请选择证书------</option>
@@ -31,6 +32,8 @@
 								#end
 							</select>
 						</div>
+						#end
+
 						<div class="form-group">
 						<!--<input id="certAuth" placeholder="发证机关" class="form-control">-->
 							<select class="selectpicker form-control"  id="certAuth" data-live-search="true" >
@@ -69,9 +72,11 @@
 					<a id="export" class="btn btn-primary data-toolbar" onclick="exportExcel()" target="_blank"><i class="demo-pli-download-from-cloud"></i>导出证书部门汇总</a>
 					<a id="export2" class="btn btn-primary data-toolbar" onclick="exportExcel2()" target="_blank"><i class="demo-pli-download-from-cloud"></i>导出具体证件类型</a>
 					<a id="filePicker"  href="javascript:void(0);" ><i class="demo-pli-add"></i> 导入</a>
-
+					<a id="reback" href="javascript:void(0);" onclick="window.history.back();" class="btn btn-primary data-toolbar" >
+					返回
+					</a>
 					<table id="pageTable" class="demo-add-niftycheck table table-bordered"
-						   data-toolbar="#del,#add,#filePicker,#export,#export2"
+						   data-toolbar="#del,#add,#filePicker,#export,#export2,#reback"
 						   >
 
 					</table>
@@ -178,7 +183,7 @@
 		//可供选择的每页的行数（*）
 		pageList: [10, 25, 50, 100],
 		//这个接口需要处理bootstrap table传递的固定参数,并返回特定格式的json数据
-		url: ctx+"/admin/xd/xdempcert/listData",
+			url: ctx+"/admin/xd/xdempcert/listData#if(certId)?certTitle=#(certId)#end",
 		//默认值为 'limit',传给服务端的参数为：limit, offset, search, sort, order Else
 		//queryParamsType:'',
 		////查询参数,每次调用是会带上这个参数，可自定义

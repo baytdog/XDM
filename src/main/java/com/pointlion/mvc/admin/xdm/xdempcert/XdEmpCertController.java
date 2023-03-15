@@ -32,7 +32,16 @@ public class XdEmpCertController extends BaseController {
 	/***
 	 * get list page
 	 */
-	public void getListPage(){
+	public void getListPage() throws UnsupportedEncodingException {
+		String certType = new String(getPara("certType","").getBytes("ISO-8859-1"), "utf-8");
+		XdCertificate cert = XdCertificate.dao.findFirst("select *from  xd_certificate where certificateTitle='" + certType + "'");
+//		keepPara("certType");
+		if(cert==null){
+			setAttr("certId","");
+		}else{
+			setAttr("certId",cert.getId());
+		}
+
 
 		List<XdEmpCert> snyList = XdEmpCert.dao.find("select  DISTINCT sny from xd_emp_cert order by sny");
 		setAttr("snyList",snyList);

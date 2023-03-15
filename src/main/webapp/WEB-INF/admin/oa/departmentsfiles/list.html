@@ -17,84 +17,25 @@
               
               
               
-                <div id="page-content">
-			        <div class="col-sm-12 eq-box-sm">
-						<div class="panel">
-							<div class="panel panel-search">
-								<div class="panel-body">
-									<div class="form-inline">
-									
-										<div class="form-group">
-											<input id="fileName" placeholder="文件名称" class="form-control">
-										</div>
-									 
-										<div class="form-group">
-											<div class="input-group date form_datetime">
-												<input id="searchStartTime" placeholder="开始日期" class="form-control">
-												<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
-											</div>
-										</div>
-										<div class="form-group">
-											<div class="input-group date form_datetime">
-												<input id="searchEndTime" placeholder="结束日期" class="form-control">
-												<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
-											</div>
-										</div>
-										
-										
-										<div class="form-group">
-											<button class="btn btn-primary" type="button" onclick="searchTable()">搜索</button>
-										</div>
-									</div>
-								</div>
-							</div>
-						<!-- 	<div class="panel ">
-								<div class="panel-body">
-								   <div id="filePicker" style="float: left;margin-top: 10px;margin-right: 10px;">上传</div>
-											<a id="del" class="btn btn-danger data-toolbar" onclick="delSel()" href="javascript:void(0);" style="height: 38px;line-height: 24px;"><i class="demo-pli-cross"></i> 批量删除</a>
-									<table id="pageTable" class="demo-add-niftycheck" data-toolbar="#del,#add,#filePicker"
-										   data-search="true"
-										   data-show-refresh="true"
-										   data-show-toggle="true"
-										   data-show-columns="true"
-										   data-sort-name="id"
-										   data-page-list="[5, 10, 20]"
-										   data-page-size="5"
-										   data-pagination="true" data-show-pagination-switch="true" ></table>
-								</div>
-							</div> -->
-							
-							       <div class="modal-body lay-body">
-						<div id="page-content">
+
+								<div id="page-content">
 								    <div class="panel-body">
-									    #if(view=='detail')
-									    #else
-									    
-										    #if(way!='search')
+
+										    #if(canDo)
 										        <div id="filePicker" style="float: left;margin-top: 10px;margin-right: 10px;">上传</div>
 												<a id="del" class="btn btn-danger data-toolbar" onclick="delSel()" href="javascript:void(0);" style="height: 38px;line-height: 24px;"><i class="demo-pli-cross"></i> 批量删除</a>
 											#end
 										
-										#end
 								        <table id="pageTable" class="demo-add-niftycheck" data-toolbar="#del,#add"
-								               data-search="true"
-								               data-show-refresh="true"
-								               data-show-toggle="true"
-								               data-show-columns="true"
-								               data-sort-name="id"
-								               data-page-list="[5, 10, 15, 20,50,100]"
-								               data-page-size="5"
-								               data-pagination="true" data-show-pagination-switch="true" ></table>
+								               ></table>
 								    </div>
-		                </div>		
-        </div>
-			        	</div>
+		              		  </div>
+       					 </div>
                 	</div>
-				</div>
 <script>
 	
 	var col = [
-		   {
+		  /* {
 				field: 'Number',
 				title: '',
 			 	width:50,
@@ -102,7 +43,7 @@
 				formatter: function (value, row, index) {
 				return index+1;
 				}
-			},
+			},*/
 		
 		
 		   {field: 'checked', checkbox : true, align: 'center'},
@@ -116,8 +57,8 @@
 	    
 	           	var a='';		
 	           			
-	          a=a+'<a class="label label-table label-success" href="'+ctx+'/admin/sys/attachment/lookFile?id='+row.id+'&view=detail" target="_blank" title="附件查看">查看</a>&nbsp;' 
-	         
+	        /*  a=a+'<a class="label label-table label-success" href="'+ctx+'/admin/sys/attachment/lookFile?id='+row.id+'&view=detail" target="_blank" title="附件查看">查看</a>&nbsp;'*/
+			   a =a+ '<a class="label label-table label-success" href="'+ctx+'/admin/sys/attachment/downloadFile?id='+row.id+'&view=detail" target="_blank">下载</a>&nbsp;';
 	         
 	        	
 	           	return a;

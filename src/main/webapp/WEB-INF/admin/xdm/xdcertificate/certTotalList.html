@@ -22,11 +22,10 @@
             </div>
             <div class="panel ">
                 <div class="panel-body">
-                    <a id="add" class="btn btn-primary data-toolbar" href="#(ctx)/admin/xd/xdcertificate/getEditPage?view=edit"><i class="demo-pli-add"></i> 添加证书分类</a>
-                    <a id="allCert" class="btn btn-primary data-toolbar" href="#(ctx)/admin/xd/xdcertificate/getAllCertPage?view=edit"><i class="demo-pli-detail"></i>所有证书</a>
-                   <!-- <a id="filePicker"  href="javascript:void(0);" ><i class="demo-pli-add"></i> 导入</a>-->
+                    <a id="reBack" class="btn btn-primary data-toolbar"  href="#(ctx)/admin/xd/xdcertificate/getListPage" > 返回</a>
+                    <!-- <a id="filePicker"  href="javascript:void(0);" ><i class="demo-pli-add"></i> 导入</a>-->
                     <table id="pageTable" class="demo-add-niftycheck" data-toolbar="#del,#add,#filePicker,#allCert"
-                          ></table>
+                    ></table>
                 </div>
             </div>
         </div>
@@ -36,22 +35,34 @@
 
     var col = [
 
-        {field: 'cert_type', title: '类型', align: 'center' ,
+        {field: 'name', title: '证书', align: 'center',
             formatter:function(value,row,index){
-                if(value=='1'){
-                    return "专业技术（职称）";
-                }else if(value=='2'){
-                    return "职业资格证书";
-                }else if(value=='3'){
-                    return "有到期日证书";
-                }else if(value=='4'){
-                    return "继续教育";
+                if(value=='a'){
+                    return "合计";
                 }else{
-                    return "其他行业类证书";
+                    return value;
                 }
+            },cellStyle:function(value,row,index,field){                 // 修改列（单元格）的颜色
+                let i = field.replace("day","");
+                inti=parseInt(i);
+                if(row.cert_type.indexOf("3")!=-1){
+                    return {css:{"background-color":"#F1A866"}} ;
+                }else if(row.cert_type.indexOf("2")!=-1|| value=='会计师'){
+                    return {css:{"background-color":"#C6E0B4"}} ;
+                }else if(row.cert_type.indexOf("4")!=-1 && value!='会计师'){
+                    return {css:{"background-color":"#9BC2E6"}} ;
+                }else{
+                    return {css:{}};
+                }
+
             }},
-        {field: 'count_num', title: '数量', align: 'center' },
-        ];
+        {field: 'total', title: '人数', align: 'center' },
+        {field: 'nc', title: '内场单元部', align: 'center' },
+        {field: 'wc', title: '外场单元部', align: 'center' },
+        {field: 'yb', title: '设施一部', align: 'center' },
+        {field: 'eb', title: '工程/设施二部', align: 'center' },
+        {field: 'zn', title: '职能部门', align: 'center' },
+    ];
     let opt = {
         //请求方法
         method: 'get',
@@ -70,11 +81,11 @@
         //我设置了这一项，但是貌似没起作用，而且我这默认是0,- -
         //pageNumber:1,
         //每页的记录行数（*）
-        pageSize: 10,
+        pageSize: 100,
         //可供选择的每页的行数（*）
         pageList: [10, 25, 50, 100],
         //这个接口需要处理bootstrap table传递的固定参数,并返回特定格式的json数据
-        url: ctx+"/admin/xd/xdcertificate/listData",
+        url: ctx+"/admin/xd/xdcertificate/listCertTotalData",
         //默认值为 'limit',传给服务端的参数为：limit, offset, search, sort, order Else
         //queryParamsType:'',
         ////查询参数,每次调用是会带上这个参数，可自定义
@@ -94,7 +105,19 @@
         idField : "id",
         columns: col,
         pagination:true,paginationShowPageGo: true,
-        onClickRow:function (row) {  window.location.href= '#(ctx)/admin/xd/xdcertificate/getDetailListPage?certType='+row.cert_type
+        rowStyle:function(row, index){
+            /*return { classes: ‘text-nowrap another-class’,
+            css: {“color”: “blue”, “font-size”: “50px”}
+        } */
+            if(row.name=='a'){
+                return {
+                    css: {"color": "red"}
+                }
+            }else{
+                return "";
+            }
+        },
+        onClickRow:function (row) {  window.location.href= '#(ctx)/admin/xd/xdempcert/getListPage?certType='+row.name
         },
     };
 
