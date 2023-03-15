@@ -1,0 +1,832 @@
+<style>
+	.webuploader-pick{
+		padding: 0px 15px;
+		height: 33px;
+		line-height: 33px;
+	}
+</style>
+<div id="page-content">
+			        <div class="col-sm-12 eq-box-sm">
+						<div class="panel">
+							<div class="panel panel-search">
+								<div class="panel-body">
+									<div class="form-inline">
+										<div class="form-group">
+											<input id="name" placeholder="姓名" class="form-control">
+										</div>
+										<div class="form-group">
+											<input id="empnum" placeholder="员工编号" class="form-control">
+										</div>
+										<div class="form-group">
+											<input id="emprelation" placeholder="员工关系" class="form-control">
+										</div>
+										<div class="form-group">
+											<!--<input id="department" placeholder="所属部门" class="form-control">-->
+											<select class="selectpicker form-control"  id="department"  title="部门"  multiple="multiple">
+												#for(org:orgs)
+												<option value="#(org.id)">#(org.name)</option>
+												#end
+											</select>
+										</div>
+										<div class="form-group">
+											<!--<input id="unitname" placeholder="单元" class="form-control">-->
+											<select class="selectpicker form-control"  id="unitname"  data-live-search="true" >
+												<option value="">---单元---</option>
+												#for(unit:units)
+												<option value="#(unit.value)">#(unit.name)</option>
+												#end
+											</select>
+										</div>
+										<div class="form-group">
+											<select class="selectpicker form-control"  id="costitem"  data-live-search="true" >
+												<option value="">---项目---</option>
+												#for(pro:projects)
+												<option value="#(pro.id)">#(pro.project_name)</option>
+												#end
+											</select>
+										</div>
+										<div class="form-group">
+											<select class="selectpicker form-control"  id="inductionstatus"  data-live-search="false" >
+												<option value="">---在职状态---</option>
+												<option value="1">在职</option>
+												<option value="2">离职</option>
+											</select>
+										</div>
+
+
+										<div class="form-group">
+											<select class="selectpicker form-control"  id="position"  data-live-search="false" >
+												<option value="">---职位---</option>
+												#for(pos:positionList)
+												<option value="#(pos.value)">#(pos.name)</option>
+												#end
+											</select>
+										</div>
+										<div class="form-group">
+											<select class="selectpicker form-control"  id="workstation"  data-live-search="true" >
+												<option value="">---岗位---</option>
+												#for(du:dutyList)
+												<option value="#(du.value)">#(du.name)</option>
+												#end
+											</select>
+										</div>
+
+										<div class="form-group">
+											<div class="input-group date form_datetime">
+												<input id="departime" placeholder="离职年月" class="form-control">
+												<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+											</div>
+										</div>
+										<div class="form-group">
+											<button class="btn btn-primary" type="button" onclick="searchTable()">搜索</button>
+										</div>
+									</div>
+									<div   class="form-inline ">
+										<div class="input-group mar-btm">
+											<input id="selectEd" type="text" class="form-control" style="width:1000px;" readonly="readonly">
+											<div class="input-group-addon">
+												<input id="demo-checkbox-addons" class="magic-checkbox" type="checkbox">
+												<label for="demo-checkbox-addons"></label>
+											</div>
+
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="panel ">
+								<div class="panel-body">
+									<!--<a id="add" class="btn btn-primary data-toolbar" href="#(ctx)/admin/xd/xdemployee/getEditPage?view=edit"><i class="demo-pli-add"></i> 添加</a>
+									<a id="export" class="btn btn-primary data-toolbar" onclick="exportExcel()" target="_blank"><i class="demo-pli-download-from-cloud"></i> 导出</a>-->
+									<a id="compare" class="btn btn-primary data-toolbar" onclick="compareEmp()" href="javascript:void(0);">人员比对</a>
+									<table id="pageTable" class="demo-add-niftycheck" data-toolbar="#del,#add,#export,#filePicker,#print,#exportContract,#compare"
+									  ></table>
+								</div>
+							</div>
+			        	</div>
+                	</div>
+				</div>
+<script>
+	var selectRows=[];
+	let projects='#(projects)';
+	let ops=$('#costitem option')
+	var projectMap = new Map();
+	for(let item of ops) {
+		if(item.value!=''){
+			projectMap.set(item.value, item.text);
+		}
+	}
+
+	let orgStr='#(orgStr)';
+	let org = orgStr.split(",");
+	let orgMap = new Map();
+	for(let item of org) {
+		/*if(item.value!=''){
+			projectMap.set(item.value, item.text);
+		}*/
+		orgMap.set(item.split("=")[0], item.split("=")[1])
+
+	}
+	let dutyStr='#(dutyStr)';
+	let duty = dutyStr.split(",");
+	let dutyMap = new Map();
+	for(let item of duty) {
+		/*if(item.value!=''){
+			projectMap.set(item.value, item.text);
+		}*/
+		dutyMap.set(item.split("=")[0], item.split("=")[1])
+
+	}
+	let eduStr='#(eduStr)';
+	let educationMap = new Map();
+	let eudObj=JSON.parse(eduStr)
+	for(let edu of eudObj) {
+		 educationMap.set(edu.value,edu.name);
+	}
+	let positions='#(positions)';
+	let positionsMap = new Map();
+	let positionObj=JSON.parse(positions)
+	for(let position of positionObj) {
+		positionsMap.set(position.value,position.name);
+	}
+	var col = [{field: 'checked', checkbox : true, align: 'center'},
+		{field: 'empnum', title: '员工编号', align: 'center'},
+		{field: 'name', title: '姓名', align: 'center'},
+		{field: 'gender', title: '性别', align: 'center', formatter:function(value,row,index){
+				if(value=='1'){
+					return "男";
+				}else{
+					return "女";
+				}
+			}},
+		{field: 'department', title: '部门', align: 'center', formatter:function(value,row,index){
+				return orgMap.get(value)
+
+
+			}},
+		{field: 'costitem', title: '项目', align: 'center', formatter:function(value,row,index){
+			return projectMap.get(value);
+			}},
+		{field: 'entrytime', title: '入职日期', align: 'center'},
+		{field: 'age', title: '年龄', align: 'center'},
+		{field: 'emprelation', title: '员工关系', align: 'center'},
+		{field: 'position', title: '职位', align: 'center', formatter:function(value,row,index){
+				   return positionsMap.get(value);
+			   }},
+		{field: 'workstation', title: '岗位', align: 'center', formatter:function(value,row,index){
+				return dutyMap.get(value);
+			}},
+		{field: 'topedu', title: '最高学历', align: 'center', formatter:function(value,row,index){
+
+				  return  educationMap.get(value);
+			   }},
+	     ];
+	let opt = {
+		    //请求方法
+			   method: 'get',
+			    //是否显示行间隔色
+			   striped: true,
+			   //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）     
+			   cache: false,  
+			   //data-toolbar: "#demo-delete-row",
+			   //是否显示分页（*）  
+			   pagination: true,   
+			    //是否启用排序  
+			   sortable: false,
+			    //排序方式
+			   sortOrder: "asc",    
+			   //初始化加载第一页，默认第一页
+			   //我设置了这一项，但是貌似没起作用，而且我这默认是0,- -
+			   pageNumber:1,
+			   //每页的记录行数（*）   
+			   pageSize: 10,
+			   //可供选择的每页的行数（*）    
+			   pageList: [10, 25, 50, 100],
+			   //这个接口需要处理bootstrap table传递的固定参数,并返回特定格式的json数据  
+			   url: ctx+"/admin/xd/xdemployee/listData",
+			   //默认值为 'limit',传给服务端的参数为：limit, offset, search, sort, order Else
+			   //queryParamsType:'',   
+			   ////查询参数,每次调用是会带上这个参数，可自定义                         
+			   queryParams : function(params) {
+			       return {
+			             pageNumber: (params.offset/params.limit)+1,
+			             pageSize: params.limit,
+						   "name":encodeURIComponent($("#name").val()),
+						   "empnum":encodeURIComponent($("#empnum").val()),
+						   "emprelation":encodeURIComponent($("#emprelation").val()),
+						   "department":$("#department").val(),
+						   "unitname":$("#unitname").val(),
+						   "costitem":$("#costitem").val(),
+						   "inductionstatus":$("#inductionstatus").val(),
+						   "departime":$("#departime").val(),
+						   "position":$("#position").val(),
+						   "workstation":$("#workstation").val(),
+			           };
+			   },
+				onCheck:function(row){
+					selectRows.push(row);
+
+					// let bootstrapTable = $('#pageTable').bootstrapTable("getSelections");
+					// console.log(bootstrapTable)
+					let val = $("#selectEd").val();
+					if(val){
+						if(val.indexOf(row.name)==-1){
+							val=val+","+row.name;
+							$("#selectEd").val(val);
+						}
+					}else{
+						val=row.name;
+						$("#selectEd").val(val);
+					}
+				},
+				onUncheck:function(row){
+
+					let val = $("#selectEd").val();
+
+					if(val.indexOf(","+row.name)!=-1){
+						val=val.replace(","+row.name,"");
+						$("#selectEd").val(val);
+					}else if(val.indexOf(row.name+",")!=-1){
+						val=val.replace(row.name+",","");
+						$("#selectEd").val(val);
+					}else{
+						val=val.replace(row.name,"");
+						$("#selectEd").val(val);
+					}
+				},
+				onCheckAll:function(rows){
+					let val = $("#selectEd").val();
+					for(let row of rows) {
+						if(val){
+							if(val.indexOf(row.name)==-1){
+								val=val+","+row.name;
+							}
+						}else{
+							val=row.name;
+						}
+					}
+					$("#selectEd").val(val);
+				},
+		        onUncheckAll:function(rows){
+					$("#selectEd").val("");
+				},
+				onLoadSuccess:function(){
+					let val = $("#selectEd").val();
+					//	$('#pageTable').bootstrapTable("getSelections");
+					if(val){
+						$('#pageTable').bootstrapTable("checkBy", {field: "name", values:val.split(",")});//根据列名选则行数据,field: 列名称,values:列取值数组
+					}
+
+				///	$report_table.bootstrapTable("check", 0);//选中某一行，索引从0开始
+
+				},
+
+
+			   //分页方式：client客户端分页，server服务端分页（*）
+			   sidePagination: "server",
+			   //是否显示搜索
+			   search: false,  
+			   //Enable the strict search.    
+			   strictSearch: true,
+			   //Indicate which field is an identity field.
+			   idField : "id",
+			   columns: col,
+			   pagination:true,paginationShowPageGo: true
+			}; 
+		
+	//表格
+	function initTable(){
+		$('#pageTable').bootstrapTable(opt);
+		$('#pageTable').bootstrapTable('hideColumn', 'id');
+	}
+	function refreshTable(){
+		$("#pageTable").bootstrapTable('refresh', opt);
+		$('#pageTable').bootstrapTable('hideColumn', 'id');
+	}
+
+	function  compareEmp(){
+		var data = [];
+		$("#pageTable input[type='checkbox'][name!='btSelectAll']:checked").each(function(){
+			data.push($(this).val());
+		});
+		if(data.length<1){
+			pointLion.alertMsg("请选择要比较的数据!","danger",null,null);
+			return;
+		}
+		location.href="#(ctx)/admin/xd/xdemployee/getComparePage?ids="+data.join(",")
+
+			//执行删除
+			//var data = common_ajax.ajaxFunc("/admin/xd/xdemployee/getComparePage",{"ids":data.join(",")}, "json", null);
+	}
+
+	//批量删除
+	function delSel(){
+		var data = [];
+		$("#pageTable input[type='checkbox'][name!='btSelectAll']:checked").each(function(){
+			data.push($(this).val());
+		});
+		if(data.length==0){
+			pointLion.alertMsg("请选择要删除的数据!","danger",null,null);
+			return;
+		}
+		del(data.join(","));//执行删除
+	}
+	//删除
+	function del(ids){
+		pointLion.confimMsg("您是否要删除所选信息 ?<br/> #if(personnel=='Y')点击确认进行删除#else 点击确认进行删除审核 #end , 点击取消取消该操作",null,function(){
+			//执行删除
+			var data = common_ajax.ajaxFunc("/admin/xd/xdemployee/delete",{"ids":ids}, "json", null);
+			//删除结果
+			if(data.success){
+				pointLion.alertMsg(data.message,"success",null,function(){
+					location.href = ctx+'/admin/xd/xdemployee/getListPage';//跳转到列表页
+				});
+			}else{
+				pointLion.alertMsg(data.message,"success",null,null);
+			}
+		});
+	};
+
+	//查询
+	function searchTable(){
+		var name = encodeURIComponent($("#name").val());
+		var empnum = encodeURIComponent($("#empnum").val());
+		var emprelation = encodeURIComponent($("#emprelation").val());
+		var department = $("#department").val();
+		if(department){
+			department=	department.join()
+		}
+		console.log()
+		var unitname =$("#unitname").val();
+		var costitem = $("#costitem").val();
+		var checked = $("#demo-checkbox-addons").is(":checked");
+		let selectedName = encodeURIComponent($("#selectEd").val());
+		let inductionstatus=$("#inductionstatus").val();
+		let	departime=$("#departime").val();
+		let position= $("#position").val();
+		let workstation=$("#workstation").val();
+
+		var param = {
+			pageNumber: 1,
+			query: {
+				"name":name,
+				"empnum":empnum,
+				"emprelation":emprelation,
+				"department":department,
+				"unitname":unitname,
+				"costitem":costitem,
+				"checked":checked,
+				"selectedName":selectedName,
+				"inductionstatus":inductionstatus,
+				"departime":departime,
+				"position":position,
+				"workstation":workstation
+			}
+		}
+		// 刷新表格
+		 $('#pageTable').bootstrapTable('refresh',param);
+	}
+
+
+	/***
+	 * 导出
+	 */
+	function exportExcel(){
+		var name = encodeURI(encodeURI($("#name").val()));
+		var empnum = encodeURI(encodeURI($("#empnum").val()));
+		var emprelation = encodeURI(encodeURI($("#emprelation").val()));
+		var department = $("#department").val();
+		var unitname = $("#unitname").val();
+		var costitem = $("#costitem").val();
+		var checked = $("#demo-checkbox-addons").is(":checked");
+		let selectedName = encodeURIComponent($("#selectEd").val());
+		let inductionstatus=$("#inductionstatus").val();
+		let	departime=$("#departime").val();
+		location.href = "#(ctx)/admin/xd/xdemployee/exportExcel?name="+name+"&empnum="+empnum+"&emprelation="+emprelation+"&department="+department+"&unitname="+unitname+"&costitem="+costitem
+				+"&checked="+checked+"&selectedName="+selectedName+"&inductionstatus="+inductionstatus+"&departime="+departime;
+	}
+	/***
+	 * 导出合同信息
+	 */
+	function exportContractExcel(){
+		var name = encodeURI(encodeURI($("#name").val()));
+		var empnum = encodeURI(encodeURI($("#empnum").val()));
+		var emprelation = encodeURI(encodeURI($("#emprelation").val()));
+		var department = $("#department").val();
+		var unitname = $("#unitname").val();
+		var costitem = $("#costitem").val();
+		var checked = $("#demo-checkbox-addons").is(":checked");
+		let selectedName = encodeURIComponent($("#selectEd").val());
+		let inductionstatus=$("#inductionstatus").val();
+		let	departime=$("#departime").val();
+		location.href = "#(ctx)/admin/xd/xdemployee/exportContractExcel?name="+name+"&empnum="+empnum+"&emprelation="+emprelation+"&department="+department+"&unitname="+unitname+"&costitem="+costitem
+				+"&checked="+checked+"&selectedName="+selectedName+"&inductionstatus="+inductionstatus+"&departime="+departime;
+	}
+
+
+	$(document).ready(function(){
+		$('.form_datetime').datepicker({format: 'yyyy-mm',weekStart: 1,todayBtn:  1,autoclose: 1,language:  'zh-CN',todayHighlight: 1,forceParse: 0,clearBtn: true }).on('changeDate',null);
+		initTable();//初始化
+
+
+		pointLion.initUploader("/admin/xd/xdemployee/importExcel",function(data){
+			if(data.success){
+				pointLion.alertMsg("导入成功！","success",null,null);
+				searchTable();
+			}else{
+				pointLion.alertMsg(data.message,"danger",null,null);
+			}
+		});
+	});
+
+
+
+	function print(){
+		let name = encodeURIComponent($("#name").val());
+
+		let empnum = encodeURIComponent($("#empnum").val());
+
+		let emprelation = encodeURIComponent($("#emprelation").val());
+
+		let department = encodeURIComponent($("#department").val());
+		let unitname = encodeURIComponent($("#unitname").val());
+		let costitem = encodeURIComponent($("#costitem").val());
+		let checked = $("#demo-checkbox-addons").is(":checked");
+		let selectedName = encodeURIComponent($("#selectEd").val());
+		let inductionstatus=$("#inductionstatus").val();
+		let	departime=$("#departime").val();
+		let data = common_ajax.ajaxFunc("/admin/xd/xdemployee/getPrintInfo",{"name":name,"empnum":empnum,"emprelation":emprelation,"department":department,"unitname":unitname,
+			"costitem":costitem,"checked":checked,"selectedName":selectedName,"inductionstatus":inductionstatus,"departime":departime}, "json", null);
+		//删除结果
+
+		console.log(data);
+
+		var LODOP=getLodop();
+		LODOP.PRINT_INIT('');
+
+		LODOP.SET_PRINT_PAGESIZE(1, 0, 0, "A4")
+
+
+		for(var item of data) {
+			LODOP.NewPage();
+			let infos= contactFormInfo(item);
+			LODOP.ADD_PRINT_TABLE('50', '0', '100%', '100%', infos);
+		}
+		LODOP.PREVIEW();
+	}
+</script>
+
+<script src="#(ctx)/common/js/LodopFuncs.js"></script>
+
+<script>
+
+
+	function eduList(item){
+		var returnStr;
+
+		if(item == null){
+			for (let i = 0; i < 5; i++) {
+				returnStr=returnStr+ `<tr>
+				<td style="height: 25px;">  </td><td  > </td>
+				<td colspan="2" >  </td> <td  >  </td>
+				<td  >  </td>
+				</tr>`
+			}
+		}else{
+			if(item.length>=5) {
+				for (let i = 0; i < item.length; i++) {
+					var edu=item[i];
+					returnStr=returnStr+ `<tr>
+					<td style="height: 25px;"> `+edu.enrolldate+`</td><td  >`+edu.graduatdate+`</td>
+					<td colspan="2" >`+edu.trainOrgname+` </td> <td  > `+edu.major+`</td>
+					<td  > `+edu.edubg+`</td>
+					</tr>`;
+				}
+
+			}else{
+				for (let i = 0; i < item.length; i++) {
+					var edu=item[i];
+					returnStr=returnStr+ `<tr>
+					<td style="height: 25px;"> `+edu.enrolldate+`</td><td  >`+edu.graduatdate+`</td>
+					<td colspan="2" >`+edu.trainOrgname+` </td> <td  > `+edu.major+`</td>
+					<td  > `+edu.edubg+`</td>
+					</tr>`;
+				}
+				for(let i = 0; i < 5-item.length; i++){
+					returnStr=returnStr+ `<tr>
+				<td style="height: 25px;">  </td><td  > </td>
+				<td colspan="2" > </td> <td  >  </td>
+				<td  >  </td>
+				</tr>`
+
+				}
+
+			}
+
+		}
+
+
+		return returnStr;
+
+	}
+
+
+	function workList(item){
+		var returnStr;
+
+		if(item == null){
+			for (let i = 0; i < 5; i++) {
+				returnStr=returnStr+ `<tr>
+				<td style="height: 25px;">  </td><td  > </td>
+				<td colspan="2" >  </td> <td  >  </td>
+				<td  >  </td>
+				</tr>`
+			}
+		}else{
+			if(item.length>=5) {
+				for (let i = 0; i < item.length; i++) {
+					var edu=item[i];
+					returnStr=returnStr+ `<tr>
+					<td style="height: 25px;"> `+edu.entrydate+`</td><td  >`+edu.departdate+`</td>
+					<td colspan="2" >`+edu.serviceunit+` </td> <td  > `+edu.job+`</td>
+					<td  > `+edu.addr+`</td>
+					</tr>`;
+				}
+
+			}else{
+				for (let i = 0; i < item.length; i++) {
+					var edu=item[i];
+					returnStr=returnStr+ `<tr>
+					<td style="height: 25px;"> `+edu.entrydate+`</td><td  >`+edu.departdate+`</td>
+					<td colspan="2" >`+edu.serviceunit+` </td> <td  > `+edu.job+`</td>
+					<td  > `+edu.addr+`</td>
+					</tr>`;
+				}
+				for(let i = 0; i < 5-item.length; i++){
+					returnStr=returnStr+ `<tr>
+				<td style="height: 25px;">  </td><td  > </td>
+				<td colspan="2" > </td> <td  >  </td>
+				<td  >  </td>
+				</tr>`
+
+				}
+
+			}
+
+		}
+
+
+		return returnStr;
+
+	}
+
+	function createCertList(item){
+		let returnStr;
+		console.log(item+"item")
+
+		if(item == null|| item == ""){
+			for (let i = 0; i < 5; i++) {
+				returnStr=returnStr+ `<tr>
+				<td style="height: 25px;">  </td><td  > </td>
+				<td colspan="2" >  </td>
+				<td  >  </td>
+				<td  >  </td>
+				</tr>`
+			}
+		}else{
+			if(item.length>=5) {
+				for (let i = 0; i < item.length; i++) {
+					let cert=item[i];
+					returnStr=returnStr+ `<tr>
+					<td style="height: 25px;"></td><td  >`+cert.certLevel+`</td>
+					<td colspan="2" >`+cert.certTile+` </td> <td  > `+cert.openDate+`</td>
+					<td  > `+cert.closeDate+`</td>
+					</tr>`;
+				}
+
+			}else{
+				for (let i = 0; i < item.length; i++) {
+					let cert=item[i];
+					console.log(cert)
+					returnStr=returnStr+ `<tr>
+					<td style="height: 25px;"> </td><td  >`+cert.certLevel+`</td>
+					<td colspan="2" >`+cert.certTile+` </td> <td  > `+cert.openDate+`</td>
+					<td  > `+cert.closeDate+`</td>
+					</tr>`;
+				}
+				for(let i = 0; i < 5-item.length; i++){
+					returnStr=returnStr+ `<tr>
+				<td style="height: 25px;">  </td><td  > </td>
+				<td colspan="2" > </td> <td  >  </td>
+				<td  >  </td>
+				</tr>`
+
+				}
+
+			}
+
+		}
+
+		return returnStr;
+
+	}
+	function contactFormInfo(item){
+		var emp=item.emp;
+		console.log(emp.cert_pic_id)
+		let edutrainList=item.edutrainList;
+
+		let workExperList=item.workExperList;
+		let certList=item.certList;
+		console.log("certList="+certList);
+/*		http://localhost:8080/XDM/admin/sys/attachment/lookFile?id=7e497badbe024c9ead49fe5ae51b9d97*/
+	var infos=	`
+  <style>
+     table, td, th { border: 1px solid black; border-style: solid; border-collapse: collapse; text-align: center; font-size: 15px; }
+    .inner table, .inner td, .inner th { text-align: left; border: none; }
+    .tdh {font-family:微软雅黑;font-size: 15px; font-weight:bold;}
+    .tdhct {font-family:微软雅黑;font-size: 15px;}
+    .tr {height: 40px;}
+  </style>
+  <table border="1" style="width:100%;">
+
+
+	<caption style="font-family:微软雅黑;font-size: 26px;" >员工资料表<br/><br/></caption>
+
+
+    <tr class="tr">
+      <td rowspan="11" style="width:15%;" class="tdhct">个<br/>人<br/>基<br/>本<br/>资<br/>料</td>
+      <td class="tdh">姓 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;名</td> <td class="tdhct">`+emp.name+`</td>
+      <td class="tdh">员工编号</td> <td class="tdhct">`+emp.empnum+`</td>
+      <td rowspan="5" colspan="2"><img style="width: 100%;height: 200px;" id="" src="`+emp.cert_pic_id+`" /></td>
+    </tr>
+    <tr class="tr">
+     <td class="tdh" >性&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;别</td> <td class="tdhct">`+emp.gender+`</td>
+     <td  class="tdh" >婚姻状况</td> <td class="tdhct">`+emp.married+`</td>
+    </tr>
+    <tr class="tr">
+      <td class="tdh" >民   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 族</td> <td class="tdhct">`+emp.national+`</td>
+       <td class="tdh">政治面貌</td> <td  class="tdhct">`+emp.politicsstatus+`</td>
+	</tr>
+	<tr class="tr">
+      <td class="tdh" >出生日期</td> <td class="tdhct">`+emp.birthday+`</td>
+       <td class="tdh">年龄</td> <td  class="tdhct">`+emp.age+`</td>
+	</tr>
+	<tr class="tr">
+      <td class="tdh" >最高学历</td> <td class="tdhct">`+emp.topedu+`</td>
+       <td class="tdh">学位</td> <td  class="tdhct">`+emp.topdegree+`</td>
+	</tr>
+     <tr class="tr">
+      <td class="tdh">学历(非全日制)</td><td class="tdhct">`+emp.edubg1+`</td>
+      <td class="tdh">学校</td> <td class="tdhct">`+emp.school1+`</td>
+      <td class="tdh">专业</td> <td  class="tdhct">`+emp.major1+`</td>
+    </tr>
+     <tr class="tr">
+      <td  class="tdh">学历(全日制)</td><td  class="tdhct">`+emp.edubg2+`</td>
+      <td class="tdh" >学校</td> <td  class="tdhct">`+emp.school2+`</td>
+      <td  class="tdh">专业</td> <td  class="tdhct">`+emp.major2+`</td>
+    </tr>
+     <tr class="tr">
+     <td  class="tdh">身份证号码</td><td colspan="3" class="tdhct">`+emp.Idnum+`</td>
+      <td  class="tdh">户    籍</td> <td  class="tdhct">`+emp.censusregister+`</td>
+    </tr>
+    <tr class="tr">
+     <td  class="tdh">户籍地址</td><td colspan="3" class="tdhct">`+emp.censusregisteraddr+`</td>
+      <td  class="tdh">出 生 地</td> <td  class="tdhct">`+emp.birthplace+`</td>
+    </tr>
+      <tr class="tr">
+     <td  class="tdh">现 住 址</td><td colspan="3" class="tdhct">`+emp.presentaddr+`</td>
+      <td  class="tdh">籍    贯</td> <td  class="tdhct">`+emp.nativeplace+`</td>
+    </tr>
+     <tr class="tr">
+		  <td  class="tdh">联系方式</td>      <td  class="tdhct">`+emp.tel+`</td>
+		  <td class="tdh" >退休日期</td> <td  class="tdhct">`+emp.retiretime+`</td>
+		  <td  class="tdh">退伍军人</td> <td  class="tdhct">`+emp.issoldier+`</td>
+    </tr>
+
+  	<tr class="tr">
+    <td rowspan="6" style="width:2%;" class="tdhct">任<br/>职<br/>信<br/>息</td>
+      <td class="tdh">入职时间</td> <td  class="tdhct">`+emp.entrytime+`</td>
+      <td class="tdh">离职日期</td> <td class="tdhct">`+emp.departime+`</td>
+      <td class="tdh">就职状况</td> <td class="tdhct">`+emp.inductionstatus+`</td>
+
+    </tr>
+    <tr class="tr">
+      <td class="tdh" >所属部门</td> <td class="tdhct" >`+emp.department+`</td>
+      <td  class="tdh">单元</td> <td  class="tdhct">`+emp.unitname+`</td>
+      <td class="tdh" >成本项目</td> <td class="tdhct" >`+emp.costitem+`</td>
+    </tr>
+     <tr class="tr">
+      <td class="tdh" >职   位</td>      <td class="tdhct">`+emp.position+`</td>
+      <td  class="tdh">专业技术等级</td> <td class="tdhct">`+emp.protechgrade+`</td>
+      <td  class="tdh">职业资格等级</td> <td class="tdhct">`+emp.vocaqualifilevel+`</td>
+    </tr>
+     <tr class="tr">
+      <td  class="tdh">工作岗位</td>      <td  class="tdhct">`+emp.workstation+`</td>
+      <td  class="tdh">专业技术职务</td> <td class="tdhct" >`+emp.protechposts+`</td>
+      <td  class="tdh">职业资格等级</td> <td  class="tdhct">`+emp.vocaQualifilevel1+`</td>
+    </tr>
+     <tr class="tr">
+      <td  class="tdh">合同开始日期</td>      <td  class="tdhct">`+emp.contractstartdate+`</td>
+      <td  class="tdh">结束日期</td> <td class="tdhct" >`+emp.contractenddate+`</td>
+      <td  class="tdh">工 龄(年)</td> <td  class="tdhct">`+emp.seniority+`</td>
+    </tr>
+
+     <tr class="tr">
+      <td class="tdh" >合同期数</td>      <td class="tdhct" >`+emp.contractclauses+`</td>
+      <td class="tdh" >合同性质</td> <td  class="tdhct">`+emp.contractnature+`</td>
+      <td  class="tdh">参加工作时间</td> <td  class="tdhct">`+emp.worktime+`</td>
+    </tr>
+
+
+	<tr class="tr">
+     <td rowspan="5" style="width:2%; " class="tdhct">其<br/>它<br/>信<br/>息</td>
+      <td class="tdh">紧急联系人</td> <td  class="tdhct">`+emp.emcontact+`</td>
+      <td class="tdh">紧急联系人电话</td> <td class="tdhct">`+emp.emcontact+`</td>
+      <td class="tdh">关系</td> <td class="tdhct"></td>
+    </tr>
+
+     <tr class="tr">
+      <td  class="tdh">特      长</td><td colspan="5" class="tdhct">`+emp.specialty+`</td>
+   	 </tr>
+ 	<tr class="tr">
+      <td class="tdhct"  style="text-align: left;" colspan="3">1.你有无家庭遗传病史? <input type="checkbox">有 <input type="checkbox">无</td>
+      <td  class="tdhct" style="text-align: left" colspan="3">2.你最近是否动过手术? <input type="checkbox">是 <input type="checkbox">否</td>
+    </tr>
+     <tr class="tr">
+      <td class="tdhct"  style="text-align: left;"  colspan="3">3.你是否受过刑事处罚? <input type="checkbox">是 <input type="checkbox">否</td>
+      <td class="tdhct"  style="text-align: left;"  colspan="3">4.你是否受过行政处罚? <input type="checkbox">是 <input type="checkbox">否</td>
+    </tr>
+     <tr class="tr">
+      <td  class="tdhct"  style="text-align: left;" colspan="3">5.你是否患过重大疾病? <input type="checkbox">是 <input type="checkbox">否</td>
+      <td  class="tdhct"  style="text-align: left;" colspan="3">6.你是否有工伤/职业病/伤残? <input type="checkbox">有 <input type="checkbox">无</td>
+    </tr>
+	 <tr class="tr" style="border: 0"><td colspan="7"></td></tr>
+	 <tr class="tr" style="border: 0" ><td colspan="7"></td></tr>
+
+
+	<tr class="tr">
+     <td rowspan="3" style="width:2%;"  class="tdhct">其<br/>它<br/>信<br/>息</td>
+      <td class="tdhct"  style="text-align: left;" colspan="3">7.你有无精神病史？<input type="checkbox">有 <input type="checkbox">无  </td>
+      <td class="tdhct"  style="text-align: left;"  colspan="3">8.你家族是否有精神病史？<input type="checkbox">是 <input type="checkbox">否</td>
+    </tr>
+
+        <tr class="tr">
+      <td class="tdhct"  style="text-align: left;" colspan="3">9.你是否有吸毒行为? <input type="checkbox">是 <input type="checkbox">否</td>
+      <td class="tdhct"  style="text-align: left;" colspan="3">10.你是否有酗酒习惯? <input type="checkbox">是 <input type="checkbox">否</td>
+    </tr>
+
+        <tr class="tr">
+      <td class="tdhct"  style="text-align: left;" colspan="3">11.若女士，你是否怀孕? <input type="checkbox">是 <input type="checkbox">否</td>
+      <td class="tdhct"  style="text-align: left;" colspan="3">12.怀孕日期：</td>
+    </tr>
+
+
+
+
+   <tr>
+      <td rowspan="6" style="width:2%;" class="tdhct">教<br>育<br>&nbsp;/<br>培<br>训<br>经<br>历</td>
+      <td  >入学日期</td>      <td  >毕业日期</td>
+      <td colspan="2" >学校/培训机构名称</td> <td  >专业</td>
+      <td  >学历</td>
+    </tr>`+
+	eduList(edutrainList)
+			+`
+     <tr>
+      <td rowspan="6" style="width:2%;"  class="tdhct">工<br>作<br>经<br>历</td>
+      <td  >入职日期</td>      <td  >离职日期</td>
+      <td colspan="2" >服务单位名称</td> <td  >职务</td>
+      <td  >地点</td>
+    </tr>
+    `+
+			workList(workExperList)
+			+`
+    <tr>
+ 	 <td rowspan="6" style="width:2%;"  class="tdhct">所<br>持<br>证<br>书</td>
+	  <td  >技术职务/等级</td>
+	  <td  >职业资格/等级</td>
+      <td colspan="2" >证书名称</td>
+      <td  >考证日期</td>
+      <td  >到期日</td>
+	</tr>
+	`+
+	createCertList(certList)
+	+`<tr style="border:none;">
+      <td colspan="7" style="border:none;">声明</td>
+    </tr>
+     <tr style="border:none;">
+      <td colspan="7" style="border:none;">  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;本人在此声明，本表格上所有信息均为真实可信的，如果有任何虚假的信息被证实，本人愿意接受公司的任何</td>
+    </tr>
+    <tr style="border:none;">
+      <td colspan="7" style="border:none;text-align: left;"> 处罚，包括立即解除劳动/劳务合同，而不给任何经济补偿。</td>
+    </tr>
+    <tr style="border:none;">
+    	<td style="border:none;"></td><td style="border:none;"></td><td style="border:none;"></td><td style="border:none;"></td><td colspan="3" style="border:none;">填写人签字/日期：_________</td>
+    </tr>
+    </table>`
+
+	return  infos;
+	}
+
+
+
+
+</script>

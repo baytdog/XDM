@@ -40,7 +40,8 @@ public class XdEmployeeService{
 	 * get page
 	 */
 	public Page<Record> getPage(int pnum,int psize,String name,String empnum,String emprelation
-			,String department,String unitname,String costitem,String inductionstatus,String departime,String checked,String selectedName){
+			,String department,String unitname,String costitem,String inductionstatus
+			,String departime,String checked,String selectedName,String position, String workstation){
 		String userOrgId = ShiroKit.getUserOrgId();
 
 		String sql  = " from "+TABLE_NAME+" o where 1=1";
@@ -61,7 +62,16 @@ public class XdEmployeeService{
 			sql = sql + " and o.department = '"+ userOrgId+"'";
 		}else {
 			if(StrKit.notBlank(department)){
-				sql = sql + " and o.department = '"+ department+"'";
+				String[] deptSplit = department.split(",");
+
+				String inSql="";
+				for (String deptId : deptSplit) {
+					inSql=inSql+"'"+deptId+"'"+",";
+
+				}
+				inSql=inSql.replaceAll(",$","");
+
+				sql = sql + " and o.department in("+ inSql+")";
 			}
 		}
 
@@ -73,6 +83,12 @@ public class XdEmployeeService{
 		}
 		if(StrKit.notBlank(empnum)){
 			sql = sql + " and o.empnum like '%"+ empnum+"%'";
+		}
+		if(StrKit.notBlank(position)){
+			sql = sql + " and o.position='"+ position+"'";
+		}
+		if(StrKit.notBlank(workstation)){
+			sql = sql + " and o.workstation='"+ workstation+"'";
 		}
 
 		if(StrKit.notBlank(emprelation)){

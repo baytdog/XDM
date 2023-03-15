@@ -1,0 +1,153 @@
+<style>
+	table, td, th { border: 1px solid black; border-style: solid; border-collapse: collapse; text-align: center; font-size: 15px; }
+	.inner table, .inner td, .inner th { text-align: left; border: none; }
+	.tdh {font-family:微软雅黑;font-size: 15px; font-weight:bold;}
+	.tdhct {font-family:微软雅黑;font-size: 15px;}
+	.tr {height: 40px;}
+</style>
+<form id="editForm" class="panel-body form-horizontal form-padding" onkeydown="if(event.keyCode==13){return false;}">
+	<div class="col-md-12 col-lg-12"  >
+		<table style="width: 100%;">
+			<caption style="font-family:微软雅黑;font-size: 26px; text-align: center" >人员对比<br/></caption>
+			#for(i = 0; i < 18; i++)
+				#if(i==0)
+					<tr class="tr">
+						<td style="width: 10%;">姓名</td>
+						#for(x : empLists)
+							<td>#(x.name)</td>
+						#end
+					</tr>
+				#else if(i==1)
+					<tr class="tr">
+						<td>基本情况</td>
+						#for(x : empLists)
+						<td></td>
+						#end
+					</tr>
+				#else if(i==2)
+					<tr class="tr">
+						<td>性别</td>
+						#for(x : empLists)
+						<td>#(x.gender)</td>
+						#end
+					</tr>
+				#else if(i==3)
+				<tr class="tr">
+					<td>年龄</td>
+					#for(x : empLists)
+					<td>#(x.age)</td>
+					#end
+				</tr>
+				#else if(i==4)
+				<tr class="tr">
+					<td>婚育情况</td>
+					#for(x : empLists)
+					<td>#(x.married)</td>
+					#end
+				</tr>
+				#else if(i==5)
+				<tr class="tr">
+					<td>政治面貌</td>
+					#for(x : empLists)
+					<td>#(x.politicsstatus)</td>
+					#end
+				</tr>
+				#else if(i==6)
+				<tr class="tr">
+					<td>最高学历/专业(全日制)</td>
+					#for(x : empLists)
+					<td>#(x.edubg2)#if(x.major2)/#(x.major2)#end</td>
+					#end
+				</tr>
+				#else if(i==7)
+				<tr class="tr">
+					<td>最高学历/专业(非全日制)</td>
+					#for(x : empLists)
+					<td>#(x.edubg1)#if(x.major1)/#(x.major1)#end</td>
+					#end
+				</tr>
+				#else if(i==8)
+				<tr class="tr">
+					<td>学位</td>
+					#for(x : empLists)
+					<td>#(x.topdegree)</td>
+					#end
+				</tr>
+				#else if(i==9)
+				<tr class="tr">
+					<td>任职情况</td>
+					#for(x : empLists)
+					<td>#(x.inductionstatus)</td>
+					#end
+				</tr>
+				#else if(i==10)
+				<tr class="tr">
+					<td>入职日期</td>
+					#for(x : empLists)
+					<td>#(x.entrytime)</td>
+					#end
+				</tr>
+				#else if(i==11)
+				<tr class="tr">
+					<td>所属部门/项目</td>
+					#for(x : empLists)
+					<td>#(x.department)/#(x.costitem)</td>
+					#end
+				</tr>
+				#else if(i==12)
+				<tr class="tr">
+					<td>职务/岗位</td>
+					#for(x : empLists)
+					<td>#(x.position)#if(x.workstation)/#(x.workstation)#end</td>
+					#end
+				</tr>
+				#else if(i==13)
+				<tr class="tr">
+					<td>参加工作时间</td>
+					#for(x : empLists)
+					<td>#(x.worktime)</td>
+					#end
+				</tr>
+				#else if(i==14)
+				<tr class="tr">
+					<td>本单位工龄</td>
+					#for(x : empLists)
+					<td>#(x.seniority)</td>
+					#end
+				</tr>
+				#else if(i==15)
+				<tr class="tr">
+					<td>所持证书</td>
+					#for(x : empLists)
+					<td>#(x.certificates)</td>
+					#end
+				</tr>
+				#else if(i==16)
+				<tr class="tr">
+					<td>工作经历</td>
+					#for(x : empLists)
+					<td> #(x.backup1)</td>
+					#end
+				</tr>
+				#else
+				<tr class="tr">
+					<td>特长</td>
+					#for(x : empLists)
+					<td>#(x.specialty) </td>
+					#end
+				</tr>
+			#end
+			#end
+		</table>
+	</div>
+
+
+
+		<div class="col-sm-12" style="text-align: center;">
+			<br/>
+			<br/>
+			<button class="btn btn-primary" type="button" onclick="window.history.back();" >返回</button>
+		</div>
+
+
+</form>

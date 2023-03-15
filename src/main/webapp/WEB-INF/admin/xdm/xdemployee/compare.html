@@ -1,0 +1,459 @@
+<div id="page-content">
+			<div class="col-lg-12">
+		        <div class="panel">
+
+					#include("compareForm.html")
+		        </div>
+		    </div>
+	</div>
+
+
+	<script>
+		function save(){
+			let gridData1 = grid.getData();
+			let gridData2 = grid2.getData();
+
+			var data = common_ajax.ajaxFunc("/admin/xd/xdemployee/save",$('#editForm').serialize()+"&gridData1="+mini.encode(gridData1)+"&gridData2="+mini.encode(gridData2), "json", null);
+			if(data.success){
+				pointLion.alertMsg("操作成功!" , "success" , "small" , function(){
+					location.href = ctx+'/admin/xd/xdemployee/getListPage';//跳转到列表页
+				},data);
+			}else{
+				pointLion.alertMsg(data.message , "danger" , "small" , function(){
+					$(".btn").removeAttr("disabled");
+				},data);
+			}
+		}
+		$(document).ready(function() {
+			$('#editForm').bootstrapValidator({
+				excluded:[":disabled"],
+				live: 'enabled',
+				fields: {
+					"#(formModelName).name": {
+						trigger: 'change',
+						validators: {
+							notEmpty: {
+								message: '*姓名不能为空'
+							}
+						}
+					},
+					"#(formModelName).Idnum": {
+						validators: {
+							notEmpty: {
+								message: '*身份证号不能为空'
+							},
+							regexp: {
+								regexp: /^(^[1-9]\d{7}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}$)|(^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])((\d{4})|\d{3}[Xx])$)$/,
+								message: '身份证号码格式不正确，为15位和18位身份证号码！'
+							},
+						}
+					}
+				}
+	        }).on("success.form.bv", function (e) {
+	            save();
+	            return false;//阻止表单跳转
+	        });
+		});
+	</script>
+
+
+	<script type="text/javascript">
+
+		// var Genders = [{ id: 1, text: '男' }, { id: 2, text: '女'}];
+		 var grade= [{id:0,text:'全日制'}, { id:1, text:'非全日制'}];
+		var xl= [{id:1,text:'技工'}, { id:2, text:'职高'}, { id:3, text:'中专'}, { id:4, text:'高中'}, { id:5, text:'大专'}, { id:6, text:'本科'}];
+		mini.parse();
+
+		var grid = mini.get("datagrid1");
+		var grid2 = mini.get("datagrid2");
+
+
+		/*function  ttt(){
+			console.log("1111")
+			console.log(grid.getData())
+		}*/
+
+		//var menu = new ColumnsMenu(grid);
+
+		function addRow1() {
+			var newRow = { name: "New Row",id:"",enrolldate:"" ,graduatdate:"",trainOrgname:"",major:"",edubg:""};
+			grid.addRow(newRow, 0);
+
+			grid.beginEditCell(newRow, "enrolldate");
+		}
+		function addRow2() {
+			var newRow = { name: "New Row",id:"",entrydate:"" ,departdate:"",serviceunit:"",job:"",addr:""};
+			grid2.addRow(newRow, 0);
+
+			grid2.beginEditCell(newRow, "entrydate");
+		}
+		function removeRow1() {
+			var rows = grid.getSelecteds();
+			if (rows.length > 0) {
+				grid.removeRows(rows, true);
+			}
+		}
+		function removeRow2() {
+			var rows = grid2.getSelecteds();
+			if (rows.length > 0) {
+				grid2.removeRows(rows, true);
+			}
+		}
+		// function saveData() {
+		//
+		// 	saveGrid(grid, {
+		// 		url: "../data/AjaxService.aspx?method=SaveEmployees"
+		// 	});
+		//
+		// }
+
+
+		grid.on("celleditenter", function (e) {
+			var index = grid.indexOf(e.record);
+			if (index == grid.getData().length - 1) {
+				var row = {};
+				grid.addRow(row);
+			}
+		});
+		grid2.on("celleditenter", function (e) {
+			var index = grid2.indexOf(e.record);
+			if (index == grid2.getData().length - 1) {
+				var row = {};
+				grid2.addRow(row);
+			}
+		});
+
+		grid.on("beforeload", function (e) {
+			if (grid.getChanges().length > 0) {
+				if (confirm("有增删改的数据未保存，是否取消本次操作？")) {
+					e.cancel = true;
+				}
+			}
+		});
+		grid2.on("beforeload", function (e) {
+			if (grid2.getChanges().length > 0) {
+				if (confirm("有增删改的数据未保存，是否取消本次操作？")) {
+					e.cancel = true;
+				}
+			}
+		});
+	</script>
+	<script>
+		function resetVali(){
+			if(!$("#editForm").data('bootstrapValidator').isValid()) {
+				$("#editForm").data('bootstrapValidator').resetForm();
+				$(".btn").removeAttr("disabled");
+			}
+		}
+
+		/*$(function () {
+			$('#editForm').bootstrapValidator({
+				excluded:[":disabled"],
+				live: 'enabled',
+				fields: {
+					"#(formModelName).name": {
+						trigger: 'change',
+						validators: {
+							notEmpty: {
+								message: '*姓名不能为空'
+							}
+						}
+					},
+					"#(formModelName).Idnum": {
+						validators: {
+							notEmpty: {
+								message: '*身份证号不能为空'
+							},
+							regexp: {
+								regexp: /^(^[1-9]\d{7}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}$)|(^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])((\d{4})|\d{3}[Xx])$)$/,
+								message: '身份证号码格式不正确，为15位和18位身份证号码！'
+							},
+						}
+					}
+				}
+			});
+			$("#submitBtn").click(function(){
+				$("#editForm").data('bootstrapValidator').validate();//相当于触发一次所有的验证
+				if(!$("#editForm").data('bootstrapValidator').isValid()){//判断验证是否已经通过
+					return false;
+				}else{
+					save();
+				}
+
+			});
+
+		})*/
+		$(function(){
+
+			var employeeId=$("#employeeId").val();
+			var data = common_ajax.ajaxFunc("/admin/xd/xdedutrain/getEduTrainList", {"employeeId":employeeId}, "json", null);
+
+			grid.setData(data);
+			data = common_ajax.ajaxFunc("/admin/xd/xdworkexper/getWorkExperList", {"employeeId":employeeId}, "json", null);
+
+			grid2.setData(data);
+			// if(data.success){
+			// 	$("#businessAttachmentCount").html(data.data);
+			// }
+		});
+
+
+
+		$('.form_datetime').datepicker({format: 'yyyy-mm-dd',weekStart: 1,todayBtn:  1,autoclose: 1,language:  'zh-CN',todayHighlight: 1,forceParse: 0,showMeridian: 1}).on('changeDate',function(){
+			resetVali();
+		});
+
+
+		$(".selectpicker").selectpicker({});
+		$(".bootstrap-select").attr("style","width:100%;");
+
+
+	</script>
+	<script>
+	$(function () {
+		//性别
+		let gender=$("#gender").val();
+		if(gender){
+			$('#genderSelect').selectpicker('val',gender.split(",")).trigger("change");
+		}
+
+		$('#genderSelect').on('changed.bs.select', function (e) {
+			$('#gender').val($('#genderSelect').val())
+		});
+		//婚姻
+		let married=$("#married").val();
+		if(married){
+			$('#marriedSelect').selectpicker('val',married.split(",")).trigger("change");
+		}
+
+		$('#marriedSelect').on('changed.bs.select', function (e) {
+			$('#married').val($('#marriedSelect').val())
+		});
+		//民族
+		let national=$("#national").val();
+		if(national){
+			$('#nationalSelect').selectpicker('val',national.split(",")).trigger("change");
+		}
+
+		$('#nationalSelect').on('changed.bs.select', function (e) {
+			$('#national').val($('#nationalSelect').val())
+		});
+		//政治面貌
+		let politicsstatus=$("#politicsstatus").val();
+		if(national){
+			$('#politSelect').selectpicker('val',politicsstatus.split(",")).trigger("change");
+		}
+		$('#politSelect').on('changed.bs.select', function (e) {
+			$('#politicsstatus').val($('#politSelect').val())
+		});
+		//最高学历
+		let topedu=$("#topedu").val();
+		if(topedu){
+			$('#topeduSelect').selectpicker('val',topedu.split(",")).trigger("change");
+		}
+		$('#topeduSelect').on('changed.bs.select', function (e) {
+			$('#topedu').val($('#topeduSelect').val())
+		});
+		//学历(非全日制)
+		let edubg1=$("#edubg1").val();
+		if(edubg1){
+			$('#edubg1Select').selectpicker('val',edubg1.split(",")).trigger("change");
+		}
+		$('#edubg1Select').on('changed.bs.select', function (e) {
+			$('#edubg1').val($('#edubg1Select').val())
+		});
+		//学历(全日制)
+		let edubg2=$("#edubg2").val();
+		if(edubg2){
+			$('#edubg2Select').selectpicker('val',edubg2.split(",")).trigger("change");
+		}
+		$('#edubg2Select').on('changed.bs.select', function (e) {
+			$('#edubg2').val($('#edubg2Select').val())
+		});
+		//退伍军人
+		let issoldier=$("#issoldier").val();
+		if(issoldier){
+			$('#issoldierSelect').selectpicker('val',issoldier.split(",")).trigger("change");
+		}
+		$('#issoldierSelect').on('changed.bs.select', function (e) {
+			$('#issoldier').val($('#issoldierSelect').val())
+		});
+		//就职状况
+		let inductionstatus=$("#inductionstatus").val();
+		if(inductionstatus){
+			$('#inductionstatusSelect').selectpicker('val',inductionstatus.split(",")).trigger("change");
+		}
+		$('#inductionstatusSelect').on('changed.bs.select', function (e) {
+			$('#inductionstatus').val($('#inductionstatusSelect').val())
+		});
+		//所属部门
+		let department=$("#department").val();
+		if(department){
+			$('#departmentSelect').selectpicker('val',department.split(",")).trigger("change");
+		}
+		$('#departmentSelect').on('changed.bs.select', function (e) {
+			$('#department').val($('#departmentSelect').val())
+		});
+		//单元
+		let unitname=$("#unitname").val();
+		if(unitname){
+			$('#unitnameSelect').selectpicker('val',unitname.split(",")).trigger("change");
+		}
+		$('#unitnameSelect').on('changed.bs.select', function (e) {
+			$('#unitname').val($('#unitnameSelect').val())
+		});
+		//成本项目
+		let costitem=$("#costitem").val();
+		if(costitem){
+			$('#costitemSelect').selectpicker('val',costitem.split(",")).trigger("change");
+		}
+		$('#costitemSelect').on('changed.bs.select', function (e) {
+			$('#costitem').val($('#costitemSelect').val())
+		});
+		//职   位
+		let position=$("#position").val();
+		if(position){
+			$('#positionSelect').selectpicker('val',position.split(",")).trigger("change");
+		}
+		$('#positionSelect').on('changed.bs.select', function (e) {
+			$('#position').val($('#positionSelect').val())
+		});
+		//困难员工
+		let hardstaff=$("#hardstaff").val();
+		if(hardstaff){
+			$('#hardstaffSelect').selectpicker('val',hardstaff.split(",")).trigger("change");
+		}
+		$('#hardstaffSelect').on('changed.bs.select', function (e) {
+			$('#position').val($('#hardstaffSelect').val())
+		});
+	})
+
+</script>
+
+
+	<script type="text/javascript">
+	$(function (){
+		initTable();//初始化
+		let picUrl = $("#cert_pic_id").val();
+		if(picUrl){
+			$("#pic").attr("src","http://localhost:8080/XDM/admin/sys/attachment/lookFile?id="+picUrl+"&view=detail");
+		}else{
+			$("#pic").attr("src","http://localhost:8080/XDM/common/img/profile-photos/1.png");
+		}
+
+
+
+
+		pointLion.initUploader("/admin/sys/attachment/attachmentCertUpload?busid="+$("#employeeId").val(),function(data){
+			//pointLion.alertMsg(data.message,"success",null,null);
+			 http://localhost:8080/XDM/admin/sys/attachment/lookFile?id=56568497bbe948c0955c4ac9ff2f1a2d&view=detail
+			$("#pic").attr("src","http://localhost:8080/XDM/admin/sys/attachment/lookFile?id="+data.message+"&view=detail");
+		});
+	});
+
+	var busid = $("#employeeId").val();//可能是业务ID，也可能是TEMP_UUID
+	var col = [
+
+		{
+			field: 'id',
+			title: '主键',
+			align: 'center'
+		},
+		{
+			field: 'file_name',
+			title: '文件名',
+			align: 'center'
+		},
+		{
+			field: 'create_user_name',
+			title: '上传人',
+			align: 'center'
+		},
+		{
+			field: 'create_time',
+			title: '上传时间',
+			align: 'center'
+		},
+		{
+			field: 'control',
+			title: '操作',
+			align: 'left',
+			width:'120',
+			formatter:function(value,row,index){
+				var a = '<a class="label label-table label-success" href="'+ctx+'/admin/sys/attachment/downloadFile?id='+row.id+'&view=detail" target="_blank">下载</a>&nbsp;';
+				a=a+'<a class="label label-table label-success" href="'+ctx+'/admin/sys/attachment/lookFile?id='+row.id+'&view=detail" target="_blank" title="附件查看">查看</a>&nbsp;'
+				#if(view=='detail')
+				#else
+				#end
+				return a;
+			}
+		}];
+	var opt = {
+		//请求方法
+		method: 'get',
+		//是否显示行间隔色
+		striped: true,
+		//是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+		cache: false,
+		//data-toolbar: "#demo-delete-row",
+		//是否显示分页（*）
+		pagination: true,
+		//是否启用排序
+		sortable: false,
+		//排序方式
+		sortOrder: "asc",
+		pageSize: 50,
+		//可供选择的每页的行数（*）
+		pageList: [5, 10, 15, 20,50,100],
+		url: ctx+"/admin/sys/attachment/getCertListPage?busid="+busid,
+		//默认值为 'limit',传给服务端的参数为：limit, offset, search, sort, order Else
+		//queryParamsType:'',
+		////查询参数,每次调用是会带上这个参数，可自定义
+		queryParams : function(params) {
+			return {
+				pageNumber: (params.offset/params.limit)+1,
+				pageSize: params.limit
+			};
+		},
+		//分页方式：client客户端分页，server服务端分页（*）
+		sidePagination: "server",
+		//是否显示搜索
+		search: false,
+		//Enable the strict search.
+		strictSearch: true,
+		paginationDetailHAlign:' hidden',
+		//Indicate which field is an identity field.
+		idField : "id",
+		columns: col,
+		pagination:true,paginationShowPageGo: false
+	};
+
+	//表格
+	function initTable(){
+		$('#pageTable').bootstrapTable(opt);
+		$('#pageTable').bootstrapTable('hideColumn', 'id');
+	}
+	function refreshTable(){
+
+		$("#pageTable").bootstrapTable('refresh', opt);
+		$('#pageTable').bootstrapTable('hideColumn', 'id');
+	}
+
+
+	//删除
+	function del(ids){
+		pointLion.confimMsg("您是否要删除所选信息 ?<br/> 点击确认进行删除 , 点击取消取消该操作",null,function(){
+			//执行删除
+			var data = common_ajax.ajaxFunc("/admin/sys/attachment/delete",{"ids":ids}, "json", null);
+			//删除结果
+			if(data.success){
+				pointLion.alertMsg(data.message,"success",null,function(){
+					refreshTable();
+				});
+			}else{
+				pointLion.alertMsg(data.message,"success",null,null);
+			}
+		});
+	};
+
+</script>

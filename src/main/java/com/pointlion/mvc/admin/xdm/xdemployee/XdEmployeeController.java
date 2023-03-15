@@ -89,6 +89,122 @@ public class XdEmployeeController extends BaseController {
 		setAttr("positions",positions);
 		renderIframe("list.html");
     }
+
+
+	public void getCompareListPage(){
+		String userOrgId = ShiroKit.getUserOrgId();
+		if("1".equals(userOrgId)){
+			setAttr("personnel","Y");
+		}else{
+			setAttr("personnel","N");
+
+		}
+
+		Map<String, List<XdDict>> dictListByType = DictMapping.getDictListByType();
+		//	List<XdDict> units = XdDict.dao.find("select *from xd_dict where type='unit' order by  sortnum");
+		setAttr("units",	dictListByType.get("unit"));
+
+		if(!"1".equals(userOrgId)){
+
+			SysUser otherUser = SysUser.dao.findById(ShiroKit.getUserId());
+			String instr="";
+			if(otherUser.getOperProject()!=null && !otherUser.getOperProject().equals("")){
+				String[] split = otherUser.getOperProject().split(",");
+				for (String s : split) {
+					instr=instr+",'"+s+"'";
+				}
+				instr=instr.replaceAll("^,","");
+				if(!instr.equals("")){
+					List<XdProjects> projects = XdProjects.dao.find("select * from xd_projects where status='1' and  id in ("+instr+")");
+					setAttr("projects",projects);
+				}else{
+
+					List<XdProjects> projects = XdProjects.dao.find("select * from xd_projects where status='1' ");
+					setAttr("projects",projects);
+				}
+			}
+
+		}else{
+			List<XdProjects> projects = XdProjects.dao.find("select * from xd_projects where status='1' ");
+			setAttr("projects",projects);
+		}
+
+
+		List<SysOrg> orgList = SysOrg.dao.find("select * from  sys_org where id !='root' order by sort");
+
+		setAttr("orgs",orgList);
+		String orgStr="";
+		Map<String,String> map =new HashMap<>();
+		for (SysOrg org : orgList) {
+			orgStr=orgStr+org.getId()+"="+org.getName()+",";
+		}
+		List<XdDict> dutyList = dictListByType.get("duty");
+		String dutyStr="";
+		for (XdDict duty : dutyList) {
+			dutyStr=dutyStr+duty.getValue()+"="+duty.getName()+",";
+		}
+		List<XdDict> eduList = dictListByType.get("edu");
+		String edu = JSONUtil.listToJson(eduList);
+
+
+		List<XdDict> positionList = dictListByType.get("position");
+		String positions = JSONUtil.listToJson(positionList);
+
+		setAttr("eduStr",edu);
+		setAttr("orgStr",orgStr);
+		setAttr("dutyStr",dutyStr);
+		setAttr("positions",positions);
+		setAttr("positionList",positionList);
+		setAttr("dutyList",dutyList);
+		renderIframe("compareList.html");
+	}
+
+	public void getComparePage(){
+		String ids = getPara("ids");
+		String idArr[] = ids.split(",");
+		String inSql="";
+		for (String id : idArr) {
+			inSql=inSql+"'"+id+"'"+",";
+		}
+		inSql=inSql.replaceAll(",$","");
+		List<XdEmployee> empLists = XdEmployee.dao.find("select * from  xd_employee where id in (" + inSql + ")");
+		Map<String, Map<String, String>> stringMapMap = DictMapping.dictMappingValueToName();
+		List<SysOrg> orgList = SysOrg.dao.find("select * from  sys_org");
+		Map <String,String>orgMap =new HashMap();
+		for (SysOrg org : orgList) {
+			orgMap.put(org.getId(),org.getName());
+		}
+
+		List<XdProjects> projects = XdProjects.dao.find("select * from  xd_projects");
+		Map <String,String>projectMap =new HashMap();
+		projects.stream().forEach( project->projectMap.put(project.getId().toString(),project.getProjectName()));
+		empLists.stream().forEach(emp-> {
+			emp.setGender(emp.getGender().equals("1")?"男":"女");
+			emp.setMarried(stringMapMap.get("ismarry").get(emp.getMarried()));
+			emp.setPoliticsstatus(stringMapMap.get("polity").get(emp.getPoliticsstatus()));
+			emp.setTopedu(stringMapMap.get("edu").get(emp.getTopedu()));
+			emp.setTopedu(stringMapMap.get("edu").get(emp.getTopedu()));
+			emp.setInductionstatus(stringMapMap.get("officestatus").get(emp.getInductionstatus()));
+			emp.setDepartment(orgMap.get(emp.getDepartment()));
+			emp.setPosition(stringMapMap.get("position").get(emp.getPosition()));
+			emp.setEdubg1(stringMapMap.get("edu").get(emp.getEdubg1()));
+			emp.setEdubg2(stringMapMap.get("edu").get(emp.getEdubg2()));
+			emp.setCostitem(projectMap.get(emp.getCostitem()));
+			emp.setWorkstation(stringMapMap.get("duty").get(emp.getWorkstation()));
+			List<XdWorkExper> workExperList = XdWorkExper.dao.find("select * from  xd_work_e" +
+					"xper where eid='" + emp.getId() + "' order by entrydate  desc");
+			String workExpr="";
+			int i =1;
+			for (XdWorkExper workExper : workExperList) {
+				workExpr=workExpr+i+"、"+workExper.getServiceunit()+"/"+workExper.getJob()+"("+workExper.getEntrydate()+"/"+workExper.getDepartdate()+")\t";
+				i++;
+			}
+			emp.setBackup1(workExpr);
+
+		});
+		setAttr("empLists",empLists);
+		renderIframe("compare.html");
+	}
 	/***
      * list page data
      **/
@@ -103,10 +219,12 @@ public class XdEmployeeController extends BaseController {
 		String costitem = getPara("costitem","");
 		String inductionstatus = getPara("inductionstatus","");
 		String departime = getPara("departime","");
+		String position = getPara("position","");
+		String workstation = getPara("workstation","");
 		String checked = getPara("checked","");
 		String selectedName = java.net.URLDecoder.decode(getPara("selectedName",""),"UTF-8");
 
-    	Page<Record> page = service.getPage(Integer.valueOf(curr),Integer.valueOf(pageSize),name,empnum,emprelation,department,unitname,costitem,inductionstatus,departime,checked,selectedName);
+    	Page<Record> page = service.getPage(Integer.valueOf(curr),Integer.valueOf(pageSize),name,empnum,emprelation,department,unitname,costitem,inductionstatus,departime,checked,selectedName,position,workstation);
     	renderPage(page.getList(),"",page.getTotalRow());
     }
     /***
