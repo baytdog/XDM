@@ -134,7 +134,10 @@
 
 	}
 	let col = [{field: 'checked', checkbox : true, align: 'center'},
-
+		{ title: '序号', align: 'center',width: 50,
+			formatter: function (value, row, index)
+			{ var options = 	$('#pageTable').bootstrapTable('getOptions');
+			return options.pageSize * (options.pageNumber - 1) + index + 1; } },
 		{field: 'department', title: '部门', align: 'center',
 			formatter:function(value,row,index){
 
@@ -330,7 +333,17 @@
 	}
 	function exportExcel2(){
 
-		var certTitle = $("#certTitle").val();
+		let certTitle="";
+		#if(certId)
+			certTitle="#(certId)";
+		#else
+			 certTitle = $("#certTitle").val();
+		if(!certTitle){
+			certTitle="";
+		}
+		#end
+
+		console.log(certTitle)
 		location.href = "#(ctx)/admin/xd/xdempcert/exportExcel2?certTitle="+certTitle;
 	}
 

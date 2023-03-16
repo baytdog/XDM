@@ -68,7 +68,9 @@
 
 		// var Genders = [{ id: 1, text: '男' }, { id: 2, text: '女'}];
 		 var grade= [{id:0,text:'全日制'}, { id:1, text:'非全日制'}];
-		var xl= [{id:1,text:'技工'}, { id:2, text:'职高'}, { id:3, text:'中专'}, { id:4, text:'高中'}, { id:5, text:'大专'}, { id:6, text:'本科'}];
+		// var xl= [{id:1,text:'技工'}, { id:2, text:'职高'}, { id:3, text:'中专'}, { id:4, text:'高中'}, { id:5, text:'大专'}, { id:6, text:'本科'}];
+		var xl=    [{id:1,text:'博士'}, {id:2,text:'硕士'}, {id:3,text:'大学'}, {id:4,text:'大专'}, {id:5,text:'中专'}, {id:6,text:'职高'}, {id:7,text:'技校'}, {id:8,text:'高中'}, {id:9,text:'初中'}, {id:10,text:'小学'}, {id:11,text:'其它'}]
+		 //var xl= "#(edu)";
 		mini.parse();
 
 		var grid = mini.get("datagrid1");
@@ -332,6 +334,15 @@
 		}
 		$('#hardstaffSelect').on('changed.bs.select', function (e) {
 			$('#position').val($('#hardstaffSelect').val())
+		});
+
+		//岗位
+		let workstation=$("#workstation").val();
+		if(workstation){
+			$('#workstationSelect').selectpicker('val',workstation.split(",")).trigger("change");
+		}
+		$('#workstationSelect').on('changed.bs.select', function (e) {
+			$('#workstation').val($('#workstationSelect').val())
 		});
 	})
 

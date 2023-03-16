@@ -219,6 +219,7 @@ public class XdAttendanceSheetController extends BaseController {
 		XdOplogSummary first = XdOplogSummary.dao.findFirst("select * from xd_oplog_summary where oid='" + oid + "' and lastversion='0'");
 		List<XdOplogDetail> xdOplogDetails = XdOplogDetail.dao.find("select *from  xd_oplog_detail where rsid='" + first.getId() + "'");
 		XdAttendanceSheet sheet = JSONUtil.jsonToBean(first.getChangea(), XdAttendanceSheet.class);
+
 		sheet.update();
 		renderSuccess("");
 

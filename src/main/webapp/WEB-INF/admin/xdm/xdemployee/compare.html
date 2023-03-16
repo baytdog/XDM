@@ -60,12 +60,12 @@
 	<script type="text/javascript">
 
 		// var Genders = [{ id: 1, text: '男' }, { id: 2, text: '女'}];
-		 var grade= [{id:0,text:'全日制'}, { id:1, text:'非全日制'}];
+	/*	 var grade= [{id:0,text:'全日制'}, { id:1, text:'非全日制'}];
 		var xl= [{id:1,text:'技工'}, { id:2, text:'职高'}, { id:3, text:'中专'}, { id:4, text:'高中'}, { id:5, text:'大专'}, { id:6, text:'本科'}];
 		mini.parse();
 
 		var grid = mini.get("datagrid1");
-		var grid2 = mini.get("datagrid2");
+		var grid2 = mini.get("datagrid2");*/
 
 
 		/*function  ttt(){
@@ -75,7 +75,7 @@
 
 		//var menu = new ColumnsMenu(grid);
 
-		function addRow1() {
+		/*function addRow1() {
 			var newRow = { name: "New Row",id:"",enrolldate:"" ,graduatdate:"",trainOrgname:"",major:"",edubg:""};
 			grid.addRow(newRow, 0);
 
@@ -98,7 +98,7 @@
 			if (rows.length > 0) {
 				grid2.removeRows(rows, true);
 			}
-		}
+		}*/
 		// function saveData() {
 		//
 		// 	saveGrid(grid, {
@@ -108,7 +108,7 @@
 		// }
 
 
-		grid.on("celleditenter", function (e) {
+		/*grid.on("celleditenter", function (e) {
 			var index = grid.indexOf(e.record);
 			if (index == grid.getData().length - 1) {
 				var row = {};
@@ -136,7 +136,7 @@
 					e.cancel = true;
 				}
 			}
-		});
+		});*/
 	</script>
 	<script>
 		function resetVali(){
@@ -185,13 +185,13 @@
 		})*/
 		$(function(){
 
-			var employeeId=$("#employeeId").val();
+			/*var employeeId=$("#employeeId").val();
 			var data = common_ajax.ajaxFunc("/admin/xd/xdedutrain/getEduTrainList", {"employeeId":employeeId}, "json", null);
 
 			grid.setData(data);
 			data = common_ajax.ajaxFunc("/admin/xd/xdworkexper/getWorkExperList", {"employeeId":employeeId}, "json", null);
 
-			grid2.setData(data);
+			grid2.setData(data);*/
 			// if(data.success){
 			// 	$("#businessAttachmentCount").html(data.data);
 			// }

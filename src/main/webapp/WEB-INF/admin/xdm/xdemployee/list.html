@@ -462,7 +462,7 @@
 			"costitem":costitem,"checked":checked,"selectedName":selectedName,"inductionstatus":inductionstatus,"departime":departime}, "json", null);
 		//删除结果
 
-		console.log(data);
+		//console.log(data);
 
 		var LODOP=getLodop();
 		LODOP.PRINT_INIT('');
@@ -471,6 +471,7 @@
 
 
 		for(var item of data) {
+			LODOP.NewPage();
 			LODOP.NewPage();
 			let infos= contactFormInfo(item);
 			LODOP.ADD_PRINT_TABLE('50', '0', '100%', '100%', infos);

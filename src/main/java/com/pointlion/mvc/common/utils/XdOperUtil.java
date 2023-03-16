@@ -261,6 +261,8 @@ public class XdOperUtil {
         }else{
             System.out.println("不包含");
         }
+
+        System.out.println(1!=1);
     }
 
     public static void setChangeValue(Object obj,String fieldName,String newValue)  {

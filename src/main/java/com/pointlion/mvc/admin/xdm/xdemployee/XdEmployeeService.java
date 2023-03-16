@@ -123,9 +123,10 @@ public class XdEmployeeService{
 					+")";
 		}
 		if(StrKit.notBlank(inductionstatus)||StrKit.notBlank(departime)){
-			sql = sql + " order by o.departime desc";
+//			sql = sql + " order by o.departime desc";
+			sql = sql + " order by o.empnum ,o.departime desc";
 		}else{
-			sql = sql + " order by o.empnum desc";
+			sql = sql + " order by o.empnum ";
 		}
 
 
@@ -209,7 +210,10 @@ public class XdEmployeeService{
 				change="{"+change+"}";
 				XdOplogDetail logDetail = JSONUtil.jsonToBean(change, XdOplogDetail.class);
 				logDetail.setRsid(lid);
-				list.add(logDetail);
+				if(!"salary".equals(logDetail.getFieldName()) && !"workstation".equals(logDetail.getFieldName())){
+					list.add(logDetail);
+				}
+
 
 				if(rs){
 					if("salary".equals(logDetail.getFieldName())){

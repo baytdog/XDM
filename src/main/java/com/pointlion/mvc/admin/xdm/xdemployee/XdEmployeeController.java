@@ -83,6 +83,7 @@ public class XdEmployeeController extends BaseController {
 		List<XdDict> positionList = dictListByType.get("position");
 
 		String positions = JSONUtil.listToJson(positionList);
+
 		setAttr("eduStr",edu);
 		setAttr("orgStr",orgStr);
 		setAttr("dutyStr",dutyStr);
@@ -161,15 +162,16 @@ public class XdEmployeeController extends BaseController {
 		renderIframe("compareList.html");
 	}
 
-	public void getComparePage(){
-		String ids = getPara("ids");
-		String idArr[] = ids.split(",");
+	public void getComparePage() throws UnsupportedEncodingException {
+//		String ids = getPara("ids");
+		String selectedName = new String(getPara("selectedName","").getBytes("ISO-8859-1"), "utf-8");
+		String nameArr[] = selectedName.split(",");
 		String inSql="";
-		for (String id : idArr) {
-			inSql=inSql+"'"+id+"'"+",";
+		for (String name : nameArr) {
+			inSql=inSql+"'"+name+"'"+",";
 		}
 		inSql=inSql.replaceAll(",$","");
-		List<XdEmployee> empLists = XdEmployee.dao.find("select * from  xd_employee where id in (" + inSql + ")");
+		List<XdEmployee> empLists = XdEmployee.dao.find("select * from  xd_employee where name in (" + inSql + ") order by empnum");
 		Map<String, Map<String, String>> stringMapMap = DictMapping.dictMappingValueToName();
 		List<SysOrg> orgList = SysOrg.dao.find("select * from  sys_org");
 		Map <String,String>orgMap =new HashMap();
@@ -353,7 +355,7 @@ public class XdEmployeeController extends BaseController {
 				setAttr("oper","0");
 			}
 		}
-
+		Map<String, List<XdDict>> dictListByType = DictMapping.getDictListByType();
 		List<XdDict> ismarry = XdDict.dao.find("select * from xd_dict where type ='ismarry'");
 		setAttr("ismarry",ismarry);
 		List<XdDict> nations = XdDict.dao.find("select * from xd_dict where type ='nation' order by sortnum");
@@ -377,6 +379,13 @@ public class XdEmployeeController extends BaseController {
 		List<XdDict> hardstuff = XdDict.dao.find("select * from xd_dict where type ='hardstuff' order by sortnum");
 		setAttr("hardstuff",hardstuff);
 
+		List<XdDict> dutyList = dictListByType.get("duty");
+		setAttr("duties",dutyList);
+		//String edu = JSONUtil.listToJson(eduList);
+		/*List education=new ArrayList();
+		Map <String,String>eduMaps=new HashMap();
+		eduList.stream().forEach(dict-> education.add("{id:"+dict.getValue()+",text:'"+dict.getName()+"'}") );
+		setAttr("edu",education);*/
 		setAttr("o", o);
     	setAttr("formModelName",StringUtil.toLowerCaseFirstOne(XdEmployee.class.getSimpleName()));
 		renderIframe("edit.html");
@@ -1201,7 +1210,7 @@ public class XdEmployeeController extends BaseController {
 	public void importExcel() throws IOException, SQLException {
 		UploadFile file = getFile("file","/content");
 		//List<List<String>> list = ExcelUtil.excelToList(file.getFile().getAbsolutePath());
-		List<List<String>> list = ExcelUtil.excelToStringList(file.getFile().getAbsolutePath());
+		List<List<String>> list = ExcelUtil.excelToStringList(file.getFile().getAbsolutePath(),0);
 		Map<String,Object> result = service.importExcel(list);
 		if((Boolean)result.get("success")){
 			renderSuccess((String)result.get("message"));
@@ -1254,7 +1263,7 @@ public class XdEmployeeController extends BaseController {
 			if(attachment!=null){
 				String fileUrl = attachment.getUrl();
 
-				String baseUrl ="D:\\apache-tomcat-7.0.82";
+				String baseUrl ="D:\\apache-tomcat-7.0.100";
 				//String baseUrl ="D:\\apache-tomcat-7.0.100";
 				System.out.println(baseUrl+"/upload"+fileUrl);
 				File f = new File(baseUrl+"/upload"+fileUrl);
@@ -1265,7 +1274,7 @@ public class XdEmployeeController extends BaseController {
 				try {
 					 fis =new FileInputStream(baseUrl+"/upload"+fileUrl);
 //					 fos =new FileOutputStream("D:\\apache-tomcat-7.0.100\\webapps\\XDM\\common\\"+newFileName);
-					 fos =new FileOutputStream("D:\\apache-tomcat-7.0.82\\webapps\\XDM\\common\\"+newFileName);
+					 fos =new FileOutputStream("D:\\apache-tomcat-7.0.100\\webapps\\XDM\\common\\"+newFileName);
 					int len=0;
 					byte[] bytes=new byte[1024];
 						while ((len=fis.read(bytes))!=-1){
@@ -1302,6 +1311,7 @@ public class XdEmployeeController extends BaseController {
 
 			printInfoVo.setEmp(emp);
 			List<XdEdutrain> xdEdutrainList = XdEdutrain.dao.find("select * from xd_edutrain where eid='"+emp.getId()+"'");
+			xdEdutrainList.stream().forEach( edutrain-> edutrain.setEdubg(dictMap.get("edu").get(edutrain.getEdubg())));
 			printInfoVo.setEdutrainList(xdEdutrainList);
 			List<XdWorkExper> workExperList = XdWorkExper.dao.find("select * from xd_work_exper where eid='"+emp.getId()+"'");
 			printInfoVo.setWorkExperList(workExperList);
@@ -1664,7 +1674,7 @@ public class XdEmployeeController extends BaseController {
 			chrecord=chrecord+";";
 			o.setChrecord(chrecord);
 		}
-		if(employee.getSalary()!=o.getSalary()){
+		if((int)employee.getSalary()!=(int)o.getSalary()){
 			String salaryRecord = o.getSaladjrecord();
 			/*if(salaryRecord!=null && !"".equals(salaryRecord) && !salaryRecord.endsWith(";")){
 				salaryRecord=salaryRecord+";";

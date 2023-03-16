@@ -304,15 +304,19 @@
 	}
 
 	function  compareEmp(){
-		var data = [];
-		$("#pageTable input[type='checkbox'][name!='btSelectAll']:checked").each(function(){
+		// var data = [];
+		/*$("#pageTable input[type='checkbox'][name!='btSelectAll']:checked").each(function(){
 			data.push($(this).val());
-		});
-		if(data.length<1){
-			pointLion.alertMsg("请选择要比较的数据!","danger",null,null);
+		});*/
+		let selectedName = $("#selectEd").val();
+		//console.log(selectedName)
+
+		if(selectedName.split(",").length<2){
+			pointLion.alertMsg("至少选择两条数据!","danger",null,null);
 			return;
 		}
-		location.href="#(ctx)/admin/xd/xdemployee/getComparePage?ids="+data.join(",")
+
+		location.href="#(ctx)/admin/xd/xdemployee/getComparePage?selectedName="+selectedName
 
 			//执行删除
 			//var data = common_ajax.ajaxFunc("/admin/xd/xdemployee/getComparePage",{"ids":data.join(",")}, "json", null);
@@ -355,7 +359,7 @@
 		if(department){
 			department=	department.join()
 		}
-		console.log()
+		//console.log()
 		var unitname =$("#unitname").val();
 		var costitem = $("#costitem").val();
 		var checked = $("#demo-checkbox-addons").is(":checked");

@@ -58,7 +58,7 @@ public class UpdateWorkAndSalary implements Job {
                     chrecord=chrecord+";";
                     employee.setChrecord(chrecord);
                 }
-                if(employee.getSalary()!=xdEffict.getNewSalary().intValue()){
+                if((int)employee.getSalary()!=xdEffict.getNewSalary().intValue()){
                     String salaryRecord = employee.getSaladjrecord();
                     if(salaryRecord!=null && !"".equals(salaryRecord) && !salaryRecord.endsWith(";")){
                         salaryRecord=salaryRecord+";";

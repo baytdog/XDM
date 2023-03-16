@@ -21,8 +21,8 @@ import java.util.List;
 
 public class AttachmentController extends BaseController {
 	public static final AttachmentService service = AttachmentService.me;
-//	private static  final String baseUrl ="D:\\apache-tomcat-7.0.100";
-	private static  final String baseUrl ="D:\\apache-tomcat-7.0.82";
+	private static  final String baseUrl ="D:\\apache-tomcat-7.0.100";
+//	private static  final String baseUrl ="D:\\apache-tomcat-7.0.82";
 	/***
 	 * 列表页面
 	 */
