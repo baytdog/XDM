@@ -22,8 +22,8 @@
 										</div>
 										<div class="form-group">
 											<!--<input id="department" placeholder="所属部门" class="form-control">-->
-											<select class="selectpicker form-control"  id="department"  >
-												<option value="">------请选择部门------</option>
+											<select class="selectpicker form-control" title="部门"  id="department"  multiple >
+												<!--<option value="">&#45;&#45;&#45;&#45;&#45;&#45;请选择部门&#45;&#45;&#45;&#45;&#45;&#45;</option>-->
 												#for(org:orgs)
 												<option value="#(org.id)">#(org.name)</option>
 												#end
@@ -32,7 +32,7 @@
 										<div class="form-group">
 											<!--<input id="unitname" placeholder="单元" class="form-control">-->
 											<select class="selectpicker form-control"  id="unitname"  data-live-search="true" >
-												<option value="">------请选择单元------</option>
+												<option value="">---请选择单元---</option>
 												#for(unit:units)
 												<option value="#(unit.value)">#(unit.name)</option>
 												#end
@@ -40,7 +40,7 @@
 										</div>
 										<div class="form-group">
 											<select class="selectpicker form-control"  id="costitem"  data-live-search="true" >
-												<option value="">------请选择项目------</option>
+												<option value="">---请选择项目---</option>
 												#for(pro:projects)
 												<option value="#(pro.id)">#(pro.project_name)</option>
 												#end
@@ -48,12 +48,27 @@
 										</div>
 										<div class="form-group">
 											<select class="selectpicker form-control"  id="inductionstatus"  data-live-search="false" >
-												<option value="">------请选择在职状态------</option>
+												<option value="">---请选择在职状态---</option>
 												<option value="1">在职</option>
 												<option value="2">离职</option>
 											</select>
 										</div>
-
+										<div class="form-group">
+											<select class="selectpicker form-control"  id="position"  data-live-search="false" >
+												<option value="">---职位---</option>
+												#for(pos:positionList)
+												<option value="#(pos.value)">#(pos.name)</option>
+												#end
+											</select>
+										</div>
+										<div class="form-group">
+											<select class="selectpicker form-control"  id="workstation"  data-live-search="true" >
+												<option value="">---岗位---</option>
+												#for(du:dutyList)
+												<option value="#(du.value)">#(du.name)</option>
+												#end
+											</select>
+										</div>
 										<div class="form-group">
 											<div class="input-group date form_datetime">
 												<input id="departime" placeholder="离职年月" class="form-control">
@@ -222,7 +237,9 @@
 						   "unitname":$("#unitname").val(),
 						   "costitem":$("#costitem").val(),
 						   "inductionstatus":$("#inductionstatus").val(),
-						   "departime":$("#departime").val()
+						   "departime":$("#departime").val(),
+						   "position":$("#position").val(),
+						   "workstation":$("#workstation").val(),
 			           };
 			   },
 				onCheck:function(row){
@@ -336,16 +353,21 @@
 
 	//查询
 	function searchTable(){
-		var name = encodeURIComponent($("#name").val());
-		var empnum = encodeURIComponent($("#empnum").val());
-		var emprelation = encodeURIComponent($("#emprelation").val());
-		var department = $("#department").val();
-		var unitname =$("#unitname").val();
-		var costitem = $("#costitem").val();
-		var checked = $("#demo-checkbox-addons").is(":checked");
+		let name = encodeURIComponent($("#name").val());
+		let empnum = encodeURIComponent($("#empnum").val());
+		let emprelation = encodeURIComponent($("#emprelation").val());
+		let department = $("#department").val();
+		if(department){
+			department=	department.join()
+		}
+		let unitname =$("#unitname").val();
+		let costitem = $("#costitem").val();
+		let checked = $("#demo-checkbox-addons").is(":checked");
 		let selectedName = encodeURIComponent($("#selectEd").val());
 		let inductionstatus=$("#inductionstatus").val();
 		let	departime=$("#departime").val();
+		let position= $("#position").val();
+		let workstation=$("#workstation").val();
 
 		var param = {
 			pageNumber: 1,
@@ -359,7 +381,9 @@
 				"checked":checked,
 				"selectedName":selectedName,
 				"inductionstatus":inductionstatus,
-				"departime":departime
+				"departime":departime,
+				"position":position,
+				"workstation":workstation
 			}
 		}
 		// 刷新表格

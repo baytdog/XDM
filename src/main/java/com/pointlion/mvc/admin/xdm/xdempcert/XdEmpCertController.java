@@ -80,8 +80,10 @@ public class XdEmpCertController extends BaseController {
 		String certTitle = getPara("certTitle","");
 		String certAuth = getPara("certAuth","");
 		String sny = java.net.URLDecoder.decode(getPara("sny",""),"UTF-8");
+		String year = java.net.URLDecoder.decode(getPara("year",""),"UTF-8");
+		String month = java.net.URLDecoder.decode(getPara("month",""),"UTF-8");
 		String ctime = java.net.URLDecoder.decode(getPara("ctime",""),"UTF-8");
-    	Page<Record> page = service.getPage(Integer.valueOf(curr),Integer.valueOf(pageSize),dept,name,certTitle,certAuth,sny,ctime);
+    	Page<Record> page = service.getPage(Integer.valueOf(curr),Integer.valueOf(pageSize),dept,name,certTitle,certAuth,sny,year,month,ctime);
     	renderPage(page.getList(),"",page.getTotalRow());
     }
     /***

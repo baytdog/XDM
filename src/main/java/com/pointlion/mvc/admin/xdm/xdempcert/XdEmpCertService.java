@@ -37,11 +37,16 @@ public class XdEmpCertService{
 	/***
 	 * get page
 	 */
-	public Page<Record> getPage(int pNum,int pSize,String dept,String name,String certTitle,String certAuth,String sny,String ctime){
+	public Page<Record> getPage(int pNum,int pSize,String dept,String name,String certTitle,String certAuth,String sny,String year,String month,String ctime){
 //		String userId = ShiroKit.getUserId();
 		String sql  = " from "+TABLE_NAME+" o where status='1'";
 		if(StrKit.notBlank(dept)){
-			sql = sql + " and o.department = '"+dept+"'";
+			String deptIds="";
+			for (String deptId : dept.split(",")) {
+				deptIds=deptIds+"'"+deptId+"'"+",";
+			}
+			deptIds=deptIds.replaceAll(",$","");
+			sql = sql + " and o.department in ("+deptIds+")";
 		}
 		if(StrKit.notBlank(name)){
 			sql = sql + " and o.ename like '%"+name+"%'";
@@ -54,6 +59,12 @@ public class XdEmpCertService{
 		}
 		if(StrKit.notBlank(sny)){
 			sql = sql + " and o.sny ='"+sny+"'";
+		}
+		if(StrKit.notBlank(year)){
+			sql = sql + " and o.sny  like '"+year+"年"+"%'";
+		}
+		if(StrKit.notBlank(month)){
+			sql = sql + " and o.sny  like '%"+month+"月"+"'";
 		}
 		if(StrKit.notBlank(ctime)){
 			sql = sql + " and o.ctime  like '"+ctime+"%'";

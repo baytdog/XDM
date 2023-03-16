@@ -135,12 +135,23 @@ public class XdAttendanceSummaryController extends BaseController {
 	 */
 	public void save(){
 		XdAttendanceSummary o = getModel(XdAttendanceSummary.class);
+		XdAttendanceSummary summary = XdAttendanceSummary.dao.findById(o.getId());
+		Double newCurmonBalance=Double.valueOf(o.getCurmonBalancehours()==null?"0":o.getCurmonBalancehours());
+		Double oldCurmonBalance=Double.valueOf(summary.getCurmonBalancehours()==null?"0":summary.getCurmonBalancehours());
+
+
+		double newAccBalanceHours = Double.valueOf(o.getCurmonAccbalancehours()) + newCurmonBalance - oldCurmonBalance;
+		o.setCurmonAccbalancehours(String.valueOf(newAccBalanceHours));
+
 		o.update();
 
 		String ewardPunish = getPara("ewardPunish");
-		XdAttendanceSummary summary = XdAttendanceSummary.dao.findById(o.getId());
+
 		String scheduleMonth = summary.getScheduleMonth();
 		String scheduleYear = summary.getScheduleYear();
+
+
+
 
 		XdRewardPunishmentSummary rps = XdRewardPunishmentSummary.dao.findFirst(
 				"select  * from  xd_reward_punishment_summary where year='" + scheduleYear + "' and dept_id='" + summary.getDeptValue() + "'");
@@ -886,7 +897,7 @@ public class XdAttendanceSummaryController extends BaseController {
 
 				当月待结算工时=平时加班小数-36（上线36）
 				累计待结算工时=所有月份相加*/
-				summary.setCurmonActworkhours(String.valueOf(work_hour));
+				summary.setCurmonActworkhours(String.valueOf(work_hour+alreayAnnualLeave*8));//本月实际工时
 
 				double curmonBalancehours = work_hour - Double.valueOf(summary.getCurmonWorkhours());//本月工时结余=本月实际工时-本月工时
 
@@ -939,6 +950,11 @@ public class XdAttendanceSummaryController extends BaseController {
 						"casualleave_days='"+personalLeaveDays+"',absenceduty_days='"+newLeaveDays+"',absentwork_days='"+absentworkDays+"',restanleave_days='"+alreayAnnualLeave+"'" +
 						"where attendid_id='"+summary.getId()+"'");
 
+				Db.update("update xd_attendance_sheet set ordinary_ot='"+othours+"',national_ot='"+naOTHours+"'," +
+						"duty_charge='"+dutyCharge+"',mid_shifts='"+middleShiftDays+"',night_shifts='"+nightShiftDays+"'," +
+						"hightemp_allowance='"+highTempCharge+"',should_workdays='"+needWorkday+"'" +
+						",sick_leave='"+sickLeaveDays+"',casual_leave='"+personalLeaveDays+"',absence_duty='"+newLeaveDays+"',absent_work='"+absentworkDays+"',rest_anleave='"+alreayAnnualLeave+"'" +
+						" where summary_id='"+summary.getId()+"'");
 
 				if(shift18A){
 					String ym = summary.getScheduleYear() + summary.getScheduleMonth();

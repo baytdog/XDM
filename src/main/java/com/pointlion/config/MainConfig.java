@@ -49,9 +49,10 @@ public class MainConfig extends JFinalConfig {
 		me.setDevMode(PropKit.getBoolean("devMode"));
 		//设置默认上传文件保存路径 getFile等使用
 		//me.setBaseUploadPath("upload/");
+//		me.setBaseUploadPath("D:\\apache-tomcat-7.0.100\\upload");//平时运行
 		me.setBaseUploadPath("D:\\apache-tomcat-7.0.82\\upload");//平时运行
 //		me.setBaseUploadPath("D:\\apache-tomcat-8.5.83\\upload");//平时运行
-		//me.setBaseDownloadPath("D:\\apache-tomcat-7.0.82\\upload");
+//		me.setBaseDownloadPath("D:\\apache-tomcat-7.0.82\\upload");
 		//设置上传最大限制尺寸
 		me.setMaxPostSize(100*Const.DEFAULT_MAX_POST_SIZE);
 		//me.setMaxPostSize(Const.DEFAULT_MAX_POST_SIZE);

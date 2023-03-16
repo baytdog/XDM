@@ -54,15 +54,11 @@
 								<!--	<a id="add" class="btn btn-primary data-toolbar" href="#(ctx)/admin/xdattendancesheet/getEditPage?view=edit"><i class="demo-pli-add"></i> 添加</a>
 									<a id="del" class="btn btn-danger data-toolbar" onclick="delSel()" href="javascript:void(0);"><i class="demo-pli-cross"></i> 批量删除</a>-->
 									<a id="checkIn" class="btn btn-primary data-toolbar" onclick="exportCheckIn()" target="_blank"><i class="demo-pli-download-from-cloud"></i> 导出考勤</a>
-									<table id="pageTable" class="demo-add-niftycheck" data-toolbar="#del,#add,#checkIn"
-										   data-search="true"
-										   data-show-refresh="true"
-										   data-show-toggle="true"
-										   data-show-columns="true"
-										   data-sort-name="id"
-										   data-page-list="[5, 10, 20]"
-										   data-page-size="5"
-										   data-pagination="true" data-show-pagination-switch="true" ></table>
+									<a id="rewardPunish" class="btn btn-primary data-toolbar" onclick="exportRewardPunish()" target="_blank"><i class="demo-pli-download-from-cloud"></i> 导出绩效奖惩</a>
+									<!--<a id="checkIn" class="btn btn-primary data-toolbar" onclick="exportCheckIn()" target="_blank"><i class="demo-pli-download-from-cloud"></i> 导出考勤</a>-->
+									<a id="onDuty" class="btn btn-primary data-toolbar" onclick="exportOnDuty()" target="_blank"><i class="demo-pli-download-from-cloud"></i> 导出值班汇总</a>
+									<table id="pageTable" class="demo-add-niftycheck" data-toolbar="#rewardPunish,#onDuty,#checkIn"
+										 ></table>
 								</div>
 							</div>
 			        	</div>
@@ -79,24 +75,24 @@
 		   {field: 'emp_num', title: '工号', align: 'center'},
 		   {field: 'emp_name', title: '姓名', align: 'center'},
 		   {field: 'ordinary_ot', title: '平时加班', align: 'center'},
-		   {field: 'tday_weekend_ot', title: '双休日加班', align: 'center'},
+		   /*{field: 'tday_weekend_ot', title: '双休日加班', align: 'center'},*/
 		   {field: 'national_ot', title: '节假日加班', align: 'center'},
 		   {field: 'duty_charge', title: '值班费', align: 'center'},
-		   {field: 'mid_shifts', title: '中班天数', align: 'center'},
-		   {field: 'night_shifts', title: '夜班天数', align: 'center'},
+		   {field: 'mid_shifts', title: '中班', align: 'center',width: 60},
+		   {field: 'night_shifts', title: '夜班', align: 'center',width: 60},
 		   {field: 'hightemp_allowance', title: '高温费', align: 'center'},
 		   {field: 'seniority_allowance', title: '工龄津贴', align: 'center'},
-		   {field: 'should_workdays', title: '每月应工作天数', align: 'center'},
-		   {field: 'sick_leave', title: '病假天数', align: 'center'},
-		   {field: 'casual_leave', title: '事假天数', align: 'center'},
-		   {field: 'absence_duty', title: '新离缺勤天数', align: 'center'},
-		   {field: 'absent_work', title: '旷工天数', align: 'center'},
+		   {field: 'should_workdays', title: '应工作天数', align: 'center'},
+		   {field: 'sick_leave', title: '病假', align: 'center',width: 60},
+		   {field: 'casual_leave', title: '事假', align: 'center',width: 60},
+		   {field: 'absence_duty', title: '新离', align: 'center',width: 60},
+		   {field: 'absent_work', title: '旷工', align: 'center',width: 60},
 		   {field: 'reward_punish', title: '绩效奖惩', align: 'center'},
-		   {field: 'rest_anleave', title: '年假天数', align: 'center'},
+		   {field: 'rest_anleave', title: '年假', align: 'center'},
 
 
 	   
-	   {field: 'control', title: '操作', align: 'left', width:'200',
+	   {field: 'control', title: '操作', align: 'center', width:'120',
 	       formatter:function(value,row,index){
 	           	//通过formatter可以自定义列显示的内容
 	           	//value：当前field的值，即id
@@ -179,6 +175,37 @@
 		location.href = "#(ctx)/admin/xd/xdattendancesheet/exportCheckInExcel?dept="+dept+"&year="+year+"&month="+month;
 	}
 
+
+	function  exportRewardPunish(){
+		let dept = $("#dept").val();
+		let year =$("#year").val();
+		let month =	$("#month").val();
+		if(dept==''){
+			pointLion.alertMsg("请选择部门！","success",null,null);
+			return;
+		}
+		if(year==''||month==''){
+			pointLion.alertMsg("请选择年月！","success",null,null);
+			return;
+		}
+		location.href = "#(ctx)/admin/xd/xdattendancesummary/exportRewardPunishExcel?dept="+dept+"&year="+year+"&month="+month;
+	}
+
+
+	function  exportOnDuty(){
+		let dept = $("#dept").val();
+		let year =$("#year").val();
+		let month =	$("#month").val();
+		if(dept==''){
+			pointLion.alertMsg("请选择部门！","success",null,null);
+			return;
+		}
+		if(year==''||month==''){
+			pointLion.alertMsg("请选择年月！","success",null,null);
+			return;
+		}
+		location.href = "#(ctx)/admin/xd/xdattendancesummary/exportOnDuty?dept="+dept+"&year="+year+"&month="+month;
+	}
 	//查询
 	function searchTable(){
 

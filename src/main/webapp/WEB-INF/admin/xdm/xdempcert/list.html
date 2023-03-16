@@ -13,8 +13,8 @@
 					<div class="form-inline">
 
 						<div class="form-group">
-							<select class="selectpicker form-control"  id="dept"  >
-								<option value="">------请选择部门------</option>
+							<select class="selectpicker form-control"  id="dept" title="部门" multiple  >
+							<!--	<option value="">-&#45;&#45;部门-&#45;&#45;</option>-->
 								#for(org:orgList)
 								<option value="#(org.id)">#(org.name)</option>
 								#end
@@ -26,7 +26,7 @@
 						#if(certId=="")
 						<div class="form-group">
 							<select class="selectpicker form-control"  id="certTitle"  data-live-search="true">
-								<option value="">------请选择证书------</option>
+								<option value="">---证书---</option>
 								#for(cert:certList)
 								<option value="#(cert.id)">#(cert.certificateTitle)</option>
 								#end
@@ -37,16 +37,46 @@
 						<div class="form-group">
 						<!--<input id="certAuth" placeholder="发证机关" class="form-control">-->
 							<select class="selectpicker form-control"  id="certAuth" data-live-search="true" >
-								<option value="">------请选择发证机关------</option>
+								<option value="">---发证机关---</option>
 								#for(licenseAuth:licenseAuths)
 								<option value="#(licenseAuth.value)">#(licenseAuth.name)</option>
 								#end
 							</select>
 						</div>
 
+
+						<div class="form-group">
+							<select class="selectpicker form-control"  id="year"  >
+								<option value="">---到期年份---</option>
+								<option value="2022">2022年</option>
+								<option value="2023">2023年</option>
+								<option value="2024">2024年</option>
+								<option value="2025">2025年</option>
+								<option value="2026">2026年</option>
+								<option value="2027">2027年</option>
+								<option value="2028">2028年</option>
+							</select>
+						</div>
+						<div class="form-group">
+							<select class="selectpicker form-control"  id="month"  >
+								<option value="">---到期月份---</option>
+								<option value="01">1月</option>
+								<option value="02">2月</option>
+								<option value="03">3月</option>
+								<option value="04">4月</option>
+								<option value="05">5月</option>
+								<option value="06">6月</option>
+								<option value="07">7月</option>
+								<option value="08">8月</option>
+								<option value="09">9月</option>
+								<option value="10">10月</option>
+								<option value="11">11月</option>
+								<option value="12">12月</option>
+							</select>
+						</div>
 						<div class="form-group">
 							<select class="selectpicker form-control"  id="sny"  data-live-search="true">
-								<option value="">------请选择到期日期------</option>
+								<option value="">---到期日期---</option>
 								#for(sny:snyList)
 								<option value="#(sny.sny)">#(sny.sny)</option>
 								#end
@@ -111,9 +141,9 @@
 				return deptMap.get(value)
 			}
 		},
-		{field: 'ename', title: '姓名', align: 'center'},
+		{field: 'ename', title: '姓名', align: 'center',width: 90},
 		{field: 'certTile', title: '证书名称', align: 'center'},
-		{field: 'certLevel', title: '证书等级', align: 'center',
+		{field: 'certLevel', title: '证书等级', align: 'center',width: 90,
 			formatter:function(value,row,index){
 			if(value){
 				let  returnVal="";
@@ -134,13 +164,13 @@
 			}
 		},
 		{field: 'certAuthName', title: '发证机关', align: 'center'},
-		{field: 'openDate', title: '发证日期', align: 'center'},
-		{field: 'validity', title: '有效期/年', align: 'center'},
-		{field: 'closeDate', title: '到期日', align: 'center'},
+		{field: 'openDate', title: '发证日期', align: 'center',width: 90},
+		{field: 'validity', title: '有效期/年', align: 'center',width: 90},
+		{field: 'closeDate', title: '到期日', align: 'center',width: 90},
 		{field: 'validate_date', title: '审复证/教育时间', align: 'center'},
 		{field: 'idnum', title: '身份证号', align: 'center'},
 		{field: 'certnum', title: '证书编号', align: 'center'},
-		{field: 'holder', title: '证书持有', align: 'center',formatter:function(value,row,index){
+		{field: 'holder', title: '证书持有', align: 'center',width: 90,formatter:function(value,row,index){
 				if(value=='1'){
 					return "公司持有";
 				}else if(value=='0'){
@@ -246,18 +276,26 @@
 	//查询
 	function searchTable(){
 		let dept = $("#dept").val();
+		if(dept){
+			dept=	dept.join()
+		}
 		let name =encodeURIComponent($("#name").val());
 		let certTitle =encodeURIComponent($("#certTitle").val());
 		let certAuth =encodeURIComponent($("#certAuth").val());
 		let sny = encodeURIComponent($("#sny").val());
+		let year = encodeURIComponent($("#year").val());
+		let month = encodeURIComponent($("#month").val());
+
 		let ctime = encodeURIComponent($("#ctime").val());
-		var param = {
+		let param = {
 			query: {
 				"dept":dept,
 				"name":name,
 				"certTitle":certTitle,
 				"certAuth":certAuth,
 				"sny":sny,
+				"year":year,
+				"month":month,
 				"ctime":ctime
 			}
 		}

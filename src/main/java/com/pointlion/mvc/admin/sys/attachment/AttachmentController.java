@@ -21,6 +21,7 @@ import java.util.List;
 
 public class AttachmentController extends BaseController {
 	public static final AttachmentService service = AttachmentService.me;
+//	private static  final String baseUrl ="D:\\apache-tomcat-7.0.100";
 	private static  final String baseUrl ="D:\\apache-tomcat-7.0.82";
 	/***
 	 * 列表页面
@@ -446,8 +447,8 @@ public class AttachmentController extends BaseController {
 		String savePath = file.getUploadPath();//实际保存的路径
 		String bathPath = savePath.replace(path, "");//根路径upload目录
 		String filename = file.getOriginalFileName();//文件实际名字
-		String stuf = filename.substring(filename.lastIndexOf(".")+1);//扩展名
-		String newUrl = path+"/"+UuidUtil.getUUID()+"."+stuf;//新文件相对路径
+		String stuff = filename.substring(filename.lastIndexOf(".")+1);//扩展名
+		String newUrl = path+"/"+UuidUtil.getUUID()+"."+stuff;//新文件相对路径
 		String newRealFileUrl = bathPath+newUrl;//文件实际存储路径
 		file.getFile().renameTo(new File(newRealFileUrl));//文件重命名
 		SysAttachment attachment = new SysAttachment();
@@ -462,7 +463,7 @@ public class AttachmentController extends BaseController {
 		attachment.setCreateOrgId(org.getId());
 		attachment.setCreateOrgName(org.getName());
 		attachment.setCreateTime(DateUtil.getCurrentTime());
-		attachment.setSuffix(stuf);
+		attachment.setSuffix(stuff);
 		attachment.setFileName(filename);
 		attachment.setBusinessId(busid);
 		attachment.setDes("1");

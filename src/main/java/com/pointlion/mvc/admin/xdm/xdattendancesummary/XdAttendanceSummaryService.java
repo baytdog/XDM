@@ -519,7 +519,7 @@ public class XdAttendanceSummaryService{
 								}
 							}
 
-							attendanceSummary.setCurmonActworkhours(String.valueOf(actWorkHours));//本月实际工时
+							attendanceSummary.setCurmonActworkhours(String.valueOf(actWorkHours+alreayAnnualLeave*8));//本月实际工时
 							//attendanceSummary.setCurmonActworkhours(String.valueOf(work_hour));//本月实际工时
 							attendanceSummary.setCurmonWorkhours(String.valueOf(cur_mon_hours));//本月工时
 //							attendanceSummary.setCurmonWorkhours(String.valueOf(actWorkHours));

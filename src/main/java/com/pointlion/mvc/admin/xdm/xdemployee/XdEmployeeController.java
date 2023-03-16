@@ -87,6 +87,8 @@ public class XdEmployeeController extends BaseController {
 		setAttr("orgStr",orgStr);
 		setAttr("dutyStr",dutyStr);
 		setAttr("positions",positions);
+		setAttr("positionList",positionList);
+		setAttr("dutyList",dutyList);
 		renderIframe("list.html");
     }
 
@@ -1252,8 +1254,8 @@ public class XdEmployeeController extends BaseController {
 			if(attachment!=null){
 				String fileUrl = attachment.getUrl();
 
-				//String baseUrl ="D:\\apache-tomcat-7.0.82";
-				String baseUrl ="D:\\apache-tomcat-8.5.83";
+				String baseUrl ="D:\\apache-tomcat-7.0.82";
+				//String baseUrl ="D:\\apache-tomcat-7.0.100";
 				System.out.println(baseUrl+"/upload"+fileUrl);
 				File f = new File(baseUrl+"/upload"+fileUrl);
 				String fileName = f.getName();
@@ -1262,8 +1264,8 @@ public class XdEmployeeController extends BaseController {
 				FileOutputStream fos=null;
 				try {
 					 fis =new FileInputStream(baseUrl+"/upload"+fileUrl);
-					 fos =new FileOutputStream("D:\\apache-tomcat-8.5.83\\webapps\\XDM\\common\\"+newFileName);
-					 //fos =new FileOutputStream("D:\\apache-tomcat-7.0.82\\webapps\\XDM\\common\\"+newFileName);
+//					 fos =new FileOutputStream("D:\\apache-tomcat-7.0.100\\webapps\\XDM\\common\\"+newFileName);
+					 fos =new FileOutputStream("D:\\apache-tomcat-7.0.82\\webapps\\XDM\\common\\"+newFileName);
 					int len=0;
 					byte[] bytes=new byte[1024];
 						while ((len=fis.read(bytes))!=-1){
