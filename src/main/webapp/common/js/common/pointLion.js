@@ -262,6 +262,11 @@ var pointLion = function(){
 				callback(data);
 			}
 		});
+	/*	uploader.on( 'uploadProgress', function( file, percentage ) {
+			console.log("test------------");
+			console.log(percentage * 100 + '%');
+			loading();
+		});*/
 		// 文件上传失败，显示上传出错。
 		uploader.on( 'uploadError', function( file ) {
 		    alert("上传出错");

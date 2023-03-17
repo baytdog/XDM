@@ -7,13 +7,9 @@ import com.jfinal.plugin.activerecord.IAtom;
 import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.plugin.activerecord.Record;
 import com.jfinal.plugin.activerecord.tx.Tx;
-import com.pointlion.mvc.common.model.XdRewardPunishmentDetail;
-import com.pointlion.mvc.common.model.XdRewardPunishmentSummary;
 import com.pointlion.mvc.common.model.XdSeniorityAllowance;
-import com.pointlion.plugin.shiro.ShiroKit;
-import com.pointlion.mvc.common.model.SysRoleOrg;
 import com.pointlion.mvc.common.utils.DateUtil;
-import com.pointlion.util.DictMapping;
+import com.pointlion.plugin.shiro.ShiroKit;
 import org.apache.commons.lang3.StringUtils;
 
 import java.sql.SQLException;
@@ -37,7 +33,7 @@ public class XdSeniorityAllowanceService{
 	 * get page
 	 */
 	public Page<Record> getPage(int pnum,int psize,String year,String empName){
-		String userId = ShiroKit.getUserId();
+//		String userId = ShiroKit.getUserId();
 		String sql  = " from "+TABLE_NAME+" o  where 1=1";
 		String userOrgId = ShiroKit.getUserOrgId();
 		if(!"1".equals(userOrgId)){
@@ -54,14 +50,19 @@ public class XdSeniorityAllowanceService{
 		return Db.paginate(pnum, psize, " select * ", sql);
 	}
 	
-	/***
-	 * del
-	 * @param ids
+	/**
+	 * @Method deleteByIds
+	 * @param ids:	 要删除信息的ID
+	 * @Date 2023/3/17 16:19
+	 * @Description
+	 * @Author king
+	 * @Version  1.0
+	 * @Return void
 	 */
 	@Before(Tx.class)
 	public void deleteByIds(String ids){
-    	String idarr[] = ids.split(",");
-    	for(String id : idarr){
+    	String idArr[] = ids.split(",");
+    	for(String id : idArr){
     		XdSeniorityAllowance o = me.getById(id);
     		o.delete();
     	}
@@ -87,6 +88,8 @@ public class XdSeniorityAllowanceService{
 							}
 							XdSeniorityAllowance sa=new XdSeniorityAllowance();
 							sa.setEmpName(saList.get(0));
+							Db.delete("delete from xd_seniority_allowance where emp_name='"+saList.get(0)+"' and  year='"+year+"'");
+
 							sa.setIdnum(saList.get(1));
 							sa.setHireDate(saList.get(2));
 							sa.setExpirationDate(saList.get(3));

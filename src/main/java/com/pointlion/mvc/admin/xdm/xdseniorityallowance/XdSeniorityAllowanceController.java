@@ -1,30 +1,23 @@
 package com.pointlion.mvc.admin.xdm.xdseniorityallowance;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.sql.SQLException;
-import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import com.jfinal.aop.Before;
 import com.jfinal.kit.StrKit;
 import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.plugin.activerecord.Record;
 import com.jfinal.upload.UploadFile;
 import com.pointlion.mvc.common.base.BaseController;
-import com.pointlion.mvc.admin.oa.workflow.WorkFlowService;
-import com.pointlion.mvc.common.utils.StringUtil;
-import com.pointlion.mvc.common.model.XdSeniorityAllowance;
-import com.pointlion.mvc.common.model.SysUser;
 import com.pointlion.mvc.common.model.SysOrg;
-import com.pointlion.mvc.common.utils.UuidUtil;
-import com.pointlion.mvc.common.utils.Constants;
-import com.pointlion.mvc.admin.oa.common.OAConstants;
-import com.pointlion.mvc.common.utils.DateUtil;
+import com.pointlion.mvc.common.model.SysUser;
+import com.pointlion.mvc.common.model.XdSeniorityAllowance;
+import com.pointlion.mvc.common.utils.StringUtil;
 import com.pointlion.mvc.common.utils.office.excel.ExcelUtil;
 import com.pointlion.plugin.shiro.ShiroKit;
+
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.sql.SQLException;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Map;
 
 
 

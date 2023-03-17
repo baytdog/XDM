@@ -47,8 +47,7 @@
 					<a id="export" class="btn btn-primary data-toolbar" onclick="exportExcel()" target="_blank"><i class="demo-pli-download-from-cloud"></i> 导出</a>-->
 					<a id="del" class="btn btn-danger data-toolbar" onclick="delSel()" href="javascript:void(0);"><i class="demo-pli-cross"></i> 批量删除</a>
 					<a id="filePicker"  href="javascript:void(0);" ><i class="demo-pli-add"></i> 导入</a>
-					<table id="pageTable" class="demo-add-niftycheck" data-toolbar="#del,#add,#export,#filePicker"
-					></table>
+					<table id="pageTable" class="demo-add-niftycheck" data-toolbar="#del,#add,#export,#filePicker"></table>
 				</div>
 			</div>
 		</div>
@@ -58,13 +57,13 @@
 
 	var col = [
 		{field: 'checked', checkbox : true, align: 'center'},
-		{field: 'YEAR', title: '年份', align: 'center'},
-		{field: 'emp_name', title: '姓名', align: 'center'},
+		{field: 'YEAR', title: '年份', align: 'center',width:60},
+		{field: 'emp_name', title: '姓名', align: 'center',width:80},
 		{field: 'idnum', title: '身份证号', align: 'center'},
 		{field: 'hire_date', title: '入职日期', align: 'center'},
 		{field: 'expiration_date', title: '截止日期', align: 'center'},
-		{field: 'month', title: '月份', align: 'center'},
-		{field: 'work_year', title: '年限', align: 'center'},
+		/*{field: 'month', title: '月份', align: 'center'},
+		{field: 'work_year', title: '年限', align: 'center'},*/
 		{field: 'new_work_year', title: '新工龄', align: 'center'},
 		{field: 'old_wokr_year', title: '原工龄', align: 'center'},
 		{field: 'old_senallow', title: '原工龄津贴', align: 'center'},
@@ -91,7 +90,7 @@
 		//我设置了这一项，但是貌似没起作用，而且我这默认是0,- -
 		//pageNumber:1,
 		//每页的记录行数（*）
-		pageSize: 10,
+		pageSize: 15,
 		//可供选择的每页的行数（*）
 		pageList: [10, 25, 50, 100],
 		//这个接口需要处理bootstrap table传递的固定参数,并返回特定格式的json数据
@@ -239,6 +238,7 @@
 			$('#year').selectpicker('val',year.split(",")).trigger("change");
 		}
 		pointLion.initUploader("/admin/xd/xdseniorityallowance/importExcel",function(data){
+			pointLion.loading();
 			if(data.success){
 				pointLion.alertMsg("导入成功！","success",null,null);
 				searchTable();
