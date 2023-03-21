@@ -1,6 +1,7 @@
 package com.pointlion.mvc.admin.xdm.xdcontractinfo;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
@@ -37,13 +38,13 @@ public class XdContractInfoController extends BaseController {
 	/***
      * list page data
      **/
-    public void listData(){
+    public void listData() throws UnsupportedEncodingException {
     	String curr = getPara("pageNumber");
     	String pageSize = getPara("pageSize");
-		String endTime = getPara("endTime","");
+		String name = java.net.URLDecoder.decode(getPara("name",""),"UTF-8");
+		String empNum = getPara("empNum","");
 		String startTime = getPara("startTime","");
-		String applyUser = getPara("applyUser","");
-    	Page<Record> page = service.getPage(Integer.valueOf(curr),Integer.valueOf(pageSize),startTime,endTime,applyUser);
+    	Page<Record> page = service.getPage(Integer.valueOf(curr),Integer.valueOf(pageSize),name,empNum,startTime);
     	renderPage(page.getList(),"",page.getTotalRow());
     }
     /***

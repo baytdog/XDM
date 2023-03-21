@@ -155,10 +155,30 @@ public class ExcelUtil {
 	public static File listToFile(String path,List<List<String>> rows){
         //通过工具类创建writer
         ExcelWriter writer = cn.hutool.poi.excel.ExcelUtil.getWriter(path);
+
+        StyleSet styleSet = writer.getStyleSet();
+
+        Font font = writer.createFont();
+        font.setBold(false);
+        font.setItalic(false);
+        font.setFontName("仿宋");
+        font.setFontHeightInPoints((short) 10);
+        writer.getStyleSet().setFont(font, false);
+
+//        writer.writeHeadRow(rows.get(0));
+
         //通过构造方法创建writer
         //ExcelWriter writer = new ExcelWriter("d:/writeTest.xls");
         //跳过当前行，既第一行，非必须，在此演示用
         writer.write(rows, true);
+        for (int i = 0; i < rows.get(1).size(); i++) {
+            writer.autoSizeColumn(i);
+        }
+        writer.setRowHeight(0,50);
+
+        for (int j = 1; j < rows.size(); j++) {
+            writer.setRowHeight(j,30);
+        }
         //关闭writer，释放内存
         writer.close();
         return new File(path);

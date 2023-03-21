@@ -37,6 +37,8 @@ public class XdScheduleSummaryController extends BaseController {
 	public void getListPage(){
 		List<XdDict> units = XdDict.dao.find("select * from xd_dict where type ='unit' order by sortnum");
 		setAttr("units",units);
+		List<SysOrg> orgList = SysOrg.dao.find("select * from  sys_org where id<>'root' order by sort");
+		setAttr("orgs",orgList);
 		XdScheduleSummary last = XdScheduleSummary.dao.findFirst("select * from  xd_schedule_summary order by schedule_year_month desc");
 		if(last!=null){
 		setAttr("year",last==null?"":last.getScheduleYear());

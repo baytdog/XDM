@@ -163,6 +163,8 @@ public class XdEmployeeService{
 		for(String id : idArr){
 			XdOperUtil.queryLastVersion(id);
 			XdEmployee o = me.getById(id);
+
+			Db.delete("delete from xd_contract_info where eid='"+id+"'");
 			o.setBackup1("D");
 			o.update();
 			if("1".equals(userOrgId)){
@@ -475,6 +477,41 @@ public class XdEmployeeService{
 	public File exportExcel(String path, String name, String empnum, String emprelation, String department, String unitname, String costitem
 		,String inductionstatus,String departime,String checked,String selectedName){
 		String sql  = " from "+TABLE_NAME+" o   where 1=1";
+		String userOrgId = ShiroKit.getUserOrgId();
+
+		if(!"1".equals(userOrgId)){
+			//sql=sql+" and cuser='"+ShiroKit.getUserId()+"'";
+
+			SysUser otherUser = SysUser.dao.findById(ShiroKit.getUserId());
+			String instr="";
+			if(otherUser.getOperProject()!=null && !otherUser.getOperProject().equals("")){
+				String[] split = otherUser.getOperProject().split(",");
+				for (String s : split) {
+					instr=instr+",'"+s+"'";
+				}
+				instr=instr.replaceAll("^,","");
+
+				sql=sql+" and costitem in ("+instr+")";
+			}
+			sql = sql + " and o.department = '"+ userOrgId+"'";
+		}else {
+			if(department!=null && !"null".equals(department) && StrKit.notBlank(department)){
+				String[] deptSplit = department.split(",");
+
+				String inSql="";
+				for (String deptId : deptSplit) {
+					inSql=inSql+"'"+deptId+"'"+",";
+
+				}
+				inSql=inSql.replaceAll(",$","");
+
+				sql = sql + " and o.department in("+ inSql+")";
+			}
+			/*if (StrKit.notBlank(department)) {
+				sql = sql + " and o.department = '"+department+"'";
+			}*/
+		}
+
 		if (StrKit.notBlank(name)) {
 			sql = sql + " and o.name like '%"+name +"%'";
 		}
@@ -485,9 +522,7 @@ public class XdEmployeeService{
 		if (StrKit.notBlank(emprelation)) {
 			sql = sql + " and o.emprelation like '%"+emprelation+"%'";
 		}
-		if (StrKit.notBlank(department)) {
-			sql = sql + " and o.department = '"+department+"'";
-		}
+
 		if (StrKit.notBlank(unitname)) {
 			sql = sql + " and o.unitname = '"+unitname+"'";
 		}
@@ -529,17 +564,19 @@ public class XdEmployeeService{
 
 		List<List<String>> rows = new ArrayList<List<String>>();
 		List<String> first = new ArrayList<String>();
+		first.add("序");
 		first.add("员工编号");
 		first.add("姓名");//0
 		first.add("身份证号");
-		first.add("性别");//1
 		first.add("所属部门");//2
 		first.add("单元");//3
 		first.add("成本项目");//3
 		first.add("入职日期");//3
 		first.add("转正日期");//3
 		first.add("离职日期");//3
+		first.add("离职原因");//3
 		first.add("就职状态");//3
+		first.add("性别");//1
 		first.add("出生日期");//3
 		first.add("在职工龄");//3
 		first.add("年龄");//3
@@ -591,37 +628,46 @@ public class XdEmployeeService{
 
 
 		rows.add(first);
+		int rowNum=1;
+		Map<String, Map<String, String>> stringMapMap = DictMapping.dictMappingValueToName();
+		Map<String, String> positionMap = stringMapMap.get("position");
+		Map<String, String> dutyMap = stringMapMap.get("duty");
+		Map<String, String> isMarryMap = stringMapMap.get("ismarry");
+		Map<String, String> eduMap = stringMapMap.get("edu");
+//		String userOrgId = ShiroKit.getUserOrgId();
 		for(XdEmployee emp:list){
 			List<String> row = new ArrayList<String>();
 			DictMapping.fieldValueToName(emp,orgMap,projectMap,dictMap);
+			row.add(rowNum+"");
 			row.add(emp.getEmpnum());//0
 			row.add(emp.getName());//0
 			row.add(emp.getIdnum());//0
-			row.add(emp.getGender().toString());//0
 			row.add(emp.getDepartment()==null?"":emp.getDepartment().toString());//0
-			row.add(emp.getUnitname()==null?"":emp.getUnitname().toString());//0
+			row.add((emp.getUnitname()==null||emp.getUnitname().equals("0"))?"":emp.getUnitname());//0
 			row.add(emp.getCostitem()==null?"":emp.getCostitem().toString());//0
 			row.add(emp.getEntrytime());//0
 			row.add(emp.getPositivedate());//转正日期
 			row.add(emp.getDepartime());//0
+			row.add(emp.getLeaveReason());
 			row.add(emp.getInductionstatus()==null?"":emp.getInductionstatus().toString());//0
+			row.add(emp.getGender().toString());//0
 			row.add(emp.getBirthday());//出生日期
 			row.add(emp.getSeniority());//0
 			row.add(emp.getAge()==null?"0":String.valueOf(emp.getAge()));//0
 			row.add(emp.getRetiretime());//0
-			row.add("");//退休状态
+			row.add(emp.getRetirestatus());//退休状态
 			row.add(emp.getEmprelation());
-			row.add(emp.getPosition()==null?"":emp.getPosition().toString());//0
-			row.add(emp.getWorkstation());//0
+			row.add(emp.getPosition()==null?"":positionMap.get(emp.getPosition().toString()));//0
+			row.add(emp.getWorkstation()==null?"":dutyMap.get(emp.getWorkstation()));//0
 			row.add(emp.getTel());//0
 			row.add(emp.getNational());//0
 			row.add(emp.getPoliticsstatus());//0
-			row.add(emp.getMarried()==null?"":emp.getMarried().toString());//0
-			row.add(emp.getTopedu());//0
-			row.add(emp.getEdubg1());//0
+			row.add(emp.getMarried()==null?"":isMarryMap.get(emp.getMarried().toString()));//0
+			row.add(emp.getTopedu()==null?"":eduMap.get(emp.getTopedu()));//0
+			row.add(emp.getEdubg1()==null?"":eduMap.get(emp.getEdubg1()));//0
 			row.add(emp.getSchool1());//0
 			row.add(emp.getMajor1());//0
-			row.add(emp.getEdubg2());//0
+			row.add(emp.getEdubg2()==null?"":eduMap.get(emp.getEdubg2()));//0
 			row.add(emp.getSchool2());//0
 			row.add(emp.getMajor2());//0
 			row.add(emp.getTopdegree());//0
@@ -630,7 +676,7 @@ public class XdEmployeeService{
 			row.add(emp.getNativeplace());//0
 			row.add(emp.getPresentaddr());//0
 			row.add(emp.getCensusregisteraddr());//0
-			row.add(emp.getIssoldier()==null?"":emp.getIssoldier().toString());//0
+			row.add(emp.getIssoldier()==null?"":(emp.getIssoldier().equals("1")?"是":"否"));//0
 			row.add(emp.getWorktime());//0
 			row.add(emp.getContractstartdate());//0
 			row.add(emp.getContractenddate());//0
@@ -646,9 +692,16 @@ public class XdEmployeeService{
 			row.add(emp.getBanaccount());//银行账号
 			row.add(emp.getFundaccount());//公积金账号
 			row.add(emp.getRecruitsource());
-			row.add(emp.getSalary()==null?"":emp.getSalary().toString());
-			row.add(emp.getSaladjrecord()==null?"":emp.getSaladjrecord());//薪资变动
-			row.add(emp.getChrecord()==null?"":emp.getChrecord());//调职记录
+			if("1".equals(userOrgId)){
+				row.add(emp.getSalary()==null?"":emp.getSalary().toString());
+				row.add(emp.getSaladjrecord()==null?"":emp.getSaladjrecord());//薪资变动
+				row.add(emp.getChrecord()==null?"":emp.getChrecord());//调职记录
+			}else{
+				row.add("");
+				row.add("");//薪资变动
+				row.add("");//调职记录
+			}
+
 			XdWorkExper firstWork = XdWorkExper.dao.findFirst("select * from  xd_work_exper where eid='" + emp.getId() + "' order by entrydate desc,departdate desc ");
 			if(firstWork==null){
 				row.add("");
@@ -1117,9 +1170,42 @@ public class XdEmployeeService{
 		if(StrKit.notBlank(empRelation)){
 			sql = sql + " and o.emprelation like '%"+ empRelation+"%'";
 		}
-		if(StrKit.notBlank(department)){
+	/*	if(StrKit.notBlank(department)){
 			sql = sql + " and o.department = '"+ department+"'";
 		}
+*/
+		String userOrgId = ShiroKit.getUserOrgId();
+
+		if(!"1".equals(userOrgId)){
+			//sql=sql+" and cuser='"+ShiroKit.getUserId()+"'";
+
+			SysUser otherUser = SysUser.dao.findById(ShiroKit.getUserId());
+			String instr="";
+			if(otherUser.getOperProject()!=null && !otherUser.getOperProject().equals("")){
+				String[] split = otherUser.getOperProject().split(",");
+				for (String s : split) {
+					instr=instr+",'"+s+"'";
+				}
+				instr=instr.replaceAll("^,","");
+
+				sql=sql+" and costitem in ("+instr+")";
+			}
+			sql = sql + " and o.department = '"+ userOrgId+"'";
+		}else {
+			if(department!=null && !"null".equals(department) && StrKit.notBlank(department)){
+				String[] deptSplit = department.split(",");
+
+				String inSql="";
+				for (String deptId : deptSplit) {
+					inSql=inSql+"'"+deptId+"'"+",";
+
+				}
+				inSql=inSql.replaceAll(",$","");
+
+				sql = sql + " and o.department in("+ inSql+")";
+			}
+		}
+
 		if(StrKit.notBlank(unitName)){
 			sql = sql + " and o.unitname = '"+ unitName+"'";
 		}

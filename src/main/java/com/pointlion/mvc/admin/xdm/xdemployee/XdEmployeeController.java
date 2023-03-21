@@ -1245,12 +1245,15 @@ public class XdEmployeeController extends BaseController {
 		Map<String, String> orgMap = DictMapping.orgMapping("0");
 		Map<String, String> projectMap = DictMapping.projectsMappingValueToName();
 		Map<String, Map<String, String>> dictMap = DictMapping.dictMappingValueToName();
-		employees.stream().forEach(new Consumer<XdEmployee>() {
-			@Override
-			public void accept(XdEmployee employee){
+		employees.stream().forEach( employee->{
 				DictMapping.fieldValueToName(employee,orgMap,projectMap,dictMap);
+				if(!ShiroKit.getUserOrgId().equals("1")){
+					employee.setSalary(0);
+					employee.setSalaryLevel("");
+					employee.setSaladjrecord("");
+				}
 			}
-		});
+		);
 
 
 		List<PrintInfoVo> list=new ArrayList<>();

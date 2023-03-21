@@ -14,6 +14,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAccessor;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -55,6 +58,17 @@ public class XdOvertimeSummaryController extends BaseController {
 		setAttr("orgList",orgList);
 		List<XdProjects> projects = XdProjects.dao.find("select * from  xd_projects");
 
+		if(!ShiroKit.getUserOrgId().equals("1")){
+			XdAttendanceSummary first = XdAttendanceSummary.dao.findFirst("select * from  xd_attendance_summary  " +
+					"where dept_value='" + ShiroKit.getUserOrgId() + "' and STATUS='1' order by schedule_year_month desc");
+
+			LocalDate localDate = LocalDate.parse(first.getScheduleYear() + "-" + first.getScheduleMonth() + "-01").plusMonths(1);
+
+			String format = DateTimeFormatter.ofPattern("yyyy-MM-dd").format(localDate);
+			setAttr("startD",format);
+		}else{
+			setAttr("startD","2023-01-01");
+		}
 		setAttr("projects",projects);
 		setAttr("formModelName",StringUtil.toLowerCaseFirstOne(XdOvertimeSummary.class.getSimpleName()));
 		renderIframe("settleEdit.html");
@@ -363,6 +377,19 @@ public class XdOvertimeSummaryController extends BaseController {
 		List<XdProjects> projects = XdProjects.dao.find("select * from  xd_projects");
 
 		setAttr("projects",projects);
+
+		if(!ShiroKit.getUserOrgId().equals("1")){
+			XdScheduleSummary first = XdScheduleSummary.dao.findFirst("select * from  xd_schedule_summary  " +
+					"where dept_value='" + ShiroKit.getUserOrgId() + "' and STATUS='1' order by schedule_year_month desc");
+
+			LocalDate localDate = LocalDate.parse(first.getScheduleYear() + "-" + first.getScheduleMonth() + "-01").plusMonths(1);
+
+			String format = DateTimeFormatter.ofPattern("yyyy-MM-dd").format(localDate);
+			setAttr("startD",format);
+		}else{
+			setAttr("startD","2023-01-01");
+		}
+
 
 
 

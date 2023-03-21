@@ -13,24 +13,21 @@
 							<div class="panel panel-search">
 								<div class="panel-body">
 									<div class="form-inline">
-										<!--<div class="form-group">
-											<input id="applyUser" placeholder="�Ƶ���" class="form-control">
+										<div class="form-group">
+											<input id="name" placeholder="姓名" class="form-control">
+										</div>
+										<div class="form-group">
+												<input id="empNum" placeholder="工号" class="form-control">
 										</div>
 										<div class="form-group">
 											<div class="input-group date form_datetime">
-												<input id="searchStartTime" placeholder="��ʼʱ��" class="form-control">
+												<input id="startTime" placeholder="合同起日" class="form-control">
 												<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
 											</div>
 										</div>
 										<div class="form-group">
-											<div class="input-group date form_datetime">
-												<input id="searchEndTime" placeholder="����ʱ��" class="form-control">
-												<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
-											</div>
+											<button class="btn btn-primary" type="button" onclick="searchTable()">搜索</button>
 										</div>
-										<div class="form-group">
-											<button class="btn btn-primary" type="button" onclick="searchTable()">����</button>
-										</div>-->
 									</div>
 								</div>
 							</div>
@@ -40,14 +37,7 @@
 									<a id="del" class="btn btn-danger data-toolbar" onclick="delSel()" href="javascript:void(0);"><i class="demo-pli-cross"></i> 删除</a>
 									<a id="filePicker"  href="javascript:void(0);" ><i class="demo-pli-add"></i> 导入</a>
 									<table id="pageTable" class="demo-add-niftycheck" data-toolbar="#del,#add,#filePicker"
-										   data-search="true"
-										   data-show-refresh="true"
-										   data-show-toggle="true"
-										   data-show-columns="true"
-										   data-sort-name="id"
-										   data-page-list="[5, 10, 20]"
-										   data-page-size="5"
-										   data-pagination="true" data-show-pagination-switch="true" ></table>
+										     ></table>
 								</div>
 							</div>
 			        	</div>
@@ -89,7 +79,10 @@
 			   queryParams : function(params) {
 			       return {
 			             pageNumber: (params.offset/params.limit)+1,
-			             pageSize: params.limit
+			             pageSize: params.limit,
+					   	 name:encodeURIComponent($("#name").val()),
+					     empNum:$("#empNum").val(),
+					     startTime:$("#startTime").val()
 			           };
 			   },
 			   sidePagination: "server",
@@ -102,7 +95,6 @@
 			   pagination:true,paginationShowPageGo: true
 			}; 
 		
-	//���
 	function initTable(){
 		$('#pageTable').bootstrapTable(opt);
 		$('#pageTable').bootstrapTable('hideColumn', 'id');
@@ -111,28 +103,26 @@
 		$("#pageTable").bootstrapTable('refresh', opt);
 		$('#pageTable').bootstrapTable('hideColumn', 'id');
 	}
-	
-	//����ɾ��
+
+	//批量删除
 	function delSel(){
 		var data = [];
 		$("#pageTable input[type='checkbox'][name!='btSelectAll']:checked").each(function(){
+			console.log($(this).val())
 			data.push($(this).val());
 		});
 		if(data.length==0){
-			pointLion.alertMsg("��ѡ��Ҫɾ��������!","danger",null,null);
+			pointLion.alertMsg("请选择要删除的数据!","danger",null,null);
 			return;
 		}
-		del(data.join(","));//ִ��ɾ��
+		del(data.join(","));//执行删除
 	}
-	//ɾ��
 	function del(ids){
-		pointLion.confimMsg("���Ƿ�Ҫɾ����ѡ��Ϣ ?<br/> ���ȷ�Ͻ���ɾ�� , ���ȡ��ȡ���ò���",null,function(){
-			//ִ��ɾ��
-			var data = common_ajax.ajaxFunc("/admin/xdcontractinfo/delete",{"ids":ids}, "json", null);
-			//ɾ�����
+		pointLion.confimMsg("您是否要删除所选信息 ?<br/> 点击确认进行删除 , 点击取消取消该操作",null,function(){
+			let data = common_ajax.ajaxFunc("/admin/xd/xdcontractinfo/delete",{"ids":ids}, "json", null);
 			if(data.success){
 				pointLion.alertMsg(data.message,"success",null,function(){
-					location.href = ctx+'/admin/xdcontractinfo/getListPage';//��ת���б�ҳ
+					location.href = ctx+'/admin/xd/xdcontractinfo/getListPage';
 				});
 			}else{
 				pointLion.alertMsg(data.message,"success",null,null);
@@ -140,22 +130,29 @@
 		});
 	};
 	function searchTable(){
-		var startTime = $("#searchStartTime").val();
-		var endTime = $("#searchEndTime").val();
-		var applyUser = $("#applyUser").val();
+		var name = encodeURIComponent($("#name").val());
+		var empNum = $("#empNum").val();
+		var startTime = $("#startTime").val();
 		var param = {
 			query: {
-				"startTime":startTime,
-				"endTime":endTime,
-				"applyUser":applyUser
+				"name":name,
+				"empNum":empNum,
+				"startTime":startTime
 			}
 		}
-		// ˢ�±��
 		$('#pageTable').bootstrapTable('refresh',param);
 	}
 
 	$(document).ready(function(){
-		$('.form_datetime').datepicker({format: 'yyyy-mm-dd',weekStart: 1,todayBtn:  1,autoclose: 1,language:  'zh-CN',todayHighlight: 1,forceParse: 0,clearBtn: true }).on('changeDate',null);
+		 $('.form_datetime').datepicker({format: 'yyyy-mm-dd',weekStart: 1,todayBtn:  1,autoclose: 1,language:  'zh-CN',todayHighlight: 1,forceParse: 0,clearBtn: true }).on('changeDate',null);
+		/*$('.form_datetime').datepicker({
+			format: 'yyyy-mm',
+			language: "zh-CN",
+			autoclose:true,
+			startView: 2,
+			minViewMode: 1,
+			maxViewMode: 2}).on('changeDate',null);*/
+
 		initTable();
 		pointLion.initUploader("/admin/xd/xdcontractinfo/importExcel",function(data){
 			if(data.success){

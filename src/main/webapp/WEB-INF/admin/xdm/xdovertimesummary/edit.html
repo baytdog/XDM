@@ -89,7 +89,7 @@
 			$(".btn").removeAttr("disabled");
 		}
 	}
-	$('.form_datetime').datepicker({format: 'yyyy-mm-dd',weekStart: 1,todayBtn:  1,autoclose: 1,language:  'zh-CN',todayHighlight: 1,forceParse: 0,showMeridian: 1}).on('changeDate',function(){
+	$('.form_datetime').datepicker({format: 'yyyy-mm-dd',weekStart: 1,todayBtn:  1,autoclose: 1,language:  'zh-CN',todayHighlight: 1,forceParse: 0,showMeridian: 1,startDate:"#(startD)"}).on('changeDate',function(){
 		//resetVali();
 	});
 

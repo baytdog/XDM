@@ -8,12 +8,10 @@ import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.plugin.activerecord.Record;
 import com.jfinal.plugin.activerecord.tx.Tx;
 import com.pointlion.mvc.common.model.XdContractInfo;
-import com.pointlion.mvc.common.model.XdEdutrain;
 import com.pointlion.mvc.common.model.XdEmployee;
+import com.pointlion.mvc.common.utils.DateUtil;
 import com.pointlion.mvc.common.utils.UuidUtil;
 import com.pointlion.plugin.shiro.ShiroKit;
-import com.pointlion.mvc.common.model.SysRoleOrg;
-import com.pointlion.mvc.common.utils.DateUtil;
 import com.pointlion.plugin.shiro.ext.SimpleUser;
 import com.pointlion.util.DictMapping;
 import org.apache.commons.lang3.StringUtils;
@@ -38,20 +36,30 @@ public class XdContractInfoService{
 	/***
 	 * get page
 	 */
-	public Page<Record> getPage(int pnum,int psize,String startTime,String endTime,String applyUser){
-		String userId = ShiroKit.getUserId();
-		String sql  = "  from  xd_employee  e LEFT JOIN xd_contract_info c on e.id=c.eid";
+	public Page<Record> getPage(int pNum,int pSize,String name,String empNum,String startTime){
+//		String userId = ShiroKit.getUserId();
+		String userOrgId = ShiroKit.getUserOrgId();
+
+		String sql  = "  from  xd_employee  e LEFT JOIN xd_contract_info c on e.name=c.backup1 where 1=1";
+		if(!userOrgId.equals("1")){
+			sql = sql + " and e.department  ='"+userOrgId+"'";
+		}
+
+		if(StrKit.notBlank(name)){
+
+			sql = sql + " and e.name  like '%"+name+"%'";
+//			sql = sql + " and o.create_time>='"+ DateUtil.formatSearchTime(startTime,"0")+"'";
+		}
+
+		if(StrKit.notBlank(empNum)){
+			sql = sql + " and e.empnum  like '%"+empNum+"%'";
+//			sql = sql + " and o.create_time<='"+""+"'";
+		}
 		if(StrKit.notBlank(startTime)){
-			sql = sql + " and o.create_time>='"+ DateUtil.formatSearchTime(startTime,"0")+"'";
-		}
-		if(StrKit.notBlank(endTime)){
-			sql = sql + " and o.create_time<='"+DateUtil.formatSearchTime(endTime,"1")+"'";
-		}
-		if(StrKit.notBlank(applyUser)){
-			sql = sql + " and o.applyer_name like '%"+applyUser+"%'";
+			sql = sql + " and c.contractstartdate >= '"+startTime+"'";
 		}
 		sql = sql + " order by e.empnum ";
-		return Db.paginate(pnum, psize, "select  e.empnum,e.idnum,e.department,e.name,e.age,e.emprelation,c.contractstartdate," +
+		return Db.paginate(pNum, pSize, "select c.id,e.empnum,e.idnum,e.department,e.name,e.age,e.emprelation,c.contractstartdate," +
 				"c.contractenddate,c.contractclauses,c.contractnature", sql);
 	}
 	
@@ -91,7 +99,8 @@ public class XdContractInfoService{
 								continue;
 							}
 							XdEmployee employee = XdEmployee.dao.findFirst("select * from xd_employee where name ='" + eduStr.get(3) + "'");
-							contractInfo.setEid(employee.getId());
+							contractInfo.setEid(employee==null?"":employee.getId());
+							contractInfo.setBackup1(eduStr.get(3));
 
 							boolean flag=false;
 							int j=7;

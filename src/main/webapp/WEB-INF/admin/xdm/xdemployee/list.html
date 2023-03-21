@@ -395,13 +395,16 @@
 	 * 导出
 	 */
 	function exportExcel(){
-		var name = encodeURI(encodeURI($("#name").val()));
-		var empnum = encodeURI(encodeURI($("#empnum").val()));
-		var emprelation = encodeURI(encodeURI($("#emprelation").val()));
-		var department = $("#department").val();
-		var unitname = $("#unitname").val();
-		var costitem = $("#costitem").val();
-		var checked = $("#demo-checkbox-addons").is(":checked");
+		let name = encodeURI(encodeURI($("#name").val()));
+		let empnum = encodeURI(encodeURI($("#empnum").val()));
+		let emprelation = encodeURI(encodeURI($("#emprelation").val()));
+		let department = $("#department").val();
+		if(department){
+			department=	department.join()
+		}
+		let unitname = $("#unitname").val();
+		let costitem = $("#costitem").val();
+		let checked = $("#demo-checkbox-addons").is(":checked");
 		let selectedName = encodeURIComponent($("#selectEd").val());
 		let inductionstatus=$("#inductionstatus").val();
 		let	departime=$("#departime").val();

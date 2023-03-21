@@ -399,13 +399,17 @@
 		rightFixedColumns:true,
 		rightFixedNumber:4,
 		onClickCell: function (field, value, row, $element) {
-			let index = $element.parent().data('index');
-			//修改单元格
-			if(field=="remarks"){
-				remarksmodify(index, field, value,row);
-			}else{
-				shfitsModify(index, field, value,row);
+
+			if(row.status=='0'){
+				let index = $element.parent().data('index');
+				//修改单元格
+				if(field=="remarks"){
+					remarksmodify(index, field, value,row);
+				}else{
+					shfitsModify(index, field, value,row);
+				}
 			}
+
 
 
 		},

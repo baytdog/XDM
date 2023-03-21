@@ -1,6 +1,7 @@
 package com.pointlion.mvc.admin.xdm.xdattendance;
 
 import com.jfinal.kit.StrKit;
+import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.plugin.activerecord.Record;
 import com.pointlion.mvc.common.base.BaseController;
@@ -50,6 +51,8 @@ public class XdAttendanceController extends BaseController {
 			o.setCreateDate(DateUtil.getCurrentTime());
 			o.setCreateUser(ShiroKit.getUserId());
 			o.save();
+			Db.update("update  xd_attendance_summary set STATUS='1' where dept_value='"+o.getDeptValue()+"' and schedule_year='"+sheduleYear+"' and  schedule_month='"+sheduleMonth+"'");
+			Db.update("update  xd_schedule_summary set STATUS='1' where dept_value='"+o.getDeptValue()+"' and schedule_year='"+sheduleYear+"' and  schedule_month='"+sheduleMonth+"'");
 			//steps 操作记录
 			XdSteps steps=new XdSteps();
 			steps.setId(UuidUtil.getUUID());
@@ -269,6 +272,11 @@ public class XdAttendanceController extends BaseController {
 		XdSteps steps = XdSteps.dao.findById(stepsId);
 		String oid = steps.getOid();
 		XdAttendance attendance = XdAttendance.dao.findById(oid);
+		Db.update("update  xd_attendance_summary set STATUS='0' where dept_value='"+attendance.getDeptValue()+"' and schedule_year='"+attendance.getSheduleYear()+"' and  schedule_month='"+attendance.getSheduleMonth()+"'");
+		Db.update("update  xd_schedule_summary set STATUS='0' where dept_value='"+attendance.getDeptValue()+"' and schedule_year='"+attendance.getSheduleYear()+"' and  schedule_month='"+attendance.getSheduleMonth()+"'");
+		//steps 操作记录
+
+
 		String status = attendance.getStatus();
 		XdSteps nextSteps=new XdSteps();
 		nextSteps.setId(UuidUtil.getUUID());
