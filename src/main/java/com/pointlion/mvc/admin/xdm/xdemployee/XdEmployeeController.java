@@ -215,6 +215,9 @@ public class XdEmployeeController extends BaseController {
     public void listData() throws UnsupportedEncodingException {
 		String curr = getPara("pageNumber");
     	String pageSize = getPara("pageSize");
+    	String sort = getPara("sort");
+    	String sortOrder = getPara("sortOrder");
+
 		String name = java.net.URLDecoder.decode(getPara("name",""),"UTF-8");
 		String empnum = java.net.URLDecoder.decode(getPara("empnum",""),"UTF-8");
 		String emprelation = java.net.URLDecoder.decode(getPara("emprelation",""),"UTF-8");
@@ -228,7 +231,7 @@ public class XdEmployeeController extends BaseController {
 		String checked = getPara("checked","");
 		String selectedName = java.net.URLDecoder.decode(getPara("selectedName",""),"UTF-8");
 
-    	Page<Record> page = service.getPage(Integer.valueOf(curr),Integer.valueOf(pageSize),name,empnum,emprelation,department,unitname,costitem,inductionstatus,departime,checked,selectedName,position,workstation);
+    	Page<Record> page = service.getPage(Integer.valueOf(curr),Integer.valueOf(pageSize),sort,sortOrder,name,empnum,emprelation,department,unitname,costitem,inductionstatus,departime,checked,selectedName,position,workstation);
     	renderPage(page.getList(),"",page.getTotalRow());
     }
     /***

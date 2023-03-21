@@ -4,6 +4,15 @@
 		height: 33px;
 		line-height: 33px;
 	}
+	.table-green {
+		color: #042cff;
+		background-color: #84f1cd;
+		border-color: #84f1cd;
+	}
+
+	#container .table-hover > tbody > tr:hover {
+		background-color: yellow;
+	}
 </style>
 <div id="page-content">
 			        <div class="col-sm-12 eq-box-sm">
@@ -77,6 +86,7 @@
 										</div>
 										<div class="form-group">
 											<button class="btn btn-primary" type="button" onclick="searchTable()">搜索</button>
+											<button class="btn btn-warning" type="button" onclick="reset()">重置</button>
 										</div>
 									</div>
 									<div   class="form-inline ">
@@ -104,7 +114,7 @@
 										   data-show-refresh="true"
 										   data-show-toggle="true"
 										   data-show-columns="true"
-										   data-sort-name="id"
+										   data-sort-name="empnum"
 										   data-page-list="[5, 10, 20]"
 										   data-page-size="5"
 										   data-pagination="true" data-show-pagination-switch="true"  ></table>
@@ -156,38 +166,38 @@
 	for(let position of positionObj) {
 		positionsMap.set(position.value,position.name);
 	}
-	var col = [{field: 'checked', checkbox : true, align: 'center'},
-		{field: 'empnum', title: '员工编号', align: 'center'},
-		{field: 'name', title: '姓名', align: 'center'},
-		{field: 'gender', title: '性别', align: 'center', formatter:function(value,row,index){
+	let col = [{field: 'checked', checkbox : true, align: 'center'},
+		{field: 'empnum', title: '员工编号', align: 'center',sortable:"true" },
+		{field: 'name', title: '姓名', align: 'center',sortable:true},
+		{field: 'gender', title: '性别', align: 'center',sortable:true, formatter:function(value,row,index){
 				if(value=='1'){
 					return "男";
 				}else{
 					return "女";
 				}
 			}},
-		{field: 'department', title: '部门', align: 'center', formatter:function(value,row,index){
+		{field: 'department', title: '部门', align: 'center',sortable:true, formatter:function(value,row,index){
 				return orgMap.get(value)
 
 
 			}},
-		{field: 'costitem', title: '项目', align: 'center', formatter:function(value,row,index){
+		{field: 'costitem', title: '项目', align: 'center',sortable:true, formatter:function(value,row,index){
 			return projectMap.get(value);
 			}},
-		{field: 'entrytime', title: '入职日期', align: 'center'},
-		{field: 'age', title: '年龄', align: 'center'},
-		{field: 'emprelation', title: '员工关系', align: 'center'},
-		{field: 'position', title: '职位', align: 'center', formatter:function(value,row,index){
+		{field: 'entrytime', title: '入职日期',sortable:true, align: 'center'},
+		{field: 'age', title: '年龄', align: 'center',sortable:true},
+		{field: 'emprelation', title: '员工关系',sortable:true, align: 'center'},
+		{field: 'position', title: '职位', align: 'center',sortable:true, formatter:function(value,row,index){
 				   return positionsMap.get(value);
 			   }},
-		{field: 'workstation', title: '岗位', align: 'center', formatter:function(value,row,index){
+		{field: 'workstation', title: '岗位',sortable:true, align: 'center', formatter:function(value,row,index){
 				return dutyMap.get(value);
 			}},
-		{field: 'topedu', title: '最高学历', align: 'center', formatter:function(value,row,index){
+		{field: 'topedu', title: '最高学历',sortable:true, align: 'center', formatter:function(value,row,index){
 
 				  return  educationMap.get(value);
 			   }},
-	    {field: 'control', title: '操作', align: 'left', width:'200',
+	    {field: 'control', title: '操作', align: 'left', width:'200',align:"center",
 	       formatter:function(value,row,index){
 	           	//通过formatter可以自定义列显示的内容
 	           	//value：当前field的值，即id
@@ -201,26 +211,31 @@
 	       }
 	   }];
 	let opt = {
+				height: 600,
 		    //请求方法
 			   method: 'get',
 			    //是否显示行间隔色
 			   striped: true,
+
+
 			   //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）     
-			   cache: false,  
+			   cache: false,
+
+				//classes: "table-green",
 			   //data-toolbar: "#demo-delete-row",
 			   //是否显示分页（*）  
 			   pagination: true,   
 			    //是否启用排序  
-			   sortable: false,
+			   sortable: true,
 			    //排序方式
 			   sortOrder: "asc",    
 			   //初始化加载第一页，默认第一页
 			   //我设置了这一项，但是貌似没起作用，而且我这默认是0,- -
 			   pageNumber:1,
 			   //每页的记录行数（*）   
-			   pageSize: 10,
+			   pageSize: 100,
 			   //可供选择的每页的行数（*）    
-			   pageList: [10, 25, 50, 100],
+			   pageList: [200, 300, 400,500],
 			   //这个接口需要处理bootstrap table传递的固定参数,并返回特定格式的json数据  
 			   url: ctx+"/admin/xd/xdemployee/listData",
 			   //默认值为 'limit',传给服务端的参数为：limit, offset, search, sort, order Else
@@ -230,6 +245,8 @@
 			       return {
 			             pageNumber: (params.offset/params.limit)+1,
 			             pageSize: params.limit,
+						   sort: params.sort,  //排序列名
+						   sortOrder: params.order ,//排位命令（desc，asc）
 						   "name":encodeURIComponent($("#name").val()),
 						   "empnum":encodeURIComponent($("#empnum").val()),
 						   "emprelation":encodeURIComponent($("#emprelation").val()),
@@ -242,6 +259,14 @@
 						   "workstation":$("#workstation").val(),
 			           };
 			   },
+		/*rowStyle:function(row, index){
+			  console.log(index);
+		},*/
+		/*rowStyle:function(row, index){
+			console.log(row);
+			console.log(index);
+			return "";
+		},*/
 				onCheck:function(row){
 					selectRows.push(row);
 
@@ -322,7 +347,31 @@
 		$("#pageTable").bootstrapTable('refresh', opt);
 		$('#pageTable').bootstrapTable('hideColumn', 'id');
 	}
-	
+
+	function reset(){
+		$("#name").val("");
+		$("#empnum").val("");
+		$("#emprelation").val("");
+		//$("#department").val("");
+		$('#department').selectpicker('val',"").trigger("change");
+		/*$('#positionSelect').on('changed.bs.select', function (e) {
+			$('#position').val($('#positionSelect').val())
+		});*/
+		// $("#unitname").val("");
+
+		$('#unitname').selectpicker('val',"").trigger("change");
+		// $("#costitem").val("");
+		$('#costitem').selectpicker('val',"").trigger("change");
+		$("#demo-checkbox-addons").prop("checked",false);
+		$("#selectEd").val("");
+		// $("#inductionstatus").val("");
+		$('#inductionstatus').selectpicker('val',"").trigger("change");
+		$("#departime").val("");
+		// $("#position").val("");
+		$('#position').selectpicker('val',"").trigger("change");
+		// $("#workstation").val("");
+		$('#workstation').selectpicker('val',"").trigger("change");
+	}
 	//批量删除
 	function delSel(){
 		var data = [];
@@ -434,7 +483,34 @@
 		$('.form_datetime').datepicker({format: 'yyyy-mm',weekStart: 1,todayBtn:  1,autoclose: 1,language:  'zh-CN',todayHighlight: 1,forceParse: 0,clearBtn: true }).on('changeDate',null);
 		initTable();//初始化
 
+		$('#department').on('changed.bs.select', function (e) {
+			//$('#position').val($('#positionSelect').val())
 
+
+
+			$('#inductionstatus option').each(function(){
+				console.log(this);
+				this.style='display:none'
+
+			});
+
+			// $('#inductionstatus').trigger("chosen:updated");
+			$('#inductionstatus').selectpicker('refresh');
+		});
+		$('#costitem').on('changed.bs.select', function (e) {
+			//$('#position').val($('#positionSelect').val())
+
+
+
+			$('#inductionstatus option').each(function(){
+				console.log(this);
+				this.style='display:block'
+
+			});
+			// $('#inductionstatus').trigger("chosen:updated");
+			// $('#inductionstatus').trigger("chosen:updated");
+			$('#inductionstatus').selectpicker('refresh');
+		});
 		pointLion.initUploader("/admin/xd/xdemployee/importExcel",function(data){
 			if(data.success){
 				pointLion.alertMsg("导入成功！","success",null,null);
@@ -639,12 +715,12 @@
 	}
 	function contactFormInfo(item){
 		var emp=item.emp;
-		console.log(emp.cert_pic_id)
+		// console.log(emp.cert_pic_id)
 		let edutrainList=item.edutrainList;
 
 		let workExperList=item.workExperList;
 		let certList=item.certList;
-		console.log("certList="+certList);
+		// console.log("certList="+certList);
 /*		http://localhost:8080/XDM/admin/sys/attachment/lookFile?id=7e497badbe024c9ead49fe5ae51b9d97*/
 	var infos=	`
   <style>

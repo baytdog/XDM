@@ -39,9 +39,9 @@ public class XdEmployeeService{
 	/***
 	 * get page
 	 */
-	public Page<Record> getPage(int pnum,int psize,String name,String empnum,String emprelation
-			,String department,String unitname,String costitem,String inductionstatus
-			,String departime,String checked,String selectedName,String position, String workstation){
+	public Page<Record> getPage(int pNum,int pSize,String sort,String sortOrder,String name,String empNum,String empRelation
+			,String department,String unitName,String costItem,String inductionStatus
+			,String departTime,String checked,String selectedName,String position, String workstation){
 		String userOrgId = ShiroKit.getUserOrgId();
 
 		String sql  = " from "+TABLE_NAME+" o where 1=1";
@@ -75,14 +75,14 @@ public class XdEmployeeService{
 			}
 		}
 
-		if(StrKit.notBlank(costitem)){
-			sql = sql + " and o.costitem = '"+ costitem+"'";
+		if(StrKit.notBlank(costItem)){
+			sql = sql + " and o.costitem = '"+ costItem+"'";
 		}
 		if(StrKit.notBlank(name)){
 			sql = sql + " and o.name like '%"+ name+"%'";
 		}
-		if(StrKit.notBlank(empnum)){
-			sql = sql + " and o.empnum like '%"+ empnum+"%'";
+		if(StrKit.notBlank(empNum)){
+			sql = sql + " and o.empnum like '%"+ empNum+"%'";
 		}
 		if(StrKit.notBlank(position)){
 			sql = sql + " and o.position='"+ position+"'";
@@ -91,24 +91,24 @@ public class XdEmployeeService{
 			sql = sql + " and o.workstation='"+ workstation+"'";
 		}
 
-		if(StrKit.notBlank(emprelation)){
-			sql = sql + " and o.emprelation like '%"+ emprelation+"%'";
+		if(StrKit.notBlank(empRelation)){
+			sql = sql + " and o.emprelation like '%"+ empRelation+"%'";
 		}
 
-		if(StrKit.notBlank(unitname)){
-			sql = sql + " and o.unitname = '"+ unitname+"'";
+		if(StrKit.notBlank(unitName)){
+			sql = sql + " and o.unitname = '"+ unitName+"'";
 		}
 
-		if(StrKit.notBlank(inductionstatus)){
+		if(StrKit.notBlank(inductionStatus)){
 //			sql=sql+ " and o.inductionstatus='"+inductionstatus+"'";
-			if(inductionstatus.equals("1")){
+			if(inductionStatus.equals("1")){
 				sql=sql+ " and o.status='0'";
 			}else{
 				sql=sql+ " and o.status='1'";
 			}
 		}
-		if(StrKit.notBlank(departime)){
-			sql=sql+ " and o.departime like '"+departime+"%'";
+		if(StrKit.notBlank(departTime)){
+			sql=sql+ " and o.departime like '"+departTime+"%'";
 		}
 
 
@@ -122,15 +122,16 @@ public class XdEmployeeService{
 					insql.replaceAll(",$","")
 					+")";
 		}
-		if(StrKit.notBlank(inductionstatus)||StrKit.notBlank(departime)){
+		/*if(StrKit.notBlank(inductionStatus)||StrKit.notBlank(departTime)){
 //			sql = sql + " order by o.departime desc";
 			sql = sql + " order by o.empnum ,o.departime desc";
 		}else{
 			sql = sql + " order by o.empnum ";
 		}
+*/
+		sql=sql+" order by "+sort+" " +sortOrder;
 
-
-		return Db.paginate(pnum, psize, " select * ", sql);
+		return Db.paginate(pNum, pSize, " select * ", sql);
 	}
 	public Page<Record> getPage(int pnum,int psize,String warnType){
 		String sql  ="";

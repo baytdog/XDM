@@ -593,17 +593,17 @@ function modSave(){
 	let endMin = $('#endMin').val();
 	let otHour = $('#otHour').val();
 	let overtime = $("input[name='ovtime']:checked").val();
-	console.log(shift)
-	console.log(overtime)
-	console.log(id)
-	console.log(index)
-	console.log(field)
-	console.log(oldValue)
-	console.log(startHour)
-	console.log(endHour)
-	console.log(startMin)
-	console.log(endMin)
-	console.log(otHour)
+	// console.log(shift)
+	// console.log(overtime)
+	// console.log(id)
+	// console.log(index)
+	// console.log(field)
+	// console.log(oldValue)
+	// console.log(startHour)
+	// console.log(endHour)
+	// console.log(startMin)
+	// console.log(endMin)
+	// console.log(otHour)
 	let start="";
 	let end="";
 	if(startHour){
@@ -622,8 +622,8 @@ function modSave(){
 		}
 
 	}
-	console.log(start)
-	console.log(end)
+	// console.log(start)
+	// console.log(end)
 	//return;
 
 	let data = common_ajax.ajaxFunc("/admin/xd/xdattendancesummary/updateCell",{"id":id,"oldValue":oldValue,"modValue":shift,"overtime":overtime,"field":field,"type":"1","start":start,"end":end,"otHour":otHour}, "json", null);
@@ -646,6 +646,7 @@ function modSave(){
 	function shfitsModify(index, field, value,row) {
 		$($("#myModal")).modal("show");
 
+		console.log(value+"============")
 		$("#empName").val(row.emp_name)
 		let fieldNum = field.replace("day","");
 		$("#days").val(fieldNum)
@@ -654,9 +655,11 @@ function modSave(){
 		$("#index").val(index)
 		$("#field").val(field)
 
-		console.log(value)
+		//console.log(value)
 		if(value) {
 			$('#shiftSelect').selectpicker('val', value.split(",")).trigger("change");
+		}else{
+			$('#shiftSelect').selectpicker('val',"").trigger("change");
 		}
 
 		let otArr = row.otflags.split(",");

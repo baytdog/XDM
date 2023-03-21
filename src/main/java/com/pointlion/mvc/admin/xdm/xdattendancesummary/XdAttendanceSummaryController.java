@@ -942,6 +942,7 @@ public class XdAttendanceSummaryController extends BaseController {
 				summary.setAccSettlehours(String.valueOf(settlehours));
 				returnOtHour=naOTHours+","+othours;
 				summary.setOthours(othours);
+				summary.setAnnualleaveDays(String.valueOf(alreayAnnualLeave));
 				//summary.setWorkHour(work_hour);
 				summary.update();
 				Db.update("update  xd_attendance_days" +

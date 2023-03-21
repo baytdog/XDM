@@ -552,6 +552,7 @@ public class XdAttendanceSummaryService{
 								}
 							}
 
+							attendanceSummary.setAnnualleaveDays(String.valueOf(alreayAnnualLeave));
 							attendanceSummary.setOthours(othours);
 							attendanceSummary.setNatOthours(nationlOTHours);
 							attendanceSummary.setFlags(modifyFlags.replaceAll("^,",""));
