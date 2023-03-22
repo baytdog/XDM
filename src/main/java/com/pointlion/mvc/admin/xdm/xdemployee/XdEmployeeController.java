@@ -81,14 +81,19 @@ public class XdEmployeeController extends BaseController {
 		List<XdDict> eduList = dictListByType.get("edu");
 		String edu = JSONUtil.listToJson(eduList);
 		List<XdDict> positionList = dictListByType.get("position");
+		List<XdDict> empRelationList = dictListByType.get("empRelation");
+
 
 		String positions = JSONUtil.listToJson(positionList);
+		String empRelations = JSONUtil.listToJson(empRelationList);
 
 		setAttr("eduStr",edu);
 		setAttr("orgStr",orgStr);
 		setAttr("dutyStr",dutyStr);
 		setAttr("positions",positions);
 		setAttr("positionList",positionList);
+		setAttr("empRelations",empRelations);
+		setAttr("empRelationList",empRelationList);
 		setAttr("dutyList",dutyList);
 		renderIframe("list.html");
     }
@@ -348,6 +353,9 @@ public class XdEmployeeController extends BaseController {
 			}else{
 				setAttr("oper","0");
 			}
+			if(o.getWorktime().contains("-")){
+				o.setWorktime(o.getWorktime().substring(0,7).replaceAll("-","年")+"月");
+			}
     	}else{
 			String uuid = UuidUtil.getUUID();
 			System.out.println(uuid);
@@ -384,6 +392,8 @@ public class XdEmployeeController extends BaseController {
 
 		List<XdDict> dutyList = dictListByType.get("duty");
 		setAttr("duties",dutyList);
+		List<XdDict> empRelations = dictListByType.get("empRelation");
+		setAttr("empRelations",empRelations);
 		//String edu = JSONUtil.listToJson(eduList);
 		/*List education=new ArrayList();
 		Map <String,String>eduMaps=new HashMap();

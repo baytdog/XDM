@@ -220,6 +220,15 @@
 	</script>
 	<script>
 	$(function () {
+		//员工关系
+		let empRelation=$("#empRelation").val();
+		if(empRelation){
+			$('#relationSelect').selectpicker('val',empRelation.split(",")).trigger("change");
+		}
+
+		$('#relationSelect').on('changed.bs.select', function (e) {
+			$('#empRelation').val($('#relationSelect').val())
+		});
 		//性别
 		let gender=$("#gender").val();
 		if(gender){

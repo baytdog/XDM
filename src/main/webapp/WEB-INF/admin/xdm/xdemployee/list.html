@@ -27,7 +27,13 @@
 											<input id="empnum" placeholder="员工编号" class="form-control">
 										</div>
 										<div class="form-group">
-											<input id="emprelation" placeholder="员工关系" class="form-control">
+										<!--	<input id="emprelation" placeholder="员工关系" class="form-control">-->
+											<select class="selectpicker form-control"  id="emprelation"   >
+												<option value="">---员工关系---</option>
+												#for(empRelation:empRelationList)
+												<option value="#(empRelation.value)">#(empRelation.name)</option>
+												#end
+											</select>
 										</div>
 										<div class="form-group">
 											<!--<input id="department" placeholder="所属部门" class="form-control">-->
@@ -166,6 +172,12 @@
 	for(let position of positionObj) {
 		positionsMap.set(position.value,position.name);
 	}
+	let empRelations='#(empRelations)';
+	let empRelationsMap = new Map();
+	let empRelationObj=JSON.parse(empRelations)
+	for(let empRelation of empRelationObj) {
+		empRelationsMap.set(empRelation.value,empRelation.name);
+	}
 	let col = [{field: 'checked', checkbox : true, align: 'center'},
 		{field: 'empnum', title: '员工编号', align: 'center',sortable:"true" },
 		{field: 'name', title: '姓名', align: 'center',sortable:true},
@@ -186,7 +198,9 @@
 			}},
 		{field: 'entrytime', title: '入职日期',sortable:true, align: 'center'},
 		{field: 'age', title: '年龄', align: 'center',sortable:true},
-		{field: 'emprelation', title: '员工关系',sortable:true, align: 'center'},
+		{field: 'emprelation', title: '员工关系',sortable:true, align: 'center', formatter:function(value,row,index){
+				return empRelationsMap.get(value);
+			}},
 		{field: 'position', title: '职位', align: 'center',sortable:true, formatter:function(value,row,index){
 				   return positionsMap.get(value);
 			   }},
@@ -233,7 +247,7 @@
 			   //我设置了这一项，但是貌似没起作用，而且我这默认是0,- -
 			   pageNumber:1,
 			   //每页的记录行数（*）   
-			   pageSize: 100,
+			   pageSize: 50,
 			   //可供选择的每页的行数（*）    
 			   pageList: [200, 300, 400,500],
 			   //这个接口需要处理bootstrap table传递的固定参数,并返回特定格式的json数据  
@@ -351,7 +365,8 @@
 	function reset(){
 		$("#name").val("");
 		$("#empnum").val("");
-		$("#emprelation").val("");
+		// $("#emprelation").val("");
+		$('#emprelation').selectpicker('val',"").trigger("change");
 		//$("#department").val("");
 		$('#department').selectpicker('val',"").trigger("change");
 		/*$('#positionSelect').on('changed.bs.select', function (e) {
@@ -488,28 +503,28 @@
 
 
 
-			$('#inductionstatus option').each(function(){
+		/*	$('#inductionstatus option').each(function(){
 				console.log(this);
 				this.style='display:none'
 
-			});
+			});*/
 
 			// $('#inductionstatus').trigger("chosen:updated");
-			$('#inductionstatus').selectpicker('refresh');
+		/*	$('#inductionstatus').selectpicker('refresh');*/
 		});
 		$('#costitem').on('changed.bs.select', function (e) {
 			//$('#position').val($('#positionSelect').val())
 
 
 
-			$('#inductionstatus option').each(function(){
+			/*$('#inductionstatus option').each(function(){
 				console.log(this);
 				this.style='display:block'
 
-			});
+			});*/
 			// $('#inductionstatus').trigger("chosen:updated");
 			// $('#inductionstatus').trigger("chosen:updated");
-			$('#inductionstatus').selectpicker('refresh');
+		/*	$('#inductionstatus').selectpicker('refresh');*/
 		});
 		pointLion.initUploader("/admin/xd/xdemployee/importExcel",function(data){
 			if(data.success){

@@ -332,12 +332,36 @@ public abstract class BaseXdEmployee<M extends BaseXdEmployee<M>> extends Model<
 		return getStr("worktime");
 	}
 
-	public void setEmcontact(String emcontact) {
+	/*public void setEmcontact(String emcontact) {
 		set("emcontact", emcontact);
 	}
 	@ChangeFields(value = "emcontact",desc = "紧急联系人")
 	public String getEmcontact() {
 		return getStr("emcontact");
+	}*/
+
+	public void setEmergencyRelation(java.lang.String emergencyRelation) {
+		set("emergency_relation", emergencyRelation);
+	}
+	@ChangeFields(value = "emergency_tel",desc = "紧急联系人关系")
+	public java.lang.String getEmergencyRelation() {
+		return getStr("emergency_relation");
+	}
+
+	public void setEmergencyTel(java.lang.String emergencyTel) {
+		set("emergency_tel", emergencyTel);
+	}
+	@ChangeFields(value = "emergency_tel",desc = "紧急联系人电话")
+	public java.lang.String getEmergencyTel() {
+		return getStr("emergency_tel");
+	}
+
+	public void setEmergencyContact(java.lang.String emergencyContact) {
+		set("emergency_contact", emergencyContact);
+	}
+	@ChangeFields(value = "emergency_contact",desc = "紧急联系人")
+	public java.lang.String getEmergencyContact() {
+		return getStr("emergency_contact");
 	}
 
 	public void setRecruitsource(String recruitsource) {
@@ -519,8 +543,19 @@ public abstract class BaseXdEmployee<M extends BaseXdEmployee<M>> extends Model<
 		set("leave_reason", leaveReason);
 	}
 
+	@ChangeFields(value = "leave_reason",desc = "离职原因")
 	public java.lang.String getLeaveReason() {
 		return getStr("leave_reason");
+	}
+
+
+
+	public void setLeaveManage(java.lang.String leaveManage) {
+		set("leave_manage", leaveManage);
+	}
+	@ChangeFields(value = "leave_manage",desc = "离职管理")
+	public java.lang.String getLeaveManage() {
+		return getStr("leave_manage");
 	}
 
 	public void setCertPicId(java.lang.String certPicId) {

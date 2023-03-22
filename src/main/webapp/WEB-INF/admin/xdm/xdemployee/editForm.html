@@ -21,9 +21,17 @@
 								<input type="text"  name="#(formModelName).empnum" class="form-control"  value="#(o?o.empnum:'')"  >
 							</div>
 							<label class="col-md-1 control-label">员工关系</label>
+							<input type="hidden" id="empRelation" name="#(formModelName).emprelation" class="form-control"  value="#(o?o.emprelation:'')"  >
 							<div class="col-md-3">
-								<input type="text"  name="#(formModelName).emprelation" class="form-control"  value="#(o?o.emprelation:'')"  >
+
+								<select id="relationSelect"   title="请选择"  class="selectpicker show-tick form-control" actionsBox="true"  disable  data-live-search="false">
+									#for(empRelation:empRelations)
+									<option value="#(empRelation.value)">#(empRelation.name)</option>
+									#end
+								</select>
+
 							</div>
+
 						</div>
 
 						<div class="form-group">
@@ -204,6 +212,20 @@
 							</div>
 						</div>
 						<div class="form-group">
+							<label class="col-md-1 control-label">紧急联系人</label>
+							<div class="col-md-3">
+								<input type="text"  name="#(formModelName).emergency_contact" class="form-control"  value="#(o?o.emergency_contact:'')"  >
+							</div>
+							<label class="col-md-1 control-label">紧急联系人电话</label>
+							<div class="col-md-3">
+								<input type="text"  name="#(formModelName).emergency_tel" class="form-control"  value="#(o?o.emergency_tel:'')"  >
+							</div>
+							<label class="col-md-1 control-label">紧急联系人关系</label>
+							<div class="col-md-3">
+								<input type="text"  name="#(formModelName).emergency_relation" class="form-control"  value="#(o?o.emergency_relation:'')"  >
+							</div>
+						</div>
+						<div class="form-group">
 							<label class="col-md-1 control-label">证件照</label>
 							<div class="col-md-3">
 
@@ -376,9 +398,10 @@
 									</span>
 							</div>
 
-							<label class="col-md-1 control-label">紧急联系人</label>
+
+							<label class="col-md-1 control-label">招聘来源</label>
 							<div class="col-md-3">
-								<input type="text"  name="#(formModelName).emcontact" class="form-control"  value="#(o?o.emcontact:'')"  >
+								<input type="text"  name="#(formModelName).recruitsource" class="form-control"  value="#(o?o.recruitsource:'')"  >
 							</div>
 
 						</div>
@@ -466,37 +489,38 @@
 
 						<div class="form-group">
 							<label class="col-md-1 control-label">合同开始日期</label>
-						<!--	<div class="col-md-3">
-								<input type="text"  name="#(formModelName).contractstartdate" class="form-control"  value="#(o?o.contractstartdate:'')"  >
-							</div>-->
-							<div class="input-group date form_datetime col-md-3" style="float:left">
-								<input type="text" id="contractstartdate" name="#(formModelName).contractstartdate" class="form-control"  value="#(o?o.contractstartdate:'')"    >
-								<span class="input-group-addon"> <span class="glyphicon glyphicon-th"></span>
-									</span>
+							<div class="col-md-3">
+								<input type="text"  name="#(formModelName).contractstartdate" class="form-control"  value="#(o?o.contractstartdate:'')"  readonly="readonly">
 							</div>
-							<label class="col-md-1 control-label">结束日期</label>
-							<!--<div class="col-md-3">
-								<input type="text"  name="#(formModelName).contractenddate" class="form-control"  value="#(o?o.contractenddate:'')"  >
+							<!--<div class=" col-md-3" >
+								<input type="text" id="contractstartdate" name="#(formModelName).contractstartdate" class="form-control"  value="#(o?o.contractstartdate:'')"   readonly="readonly" >
 							</div>-->
-							<div class="input-group date form_datetime col-md-3" style="float:left">
-								<input type="text" id="contractenddate" name="#(formModelName).contractenddate" class="form-control"  value="#(o?o.contractenddate:'')"    >
+							<label class="col-md-1 control-label">结束日期</label>
+							<div class="col-md-3">
+								<input type="text"  name="#(formModelName).contractenddate" class="form-control"  value="#(o?o.contractenddate:'')" readonly="readonly" >
+							</div>
+							<!--<div class="input-group date form_datetime col-md-3" style="float:left">
+								<input type="text" id="contractenddate" name="#(formModelName).contractenddate" class="form-control"  value="#(o?o.contractenddate:'')"   readonly="readonly"  >
 								<span class="input-group-addon"> <span class="glyphicon glyphicon-th"></span>
 									</span>
+							</div>-->
+
+							<label class="col-md-1 control-label">合同期数</label>
+							<div class="col-md-3">
+								<input type="text"  name="#(formModelName).contractclauses" class="form-control"  value="#(o?o.contractclauses:'')" readonly="readonly"  >
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-md-1 control-label">合同性质</label>
+							<div class="col-md-3">
+								<input type="text"  name="#(formModelName).contractnature" class="form-control"  value="#(o?o.contractnature:'')"  readonly="readonly">
 							</div>
 							<label class="col-md-1 control-label">工 龄(年)</label>
 							<div class="col-md-3">
 								<input type="text"  name="#(formModelName).seniority" class="form-control"  value="#(o?o.seniority:'')" readonly="readonly" >
 							</div>
-						</div>
-						<div class="form-group">
-							<label class="col-md-1 control-label">合同期数</label>
-							<div class="col-md-3">
-								<input type="text"  name="#(formModelName).contractclauses" class="form-control"  value="#(o?o.contractclauses:'')"  >
-							</div>
-							<label class="col-md-1 control-label">合同性质</label>
-							<div class="col-md-3">
-								<input type="text"  name="#(formModelName).contractnature" class="form-control"  value="#(o?o.contractnature:'')"  >
-							</div>
+
+
 							<label class="col-md-1 control-label">参加工作时间</label>
 						<!--	<div class="col-md-3">
 								<input type="text"  name="#(formModelName).worktime" class="form-control"  value="#(o?o.worktime:'')"  >
@@ -530,18 +554,6 @@
 
 						</div>
 						<div class="form-group">
-							<label class="col-md-1 control-label">就职状况</label>
-							<!--<div class="col-md-3">
-								<input type="text"  name="#(formModelName).inductionstatus" class="form-control"  value="#(o?o.inductionstatus:'')"  >
-							</div>-->
-							<input type="hidden" id="inductionstatus" name="#(formModelName).inductionstatus" value="#(o?o.inductionstatus:'')">
-							<div class="col-md-3">
-								<select id="inductionstatusSelect"   title="请选择"  class="selectpicker show-tick form-control" actionsBox="true"  disable  data-live-search="false">
-									#for(ofstatus:officestatus)
-									<option value="#(ofstatus.value)">#(ofstatus.name)</option>
-									#end
-								</select>
-							</div>
 
 							<label class="col-md-1 control-label">离职日期</label>
 							<!--<div class="col-md-3">
@@ -556,13 +568,33 @@
 							<div class="col-md-3">
 								<input type="text"  name="#(formModelName).leave_reason" class="form-control"  value="#(o?o.leave_reason:'')"  >
 							</div>
+							<label class="col-md-1 control-label">离职管理</label>
+							<div class="col-md-3">
+								<input type="text"  name="#(formModelName).leave_manage" class="form-control"  value="#(o?o.leave_manage:'')"  >
+							</div>
 						</div>
 
 						<div class="form-group">
 
 
+
+							<label class="col-md-1 control-label">就职状况</label>
+							<!--<div class="col-md-3">
+								<input type="text"  name="#(formModelName).inductionstatus" class="form-control"  value="#(o?o.inductionstatus:'')"  >
+							</div>-->
+							<input type="hidden" id="inductionstatus" name="#(formModelName).inductionstatus" value="#(o?o.inductionstatus:'')">
+							<div class="col-md-3">
+								<select id="inductionstatusSelect"   title="请选择"  class="selectpicker show-tick form-control" actionsBox="true"  disable  data-live-search="false">
+									#for(ofstatus:officestatus)
+									<option value="#(ofstatus.value)">#(ofstatus.name)</option>
+									#end
+								</select>
+							</div>
+
+
+
 							<label class="col-md-1 control-label">所持证书</label>
-							<div class="col-md-11">
+							<div class="col-md-7">
 								<input type="text"  name="#(formModelName).certificates" class="form-control"  value="#(o?o.certificates:'')"  readonly="readonly">
 							</div>
 						</div>
@@ -607,14 +639,11 @@
 							<div class="col-md-3">
 								<input type="text"  name="#(formModelName).salary" class="form-control"  value="#(o?o.salary:'')"  >
 							</div>-->
-							<label class="col-md-1 control-label">招聘来源</label>
+
+							<!--<label class="col-md-1 control-label">困难员工</label>
 							<div class="col-md-3">
-								<input type="text"  name="#(formModelName).recruitsource" class="form-control"  value="#(o?o.recruitsource:'')"  >
-							</div>
-							<label class="col-md-1 control-label">困难员工</label>
-							<!--<div class="col-md-3">
 								<input type="text"  name="#(formModelName).hardstaff" class="form-control"  value="#(o?o.hardstaff:'')"  >
-							</div>-->
+							</div>
 							<input type="hidden" id="hardstaff" name="#(formModelName).hardstaff" value="#(o?o.hardstaff:'')">
 							<div class="col-md-3">
 								<select id="hardstaffSelect"   title="请选择"  class="selectpicker show-tick form-control" actionsBox="true"  disable  data-live-search="false">
@@ -622,7 +651,7 @@
 									<option value="#(hd.value)">#(hd.name)</option>
 									#end
 								</select>
-							</div>
+							</div>-->
 						</div>
 						<!--<div class="form-group">
 							<label class="col-md-1 control-label">调薪记录</label>

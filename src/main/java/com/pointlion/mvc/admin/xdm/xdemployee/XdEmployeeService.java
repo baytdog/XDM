@@ -635,6 +635,7 @@ public class XdEmployeeService{
 		Map<String, String> dutyMap = stringMapMap.get("duty");
 		Map<String, String> isMarryMap = stringMapMap.get("ismarry");
 		Map<String, String> eduMap = stringMapMap.get("edu");
+		Map<String, String> empRelationMap = stringMapMap.get("empRelation");
 //		String userOrgId = ShiroKit.getUserOrgId();
 		for(XdEmployee emp:list){
 			List<String> row = new ArrayList<String>();
@@ -657,7 +658,7 @@ public class XdEmployeeService{
 			row.add(emp.getAge()==null?"0":String.valueOf(emp.getAge()));//0
 			row.add(emp.getRetiretime());//0
 			row.add(emp.getRetirestatus());//退休状态
-			row.add(emp.getEmprelation());
+			row.add(emp.getEmprelation()==null?"":empRelationMap.get(emp.getEmprelation()));
 			row.add(emp.getPosition()==null?"":positionMap.get(emp.getPosition().toString()));//0
 			row.add(emp.getWorkstation()==null?"":dutyMap.get(emp.getWorkstation()));//0
 			row.add(emp.getTel());//0
@@ -689,7 +690,7 @@ public class XdEmployeeService{
 			row.add(emp.getVocaQualifilevel1());//0
 			row.add(emp.getCertificates());
 			row.add(emp.getSpecialty());
-			row.add(emp.getEmcontact());
+			row.add(emp.getEmergencyTel());
 			row.add(emp.getBanaccount());//银行账号
 			row.add(emp.getFundaccount());//公积金账号
 			row.add(emp.getRecruitsource());
@@ -949,6 +950,7 @@ public class XdEmployeeService{
 							}
 							emp.setEmpnum(empStr.get(1));
 							emp.setName(empStr.get(2));
+							System.out.println(empStr.get(2));
 							emp.setIdnum(empStr.get(3));
 
 							String org = empStr.get(4);
@@ -990,11 +992,12 @@ public class XdEmployeeService{
 							emp.setGender(empStr.get(12).equals("女")?"0":"1");
 							emp.setBirthday("".equals(empStr.get(13))?"":XdOperUtil.numToDateFormat(empStr.get(13)));
 							emp.setSeniority(empStr.get(14));
-							Double age =Double.valueOf(empStr.get(15));
+//							Double age =Double.valueOf(empStr.get(15));
 							emp.setAge(Integer.valueOf(empStr.get(15)));
 							emp.setRetiretime("".equals(empStr.get(16))?"":XdOperUtil.numToDateFormat(empStr.get(16)));
 							emp.setRetirestatus(empStr.get(17));
-							emp.setEmprelation(empStr.get(18));
+							Map<String, String> empRelationMap = dictMapping.get("empRelation");
+							emp.setEmprelation(empRelationMap.get(empStr.get(18)));
 							/*XdDict position = XdDict.dao.findFirst("select * from xd_dict where type='position' and name ='" + empStr.get(18) + "'");
 							if(position==null){
 								emp.setPosition(0);//职位empStr.get(18)
@@ -1002,8 +1005,8 @@ public class XdEmployeeService{
 								emp.setPosition(Integer.valueOf(position.getValue()));
 							}*/
 							Map<String, String> position = dictMapping.get("position");
-							System.out.println("职位=============="+empStr.get(19));
-							System.out.println(position.get(empStr.get(19)));
+//							System.out.println("职位=============="+empStr.get(19));
+//							System.out.println(position.get(empStr.get(19)));
 							if(position.get(empStr.get(19))==null){
 								emp.setPosition("0");//职位empStr.get(19)
 							}else{
@@ -1110,7 +1113,7 @@ public class XdEmployeeService{
 							emp.setVocaQualifilevel1(empStr.get(47));//0
 							emp.setCertificates(empStr.get(48));
 							emp.setSpecialty(empStr.get(49));
-							emp.setEmcontact(empStr.get(50));
+							emp.setEmergencyTel(empStr.get(50));
 							emp.setBanaccount(empStr.get(51));//银行账号
 							emp.setFundaccount(empStr.get(52));//公积金账号
 							emp.setRecruitsource(empStr.get(53));
