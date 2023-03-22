@@ -6,6 +6,7 @@ import java.util.Map;
 
 import com.jfinal.aop.Before;
 import com.jfinal.kit.StrKit;
+import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.plugin.activerecord.Record;
 import com.pointlion.mvc.common.base.BaseController;
@@ -60,6 +61,9 @@ public class XdWorkHourController extends BaseController {
 			}*/
 			o.setYearMonth(o.getYear()+"-"+o.getMonth());
 			o.update();
+			Db.update("update xd_attendance_summary set curmon_workhours='"+o.getWorkHour()+"' where schedule_year='"+o.getYear()+"' and schedule_month='"+o.getMonth()+"'");
+			Db.update("update xd_schedule_summary set cur_mon_hours='"+o.getWorkHour()+"' where schedule_year='"+o.getYear()+"' and schedule_month='"+o.getMonth()+"'");
+
 		}
     	renderSuccess();
     }

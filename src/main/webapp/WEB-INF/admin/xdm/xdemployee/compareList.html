@@ -18,7 +18,13 @@
 											<input id="empnum" placeholder="员工编号" class="form-control">
 										</div>
 										<div class="form-group">
-											<input id="emprelation" placeholder="员工关系" class="form-control">
+										<!--	<input id="emprelation" placeholder="员工关系" class="form-control">-->
+											<select class="selectpicker form-control"  id="emprelation"   >
+												<option value="">---员工关系---</option>
+												#for(empRelation:empRelationList)
+												<option value="#(empRelation.value)">#(empRelation.name)</option>
+												#end
+											</select>
 										</div>
 										<div class="form-group">
 											<!--<input id="department" placeholder="所属部门" class="form-control">-->
@@ -79,16 +85,17 @@
 										</div>
 										<div class="form-group">
 											<button class="btn btn-primary" type="button" onclick="searchTable()">搜索</button>
+											<button class="btn btn-warning" type="button" onclick="reset()">重置</button>
 										</div>
 									</div>
 									<div   class="form-inline ">
 										<div class="input-group mar-btm">
 											<input id="selectEd" type="text" class="form-control" style="width:1000px;" readonly="readonly">
-											<div class="input-group-addon">
+											<!--<div class="input-group-addon">
 												<input id="demo-checkbox-addons" class="magic-checkbox" type="checkbox">
 												<label for="demo-checkbox-addons"></label>
 											</div>
-
+-->
 										</div>
 									</div>
 								</div>
@@ -99,7 +106,7 @@
 									<a id="export" class="btn btn-primary data-toolbar" onclick="exportExcel()" target="_blank"><i class="demo-pli-download-from-cloud"></i> 导出</a>-->
 									<a id="compare" class="btn btn-primary data-toolbar" onclick="compareEmp()" href="javascript:void(0);">人员比对</a>
 									<table id="pageTable" class="demo-add-niftycheck" data-toolbar="#del,#add,#export,#filePicker,#print,#exportContract,#compare"
-									  ></table>
+										   data-sort-name="empnum"  ></table>
 								</div>
 							</div>
 			        	</div>
@@ -148,6 +155,13 @@
 	for(let position of positionObj) {
 		positionsMap.set(position.value,position.name);
 	}
+
+	let empRelations='#(empRelations)';
+	let empRelationsMap = new Map();
+	let empRelationObj=JSON.parse(empRelations)
+	for(let empRelation of empRelationObj) {
+		empRelationsMap.set(empRelation.value,empRelation.name);
+	}
 	var col = [{field: 'checked', checkbox : true, align: 'center'},
 		{field: 'empnum', title: '员工编号', align: 'center'},
 		{field: 'name', title: '姓名', align: 'center'},
@@ -168,7 +182,9 @@
 			}},
 		{field: 'entrytime', title: '入职日期', align: 'center'},
 		{field: 'age', title: '年龄', align: 'center'},
-		{field: 'emprelation', title: '员工关系', align: 'center'},
+		{field: 'emprelation', title: '员工关系', align: 'center', formatter:function(value,row,index){
+				return empRelationsMap.get(value);
+			}},
 		{field: 'position', title: '职位', align: 'center', formatter:function(value,row,index){
 				   return positionsMap.get(value);
 			   }},
@@ -181,6 +197,7 @@
 			   }},
 	     ];
 	let opt = {
+		      height: 600,
 		    //请求方法
 			   method: 'get',
 			    //是否显示行间隔色
@@ -191,16 +208,16 @@
 			   //是否显示分页（*）  
 			   pagination: true,   
 			    //是否启用排序  
-			   sortable: false,
+			   sortable: true,
 			    //排序方式
 			   sortOrder: "asc",    
 			   //初始化加载第一页，默认第一页
 			   //我设置了这一项，但是貌似没起作用，而且我这默认是0,- -
 			   pageNumber:1,
 			   //每页的记录行数（*）   
-			   pageSize: 10,
+			   pageSize: 50,
 			   //可供选择的每页的行数（*）    
-			   pageList: [10, 25, 50, 100],
+			   pageList: [200, 300, 400, 500],
 			   //这个接口需要处理bootstrap table传递的固定参数,并返回特定格式的json数据  
 			   url: ctx+"/admin/xd/xdemployee/listData",
 			   //默认值为 'limit',传给服务端的参数为：limit, offset, search, sort, order Else
@@ -210,6 +227,8 @@
 			       return {
 			             pageNumber: (params.offset/params.limit)+1,
 			             pageSize: params.limit,
+						   sort: params.sort,  //排序列名
+						   sortOrder: params.order ,//排位命令（desc，asc）
 						   "name":encodeURIComponent($("#name").val()),
 						   "empnum":encodeURIComponent($("#empnum").val()),
 						   "emprelation":encodeURIComponent($("#emprelation").val()),
@@ -320,6 +339,33 @@
 
 			//执行删除
 			//var data = common_ajax.ajaxFunc("/admin/xd/xdemployee/getComparePage",{"ids":data.join(",")}, "json", null);
+	}
+
+
+	function reset(){
+		$("#name").val("");
+		$("#empnum").val("");
+		// $("#emprelation").val("");
+		$('#emprelation').selectpicker('val',"").trigger("change");
+		//$("#department").val("");
+		$('#department').selectpicker('val',"").trigger("change");
+		/*$('#positionSelect').on('changed.bs.select', function (e) {
+			$('#position').val($('#positionSelect').val())
+		});*/
+		// $("#unitname").val("");
+
+		$('#unitname').selectpicker('val',"").trigger("change");
+		// $("#costitem").val("");
+		$('#costitem').selectpicker('val',"").trigger("change");
+		// $("#demo-checkbox-addons").prop("checked",false);
+		$("#selectEd").val("");
+		// $("#inductionstatus").val("");
+		$('#inductionstatus').selectpicker('val',"").trigger("change");
+		$("#departime").val("");
+		// $("#position").val("");
+		$('#position').selectpicker('val',"").trigger("change");
+		// $("#workstation").val("");
+		$('#workstation').selectpicker('val',"").trigger("change");
 	}
 
 	//批量删除

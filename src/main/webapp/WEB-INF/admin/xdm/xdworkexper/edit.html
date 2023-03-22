@@ -35,9 +35,24 @@
 				return false;//阻止表单跳转
 			});
 		});
-		$('.form_datetime').datepicker({format: 'yyyy-mm-dd',weekStart: 1,todayBtn:  1,autoclose: 1,language:  'zh-CN',todayHighlight: 1,forceParse: 0,showMeridian: 1}).on('changeDate',function(){
+		$('.form_datetime').datepicker({format: 'yyyy-mm-dd',weekStart: 1,todayBtn:  1,autoclose: 1,language:  'zh-CN',todayHighlight: 1,forceParse: 0,showMeridian: 1}).on('changeDate',function(e){
+			console.log(e.target.childNodes[1].id);
+			//alert("1111");
 		});
-
+		/*$('.form_datetime #entrydate').datepicker({
+			format: 'yyyy-mm-dd',
+			weekStart: 1,
+			todayBtn:  1,
+			autoclose: 1,
+			language:  'zh-CN',
+			todayHighlight: 1,
+			forceParse: 0,
+			showMeridian: 1
+		}).on('changeDate',function(e){
+			/!*	var startTime = e.date;
+				$('#qEndTime').datepicker('setStartDate',startTime);*!/
+			alert("1111");
+		});*/
 
 		$(".selectpicker").selectpicker({});
 		$(".bootstrap-select").attr("style","width:100%;");
@@ -47,14 +62,34 @@
 
 		$(function () {
 
+
+
+
 			let eid=$("#eid").val();
 			if(eid){
 				$('#enameSelect').selectpicker('val',eid.split(",")).trigger("change");
 			};
 
 			$('#enameSelect').on('changed.bs.select', function (e) {
-				$('#eid').val($('#enameSelect').val())
-				$('#ename').val($('#enameSelect option:selected').text())
+				$('#eid').val($('#enameSelect').val());
+				$('#ename').val($('#enameSelect option:selected').text());
+
+				/*let data = common_ajax.ajaxFunc("/admin/xd/xdworkexper/getValidateInfo",{"id":$('#enameSelect').val()}, "json", null);
+				console.log(data);
+				let canDo= data.canDo ;
+				let canDate=data.canDate;
+				console.log($("#workExperId").val())
+
+				if("#(op)"=="add" && canDo=='N'){
+					console.log("1111");
+					$("#saveButton").hide();
+				}else{
+					console.log("2222222222")
+					$('.form_datetime').datepicker({format: 'yyyy-mm-dd',weekStart: 1,todayBtn:  1,autoclose: 1,language:  'zh-CN',todayHighlight: 1,forceParse: 0,showMeridian: 1,startDate:canDate}).on('changeDate',function(){
+					});
+				}*/
+
+				// $('#departmentSelect').selectpicker('val',data.orgId.split(",")).trigger("change");
 
 			});
 		})

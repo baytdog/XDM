@@ -6,10 +6,7 @@ import com.jfinal.plugin.activerecord.Record;
 import com.jfinal.upload.UploadFile;
 import com.pointlion.enums.XdOperEnum;
 import com.pointlion.mvc.common.base.BaseController;
-import com.pointlion.mvc.common.model.XdEmployee;
-import com.pointlion.mvc.common.model.XdOplogDetail;
-import com.pointlion.mvc.common.model.XdOplogSummary;
-import com.pointlion.mvc.common.model.XdWorkExper;
+import com.pointlion.mvc.common.model.*;
 import com.pointlion.mvc.common.utils.*;
 import com.pointlion.mvc.common.utils.office.excel.ExcelUtil;
 
@@ -17,10 +14,12 @@ import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 
 public class XdWorkExperController extends BaseController {
@@ -101,8 +100,10 @@ public class XdWorkExperController extends BaseController {
 		XdWorkExper o = new XdWorkExper();
 		if(StrKit.notBlank(id)){
 			o = service.getById(id);
+			setAttr("op","mod");
 		}else{
 			o.setId(UuidUtil.getUUID());
+			setAttr("op","add");
 		}
 		List<XdEmployee> emps = XdEmployee.dao.find("select * from  xd_employee");
 		setAttr("emps",emps);
@@ -123,6 +124,80 @@ public class XdWorkExperController extends BaseController {
 		String employeeId = getPara("employeeId");
 		List<XdWorkExper> list = service.getWorkExperList(employeeId);
 		renderJson(list);
+	}
+
+
+	public void validateDate(){
+
+		String empId = getPara("id");
+
+		String chooseDate=getPara("chooseDate");
+//		XdEmployee emp = XdEmployee.dao.findById(getPara("id"));
+		List<XdWorkExper> workExperList = XdWorkExper.dao.find("select * from  xd_work_exper where eid='" + empId + "' order by entrydate desc");
+		String canUse="Y";
+		String tips="";
+		/*if(lastWork!=null){
+			if(lastWork.getDepartdate().equals("至今") || lastWork.getDepartdate().equals("")){
+				canDo="N";
+			}else  {
+
+				canDate=lastWork.getDepartdate();
+			}
+
+		}*/
+		LocalDate choose = LocalDate.parse(chooseDate);
+		if(workExperList.size()>0){
+			workExperList.stream().forEach(new Consumer<XdWorkExper>() {
+				@Override
+				public void accept(XdWorkExper xdWorkExper) {
+					if(xdWorkExper.getDepartdate().equals("")||xdWorkExper.getDepartdate().equals("至今")){
+						boolean after = choose.isAfter(LocalDate.parse(xdWorkExper.getEntrydate()));
+						if(after){
+							System.out.println("最近一次合同时间冲突");
+						}
+					}else{
+						if(xdWorkExper.getDepartdate().contains("年")&&xdWorkExper.getDepartdate().contains("月")){
+							/*String year = xdWorkExper.getDepartdate().substring(0, 4);
+							String month = xdWorkExper.getDepartdate().substring(0, 4);*/
+							String departDate = xdWorkExper.getDepartdate().replaceAll("年", "-").replaceAll("[^(0-9-)]", "") + "-01";
+							LocalDate localDate = LocalDate.parse(departDate).plusDays(1);
+
+							if(choose.isBefore(localDate) && choose.isAfter(LocalDate.parse(xdWorkExper.getEntrydate()))){
+								System.out.println("合同时间冲突");
+							}
+
+						}else if(xdWorkExper.getDepartdate().contains("年")){
+							LocalDate localDate = LocalDate.parse(xdWorkExper.getDepartdate().replaceAll("年", "-") + "-01-01").plusYears(1);
+							if(choose.isBefore(localDate) && choose.isAfter(LocalDate.parse(xdWorkExper.getEntrydate()))){
+								System.out.println("合同时间冲突");
+							}
+						}else{
+							LocalDate entry = LocalDate.parse(xdWorkExper.getEntrydate());
+							LocalDate depart = LocalDate.parse(xdWorkExper.getDepartdate());
+
+							if(choose.isBefore(depart) && choose.isAfter(entry)){
+								System.out.println("合同时间冲突");
+							}
+
+						}
+
+					}
+				}
+			});
+
+
+		}
+
+
+
+		cn.hutool.json.JSONObject jsonObject=new cn.hutool.json.JSONObject();
+		//jsonObject.put("empNum",emp.getEmpnum());
+
+		jsonObject.put("canUse",canUse);
+//		jsonObject.put("canDate",canDate);
+		renderJson(jsonObject);
+
+
 	}
 
 
@@ -171,5 +246,9 @@ public class XdWorkExperController extends BaseController {
 			renderError((String)result.get("message"));
 		}
 	}
+
+
+
+
 
 }

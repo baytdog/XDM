@@ -251,26 +251,26 @@
 					<div class="panel-body">
 						<div class="row">
 							<div class="col-sm-8">
-								<button class="btn btn-primary" type="button"  onclick="addRow1()" #if(view=='detail') disabled #end>新增</button>
-								<button class="btn btn-warning" type="button" onclick="removeRow1()"  #if(view=='detail') disabled #end>删除</button>
+								<!--<button class="btn btn-primary" type="button"  onclick="addRow1()" #if(view=='detail') disabled #end>新增</button>
+								<button class="btn btn-warning" type="button" onclick="removeRow1()"  #if(view=='detail') disabled #end>删除</button>-->
 <!--								<button class="btn btn-warning" type="button" onclick="ttt()"   >测试</button>-->
 							</div>
 						</div>
 						<mini-datagrid id="datagrid1" class="mini-datagrid" style="width:100%;height:280px;"
 									   url="" idField="id"  allowResize="true" pageSize="15"
-									   allowCellEdit="true" allowCellSelect="true" multiSelect="false"
+									   allowCellEdit="false" allowCellSelect="true" multiSelect="false"
 									   editNextOnEnterKey="true"  editNextRowCell="true"
 									   showSortIcon="true"  _dataField="data"  showPager="false" allowSortColumn="false"
 						>
 							<columns>
-								<column type="indexcolumn"></column>
-								<column type="checkcolumn"></column>
-								<column name="enrolldate" field="enrolldate" width="100"   dateFormat="yyyy-MM-dd">入学日期
+								<column type="indexcolumn" headerAlign="center" >序号</column>
+							<!--	<column type="checkcolumn"></column>-->
+								<column name="enrolldate" field="enrolldate" width="100" headerAlign="center"   dateFormat="yyyy-MM-dd">入学日期
 									<editor>
 										<mini-datepicker style="width:100%;" format="yyyy-MM-dd"></mini-datepicker>
 									</editor>
 								</column>
-								<column name="graduatdate" field="graduatdate" width="100"   dateFormat="yyyy-MM-dd">毕业日期
+								<column name="graduatdate" field="graduatdate" width="100" headerAlign="center"   dateFormat="yyyy-MM-dd">毕业日期
 									<editor>
 										<mini-datepicker style="width:100%;" format="yyyy-MM-dd"></mini-datepicker>
 									</editor>
@@ -318,27 +318,27 @@
 
 						<div class="row">
 							<div class="col-sm-8">
-								<button class="btn btn-primary" type="button"  onclick="addRow2()" #if(view=='detail') disabled #end>新增</button>
-								<button class="btn btn-warning" type="button" onclick="removeRow2()"  #if(view=='detail') disabled #end>删除</button>
+							<!--	<button class="btn btn-primary" type="button"  onclick="addRow2()" #if(view=='detail') disabled #end>新增</button>
+								<button class="btn btn-warning" type="button" onclick="removeRow2()"  #if(view=='detail') disabled #end>删除</button>-->
 							</div>
 						</div>
 						<mini-datagrid id="datagrid2" class="mini-datagrid" style="width:100%;height:280px;"
 									   url="" idField="id"
 									   allowResize="true" pageSize="15"
-									   allowCellEdit="true" allowCellSelect="true" multiSelect="false"
+									   allowCellEdit="false" allowCellSelect="true" multiSelect="false"
 									   editNextOnEnterKey="true"  editNextRowCell="true"
 									   showSortIcon="true"  _dataField="data"
 									   showPager="false" allowSortColumn="false"
 						>
 							<columns>
-								<column type="indexcolumn"></column>
-								<column type="checkcolumn"></column>
-								<column name="entrydate" field="entrydate" width="100"   dateFormat="yyyy-MM-dd">入职日期
+								<column type="indexcolumn" headerAlign="center" >序号</column>
+							<!--	<column type="checkcolumn"></column>-->
+								<column name="entrydate" field="entrydate" width="100"  headerAlign="center"  dateFormat="yyyy-MM-dd">入职日期
 									<editor>
-										<mini-datepicker style="width:100%;" format="yyyy-MM-dd"></mini-datepicker>
+										<mini-datepicker style="width:100%;" format="yyyy-MM-dd" headerAlign="center" ></mini-datepicker>
 									</editor>
 								</column>
-								<column name="departdate" field="departdate" width="100"   dateFormat="yyyy-MM-dd">离职日期
+								<column name="departdate" field="departdate" width="100"  headerAlign="center"  dateFormat="yyyy-MM-dd">离职日期
 									<editor>
 										<mini-datepicker style="width:100%;" format="yyyy-MM-dd"></mini-datepicker>
 									</editor>
@@ -566,7 +566,7 @@
 							</div>
 							<label class="col-md-1 control-label">离职原因</label>
 							<div class="col-md-3">
-								<input type="text"  name="#(formModelName).leave_reason" class="form-control"  value="#(o?o.leave_reason:'')"  >
+								<input type="text" id="leave_reason"  name="#(formModelName).leave_reason" class="form-control"  value="#(o?o.leave_reason:'')"  >
 							</div>
 							<label class="col-md-1 control-label">离职管理</label>
 							<div class="col-md-3">

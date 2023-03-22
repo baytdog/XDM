@@ -54,6 +54,37 @@
 								message: '身份证号码格式不正确，为15位和18位身份证号码！'
 							},
 						}
+					},
+					"#(formModelName).leave_reason": {
+						trigger: 'change',
+						validators: {
+						/*	notEmpty: {
+								message: '*离职原因不能为空'
+							}
+							,*/
+							callback:{
+
+								message: '*离职原因不能为空',
+								callback : function(value, validator, $field) {
+									console.log("1111111111111")
+									if ($('#departime').val()){
+										/*return {
+											valid: false,
+											message: '*离职原因不能为空'
+										}*/
+									//	console.log("2222")
+										if($('#leave_reason').val()){
+											return true
+										}
+										return false
+									}
+									else{
+										console.log("3333")
+										return true
+									}
+								}
+							}
+						}
 					}
 				}
 	        }).on("success.form.bv", function (e) {

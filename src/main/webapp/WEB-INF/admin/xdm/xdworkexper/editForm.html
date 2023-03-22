@@ -1,5 +1,5 @@
 <form id="editForm" class="panel-body form-horizontal form-padding">
-	<input type="hidden"  name="#(formModelName).id" class="form-control" value="#(o?o.id:'')">
+	<input type="hidden" id="workExperId"  name="#(formModelName).id" class="form-control" value="#(o?o.id:'')">
 	<div class="form-group">
 		<label class="col-md-2 control-label">姓名</label>
 
@@ -54,7 +54,7 @@
 	<div class="panel-footer">
 		<div class="row">
 			<div class="col-sm-12 " style="text-align: center">
-				<button class="btn btn-primary" type="submit" #if(view=='detail') disabled #end>保存</button>
+				<button id="saveButton" class="btn btn-primary" type="submit" #if(view=='detail') disabled #end>保存</button>
 				<button class="btn btn-primary" type="button" onclick="window.history.back();" >返回</button>
 			</div>
 		</div>

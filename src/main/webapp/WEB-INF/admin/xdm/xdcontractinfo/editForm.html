@@ -1,37 +1,60 @@
 <form id="editForm" class="panel-body form-horizontal form-padding">
 	<input type="hidden"  name="#(formModelName).id" class="form-control" value="#(o?o.id:'')">
 	<div class="form-group">
-		<label class="col-md-2 control-label">������</label>
-		<div class="col-md-4">
-			<input type="hidden"  name="#(formModelName).userid" class="form-control"  value="#(o?o.user_id:'')">
-			<input type="text"  name="#(formModelName).applyer_name" class="form-control"  value="#(o?o.applyer_name:'')" readonly>
+		<label class="col-md-2 control-label">姓名</label>
+		<div class="col-md-10">
+			<input type="hidden"  name="#(formModelName).eid" class="form-control"  value="#(o?o.eid:'')">
+			<input type="text"  name="#(formModelName).eid" class="form-control"  value="#(o?o.eid:'')" readonly>
 		</div>
-		<label class="col-md-1 control-label">����</label>
-		<div class="col-md-4">
-			<input type="hidden"  name="#(formModelName).org_id" class="form-control"  value="#(o?o.org_id:'')">
-			<input type="text"  name="#(formModelName).org_name" class="form-control"  value="#(o?o.org_name:'')" readonly>
+
+	</div>
+	<!--<div class="form-group">
+		<label class="col-md-2 control-label">员工性质</label>
+		<div class="col-md-10">
+			<input type="hidden"  name="#(formModelName).emprelation" class="form-control"  value="#(o?o.emprelation:'')">
+			<input type="text"  name="#(formModelName).emprelation" class="form-control"  value="#(o?o.emprelation:'')" readonly>
+		</div>
+
+	</div>-->
+	<div class="form-group">
+		<label class="col-md-2 control-label">开始时间</label>
+		<div class="col-md-10">
+			<input type="hidden"  name="#(formModelName).contractstartdate" class="form-control"  value="#(o?o.contractstartdate:'')">
+			<input type="text"  name="#(formModelName).contractstartdate" class="form-control"  value="#(o?o.contractstartdate:'')" readonly>
 		</div>
 	</div>
-		<div class="form-group">
-			<label class="col-md-2 control-label"></label>
-			<div class="col-md-9">
-				<input type="text"  name="#(formModelName)." class="form-control"  value="#(o?o.:'')" #if(view=='detail') readonly #end>
-				<small class="help-block">������</small>
-			</div>
-		</div>
 	<div class="form-group">
-		<label class="col-md-2 control-label">��ע</label>
-		<div class="col-md-9">
-			<textarea rows="8" name="#(formModelName).des" class="form-control" #if(view=='detail') readonly #end></textarea>
-			<small class="help-block">�����뱸ע</small>
+		<label class="col-md-2 control-label">结束时间</label>
+		<div class="col-md-10">
+			<input type="hidden"  name="#(formModelName).contractenddate" class="form-control"  value="#(o?o.contractenddate:'')">
+			<input type="text"  name="#(formModelName).contractenddate" class="form-control"  value="#(o?o.contractenddate:'')" readonly>
 		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-2 control-label">合同期数</label>
+		<div class="col-md-10">
+			<input type="text"  name="#(formModelName).contractclauses" class="form-control"  value="#(o?o.contractclauses:'')" readonly>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-2 control-label">合同性质</label>
+		<div class="col-md-10">
+			<input type="text"  name="#(formModelName).contractnature" class="form-control"  value="#(o?o.contractnature:'')" readonly>
+		</div>
+	</div>
+	<div class="form-group">
+		<!--<label class="col-md-2 control-label">结束时间</label>
+		<div class="col-md-9">
+			<textarea rows="8" name="#(formModelName)." class="form-control" #if(view=='detail') readonly #end></textarea>
+			<small class="help-block">结束时间</small>
+		</div>-->
 	</div>
 	#if(view=='edit')
 	<div class="panel-footer">
 		<div class="row">
-			<div class="col-sm-8 col-sm-offset-3">
-				<button class="btn btn-warning" type="reset" #if(view=='detail') disabled #end>����</button>
-				<button class="btn btn-primary" type="submit" #if(view=='detail') disabled #end>����</button>
+			<div class="col-sm-12">
+				<!--<button class="btn btn-warning" type="reset" #if(view=='detail') disabled #end>重置</button>
+				<button class="btn btn-primary" type="submit" #if(view=='detail') disabled #end>提交</button>-->
 			</div>
 		</div>
 	</div>

@@ -263,6 +263,13 @@ public class XdOperUtil {
         }
 
         System.out.println(1!=1);
+
+        System.out.println(LocalDate.parse("2023-03-02").isAfter(LocalDate.parse("2023-03-01")));
+
+        System.out.println("2008年10余月".replaceAll("年", "-").replaceAll("[^(0-9-)]", ""));
+        /*for (String s1 : split) {
+            System.out.println(s1);
+        }*/
     }
 
     public static void setChangeValue(Object obj,String fieldName,String newValue)  {

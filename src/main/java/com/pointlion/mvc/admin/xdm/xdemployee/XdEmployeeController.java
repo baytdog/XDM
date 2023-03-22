@@ -158,18 +158,26 @@ public class XdEmployeeController extends BaseController {
 		List<XdDict> positionList = dictListByType.get("position");
 		String positions = JSONUtil.listToJson(positionList);
 
+		List<XdDict> empRelationList = dictListByType.get("empRelation");
+		String empRelations = JSONUtil.listToJson(empRelationList);
 		setAttr("eduStr",edu);
 		setAttr("orgStr",orgStr);
 		setAttr("dutyStr",dutyStr);
 		setAttr("positions",positions);
 		setAttr("positionList",positionList);
+
+		setAttr("empRelations",empRelations);
+		setAttr("empRelationList",empRelationList);
 		setAttr("dutyList",dutyList);
 		renderIframe("compareList.html");
 	}
 
 	public void getComparePage() throws UnsupportedEncodingException {
 //		String ids = getPara("ids");
+
 		String selectedName = new String(getPara("selectedName","").getBytes("ISO-8859-1"), "utf-8");
+		System.out.println("比较人员：="+selectedName);
+
 		String nameArr[] = selectedName.split(",");
 		String inSql="";
 		for (String name : nameArr) {
@@ -177,6 +185,10 @@ public class XdEmployeeController extends BaseController {
 		}
 		inSql=inSql.replaceAll(",$","");
 		List<XdEmployee> empLists = XdEmployee.dao.find("select * from  xd_employee where name in (" + inSql + ") order by empnum");
+
+		System.out.println("选择人员个数："+empLists.size());
+
+
 		Map<String, Map<String, String>> stringMapMap = DictMapping.dictMappingValueToName();
 		List<SysOrg> orgList = SysOrg.dao.find("select * from  sys_org");
 		Map <String,String>orgMap =new HashMap();
