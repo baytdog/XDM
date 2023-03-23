@@ -14,10 +14,8 @@ import com.jfinal.plugin.activerecord.Record;
 import com.jfinal.upload.UploadFile;
 import com.pointlion.mvc.common.base.BaseController;
 import com.pointlion.mvc.admin.oa.workflow.WorkFlowService;
+import com.pointlion.mvc.common.model.*;
 import com.pointlion.mvc.common.utils.StringUtil;
-import com.pointlion.mvc.common.model.XdContractInfo;
-import com.pointlion.mvc.common.model.SysUser;
-import com.pointlion.mvc.common.model.SysOrg;
 import com.pointlion.mvc.common.utils.UuidUtil;
 import com.pointlion.mvc.common.utils.Constants;
 import com.pointlion.mvc.admin.oa.common.OAConstants;
@@ -70,12 +68,20 @@ public class XdContractInfoController extends BaseController {
 		XdContractInfo o = new XdContractInfo();
 		if(StrKit.notBlank(id)){
     		o = service.getById(id);
-    		if("detail".equals(view)){
-    		}
+			List<XdContractInfo> xdContractInfoList = XdContractInfo.dao.find("select * from xd_contract_info where eid='" + o.getEid() + "' and contractenddate='无固定期限'");
+			String needEndDate="N";
+			if(xdContractInfoList.size()>0 && o.getContractenddate()!=null && !o.getContractenddate().equals("无固定期限")&& !o.getContractenddate().equals("")){
+				needEndDate="Y";
+			}
+			setAttr("needEndD",needEndDate);
     	}else{
     		SysUser user = SysUser.dao.findById(ShiroKit.getUserId());
     		SysOrg org = SysOrg.dao.findById(user.getOrgid());
     	}
+		List<XdEmployee> empList = XdEmployee.dao.find("select * from  xd_employee order by empnum");
+		setAttr("emps",empList);
+		List<XdDict> empRelationsList = XdDict.dao.find("select * from xd_dict where type= 'empRelation' order by sortnum");
+		setAttr("empRelations",empRelationsList);
 		setAttr("o", o);
     	setAttr("formModelName",StringUtil.toLowerCaseFirstOne(XdContractInfo.class.getSimpleName()));
 		renderIframe("edit.html");
@@ -99,6 +105,34 @@ public class XdContractInfoController extends BaseController {
 		}else{
 			renderError((String)result.get("message"));
 		}
+	}
+
+	public void getRelationInfo(){
+		String eid = getPara("eid");
+		XdContractInfo lastContract = XdContractInfo.dao.findFirst("select * from xd_contract_info where eid='" + eid + "' order by contractclauses desc");
+	/*	String needEndDate="N";
+		if(workExperList.size()>0){
+			needEndDate="Y";
+		}*/
+		int contractNum=1;
+		if(lastContract!=null){
+			contractNum=lastContract.getContractclauses()+1;
+		}
+
+		cn.hutool.json.JSONObject jsonObject=new cn.hutool.json.JSONObject();
+		//jsonObject.put("empNum",emp.getEmpnum());
+
+
+
+		List<XdContractInfo> xdContractInfoList = XdContractInfo.dao.find("select * from xd_contract_info where eid='" + eid + "' and contractenddate='无固定期限' ");
+		String needEndDate="N";
+		if(xdContractInfoList.size()>0){
+			needEndDate="Y";
+		}
+
+		jsonObject.put("contractNum",contractNum);
+		jsonObject.put("needEndDate",needEndDate);
+		renderJson(jsonObject);
 	}
 	
 }

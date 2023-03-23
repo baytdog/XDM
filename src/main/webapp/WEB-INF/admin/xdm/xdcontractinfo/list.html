@@ -58,14 +58,14 @@
 		   {field: 'contractnature', title: '合同性质', align: 'center'},
 
 	   
-	  /* {field: 'control', title: '����', align: 'left', width:'200',
+	   {field: 'control', title: '操作', align: 'left', width:'200',
 	       formatter:function(value,row,index){
-	           	var a = '<a class="label label-table label-success" href="'+ctx+'/admin/xdcontractinfo/getEditPage?id='+row.id+'&view=detail" >�鿴</a>&nbsp;';
-	           	a = a + '<a class="label label-table label-success" href="'+ctx+'/admin/xdcontractinfo/getEditPage?id='+row.id+'&view=edit" >�༭</a>&nbsp;';
-				a = a + '<a class="label label-table label-danger" onclick="del(\''+row.id+'\')" href="javascript:void(0);" >ɾ��</a>';
+	           	var a = '<a class="label label-table label-success" href="'+ctx+'/admin/xd/xdcontractinfo/getEditPage?id='+row.id+'&view=detail" >查看</a>&nbsp;';
+	           	a = a + '<a class="label label-table label-success" href="'+ctx+'/admin/xd/xdcontractinfo/getEditPage?id='+row.id+'&view=edit" >修改</a>&nbsp;';
+				a = a + '<a class="label label-table label-danger" onclick="del(\''+row.id+'\')" href="javascript:void(0);" >删除</a>';
 	           	return a;
 	       }
-	   }*/];
+	   }];
 	var opt = {
 			   method: 'get',
 			   striped: true,

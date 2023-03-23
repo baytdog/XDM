@@ -7,10 +7,10 @@
 	</div>
 	<script>
 		function save(){
-			var data = common_ajax.ajaxFunc("/admin/xdcontractinfo/save", $('#editForm').serialize(), "json", null);
+			var data = common_ajax.ajaxFunc("/admin/xd/xdcontractinfo/save", $('#editForm').serialize(), "json", null);
 			if(data.success){
-				pointLion.alertMsg("����ɹ�!" , "success" , "small" , function(){
-					location.href = ctx+'/admin/xdcontractinfo/getListPage';//��ת���б�ҳ
+				pointLion.alertMsg("操作成功" , "success" , "small" , function(){
+					location.href = ctx+'/admin/xd/xdcontractinfo/getListPage';
 				},data);
 			}else{
 				pointLion.alertMsg(data.message , "danger" , "small" , function(){
@@ -20,11 +20,139 @@
 		}
 		$(document).ready(function() {
 			$('#editForm').bootstrapValidator({
-	            fields: {
-	            }
+				excluded:[":disabled"],
+				live: 'enabled',
+				fields: {
+					"#(formModelName).ename": {
+						trigger: 'change',
+						validators: {
+							notEmpty: {
+								message: '*姓名不能为空'
+							}
+						}
+					},
+					"#(formModelName).contractstartdate": {
+						trigger: 'change',
+						validators: {
+							notEmpty: {
+								message: '*合同起日不能为空'
+							},
+							callback:{
+								message: '*起日不能大于止日',
+								callback : function(value, validator, $field) {
+									if($('#needEndD').val()=='Y'){
+										if ($('#contractenddate').val() && $('#contractenddate').val() !='无固定期限'){
+											console.log("333333333333")
+											if($('#contractenddate').val()<=$('#contractstartdate').val()){
+												return false
+											}
+											return true
+										}
+
+										if(!$('#contractenddate').val()){
+											console.log("66666666666")
+											return true
+										}
+										console.log("7777777777")
+										return false
+									}else{
+
+										if($('#contractenddate').val() && $('#contractenddate').val()<=$('#contractstartdate').val()){
+											return false
+										}
+										return true
+									}
+								}
+							}
+						}
+					},
+					"#(formModelName).contractenddate": {
+						trigger: 'change',
+						validators: {
+								/*	notEmpty: {
+										message: '*合同止日不能为空'
+									}
+									,*/
+							callback:{
+								message: '*止日不能小于起日',
+								callback : function(value, validator, $field) {
+									if($('#needEndD').val()=='Y'){
+										if ($('#contractenddate').val() && $('#contractenddate').val() !='无固定期限'){
+											if($('#contractenddate').val()<=$('#contractstartdate').val()){
+												return false
+											}
+											return true
+										}
+										return false
+									}else{
+									console.log("-passss")
+										if($('#contractenddate').val() && $('#contractenddate').val()<=$('#contractstartdate').val()){
+											return false
+										}
+										return true
+									}
+								}
+							}
+						}
+					},
+
+					"#(formModelName).contractnature": {
+						trigger: 'change',
+						validators: {
+							notEmpty: {
+								message: '*合同性质不能为空'
+							}
+						}
+					},
+				}
 	        }).on("success.form.bv", function (e) {
 	            save();
-	            return false;//��ֹ����ת
+	            return false;
 	        });
+
+
+			let format={format: 'yyyy-mm-dd',weekStart: 1,todayBtn:  1,autoclose: 1,language:  'zh-CN',todayHighlight: 1,forceParse: 0,showMeridian: 1,clearBtn: true };
+
+			$('.form_datetime').datepicker(format).on('changeDate',function(e){
+			});
 		});
+
+		function resetVali(){
+			if(!$("#editForm").data('bootstrapValidator').isValid()) {
+				$("#editForm").data('bootstrapValidator').resetForm();
+				$(".btn").removeAttr("disabled");
+			}
+		}
+	</script>
+
+	<script>
+
+
+		$(function () {
+			let eid=$("#eid").val();
+			if(eid){
+				$('#nameSelect').selectpicker('val',eid.split(",")).trigger("change");
+			};
+
+			$('#nameSelect').on('changed.bs.select', function (e) {
+				$('#eid').val($('#nameSelect').val());
+				$('#empName').val($('#nameSelect option:selected').text());
+				resetVali();
+				 let data = common_ajax.ajaxFunc("/admin/xd/xdcontractinfo/getRelationInfo",{"eid":$('#eid').val()}, "json", null);
+				 $("#contractclauses").val(data.contractNum);
+				 $("#needEndD").val(data.needEndDate);
+
+			});
+
+			let contractNature=$("#contractNature").val();
+			if(contractNature){
+				$('#relationSelect').selectpicker('val',contractNature.split(",")).trigger("change");
+			};
+
+			$('#relationSelect').on('changed.bs.select', function (e) {
+				$('#contractNature').val($('#relationSelect').val());
+				resetVali();
+			});
+		})
+
 	</script>

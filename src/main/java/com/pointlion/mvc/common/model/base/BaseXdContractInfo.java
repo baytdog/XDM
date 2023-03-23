@@ -25,6 +25,15 @@ public abstract class BaseXdContractInfo<M extends BaseXdContractInfo<M>> extend
 		return getStr("eid");
 	}
 
+
+	public void setEmpName(java.lang.String empName) {
+		set("emp_name", empName);
+	}
+
+	public java.lang.String getEmpName() {
+		return getStr("emp_name");
+	}
+
 	public void setContractstartdate(String contractstartdate) {
 		set("contractstartdate", contractstartdate);
 	}
