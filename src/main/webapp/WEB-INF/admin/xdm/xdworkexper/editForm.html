@@ -1,5 +1,6 @@
 <form id="editForm" class="panel-body form-horizontal form-padding">
 	<input type="hidden" id="workExperId"  name="#(formModelName).id" class="form-control" value="#(o?o.id:'')">
+	<input type="hidden" id="needEndD" class="form-control" value="#(needEndD)" >
 	<div class="form-group">
 		<label class="col-md-2 control-label">姓名</label>
 
@@ -36,16 +37,16 @@
 
 	<div class="form-group">
 		<label class="col-md-2 control-label">入职时间</label>
-		<div class="input-group date form_datetime col-md-10" style="float:left">
-			<input type="text" id="entrydate" name="#(formModelName).entrydate" class="form-control"  value="#(o?o.entrydate:'')"    >
+		<div class="input-group date form_datetime col-md-10" style="float:left" id="start">
+			<input type="text" id="entrydate" name="#(formModelName).entrydate" class="form-control"  value="#(o?o.entrydate:'')"  readonly="readonly"  >
 			<span class="input-group-addon"> <span class="glyphicon glyphicon-th"></span>
 									</span>
 		</div>
 	</div>
 	<div class="form-group">
 		<label class="col-md-2 control-label">离职时间</label>
-		<div class="input-group date form_datetime col-md-10" style="float:left">
-			<input type="text" id="departdate" name="#(formModelName).departdate" class="form-control"  value="#(o?o.departdate:'')"    >
+		<div class="input-group date form_datetime col-md-10" style="float:left" id="depart">
+			<input type="text" id="departdate" name="#(formModelName).departdate" class="form-control"  value="#(o?o.departdate:'')"    readonly="readonly" >
 			<span class="input-group-addon"> <span class="glyphicon glyphicon-th"></span>
 									</span>
 		</div>

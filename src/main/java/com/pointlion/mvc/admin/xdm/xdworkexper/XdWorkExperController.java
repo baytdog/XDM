@@ -56,8 +56,111 @@ public class XdWorkExperController extends BaseController {
 		XdEmployee employee = XdEmployee.dao.findFirst("select * from xd_employee where name ='" + ename + "'");
 		if(workExper==null){
 			o.setEid(employee.getId());
-			o.save();
-			XdOperUtil.logSummary(o.getId(),o, XdOperEnum.C.name(),XdOperEnum.UNAPPRO.name(),0);
+			if(o.getDepartdate()==null || "".equals(o.getDepartdate())){
+				o.setDepartdate("至今");
+			}
+
+
+
+			List<XdWorkExper> workExperList = XdWorkExper.dao.find("select * from  xd_work_exper where eid='" + o.getEid() + "' order by entrydate desc");
+			List <String>tipList=new ArrayList();
+			boolean canInsert=true;
+			if(workExperList.size()>0){
+				for (XdWorkExper expr : workExperList) {
+						if(o.getDepartdate().equals("至今")){
+							LocalDate entry = LocalDate.parse(o.getEntrydate());
+							if(expr.getDepartdate()==null || expr.getDepartdate().equals("")||expr.getDepartdate().equals("至今")){
+								canInsert=false;
+								tipList.add(expr.getEntrydate()+"-至今");
+							}else {
+								if (expr.getDepartdate().contains("年") && expr.getDepartdate().contains("月")) {
+									String departDate = expr.getDepartdate().replaceAll("年", "-").replaceAll("[^(0-9-)]", "") + "-01";
+									LocalDate oldDepart = LocalDate.parse(departDate);
+
+
+									if (entry.isBefore(oldDepart) && entry.isAfter(LocalDate.parse(expr.getEntrydate()).minusDays(1))) {
+										canInsert=false;
+										tipList.add(expr.getEntrydate() + "-" + expr.getDepartdate());
+									}
+
+								} else if (expr.getDepartdate().contains("年")) {
+									LocalDate oldDepart = LocalDate.parse(expr.getDepartdate().replaceAll("年", "-") + "-01-01").plusYears(1);
+									if (entry.isBefore(oldDepart) && entry.isAfter(LocalDate.parse(expr.getEntrydate()).minusDays(1))) {
+										canInsert=false;
+										tipList.add(expr.getEntrydate() + "-" + expr.getDepartdate());
+									}
+								} else {
+									LocalDate oldEntry = LocalDate.parse(expr.getEntrydate());
+									LocalDate oldDepart = LocalDate.parse(expr.getDepartdate());
+
+									if (entry.isBefore(oldDepart) && entry.isAfter(oldEntry)) {
+										canInsert=false;
+										tipList.add(expr.getEntrydate() + "-" + expr.getDepartdate());
+									}
+
+
+								}
+							}
+						}else{
+							LocalDate entry = LocalDate.parse(o.getEntrydate());
+							LocalDate depart = LocalDate.parse(o.getDepartdate());
+
+							if(expr.getDepartdate()==null || expr.getDepartdate().equals("")||expr.getDepartdate().equals("至今")){
+
+								LocalDate oldEntry = LocalDate.parse(expr.getEntrydate());
+								if(entry.isAfter(oldEntry) ||depart.isAfter(oldEntry)){
+									canInsert=false;
+									tipList.add(expr.getEntrydate()+"-至今");
+								}
+
+							}else {
+								if (expr.getDepartdate().contains("年") && expr.getDepartdate().contains("月")) {
+									String departDate = expr.getDepartdate().replaceAll("年", "-").replaceAll("[^(0-9-)]", "") + "-01";
+									LocalDate oldDepart = LocalDate.parse(departDate);
+									LocalDate oldEntry = LocalDate.parse(expr.getEntrydate());
+
+									if (entry.isBefore(oldDepart) && depart.isAfter(oldEntry)) {
+										canInsert=false;
+										tipList.add(expr.getEntrydate() + "-" + expr.getDepartdate());
+									}
+
+								} else if (expr.getDepartdate().contains("年")) {
+									LocalDate oldDepart = LocalDate.parse(expr.getDepartdate().replaceAll("年", "-") + "-01-01").plusYears(1);
+									LocalDate oldEntry = LocalDate.parse(expr.getEntrydate());
+									if (entry.isBefore(oldEntry) && depart.isAfter(oldDepart)) {
+										canInsert=false;
+										tipList.add(expr.getEntrydate() + "-" + expr.getDepartdate());
+									}
+								} else {
+									LocalDate oldEntry = LocalDate.parse(expr.getEntrydate());
+									LocalDate oldDepart = LocalDate.parse(expr.getDepartdate());
+
+									if (entry.isBefore(oldEntry) && depart.isAfter(oldDepart)) {
+										canInsert=false;
+										tipList.add(expr.getEntrydate() + "-" + expr.getDepartdate());
+									}
+
+
+								}
+							}
+						}
+
+					}
+				}
+
+
+			if(canInsert){
+				o.save();
+				XdOperUtil.logSummary(o.getId(),o, XdOperEnum.C.name(),XdOperEnum.UNAPPRO.name(),0);
+				renderSuccess();
+			}else{
+				String tips="冲突时间[";
+					for (String s : tipList) {
+						tips=tips+s+",";
+					}
+				renderError(tips.replaceAll(",$",""));
+			}
+
 		}else{
 			String eduChanges = XdOperUtil.getChangedMetheds(o, workExper);
 			eduChanges = eduChanges.replaceAll("--$","");
@@ -86,9 +189,13 @@ public class XdWorkExperController extends BaseController {
 				detail.save();
 			}
 			o.setEid(employee.getId());
+			if(o.getDepartdate()==null || "".equals(o.getDepartdate())){
+				o.setDepartdate("至今");
+			}
 			o.update();
+			renderSuccess();
 		}
-		renderSuccess();
+
     }
     /***
      * edit page
@@ -101,11 +208,19 @@ public class XdWorkExperController extends BaseController {
 		if(StrKit.notBlank(id)){
 			o = service.getById(id);
 			setAttr("op","mod");
+			List<XdWorkExper> workExperList = XdWorkExper.dao.find("select * from xd_work_exper where eid='" + o.getEid() + "' and departdate in('至今','')");
+			String needEndDate="N";
+			if(workExperList.size()>0&& o.getDepartdate()!=null && !o.getDepartdate().equals("至今")&& !o.getDepartdate().equals("")){
+				needEndDate="Y";
+			}
+			setAttr("needEndD",needEndDate);
 		}else{
 			o.setId(UuidUtil.getUUID());
 			setAttr("op","add");
 		}
-		List<XdEmployee> emps = XdEmployee.dao.find("select * from  xd_employee");
+
+
+		List<XdEmployee> emps = XdEmployee.dao.find("select * from  xd_employee order by empnum");
 		setAttr("emps",emps);
 		setAttr("o", o);
     	setAttr("formModelName",StringUtil.toLowerCaseFirstOne(XdWorkExper.class.getSimpleName()));
@@ -129,63 +244,69 @@ public class XdWorkExperController extends BaseController {
 
 	public void validateDate(){
 
-		String empId = getPara("id");
+		String empId = getPara("empId");
 
 		String chooseDate=getPara("chooseDate");
+		String id = getPara("id");
 //		XdEmployee emp = XdEmployee.dao.findById(getPara("id"));
 		List<XdWorkExper> workExperList = XdWorkExper.dao.find("select * from  xd_work_exper where eid='" + empId + "' order by entrydate desc");
 		String canUse="Y";
 		String tips="";
-		/*if(lastWork!=null){
-			if(lastWork.getDepartdate().equals("至今") || lastWork.getDepartdate().equals("")){
-				canDo="N";
-			}else  {
-
-				canDate=lastWork.getDepartdate();
-			}
-
-		}*/
+		List <String>tipList=new ArrayList();
 		LocalDate choose = LocalDate.parse(chooseDate);
 		if(workExperList.size()>0){
-			workExperList.stream().forEach(new Consumer<XdWorkExper>() {
-				@Override
-				public void accept(XdWorkExper xdWorkExper) {
-					if(xdWorkExper.getDepartdate().equals("")||xdWorkExper.getDepartdate().equals("至今")){
-						boolean after = choose.isAfter(LocalDate.parse(xdWorkExper.getEntrydate()));
-						if(after){
+			for (XdWorkExper workExper : workExperList) {
+				if(!workExper.getId().equals(id)){
+					if(workExper.getDepartdate()==null || workExper.getDepartdate().equals("")||workExper.getDepartdate().equals("至今")){
+						boolean after = choose.isAfter(LocalDate.parse(workExper.getEntrydate()));
+						if(after || chooseDate.equals(workExper.getEntrydate())){
 							System.out.println("最近一次合同时间冲突");
+							canUse="N";
+							tipList.add(workExper.getEntrydate()+"-至今");
 						}
 					}else{
-						if(xdWorkExper.getDepartdate().contains("年")&&xdWorkExper.getDepartdate().contains("月")){
+						if(workExper.getDepartdate().contains("年")&&workExper.getDepartdate().contains("月")){
 							/*String year = xdWorkExper.getDepartdate().substring(0, 4);
 							String month = xdWorkExper.getDepartdate().substring(0, 4);*/
-							String departDate = xdWorkExper.getDepartdate().replaceAll("年", "-").replaceAll("[^(0-9-)]", "") + "-01";
+							String departDate = workExper.getDepartdate().replaceAll("年", "-").replaceAll("[^(0-9-)]", "") + "-01";
 							LocalDate localDate = LocalDate.parse(departDate).plusDays(1);
 
-							if(choose.isBefore(localDate) && choose.isAfter(LocalDate.parse(xdWorkExper.getEntrydate()))){
+							if(choose.isBefore(localDate) && choose.isAfter(LocalDate.parse(workExper.getEntrydate()).minusDays(1))){
 								System.out.println("合同时间冲突");
+								canUse="N";
+								tipList.add(workExper.getEntrydate()+"-"+workExper.getDepartdate());
 							}
 
-						}else if(xdWorkExper.getDepartdate().contains("年")){
-							LocalDate localDate = LocalDate.parse(xdWorkExper.getDepartdate().replaceAll("年", "-") + "-01-01").plusYears(1);
-							if(choose.isBefore(localDate) && choose.isAfter(LocalDate.parse(xdWorkExper.getEntrydate()))){
+						}else if(workExper.getDepartdate().contains("年")){
+							LocalDate localDate = LocalDate.parse(workExper.getDepartdate().replaceAll("年", "-") + "-01-01").plusYears(1);
+							if(choose.isBefore(localDate) && choose.isAfter(LocalDate.parse(workExper.getEntrydate()).minusDays(1))){
 								System.out.println("合同时间冲突");
+								canUse="N";
+								tipList.add(workExper.getEntrydate()+"-"+workExper.getDepartdate());
 							}
 						}else{
-							LocalDate entry = LocalDate.parse(xdWorkExper.getEntrydate());
-							LocalDate depart = LocalDate.parse(xdWorkExper.getDepartdate());
+							LocalDate entry = LocalDate.parse(workExper.getEntrydate()).minusDays(1);
+							LocalDate depart = LocalDate.parse(workExper.getDepartdate()).plusDays(1);
 
 							if(choose.isBefore(depart) && choose.isAfter(entry)){
 								System.out.println("合同时间冲突");
+								canUse="N";
+								tipList.add(workExper.getEntrydate()+"-"+workExper.getDepartdate());
 							}
 
 						}
 
 					}
 				}
-			});
-
-
+			}
+		}
+		if(tipList.size()>0){
+			  tips="冲突时间[";
+			for (String str : tipList) {
+				tips=tips+str+",";
+			}
+			tips=tips.replaceAll(",$","");
+			tips=tips+"]";
 		}
 
 
@@ -194,7 +315,24 @@ public class XdWorkExperController extends BaseController {
 		//jsonObject.put("empNum",emp.getEmpnum());
 
 		jsonObject.put("canUse",canUse);
-//		jsonObject.put("canDate",canDate);
+		jsonObject.put("tips",tips);
+		renderJson(jsonObject);
+
+
+	}
+
+
+	public void needEndDate(){
+		String eid = getPara("eid");
+		List<XdWorkExper> workExperList = XdWorkExper.dao.find("select * from xd_work_exper where eid='" + eid + "' and departdate in('至今','')");
+		String needEndDate="N";
+		if(workExperList.size()>0){
+			needEndDate="Y";
+		}
+		cn.hutool.json.JSONObject jsonObject=new cn.hutool.json.JSONObject();
+		//jsonObject.put("empNum",emp.getEmpnum());
+
+		jsonObject.put("needEndDate",needEndDate);
 		renderJson(jsonObject);
 
 

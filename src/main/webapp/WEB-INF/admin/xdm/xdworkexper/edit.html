@@ -13,19 +13,61 @@
 					location.href = ctx+'/admin/xd/xdworkexper/getListPage';//跳转到列表页
 				},data);
 			}else{
-				pointLion.alertMsg(data.message , "danger" , "small" , function(){
-					$(".btn").removeAttr("disabled");
-				},data);
+				/*pointLion.alertMsg(data.message , "danger" , "small" , function(){
+					// $(".btn").removeAttr("disabled");
+				},data);*/
+				pointLion.alertMsg(data.message);
 			}
 		}
 		$(document).ready(function() {
 			$('#editForm').bootstrapValidator({
+				excluded:[":disabled"],
+				live: 'enabled',
 				fields: {
 					"#(formModelName).ename": {
 						trigger: 'change',
 						validators: {
 							notEmpty: {
 								message: '*姓名不能为空'
+							}
+						}
+					},
+					"#(formModelName).entrydate": {
+						trigger: 'change',
+						validators: {
+							notEmpty: {
+								message: '*入职时间不能为空'
+							}
+						}
+					},
+					"#(formModelName).departdate": {
+						trigger: 'change',
+						validators: {
+							/*	notEmpty: {
+                                    message: '*离职原因不能为空'
+                                }
+                                ,*/
+							callback:{
+
+								message: '*离职日期不能为空且不能小于开始时间',
+								callback : function(value, validator, $field) {
+									console.log("1111111111111")
+									if($('#needEndD').val()=='Y'){
+										if ($('#departdate').val() && $('#departdate').val() !='至今'){
+											if($('#departdate').val()<=$('#entrydate').val()){
+												return false
+											}
+											return true
+											}
+											return false
+									}else{
+
+										if($('#departdate').val() && $('#departdate').val()<=$('#entrydate').val()){
+											return false
+										}
+										return true
+									}
+								}
 							}
 						}
 					}
@@ -35,10 +77,25 @@
 				return false;//阻止表单跳转
 			});
 		});
-		$('.form_datetime').datepicker({format: 'yyyy-mm-dd',weekStart: 1,todayBtn:  1,autoclose: 1,language:  'zh-CN',todayHighlight: 1,forceParse: 0,showMeridian: 1}).on('changeDate',function(e){
-			console.log(e.target.childNodes[1].id);
-			//alert("1111");
-		});
+		function resetVali(){
+			if(!$("#editForm").data('bootstrapValidator').isValid()) {
+				$("#editForm").data('bootstrapValidator').resetForm();
+				$(".btn").removeAttr("disabled");
+			}
+		}
+
+		$("#start").on("click",function () {
+
+			if(!$("#eid").val()){
+				pointLion.alertMsg("请先选择员工!");
+			}
+		})
+		$("#endDate").on("click",function () {
+
+			if(!$("#eid").val()){
+				pointLion.alertMsg("请先选择员工!");
+			}
+		})
 		/*$('.form_datetime #entrydate').datepicker({
 			format: 'yyyy-mm-dd',
 			weekStart: 1,
@@ -54,6 +111,63 @@
 			alert("1111");
 		});*/
 
+
+		let format={format: 'yyyy-mm-dd',weekStart: 1,todayBtn:  1,autoclose: 1,language:  'zh-CN',todayHighlight: 1,forceParse: 0,showMeridian: 1,clearBtn: true };
+
+		$('#start').datepicker(format).on('changeDate',function(e){
+			if(e.date) {
+				if (e.target.childNodes[1].id == "entrydate") {
+					$('#depart').datepicker('setStartDate', e.date);
+				}
+				// console.log($("#entrydate").val());
+
+				let data = common_ajax.ajaxFunc("/admin/xd/xdworkexper/validateDate", {
+					"id": $('#workExperId').val(),
+					"empId": $("#eid").val(),
+					"chooseDate": $("#entrydate").val()
+				}, "json", null);
+				// console.log(data);
+				let canUse = data.canUse;
+				let tips = data.tips;
+				// console.log($("#workExperId").val())
+
+				/*if("#(op)"=="add" && canDo=='N'){
+                $("#saveButton").hide();
+            }else{
+                $('.form_datetime').datepicker({format: 'yyyy-mm-dd',weekStart: 1,todayBtn:  1,autoclose: 1,language:  'zh-CN',todayHighlight: 1,forceParse: 0,showMeridian: 1,startDate:canDate}).on('changeDate',function(){
+                });
+            }*/
+				if (canUse == 'N') {
+					$("#saveButton").hide();
+					console.log("111111111")
+					pointLion.alertMsg(tips);
+				} else {
+					$("#saveButton").show();
+				}
+			}
+		});
+		$('#depart').datepicker(format).on('changeDate',function(e){
+			console.log(e.date+"=====");
+			if(e.date){
+			if(e.target.childNodes[1].id=="departdate"){
+					$('#start').datepicker('setEndDate', e.date);
+				// $("#start").datepicker({format: 'yyyy-mm-dd',endDate:"2023-03-28",weekStart: 1,todayBtn:  1,autoclose: 1,language:  'zh-CN',todayHighlight: 1,forceParse: 0,showMeridian: 1})
+			}
+
+			let data = common_ajax.ajaxFunc("/admin/xd/xdworkexper/validateDate",{"id":$('#workExperId').val(),"empId":$("#eid").val(),"chooseDate":$("#departdate").val()}, "json", null);
+			// console.log(data);
+			let canUse= data.canUse ;
+			let tips=data.tips;
+			if(canUse=='N'){
+				$("#saveButton").hide();
+				pointLion.alertMsg(tips);
+			}else{
+				$("#saveButton").show();
+			}
+			}
+		});
+
+
 		$(".selectpicker").selectpicker({});
 		$(".bootstrap-select").attr("style","width:100%;");
 	</script>
@@ -61,10 +175,6 @@
 	<script>
 
 		$(function () {
-
-
-
-
 			let eid=$("#eid").val();
 			if(eid){
 				$('#enameSelect').selectpicker('val',eid.split(",")).trigger("change");
@@ -73,7 +183,9 @@
 			$('#enameSelect').on('changed.bs.select', function (e) {
 				$('#eid').val($('#enameSelect').val());
 				$('#ename').val($('#enameSelect option:selected').text());
-
+				resetVali();
+				let data = common_ajax.ajaxFunc("/admin/xd/xdworkexper/needEndDate",{"eid":$('#eid').val()}, "json", null);
+				$("#needEndD").val(data.needEndDate);
 				/*let data = common_ajax.ajaxFunc("/admin/xd/xdworkexper/getValidateInfo",{"id":$('#enameSelect').val()}, "json", null);
 				console.log(data);
 				let canDo= data.canDo ;

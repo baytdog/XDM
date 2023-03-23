@@ -68,7 +68,7 @@ public class XdWorkExperService{
 		if (StrKit.notBlank(dimissionDate)) {
 			sql = sql + " and o.departdate='"+dimissionDate+"'";
 		}
-		sql = sql + " order by o.ctime desc,ename,entrydate desc";
+		sql = sql + " order by  ename,entrydate desc";
 		return Db.paginate(pnum, psize, " select * ", sql);
 	}
 	
