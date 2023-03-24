@@ -133,6 +133,44 @@ public class XdOperUtil {
         logSum.save();
     }
 
+
+    /**
+     * @Method logSummary
+     * @param newBean:	新实体对象
+     * @param oldBean:	旧实体对象
+     * @param oType:	操作类型 CUD
+     * @Date 2023/3/24 11:33
+     * @Exception
+     * @Description
+     * @Author king
+     * @Version  1.0
+     * @Return void
+     */
+    public static <T> void logSummary(T newBean,T oldBean,String oType,Class clazz){
+        String id = "";
+        try {
+            id = clazz.getSuperclass().getDeclaredMethod("getId").invoke(newBean).toString();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        }
+        String newBeanStr = (newBean==null?"":JSONUtil.beanToJsonString(newBean));
+        String oldBeanStr = (oldBean==null?"":JSONUtil.beanToJsonString(oldBean));
+        XdOplogSummary logSum=new XdOplogSummary();
+        logSum.setId(UuidUtil.getUUID());
+        logSum.setTid(id);
+        logSum.setTname(clazz.getSimpleName());
+        logSum.setChangeb(oldBeanStr);
+        logSum.setChangea(newBeanStr);
+        logSum.setOtype(oType);
+        logSum.setCtime(DateUtil.getCurrentTime());
+        logSum.setCuser(ShiroKit.getUserId());
+        logSum.save();
+    }
+
     /**
      * @Method insertSteps
      * @param oid:	主体id

@@ -188,8 +188,22 @@ public class ExcelUtil {
     public static File workExperFile(String path,List<List<String>> rows){
         //通过工具类创建writer
         ExcelWriter writer = cn.hutool.poi.excel.ExcelUtil.getWriter(path);
-
+        Font font = writer.createFont();
+        font.setBold(false);
+        font.setItalic(false);
+        font.setFontName("仿宋");
+        font.setFontHeightInPoints((short) 10);
+        writer.getStyleSet().setFont(font, false);
         writer.write(rows, true);
+
+        for (int i = 0; i < rows.get(1).size(); i++) {
+            writer.autoSizeColumn(i);
+        }
+//        writer.setRowHeight(0,50);
+
+        for (int j = 0; j < rows.size(); j++) {
+            writer.setRowHeight(j,30);
+        }
 
         writer.merge(0,1,0,0,rows.get(0).get(0),false);
         List<String> secondRow = rows.get(1);
@@ -341,8 +355,19 @@ public class ExcelUtil {
     public static File conTractFile(String path,List<List<String>> rows){
         //通过工具类创建writer
         ExcelWriter writer = cn.hutool.poi.excel.ExcelUtil.getWriter(path);
+        Font font = writer.createFont();
+        font.setBold(false);
+//        font.setColor(Font.COLOR_RED);
+        font.setItalic(false);
+        font.setFontName("仿宋");
+        font.setFontHeightInPoints((short) 10);
+        writer.getStyleSet().setFont(font, false);
+
 
         writer.write(rows, true);
+        for (int i = 0; i < rows.get(1).size(); i++) {
+            writer.autoSizeColumn(i);
+        }
         for (int i = 0; i < 7; i++) {
             writer.merge(0,1,i,i,rows.get(0).get(i),false);
         }
@@ -352,6 +377,10 @@ public class ExcelUtil {
         int secondColumnSize = (secondRow.size()-7) / 4;
         for (int i = 0; i < secondColumnSize; i++) {
             writer.merge(0,0,i*4+7,(i+1)*4+6,rows.get(0).get(i+7),false);
+        }
+
+        for (int j = 0; j < rows.size(); j++) {
+            writer.setRowHeight(j,25);
         }
 
         //关闭writer，释放内存

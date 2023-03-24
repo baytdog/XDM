@@ -1,5 +1,5 @@
 <form id="editForm" class="panel-body form-horizontal form-padding">
-	<input type="hidden"  name="#(formModelName).id" class="form-control" value="#(o?o.id:'')">
+	<input type="hidden" id="contractId"  name="#(formModelName).id" class="form-control" value="#(o?o.id:'')">
 	<input type="hidden" id="needEndD" class="form-control" value="#(needEndD)" >
 	<div class="form-group">
 		<label class="col-md-2 control-label">姓名</label>
@@ -57,30 +57,23 @@
 			<input type="text"  name="#(formModelName).contractnature" class="form-control"  value="#(o?o.contractnature:'')" readonly>
 		</div>
 -->
-		<input type="hidden" id="contractNature" name="#(formModelName).contractnature" class="form-control"  value="#(o?o.contractnature:'')"  >
 		<div class="col-md-10">
+		<input type="text" id="contractNature" name="#(formModelName).contractnature" class="form-control"  value="#(o?o.contractnature:'')"  >
 
-			<select id="relationSelect"   title="请选择"  class="selectpicker show-tick form-control" actionsBox="true"     data-live-search="false">
+			<!--<select id="relationSelect"   title="请选择"  class="selectpicker show-tick form-control" actionsBox="true"     data-live-search="false">
 				#for(empRelation:empRelations)
 				<option value="#(empRelation.value)">#(empRelation.name)</option>
 				#end
-			</select>
+			</select>-->
 
 		</div>
-	</div>
-	<div class="form-group">
-		<!--<label class="col-md-2 control-label">结束时间</label>
-		<div class="col-md-9">
-			<textarea rows="8" name="#(formModelName)." class="form-control" #if(view=='detail') readonly #end></textarea>
-			<small class="help-block">结束时间</small>
-		</div>-->
 	</div>
 	#if(view=='edit')
 	<div class="panel-footer">
 		<div class="row">
 			<div class="col-sm-12" style="text-align: center">
 				<!--<button class="btn btn-warning" type="reset" #if(view=='detail') disabled #end>重置</button>-->
-				<button class="btn btn-primary" type="submit" #if(view=='detail') disabled #end>保存</button>
+				<button id="saveButton" class="btn btn-primary" type="submit" #if(view=='detail') disabled #end>保存</button>
 				<button class="btn btn-primary" type="button" onclick="window.history.back();" >返回</button>
 			</div>
 		</div>

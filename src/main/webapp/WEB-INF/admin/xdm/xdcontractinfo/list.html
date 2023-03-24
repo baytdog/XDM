@@ -13,6 +13,15 @@
 							<div class="panel panel-search">
 								<div class="panel-body">
 									<div class="form-inline">
+
+										<div class="form-group">
+											<!--<input id="department" placeholder="所属部门" class="form-control">-->
+											<select class="selectpicker form-control" title="部门"  id="department"  multiple >
+												#for(org:orgs)
+												<option value="#(org.id)">#(org.name)</option>
+												#end
+											</select>
+										</div>
 										<div class="form-group">
 											<input id="name" placeholder="姓名" class="form-control">
 										</div>
@@ -27,6 +36,7 @@
 										</div>
 										<div class="form-group">
 											<button class="btn btn-primary" type="button" onclick="searchTable()">搜索</button>
+											<button class="btn btn-warning" type="button" onclick="reset()">重置</button>
 										</div>
 									</div>
 								</div>
@@ -35,8 +45,9 @@
 								<div class="panel-body">
 									<a id="add" class="btn btn-primary data-toolbar" href="#(ctx)/admin/xd/xdcontractinfo/getEditPage?view=edit"><i class="demo-pli-add"></i> 添加</a>
 									<a id="del" class="btn btn-danger data-toolbar" onclick="delSel()" href="javascript:void(0);"><i class="demo-pli-cross"></i> 删除</a>
+									<a id="exportContract" class="btn btn-primary data-toolbar" onclick="exportContractExcel()" target="_blank"><i class="demo-pli-download-from-cloud"></i> 导出合同信息</a>
 									<a id="filePicker"  href="javascript:void(0);" ><i class="demo-pli-add"></i> 导入</a>
-									<table id="pageTable" class="demo-add-niftycheck" data-toolbar="#del,#add,#filePicker"
+									<table id="pageTable" class="demo-add-niftycheck" data-toolbar="#del,#add,#exportContract,#filePicker"
 										     ></table>
 								</div>
 							</div>
@@ -58,7 +69,7 @@
 		   {field: 'contractnature', title: '合同性质', align: 'center'},
 
 	   
-	   {field: 'control', title: '操作', align: 'left', width:'200',
+	   {field: 'control', title: '操作', align: 'center', width:'200',
 	       formatter:function(value,row,index){
 	           	var a = '<a class="label label-table label-success" href="'+ctx+'/admin/xd/xdcontractinfo/getEditPage?id='+row.id+'&view=detail" >查看</a>&nbsp;';
 	           	a = a + '<a class="label label-table label-success" href="'+ctx+'/admin/xd/xdcontractinfo/getEditPage?id='+row.id+'&view=edit" >修改</a>&nbsp;';
@@ -66,15 +77,16 @@
 	           	return a;
 	       }
 	   }];
-	var opt = {
+	let opt = {
+				height: 600,
 			   method: 'get',
 			   striped: true,
 			   cache: false,
 			   pagination: true,
 			   sortable: false,
 			   sortOrder: "asc",
-			   pageSize: 10,
-			   pageList: [10, 25, 50, 100],
+			   pageSize: 50,
+			   pageList: [100, 200, 300, 400],
 			   url: ctx+"/admin/xd/xdcontractinfo/listData",
 			   queryParams : function(params) {
 			       return {
@@ -104,6 +116,13 @@
 		$('#pageTable').bootstrapTable('hideColumn', 'id');
 	}
 
+	function reset(){
+		$("#name").val("");
+		$("#empNum").val("");
+		$("#startTime").val("");
+		$('#department').selectpicker('val',"").trigger("change");
+	}
+
 	//批量删除
 	function delSel(){
 		var data = [];
@@ -130,17 +149,33 @@
 		});
 	};
 	function searchTable(){
-		var name = encodeURIComponent($("#name").val());
-		var empNum = $("#empNum").val();
-		var startTime = $("#startTime").val();
-		var param = {
+		let department = $("#department").val();
+		if(department){
+			department=	department.join()
+		}
+		let name = encodeURIComponent($("#name").val());
+		let empNum = $("#empNum").val();
+		let startTime = $("#startTime").val();
+		let param = {
 			query: {
+				"department":department,
 				"name":name,
 				"empNum":empNum,
 				"startTime":startTime
 			}
 		}
 		$('#pageTable').bootstrapTable('refresh',param);
+	}
+
+	/***
+	 * 导出合同信息
+	 */
+	function exportContractExcel(){
+		let name = encodeURI(encodeURI($("#name").val()));
+		let empNum = encodeURI(encodeURI($("#empNum").val()));
+		let startTime = encodeURI(encodeURI($("#startTime").val()));
+		let department = $("#department").val();
+		location.href = "#(ctx)/admin/xd/xdcontractinfo/exportContractExcel?name="+name+"&empNum="+empNum+"&startTime="+startTime+"&department="+department;
 	}
 
 	$(document).ready(function(){

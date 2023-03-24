@@ -112,7 +112,7 @@
 									<a id="del" class="btn btn-danger data-toolbar" onclick="delSel()" href="javascript:void(0);"><i class="demo-pli-cross"></i> 批量删除</a>
 									<a id="export" class="btn btn-primary data-toolbar" onclick="exportExcel()" target="_blank"><i class="demo-pli-download-from-cloud"></i> 导出</a>
 									<!--<a id="import" class="btn btn-primary data-toolbar" onclick="importExcel()" target="_blank"><i class="demo-pli-download-from-cloud"></i>导入</a>-->
-									<a id="exportContract" class="btn btn-primary data-toolbar" onclick="exportContractExcel()" target="_blank"><i class="demo-pli-download-from-cloud"></i> 导出合同信息</a>
+
 									<a id="filePicker"  href="javascript:void(0);" ><i class="demo-pli-add"></i> 导入</a>
 									<a id="print" class="btn btn-primary data-toolbar"  onclick="print()" ><i class="demo-pli-print"></i> 打印</a>
 									<table id="pageTable" class="demo-add-niftycheck" data-toolbar="#del,#add,#export,#filePicker,#print,#exportContract"
@@ -478,7 +478,7 @@
 	/***
 	 * 导出合同信息
 	 */
-	function exportContractExcel(){
+	/*function exportContractExcel(){
 		var name = encodeURI(encodeURI($("#name").val()));
 		var empnum = encodeURI(encodeURI($("#empnum").val()));
 		var emprelation = encodeURI(encodeURI($("#emprelation").val()));
@@ -491,7 +491,7 @@
 		let	departime=$("#departime").val();
 		location.href = "#(ctx)/admin/xd/xdemployee/exportContractExcel?name="+name+"&empnum="+empnum+"&emprelation="+emprelation+"&department="+department+"&unitname="+unitname+"&costitem="+costitem
 				+"&checked="+checked+"&selectedName="+selectedName+"&inductionstatus="+inductionstatus+"&departime="+departime;
-	}
+	}*/
 
 
 	$(document).ready(function(){

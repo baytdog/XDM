@@ -111,10 +111,38 @@
 	        });
 
 
-			let format={format: 'yyyy-mm-dd',weekStart: 1,todayBtn:  1,autoclose: 1,language:  'zh-CN',todayHighlight: 1,forceParse: 0,showMeridian: 1,clearBtn: true };
+			/*let format={format: 'yyyy-mm-dd',weekStart: 1,todayBtn:  1,autoclose: 1,language:  'zh-CN',todayHighlight: 1,forceParse: 0,showMeridian: 1,clearBtn: true };
 
 			$('.form_datetime').datepicker(format).on('changeDate',function(e){
-			});
+			});*/
+			$("#start").on("click",function () {
+
+				if(!$("#eid").val()){
+					pointLion.alertMsg("请先选择员工!");
+				}
+			})
+			$("#endDate").on("click",function () {
+
+				if(!$("#eid").val()){
+					pointLion.alertMsg("请先选择员工!");
+				}
+			})
+			/*$('.form_datetime #entrydate').datepicker({
+                format: 'yyyy-mm-dd',
+                weekStart: 1,
+                todayBtn:  1,
+                autoclose: 1,
+                language:  'zh-CN',
+                todayHighlight: 1,
+                forceParse: 0,
+                showMeridian: 1
+            }).on('changeDate',function(e){
+                /!*	var startTime = e.date;
+                    $('#qEndTime').datepicker('setStartDate',startTime);*!/
+                alert("1111");
+            });*/
+
+
 		});
 
 		function resetVali(){
@@ -123,6 +151,67 @@
 				$(".btn").removeAttr("disabled");
 			}
 		}
+
+
+		$("#startDate").on("click",function () {
+
+			if(!$("#eid").val()){
+				pointLion.alertMsg("请先选择员工!");
+			}
+		})
+		$("#endDate").on("click",function () {
+
+			if(!$("#eid").val()){
+				pointLion.alertMsg("请先选择员工!");
+			}
+		})
+
+
+		let format={format: 'yyyy-mm-dd',weekStart: 1,todayBtn:  1,autoclose: 1,language:  'zh-CN',todayHighlight: 1,forceParse: 0,showMeridian: 1,clearBtn: true };
+
+		$('#startDate').datepicker(format).on('changeDate',function(e){
+			if(e.date) {
+				if (e.target.childNodes[1].id == "contractstartdate") {
+					$('#endDate').datepicker('setStartDate', e.date);
+				}
+
+				let data = common_ajax.ajaxFunc("/admin/xd/xdcontractinfo/validateDate", {
+					"id": $('#contractId').val(),
+					"empId": $("#eid").val(),
+					"chooseDate": $("#contractstartdate").val()
+				}, "json", null);
+				let canUse = data.canUse;
+				let tips = data.tips;
+				if (canUse == 'N') {
+					$("#saveButton").hide();
+					pointLion.alertMsg(tips);
+				} else {
+					$("#saveButton").show();
+				}
+			}
+		});
+		$('#endDate').datepicker(format).on('changeDate',function(e){
+			if(e.date){
+				if(e.target.childNodes[1].id=="contractenddate"){
+					$('#start').datepicker('setEndDate', e.date);
+				}
+
+				let data = common_ajax.ajaxFunc("/admin/xd/xdcontractinfo/validateDate",{"id":$('#contractId').val(),"empId":$("#eid").val(),"chooseDate":$("#contractenddate").val()}, "json", null);
+				let canUse= data.canUse ;
+				let tips=data.tips;
+				if(canUse=='N'){
+					$("#saveButton").hide();
+					pointLion.alertMsg(tips);
+				}else{
+					$("#saveButton").show();
+				}
+			}
+		});
+
+
+
+		$(".selectpicker").selectpicker({});
+		$(".bootstrap-select").attr("style","width:100%;");
 	</script>
 
 	<script>
@@ -144,7 +233,7 @@
 
 			});
 
-			let contractNature=$("#contractNature").val();
+			/*let contractNature=$("#contractNature").val();
 			if(contractNature){
 				$('#relationSelect').selectpicker('val',contractNature.split(",")).trigger("change");
 			};
@@ -152,7 +241,7 @@
 			$('#relationSelect').on('changed.bs.select', function (e) {
 				$('#contractNature').val($('#relationSelect').val());
 				resetVali();
-			});
+			});*/
 		})
 
 	</script>

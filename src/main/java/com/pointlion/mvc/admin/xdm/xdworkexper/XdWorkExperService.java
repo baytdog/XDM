@@ -12,12 +12,14 @@ import com.jfinal.template.stat.ast.Switch;
 import com.pointlion.enums.XdOperEnum;
 import com.pointlion.mvc.common.model.*;
 import com.pointlion.mvc.common.utils.DateUtil;
+import com.pointlion.mvc.common.utils.JSONUtil;
 import com.pointlion.mvc.common.utils.UuidUtil;
 import com.pointlion.mvc.common.utils.XdOperUtil;
 import com.pointlion.mvc.common.utils.office.excel.ExcelUtil;
 import com.pointlion.plugin.shiro.ShiroKit;
 import com.pointlion.plugin.shiro.ext.SimpleUser;
 import com.pointlion.util.DictMapping;
+import net.sf.json.JSONObject;
 import org.apache.commons.lang3.StringUtils;
 import org.flowable.cmmn.model.Case;
 
@@ -43,7 +45,7 @@ public class XdWorkExperService{
 	 */
 	public Page<Record> getPage(int pnum,int psize,String name, String workUnit, String job, String adrr, String entryDate, String dimissionDate){
 		String userId = ShiroKit.getUserId();
-		String sql  = " from "+TABLE_NAME+" o   where 1=1";
+		String sql  = " from "+TABLE_NAME+" o  left join  xd_employee e on  o.ename=e.name where 1=1";
 		//sql = sql + SysRoleOrg.dao.getRoleOrgSql(userId) ;
 		String userOrgId = ShiroKit.getUserOrgId();
 		if(userOrgId.equals("1")){
@@ -68,8 +70,8 @@ public class XdWorkExperService{
 		if (StrKit.notBlank(dimissionDate)) {
 			sql = sql + " and o.departdate='"+dimissionDate+"'";
 		}
-		sql = sql + " order by  ename,entrydate desc";
-		return Db.paginate(pnum, psize, " select * ", sql);
+		sql = sql + " order by  empnum,entrydate desc";
+		return Db.paginate(pnum, psize, " select o.*,e.empnum ", sql);
 	}
 	
 	/***
@@ -99,7 +101,11 @@ public class XdWorkExperService{
 	public File exportExcel(String path, String name, String workUnit, String job, String adrr, String entryDate, String dimissionDate){
 
 		String userId = ShiroKit.getUserId();
-		String sql  = "from "+TABLE_NAME+" o   where 1=1";
+		String userOrgId = ShiroKit.getUserOrgId();
+		String sql  = "from "+TABLE_NAME+" o  left join xd_employee e on o.ename=e.name  where 1=1";
+		if(!"1".equals(userOrgId)){
+			sql=sql +" and  e.department='"+userOrgId+"'";
+		}
 		if (StrKit.notBlank(name)) {
 			sql = sql + " and o.ename like '%"+name +"%'";
 		}
@@ -118,24 +124,25 @@ public class XdWorkExperService{
 		if (StrKit.notBlank(dimissionDate)) {
 			sql = sql + " and o.departdate='"+dimissionDate+"'";
 		}
-		sql = sql + " order by o.ctime desc,o.eid";
+		sql = sql + " order by e.empnum,o.entrydate";
 
 
-		List<XdWorkExper> list = XdWorkExper.dao.find(" select * "+sql);//查询全部
+		List<XdWorkExper> list = XdWorkExper.dao.find("select o.ename,o.entrydate,o.departdate,o.serviceunit,o.job ,o.addr,e.empnum as backup1  "+sql);//查询全部
 		Map<String,Integer> mapCount=new HashMap<>();
 		Map<String,List<XdWorkExper>> mapObje=new HashMap<>();
 		for (XdWorkExper workExper : list) {
-			if(mapCount.get(workExper.getEid())==null){
-				mapCount.put(workExper.getEid(),1);
+			System.out.println(workExper.getBackup1());
+			if(mapCount.get(workExper.getBackup1())==null){
+				mapCount.put(workExper.getBackup1(),1);
 				List<XdWorkExper> workExperList=new ArrayList<>();
 				workExperList.add(workExper);
-				mapObje.put(workExper.getEid(),workExperList);
+				mapObje.put(workExper.getBackup1(),workExperList);
 			}else{
-				Integer integer = mapCount.get(workExper.getEid());
-				mapCount.put(workExper.getEid(),integer+1);
-				List<XdWorkExper> workExperList = mapObje.get(workExper.getEid());
+				Integer integer = mapCount.get(workExper.getBackup1());
+				mapCount.put(workExper.getBackup1(),integer+1);
+				List<XdWorkExper> workExperList = mapObje.get(workExper.getBackup1());
 				workExperList.add(workExper);
-				mapObje.put(workExper.getEid(),workExperList );
+				mapObje.put(workExper.getBackup1(),workExperList );
 			}
 		}
 
@@ -164,9 +171,45 @@ public class XdWorkExperService{
 		rows.add(first);
 		rows.add(second);
 		Collection<List<XdWorkExper>> collWorkExper = mapObje.values();
-		Stream<List<XdWorkExper>> sorted1 = collWorkExper.stream().sorted((o1, o2) -> -(o1.size() - o2.size()));
+		Set<String> set = mapObje.keySet();
+		Stream<String> sorted1 = set.stream().sorted(new Comparator<String>() {
+			@Override
+			public int compare(String o1, String o2) {
+				return o1.compareTo(o2);
+			}
+		});
 
-		sorted1.forEach(new Consumer<List<XdWorkExper>>() {
+		sorted1.forEach( s-> {
+				List<XdWorkExper> workExperList = mapObje.get(s);
+
+				List<String> row = new ArrayList<String>();
+
+				for (int i = 0; i < workExperList.size(); i++) {
+					XdWorkExper workExper = workExperList.get(i);
+					if(i==0){
+						row.add(workExper.getEname());
+					}
+					row.add(workExper.getEntrydate());
+					row.add(workExper.getDepartdate());
+					row.add(workExper.getServiceunit());
+					row.add(workExper.getJob());
+					row.add(workExper.getAddr());
+				}
+
+				for (int i = 0; i < (maxLen - workExperList.size()); i++) {
+					row.add("");
+					row.add("");
+					row.add("");
+					row.add("");
+					row.add("");
+				}
+
+				rows.add(row);
+
+		});
+
+//		Stream<List<XdWorkExper>> sorted1 = collWorkExper.stream().sorted((o1, o2) -> -(o1. - o2.size()));
+/*		collWorkExper.stream().forEach(new Consumer<List<XdWorkExper>>() {
 			@Override
 			public void accept(List<XdWorkExper> xdWorkExpers) {
 				List<String> row = new ArrayList<String>();
@@ -194,7 +237,7 @@ public class XdWorkExperService{
 				rows.add(row);
 
 			}
-		});
+		});*/
 
 
 
