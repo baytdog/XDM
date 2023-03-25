@@ -7,7 +7,9 @@
 	.table{
 		table-layout: fixed;
 	}
-
+	.test{
+		color: red;
+	}
 	/*.fixed-table-header{
 		height:70px;
 	}*/
@@ -476,7 +478,6 @@
 				})
 		col.push(firstRow)
 
-		//console.log(holidayLists)
 
 		var secondRrow=[
 			/*{field: 'checked', checkbox : true, align: 'center' },
@@ -500,15 +501,7 @@
 
 		}
 
-		var thirdRrow=[
-			/*{field: 'checked', checkbox : true, align: 'center' },
-            {field: 'checked', checkbox : true, align: 'center' },
-            {field: 'checked', checkbox : true, align: 'center' },
-            {field: 'checked', checkbox : true, align: 'center' },
-            {field: 'checked', checkbox : true, align: 'center' },
-            {field: 'checked', checkbox : true, align: 'center' },*/
-		];
-
+		var thirdRrow=[ ];
 
 		for (let i = 0; i < holidayLists.length; i++) {
 			let suffix="";
@@ -518,8 +511,16 @@
 			}else{
 				suffix=i;
 			}
-			thirdRrow.push({field: 'day'+suffix, title: holidayLists[i], align: 'center',width:'80', colspan: 1,rowspan: 1,
+			let titleStyle="";
+			if(holidayLists[i].indexOf("-")!=-1){
+				titleStyle= holidayLists[i] ;
+			}else{
+				titleStyle= '<span style="color: red">'+holidayLists[i]+ '</span>';
+			}
+
+			thirdRrow.push({field: 'day'+suffix, title:   titleStyle, align: 'center',width:'80', colspan: 1,rowspan: 1,
 				formatter:function(value,row,index){
+				// console.log(row.title)
 				if(row.flags){
 					let flagsArr = row.flags.split(",");
 					let otArr= row.otflags.split(",");
@@ -544,7 +545,8 @@
 				}
 
 
-				},cellStyle:function(value,row,index,field){                 // 修改列（单元格）的颜色
+				},
+			/*	cellStyle:function(value,row,index,field){                 // 修改列（单元格）的颜色
 					let i = field.replace("day","");
 					let inti=parseInt(i);
 					if(holidayLists[inti].indexOf("-")!=-1){
@@ -553,7 +555,8 @@
 						return {css:{"background-color":"yellow"}};
 					}
 
-				}})
+				}*/
+			})
 
 		}
 		col.push(secondRrow)
@@ -572,162 +575,12 @@
 	let weekLists="#(weekLists)";
 	let holidayLists="#(holidayLists)";
 	let daysNum="#(daysNum)";
-	var col = [
-		/*[{field: 'dept_name', title: '部门',align: 'center',width:'120',valign:'middle',halign:"center",rowspan: 3 },
-		{field: 'unit_name', title: '单元', align: 'center',width:'120',valign:'middle',halign:"center", colspan: 1,rowspan: 3 },
-		{field: 'project_name', title: '项目', align: 'center',width:'120',valign:'middle',halign:"center", colspan: 1,rowspan: 3 },
-		{field: 'emp_num', title: '工号', align: 'center',width:'80',valign:'middle',halign:"center", colspan: 1,rowspan: 3 },
-		{field: 'emp_name', title: '姓名', align: 'center',width:'80',valign:'middle',halign:"center", colspan: 1,rowspan: 3 },
-		{field: 'work_station', title: '岗位', align: 'center',width:'120',valign:'middle',halign:"center", colspan: 1,rowspan: 3 },
-		{field: 'day00', title: '上月', align: 'center',width:'80', colspan: 1,rowspan: 1},
-		{field: 'day01', title: '1', align: 'center',width:'80', colspan: 1,rowspan: 1},
-		{field: 'day02', title: '2', align: 'center',width:'80', colspan: 1,rowspan: 1},
-		{field: 'day03', title: '3', align: 'center',width:'80', colspan: 1,rowspan: 1},
-		{field: 'day04', title: '4', align: 'center',width:'80', colspan: 1,rowspan: 1},
-		{field: 'day05', title: '5', align: 'center',width:'80', colspan: 1,rowspan: 1},
-		{field: 'day06', title: '6', align: 'center',width:'80', colspan: 1,rowspan: 1},
-		{field: 'day07', title: '7', align: 'center',width:'80', colspan: 1,rowspan: 1},
-		{field: 'day08', title: '8', align: 'center',width:'80', colspan: 1,rowspan: 1},
-		{field: 'day09', title: '9', align: 'center',width:'80', colspan: 1,rowspan: 1},
-		{field: 'day10', title: '10', align: 'center',width:'80', colspan: 1,rowspan: 1},
-		{field: 'day11', title: '11', align: 'center',width:'80', colspan: 1,rowspan: 1},
-		{field: 'day12', title: '12', align: 'center',width:'80', colspan: 1,rowspan: 1},
-		{field: 'day13', title: '13', align: 'center',width:'80', colspan: 1,rowspan: 1},
-		{field: 'day14', title: '14', align: 'center',width:'80', colspan: 1,rowspan: 1},
-		{field: 'day15', title: '15', align: 'center',width:'80', colspan: 1,rowspan: 1},
-		{field: 'day16', title: '16', align: 'center',width:'80', colspan: 1,rowspan: 1},
-		{field: 'day17', title: '17', align: 'center',width:'80', colspan: 1,rowspan: 1},
-		{field: 'day18', title: '18', align: 'center',width:'80', colspan: 1,rowspan: 1},
-		{field: 'day19', title: '19', align: 'center',width:'80', colspan: 1,rowspan: 1},
-		{field: 'day20', title: '20', align: 'center',width:'80', colspan: 1,rowspan: 1},
-		{field: 'day21', title: '21', align: 'center',width:'80', colspan: 1,rowspan: 1},
-		{field: 'day22', title: '22', align: 'center',width:'80', colspan: 1,rowspan: 1},
-		{field: 'day23', title: '23', align: 'center',width:'80', colspan: 1,rowspan: 1},
-		{field: 'day24', title: '24', align: 'center',width:'80', colspan: 1,rowspan: 1},
-		{field: 'day25', title: '25', align: 'center',width:'80', colspan: 1,rowspan: 1},
-		{field: 'day26', title: '26', align: 'center',width:'80', colspan: 1,rowspan: 1},
-		{field: 'day27', title: '27', align: 'center',width:'80', colspan: 1,rowspan: 1},
-		{field: 'day28', title: '28', align: 'center',width:'80', colspan: 1,rowspan: 1},
-		{field: 'day29', title: '29', align: 'center',width:'80', colspan: 1,rowspan: 1},
-		{field: 'day30', title: '30', align: 'center',width:'80', colspan: 1,rowspan: 1},
-		{field: 'day31', title: '31', align: 'center',width:'80', colspan: 1,rowspan: 1},
-
-		{field: 'remarks', title: '备注', align: 'center',width:'150',valign:'middle',halign:"center", colspan: 1,rowspan: 3},
-		{field: 'control', title: '操作', align: 'left', width:'60',valign:'middle',halign:"center",
-
-			formatter:function(value,row,index){
-				var	a = '<a class="label label-table label-danger" onclick="del(\''+row.id+'\')" href="javascript:void(0);" >删除</a>';
-				return a;
-			}, colspan: 1,rowspan: 3
-		}]
-				,*/
-
-
-
-		/*[
-
-
-			{field: 'day00', title: '上月', align: 'center',width:'80', colspan: 1,rowspan: 1},
-			{field: 'day01', title: '1', align: 'center',width:'80',formatter:function(value,row,index){
-						//通过formatter可以自定义列显示的内容
-						//value：当前field的值，
-						//row：当前行的数据
-						if(value=='aa'){
-							alert("111")
-							return "<span style='color:blue'>"+value+"</span>";
-						}else{
-							return  value ;
-						}
-
-			}},
-				{field: 'day02', title: '2', align: 'center',width:'80'},
-				{field: 'day03', title: '3', align: 'center',width:'80'},
-				{field: 'day04', title: '4', align: 'center',width:'80'},
-				{field: 'day05', title: '5', align: 'center',width:'80'},
-				{field: 'day06', title: '6', align: 'center',width:'80'},
-				{field: 'day07', title: '7', align: 'center',width:'80'},
-				{field: 'day08', title: '8', align: 'center',width:'80'},
-				{field: 'day09', title: '9', align: 'center',width:'80'},
-				{field: 'day10', title: '10', align: 'center',width:'80'},
-				{field: 'day11', title: '11', align: 'center',width:'80'},
-				{field: 'day12', title: '12', align: 'center',width:'80'},
-				{field: 'day13', title: '13', align: 'center',width:'80'},
-				{field: 'day14', title: '14', align: 'center',width:'80'},
-				{field: 'day15', title: '15', align: 'center',width:'80'},
-				{field: 'day16', title: '16', align: 'center',width:'80'},
-				{field: 'day17', title: '17', align: 'center',width:'80'},
-				{field: 'day18', title: '18', align: 'center',width:'80'},
-				{field: 'day19', title: '19', align: 'center',width:'80'},
-				{field: 'day20', title: '20', align: 'center',width:'80'},
-				{field: 'day21', title: '21', align: 'center',width:'80'},
-				{field: 'day22', title: '22', align: 'center',width:'80'},
-				{field: 'day23', title: '23', align: 'center',width:'80'},
-				{field: 'day24', title: '24', align: 'center',width:'80'},
-				{field: 'day25', title: '25', align: 'center',width:'80'},
-				{field: 'day26', title: '26', align: 'center',width:'80'},
-				{field: 'day27', title: '27', align: 'center',width:'80'},
-				{field: 'day28', title: '28', align: 'center',width:'80'},
-				{field: 'day29', title: '29', align: 'center',width:'80'},
-				{field: 'day30', title: '30', align: 'center',width:'80'},
-				{field: 'day31', title: '31', align: 'center',width:'80'}
-
-
-		 ],
-		[
-			{field: 'day01', title: '上月', align: 'center',width:'80', colspan: 1,rowspan: 1},
-			{field: 'day01', title: '1', align: 'center',width:'80',formatter:function(value,row,index){
-					//通过formatter可以自定义列显示的内容
-					//value：当前field的值，
-					//row：当前行的数据
-					if(value=='aa'){
-						alert("111")
-						return "<span style='color:yellow'>"+value+"</span>";
-					}else{
-						return  value ;
-					}
-
-				},cellStyle:function(value,row,index){                 // 修改列（单元格）的颜色
-					return {css:{"background-color":"yellow"}};
-				}},
-			{field: 'day02', title: '2', align: 'center',width:'80'},
-			{field: 'day03', title: '3', align: 'center',width:'80'},
-			{field: 'day04', title: '4', align: 'center',width:'80'},
-			{field: 'day05', title: '5', align: 'center',width:'80'},
-			{field: 'day06', title: '6', align: 'center',width:'80'},
-			{field: 'day07', title: '7', align: 'center',width:'80'},
-			{field: 'day08', title: '8', align: 'center',width:'80'},
-			{field: 'day09', title: '9', align: 'center',width:'80'},
-			{field: 'day10', title: '10', align: 'center',width:'80'},
-			{field: 'day11', title: '11', align: 'center',width:'80'},
-			{field: 'day12', title: '12', align: 'center',width:'80'},
-			{field: 'day13', title: '13', align: 'center',width:'80'},
-			{field: 'day14', title: '14', align: 'center',width:'80'},
-			{field: 'day15', title: '15', align: 'center',width:'80'},
-			{field: 'day16', title: '16', align: 'center',width:'80'},
-			{field: 'day17', title: '17', align: 'center',width:'80'},
-			{field: 'day18', title: '18', align: 'center',width:'80'},
-			{field: 'day19', title: '19', align: 'center',width:'80'},
-			{field: 'day20', title: '20', align: 'center',width:'80'},
-			{field: 'day21', title: '21', align: 'center',width:'80'},
-			{field: 'day22', title: '22', align: 'center',width:'80'},
-			{field: 'day23', title: '23', align: 'center',width:'80'},
-			{field: 'day24', title: '24', align: 'center',width:'80'},
-			{field: 'day25', title: '25', align: 'center',width:'80'},
-			{field: 'day26', title: '26', align: 'center',width:'80'},
-			{field: 'day27', title: '27', align: 'center',width:'80'},
-			{field: 'day28', title: '28', align: 'center',width:'80'},
-			{field: 'day29', title: '29', align: 'center',width:'80'},
-			{field: 'day30', title: '30', align: 'center',width:'80'},
-			{field: 'day31', title: '31', align: 'center',width:'80'}
-
-
-		]
-*/		];
+	let col = [];
 	weekLists=weekLists.replace("[","").replace("]","").split(",")
 	holidayLists=holidayLists.replace("[","").replace("]","").split(",")
 	createTable(daysNum,weekLists,holidayLists);
 
-	var opt = {
+	let opt = {
 	/*	height:$(document).height()-170,*/
 		height: 690,
 		//请求方法
@@ -920,14 +773,14 @@
 
 		let dept = $("#dept").val();
 		let emp_name =encodeURIComponent($("#emp_name").val());
-		let unitname = $("#unitname").val();
+		let unitName = $("#unitname").val();
 		let year =$("#year").val();
 		let month =	$("#month").val();
 		if(year==''||month==''){
 			pointLion.alertMsg("请选择年月！","success",null,null);
 			return;
 		}
-		location.href = "#(ctx)/admin/xd/xdschedulesummary/exportExcel?dept="+dept+"&emp_name="+emp_name+"&unitname="+unitname+"&year="+year+"&month="+month;
+		location.href = "#(ctx)/admin/xd/xdschedulesummary/exportExcel?dept="+dept+"&emp_name="+emp_name+"&unitName="+unitName+"&year="+year+"&month="+month;
 	}
 	function exportExcel2(){
 
@@ -945,6 +798,18 @@
 		$(".fixed-table-header-columns>table>thead>tr>th").each(function (i,thobj) {
 			$(thobj).css("height",'105px');//设置合并单元格高度
 		})
+		$(".fixed-table-header > table > thead > tr:nth-child(1)").each(function (i,thobj) {
+			console.log("111111111111")
+		})
+		console.log("222222222222")
+
+
+		 /*each(function (i,a) {
+			 console.log("2222222222")
+			 console.log(i)
+			/!*console.log($(a))
+			 $(a).css("color",'red');*!/
+		 })*/
 	/*	$(".fixed-table-container tbody td, .bootstrap-table .table>thead>tr>th").each(function (i,thobj) {
 			//$(thobj).css("height",'35px');
 			//console.log("-------------")
@@ -959,12 +824,12 @@
 				$("input[name='btSelectItem']").removeAttr('checked');
 			}*/
 
-			console.log("click")
+			//console.log("click")
 			var btSelectAll = $("input[name='btSelectAll']:checked").val();
-			console.log(btSelectAll)
+			//console.log(btSelectAll)
 
 
-			console.log($("input[name='btSelectAll']").prop("checked"))
+			//console.log($("input[name='btSelectAll']").prop("checked"))
 			if(btSelectAll=="on"){
 				$("input[name='btSelectItem']").prop('checked',true);
 			}else {

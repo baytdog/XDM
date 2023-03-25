@@ -122,7 +122,7 @@ public class XdScheduleSummaryController extends BaseController {
 		String year = getPara("year","");
 		String month = getPara("month","");
 		String yearMonth=year+month;
-		LocalDate lastMontLastDay = LocalDate.parse(year+"-"+month+"-01").minusMonths(1);
+		LocalDate lastMontLastDay = LocalDate.parse(year+"-"+month+"-01").minusDays(1);
 		List<XdDayModel> xdDayModels =
 				XdDayModel.dao.find("select * from  xd_day_model " +
 										"where id like '"+yearMonth+"%'" +
@@ -264,13 +264,13 @@ public class XdScheduleSummaryController extends BaseController {
 
 //		String empnum = java.net.URLDecoder.decode(getPara("empnum",""),"UTF-8");
 		String dept=getPara("dept","");
-		String unitname=getPara("unitname","");
+		String unitName=getPara("unitName","");
 		String year=getPara("year","");
 		String month = getPara("month","");
 		String emp_name = new String(getPara("emp_name","").getBytes("ISO-8859-1"), "utf-8");
 
 		String path = this.getSession().getServletContext().getRealPath("")+"/upload/export/"+ DateUtil.format(new Date(),21)+".xlsx";
-		File file = service.exportExcel(path,dept,unitname,year,month,emp_name);
+		File file = service.exportExcel(path,dept,unitName,year,month,emp_name);
 		renderFile(file);
 	}
 

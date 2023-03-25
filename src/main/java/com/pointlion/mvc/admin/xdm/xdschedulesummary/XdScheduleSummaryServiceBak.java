@@ -508,7 +508,7 @@ public class XdScheduleSummaryServiceBak {
 			row.add(summary.getRemarks());
 			rows.add(row);
 		}
-		File file = ExcelUtil.scheduletFile(path,rows);
+		File file = ExcelUtil.scheduleFile(path,rows);
 		return file;
 	}
 	

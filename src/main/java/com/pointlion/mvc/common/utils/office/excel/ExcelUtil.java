@@ -389,21 +389,34 @@ public class ExcelUtil {
     }
 
 
-    public static File scheduletFile(String path,List<List<String>> rows){
+    public static File scheduleFile(String path,List<List<String>> rows){
         //通过工具类创建writer
         ExcelWriter writer = cn.hutool.poi.excel.ExcelUtil.getWriter(path);
+        Font font = writer.createFont();
+        font.setBold(false);
+//        font.setColor(Font.COLOR_RED);
+        font.setItalic(false);
+        font.setFontName("仿宋");
+        font.setFontHeightInPoints((short) 10);
+        writer.getStyleSet().setFont(font, false);
 
         writer.write(rows, true);
+        for (int i = 0; i < rows.get(1).size(); i++) {
+            writer.autoSizeColumn(i);
+        }
+        for (int j = 0; j < rows.size(); j++) {
+            writer.setRowHeight(j,25);
+        }
         /*for (int i = 0; i < 7; i++) {
             writer.merge(0,1,i,i,rows.get(0).get(i),false);
         }*/
         int size = rows.get(1).size();
        // writer.merge(0,1,i,i,rows.get(0).get(i),false);
         writer.merge(0,0,0,size-1,rows.get(0).get(0),false);
-        for (int i = 0; i <7 ; i++) {
-            writer.merge(1,3,i,i,rows.get(1).get(i),false);
+        for (int i = 0; i <6 ; i++) {
+            writer.merge(1,2,i,i,rows.get(1).get(i),false);
         }
-        writer.merge(1,3,size-1,size-1,rows.get(1).get(size-1),false);
+        writer.merge(1,2,size-1,size-1,rows.get(1).get(size-1),false);
         List<String> secondRow = rows.get(1);
       /*  int secondColumnSize = (secondRow.size()-7) / 4;
         for (int i = 0; i < secondColumnSize; i++) {
