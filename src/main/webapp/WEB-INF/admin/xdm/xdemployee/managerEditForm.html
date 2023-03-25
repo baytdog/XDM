@@ -20,9 +20,16 @@
                                 <input type="text"  name="#(formModelName).empnum" class="form-control"  value="#(o?o.empnum:'')"  >
                             </div>
                             <label class="col-md-1 control-label">员工关系</label>
-                            <div class="col-md-3">
-                                <input type="text"  name="#(formModelName).emprelation" class="form-control"  value="#(o?o.emprelation:'')"  >
-                            </div>
+                                <input type="hidden" id="empRelation" name="#(formModelName).emprelation" class="form-control"  value="#(o?o.emprelation:'')"  >
+                                <div class="col-md-3">
+
+                                    <select id="relationSelect"   title="请选择"  class="selectpicker show-tick form-control" actionsBox="true"  disable  data-live-search="false">
+                                        #for(empRelation:empRelations)
+                                        <option value="#(empRelation.value)">#(empRelation.name)</option>
+                                        #end
+                                    </select>
+
+                                </div>
 
                         </div>
                         <div class="form-group">
@@ -252,7 +259,7 @@
 
                             <label class="col-md-1 control-label">紧急联系人</label>
                             <div class="col-md-3">
-                                <input type="text"  name="#(formModelName).emcontact" class="form-control"  value="#(o?o.emcontact:'')"  >
+                                <input type="text"  name="#(formModelName).emergency_tel" class="form-control"  value="#(o?o.emergency_tel:'')"  >
                             </div>
 
                         </div>
@@ -435,7 +442,7 @@
 
                 <div class="panel-collapse collapse in" id="collapseFive">
                     <div class="panel-body">
-                        <div class="form-group">
+                        <!--<div class="form-group">
 
                             <label class="col-md-1 control-label">招聘来源</label>
                             <div class="col-md-5">
@@ -450,7 +457,7 @@
                                     #end
                                 </select>
                             </div>
-                        </div>
+                        </div>-->
                         <div class="form-group">
                             <label class="col-md-1 control-label">异动记录</label>
                             <div class="col-md-11">

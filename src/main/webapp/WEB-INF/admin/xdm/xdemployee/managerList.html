@@ -76,7 +76,7 @@
                            data-show-refresh="true"
                            data-show-toggle="true"
                            data-show-columns="true"
-                           data-sort-name="id"
+                           data-sort-name="empnum"
                            data-page-list="[5, 10, 20]"
                            data-page-size="5"
                            data-pagination="true" data-show-pagination-switch="true"  ></table>
@@ -86,12 +86,20 @@
     </div>
 </div>
 <script>
-    var selectRows=[];
-    var col = [{field: 'checked', checkbox : true, align: 'center'},
-        {field: 'name', title: '姓名', align: 'center'},
-        {field: 'empnum', title: '员工编号', align: 'center'},
-        {field: 'emprelation', title: '员工关系', align: 'center'},
-        {field: 'gender', title: '性别', align: 'center', formatter:function(value,row,index){
+    let selectRows=[];
+    let empRelations='#(empRelations)';
+    let empRelationsMap = new Map();
+    let empRelationObj=JSON.parse(empRelations)
+    for(let empRelation of empRelationObj) {
+        empRelationsMap.set(empRelation.value,empRelation.name);
+    }
+    let col = [{field: 'checked', checkbox : true, align: 'center'},
+        {field: 'name', title: '姓名', align: 'center',sortable:true},
+        {field: 'empnum', title: '员工编号', align: 'center',sortable:true},
+        {field: 'emprelation', title: '员工关系', align: 'center',sortable:true, formatter:function(value,row,index){
+                return empRelationsMap.get(value);
+            }},
+        {field: 'gender', title: '性别', align: 'center',sortable:true, formatter:function(value,row,index){
                 if(value=='1'){
                     return "男";
                 }else{
@@ -100,7 +108,7 @@
 
 
             }},
-        {field: 'married', title: '婚姻状况', align: 'center', formatter:function(value,row,index){
+        {field: 'married', title: '婚姻状况', align: 'center',sortable:true, formatter:function(value,row,index){
                 if(value=='1'){
                     return "未婚";
                 }else if(value=='2'){
@@ -109,7 +117,7 @@
                     return "已婚已育";
                 }
             }},
-        {field: 'control', title: '操作', align: 'left', width:'200',
+        {field: 'control', title: '操作', align: 'center', width:'200',
             formatter:function(value,row,index){
                 //通过formatter可以自定义列显示的内容
                 //value：当前field的值，即id
@@ -130,7 +138,7 @@
         //是否显示分页（*）
         pagination: true,
         //是否启用排序
-        sortable: false,
+        sortable: true,
         //排序方式
         sortOrder: "asc",
         //初始化加载第一页，默认第一页
@@ -149,6 +157,8 @@
             return {
                 pageNumber: (params.offset/params.limit)+1,
                 pageSize: params.limit,
+                sort: params.sort,  //排序列名
+                sortOrder: params.order ,//排位命令（desc，asc）
                 "name":encodeURIComponent($("#name").val()),
                 "empnum":encodeURIComponent($("#empnum").val()),
                 "emprelation":encodeURIComponent($("#emprelation").val()),

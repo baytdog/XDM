@@ -18,7 +18,6 @@ import java.lang.reflect.Method;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.*;
-import java.util.function.Consumer;
 
 
 public class XdEmployeeController extends BaseController {
@@ -1361,15 +1360,16 @@ public class XdEmployeeController extends BaseController {
 			setAttr("personnel","N");
 
 		}
-
-		List<XdDict> units = XdDict.dao.find("select *from xd_dict where type='unit' order by  sortnum");
-		setAttr("units",units);
+		Map<String, List<XdDict>> dictListByType = DictMapping.getDictListByType();
+//		List<XdDict> units = XdDict.dao.find("select *from xd_dict where type='unit' order by  sortnum");
+		setAttr("units",dictListByType.get("unit"));
 		List<XdProjects> projects = XdProjects.dao.find("select * from xd_projects where status='1' ");
 		setAttr("projects",projects);
 		List<SysOrg> orgList = SysOrg.dao.find("select * from sys_org where id <>'root' order by sort");
 		setAttr("depts",orgList);
-
-
+		List<XdDict> empRelationList = dictListByType.get("empRelation");
+		String empRelations = JSONUtil.listToJson(empRelationList);
+		setAttr("empRelations",empRelations);
 		renderIframe("managerList.html");
 	}
 
@@ -1440,7 +1440,8 @@ public class XdEmployeeController extends BaseController {
 		setAttr("hardstuff",dictListByType.get("hardstuff"));
 //		List<XdDict> dutyList = dictListByType.get("duty");
 		setAttr("duties",dictListByType.get("duty"));
-
+		List<XdDict> empRelations = dictListByType.get("empRelation");
+		setAttr("empRelations",empRelations);
 		setAttr("o", o);
 		setAttr("formModelName",StringUtil.toLowerCaseFirstOne(XdEmployee.class.getSimpleName()));
 		renderIframe("managerEdit.html");
