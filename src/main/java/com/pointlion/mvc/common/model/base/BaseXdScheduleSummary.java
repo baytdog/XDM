@@ -408,6 +408,13 @@ public abstract class BaseXdScheduleSummary<M extends BaseXdScheduleSummary<M>> 
 	public Double getCurMonHours() {
 		return getDouble("cur_mon_hours");
 	}
+	public void setCanOvertime(java.lang.String canOvertime) {
+		set("can_overtime", canOvertime);
+	}
+
+	public java.lang.String getCanOvertime() {
+		return getStr("can_overtime");
+	}
 
 	public void setFlags(String flags) {
 		set("flags", flags);
@@ -424,6 +431,16 @@ public abstract class BaseXdScheduleSummary<M extends BaseXdScheduleSummary<M>> 
 	public String getOtflags() {
 		return getStr("otflags");
 	}
+
+	public void setDayOtFlags(java.lang.String dayOtFlags) {
+		set("day_ot_flags", dayOtFlags);
+	}
+
+	public java.lang.String getDayOtFlags() {
+		return getStr("day_ot_flags");
+	}
+
+
 
 	public void setTips(String tips) {
 		set("tips", tips);

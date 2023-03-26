@@ -123,11 +123,6 @@ public class XdScheduleSummaryService{
 						String yearMonthInLin=year+"-"+month;
 
 						String lastMonLastDay = DateTimeFormatter.ofPattern("yyyy-MM-dd").format(LocalDate.parse(year+"-"+month+"-01").minusDays(1));
-					/*	String[] split = lastMonLastDay.split("-");
-						String lastYear=split[0];
-						String lastMonth=split[1];
-						String lastDay=split[2];*/
-
 						List<XdDayModel> xdDayModels = XdDayModel.dao.find("select * from  xd_day_model  where id like '" + yearMonth + "%' or days='"+lastMonLastDay+" ' order by id");
 						int daysNum=xdDayModels.size();
 						if(!xdDayModels.get(0).getId().startsWith(yearMonth)){
@@ -146,17 +141,13 @@ public class XdScheduleSummaryService{
 						});
 
 
-						//Map<String, String> holidaysMap = xdDayModels.stream().collect(Collectors.toMap(XdDayModel::getId, XdDayModel::getHolidays));
-
-
-//							List<XdShift> xdShifts = XdShift.dao.find("select * from  xd_shift");
 						Map<String, XdShift> nameShiftObjMap =CheckAttendanceUtil.shfitsMap();
 						XdWorkHour workHours = XdWorkHour.dao.findFirst("select * from  xd_work_hour where year='" + year + "' and  month='" + month + "'");
 
 
 						List <XdOvertimeSummary>overTimeList =new ArrayList();
 						List <XdScheduleSummary>scheduleSummaryList =new ArrayList();
-						List <XdSettleOvertimeSummary>settleOvertimeSummaryList =new ArrayList();
+//						List <XdSettleOvertimeSummary>settleOvertimeSummaryList =new ArrayList();
 
 						//List <XdScheduleDetail>scheduleDetailList =new ArrayList();
 //						XdDayModel lastMonLastDay = XdDayModel.dao.findFirst("select * from  xd_day_model where id like '" + lastMonth + "%' order by id desc");
@@ -170,8 +161,10 @@ public class XdScheduleSummaryService{
 							String otFlags="";
 							String modifyFlags="";
 							String tips="";
-							double othours=0;//加班时间
-							double work_hour=0;//出勤时间
+							String dayOtFlags="";
+							double otHours=0;//加班时间
+							double workHour=0;//出勤时间
+							String canOt="0";//可加班
 							List<String> summaryList = list.get(i);
 							XdScheduleSummary scheduleSummary=new XdScheduleSummary();
 							String summaryId = UuidUtil.getUUID();
@@ -211,6 +204,7 @@ public class XdScheduleSummaryService{
 							}*/
 
 							otFlags=otFlags+","+"0";
+							dayOtFlags=dayOtFlags+","+"0";
 
 							if(!lastMonLastDayValue.equals("")){
 								XdShift xdShift = nameShiftObjMap.get(lastMonLastDayValue);
@@ -218,9 +212,9 @@ public class XdScheduleSummaryService{
 									if("1".equals(xdShift.getSpanDay())){
 										//跨天
 										if(sb.indexOf(yearMonth + "01")!=-1){
-											othours+=Double.valueOf(xdShift.getSpanHours());//加班时间
+											otHours+=Double.valueOf(xdShift.getSpanHours());//加班时间
 										}else{
-											work_hour+=Double.valueOf(xdShift.getSpanHours());//出勤时间
+											workHour+=Double.valueOf(xdShift.getSpanHours());//出勤时间
 										}
 									}
 								}
@@ -237,6 +231,7 @@ public class XdScheduleSummaryService{
 								modifyFlags=modifyFlags+","+"0";
 								tips=tips+","+"0";
 								otFlags=otFlags+","+"0";
+								dayOtFlags=dayOtFlags+","+"0";
 
 								 cellValue = summaryList.get(6 + j).trim();
 								if(j<10){
@@ -256,7 +251,6 @@ public class XdScheduleSummaryService{
 								if(!cellValue.equals("")){
 									XdShift xdShift = nameShiftObjMap.get(cellValue);
 									if(xdShift!=null){
-
 										if(xdShift.getSpanDay().equals("1")){
 											//是跨天且当天法定假日
 											if(sb.indexOf(ymdNoLine)!=-1){
@@ -278,12 +272,10 @@ public class XdScheduleSummaryService{
 												ots.setCreateUser(ShiroKit.getUserId());
 												ots.setCreateDate(DateUtil.getCurrentTime());
 												overTimeList.add(ots);
-												othours+=Double.valueOf(xdShift.getCurdayHours());
-												//otFlags=otFlags+","+"1";
+												otHours+=Double.valueOf(xdShift.getCurdayHours());
 											}else{
 												//跨天当天不是法定假日
-												work_hour+=Double.valueOf(xdShift.getCurdayHours());
-												//otFlags=otFlags+","+"0";
+												workHour+=Double.valueOf(xdShift.getCurdayHours());
 											}
 											//是跨天且第二天是法定假日
 											LocalDate nextLocalDate = LocalDate.parse(ymdInLine).plusDays(1);
@@ -307,10 +299,15 @@ public class XdScheduleSummaryService{
 												otsObject.setCreateUser(ShiroKit.getUserId());
 												otsObject.setCreateDate(DateUtil.getCurrentTime());
 												overTimeList.add(otsObject);
-												//othours+=Double.valueOf(xdShift.getSpanHours());
+												if(nextDate.indexOf(yearMonth)!=-1){
+													otHours+=Double.valueOf(xdShift.getSpanHours());
+												}
+
 											}else{
 												//是跨天且第二天不是法定假日
-												work_hour+=Double.valueOf(xdShift.getSpanHours());
+												if(nextDate.indexOf(yearMonth)!=-1){
+													workHour+=Double.valueOf(xdShift.getSpanHours());
+												}
 											}
 										}else{
 											if(xdShift.getBusitime()!=null && !xdShift.getBusitime().equals("")){
@@ -333,31 +330,35 @@ public class XdScheduleSummaryService{
 													xdOvertimeSummary.setCreateUser(ShiroKit.getUserId());
 													xdOvertimeSummary.setCreateDate(DateUtil.getCurrentTime());
 													overTimeList.add(xdOvertimeSummary);
-													othours+=Double.valueOf(xdShift.getHours());
+													otHours+=Double.valueOf(xdShift.getHours());
 													//otFlags=otFlags+","+"1";
 												}else{
-													work_hour+=Double.valueOf(xdShift.getHours());
+													workHour+=Double.valueOf(xdShift.getHours());
 													//otFlags=otFlags+","+"0";
 												}
 											}else{
-												//otFlags=otFlags+","+"0";
+												String shiftName = xdShift.getShiftname();
+												if(shiftName.contains("年")||shiftName.contains("婚")||shiftName.contains("陪产")||shiftName.contains("丧")||shiftName.contains("育")){
+													workHour+=Double.valueOf(xdShift.getHours());
+												}
+												if("事,病,旷,新离".indexOf(shiftName)!=-1){
+													canOt="1";//不可加班
+												}
 											}
 										}
-									}else{
-										//otFlags=otFlags+","+"0";
 									}
-								}else {
-									//otFlags=otFlags+","+"0";
 								}
 							}
 
 							//scheduleSummary.setRemarks(summaryList.get(38));
 							scheduleSummary.setCurMonHours(curMonHours);
-							scheduleSummary.setWorkHour(work_hour);
+							scheduleSummary.setCanOvertime(canOt);
+							scheduleSummary.setWorkHour(workHour);
 							scheduleSummary.setOthours(0.0);
-							scheduleSummary.setNatOthours(othours);
+							scheduleSummary.setNatOthours(otHours);
 							scheduleSummary.setFlags(modifyFlags.replaceAll("^,",""));
 							scheduleSummary.setOtflags(otFlags.replaceAll("^,",""));
+							scheduleSummary.setDayOtFlags(dayOtFlags.replaceAll("^,",""));
 							scheduleSummary.setTips(tips.replaceAll("^,",""));
 							scheduleSummary.setScheduleMonth(month);
 							scheduleSummary.setScheduleYear(year);

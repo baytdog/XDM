@@ -107,14 +107,14 @@ public class _MappingKit {
 		arp.addMapping("tool_weight","id",ToolWeight.class);
 		
 		
-		arp.addMapping("oa_outm", "id", OaOutm.class);
+		/*arp.addMapping("oa_outm", "id", OaOutm.class);
 		arp.addMapping("oa_pic_news", "id", OaPicNews.class);
 		arp.addMapping("oa_work_plan", "id", OaWorkPlan.class);
 		arp.addMapping("oa_bumph_user", "id", OaBumphUser.class);
 		arp.addMapping("oa_notices", "id",OaNotices.class);
 		arp.addMapping("oa_menu_dict", "id",OaMenuDict.class);
-		arp.addMapping("oa_showinfo", "id",OaShowinfo.class);
-		arp.addMapping("oa_email", "id",OaEmail.class);
+		arp.addMapping("oa_showinfo", "id",OaShowinfo.class);*/
+		/*arp.addMapping("oa_email", "id",OaEmail.class);
 		arp.addMapping("oa_documents", "id",OaDocuments.class);
 		arp.addMapping("oa_meetroom", "id",OaMeetroom.class);
 		arp.addMapping("oa_dict", "id",OaDict.class);
@@ -129,19 +129,19 @@ public class _MappingKit {
 		arp.addMapping("oa_step_history","id", OaStepHistory.class);
 		arp.addMapping("oa_letter","id", OaLetter.class);
 		arp.addMapping("oa_letter_user","id", OaLetterUser.class);
-		arp.addMapping("oa_steps","id", OaSteps.class);
+		arp.addMapping("oa_steps","id", OaSteps.class);*/
 		arp.addMapping("oa_types","id", OaTypes.class);
-		arp.addMapping("oa_work_plan_remarks","id", OaWorkPlanRemarks.class);
+		/*arp.addMapping("oa_work_plan_remarks","id", OaWorkPlanRemarks.class);
 		arp.addMapping("oa_nodes","id", OaNodes.class);
 		arp.addMapping("oa_email_son","id", OaEmailSon.class);
 		arp.addMapping("oa_ed_letter","id", OaEdLetter.class);
-		arp.addMapping("oa_depart_notices","id", OaDepartNotices.class);
+		arp.addMapping("oa_depart_notices","id", OaDepartNotices.class);*/
 		arp.addMapping("oa_departments_files","id", OaDepartmentsFiles.class);
-		arp.addMapping("oa_search","id", OaSearch.class);
+	/*	arp.addMapping("oa_search","id", OaSearch.class);
 		arp.addMapping("oa_rz", "id",OaRz.class);
 		arp.addMapping("oa_tab_file", "id",OaTabFile.class);
 		arp.addMapping("oa_bumph_rz", "id",OaBumphRz.class);
-		arp.addMapping("oa_steps_rz", "id",OaStepsRz.class);
+		arp.addMapping("oa_steps_rz", "id",OaStepsRz.class);*/
 		//欣迪
 		arp.addMapping("xd_employee","id",XdEmployee.class);
 		arp.addMapping("xd_edutrain","id",XdEdutrain.class);

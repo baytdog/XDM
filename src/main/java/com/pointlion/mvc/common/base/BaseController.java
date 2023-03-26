@@ -431,14 +431,14 @@ public abstract class BaseController extends Controller {
 			setting = (SysCustomSetting)this.getSession().getAttribute("setting");
 		}
 		setAttr("setting",setting);
-		if(getAttr("uorgid")!=null&&!getAttr("uorgid").equals("")) {
-			
-			SimpleDateFormat sdf  =new SimpleDateFormat("yyyy-MM-dd");
-			OaNotices oanotices = OaNotices.dao.findFirst("select  * from  oa_notices 	where  	sfpublish = '1' and publishdatetime !='' 	and showtime >= '"+sdf.format(new Date())+"' and departments LIKE '%"+ShiroKit.getUserOrgId()+"%' ORDER BY 	publishdatetime DESC");
-			this.getSession().setAttribute("oanotices", oanotices);
-			
-			setAttr("oanotices", oanotices);
-		}
+//		if(getAttr("uorgid")!=null&&!getAttr("uorgid").equals("")) {
+//
+//			SimpleDateFormat sdf  =new SimpleDateFormat("yyyy-MM-dd");
+//			OaNotices oanotices = OaNotices.dao.findFirst("select  * from  oa_notices 	where  	sfpublish = '1' and publishdatetime !='' 	and showtime >= '"+sdf.format(new Date())+"' and departments LIKE '%"+ShiroKit.getUserOrgId()+"%' ORDER BY 	publishdatetime DESC");
+//			this.getSession().setAttribute("oanotices", oanotices);
+//
+//			setAttr("oanotices", oanotices);
+//		}
 		if("openPage".equals(action)){//打开新页面
 			String s = this.getViewPath();
 			if(view.indexOf("/")==0){

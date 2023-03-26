@@ -13,6 +13,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -308,6 +309,13 @@ public class XdOperUtil {
         /*for (String s1 : split) {
             System.out.println(s1);
         }*/
+
+        LocalDateTime startTime = LocalDateTime.of(2023, 01, 01, 12, 0, 00);
+        LocalDateTime endTime = LocalDateTime.of(2023, 01, 01, 23, 30, 00);
+       /* LocalDateTime parse = LocalDateTime.parse("2023-03-03 12:10:00");
+        LocalDateTime parse2= LocalDateTime.parse("2023-03-03 13:10:00");*/
+        System.out.println(Duration.between(startTime, endTime).toMinutes()/ 60.0);
+
     }
 
     public static void setChangeValue(Object obj,String fieldName,String newValue)  {
