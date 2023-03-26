@@ -59,21 +59,28 @@
 	</div>
 	<div class="form-group">
 		<label class="col-md-1 control-label">申请开始时间</label>
-		<div class="col-md-5">
-			<input type="text"  name="#(formModelName).apply_start" class="form-control"  value="#(o?o.apply_start:'')"  >
+			<input id="apply_start" type="hidden"  name="#(formModelName).apply_start" class="form-control"  value="#(o?o.apply_start:'')"  >
+		<div class="col-md-1"  >
+
+				<input id="startHour" type="number"  name="startHour"  oninput="if(value>23||value<0)value=23;if(value<=23&& value>=0) value=parseInt(value)"  class="form-control" min="1" max="10" style="width: 100%;">
 		</div>
-		<label class="col-md-1 control-label">申请结束时间</label>
-		<div class="col-md-5">
-			<input type="text"  name="#(formModelName).apply_end" class="form-control"  value="#(o?o.apply_end:'')"  >
+		<label class="col-md-1 control-label" style="width: 10px;size: 10px;font-weight: bold;font-size: 30px;">:</label>
+		<div class="col-md-1">
+		<!--	<input type="text"  name="#(formModelName).apply_start" class="form-control"  value="#(o?o.apply_start:'')"  >-->
+			<input id="startMin" type="number"   oninput="if(value>59||value<0)value=59;if(value<=9&& value>=0 && value.length>=1) value='0'+parseInt(value);if(value<=59&& value>=10) value=parseInt(value)" class="form-control">
 		</div>
-	</div>
-	<div class="form-group">
-		<label class="col-md-1 control-label">申请加班时长</label>
-		<div class="col-md-5">
-			<input type="text"  name="#(formModelName).apply_hours" class="form-control"  value="#(o?o.apply_hours:'')"  >
+		<label class="col-md-1 control-label" style="width: 105px;">结束时间</label>
+		<input id="apply_end" type="hidden"   name="#(formModelName).apply_end" class="form-control"  value="#(o?o.apply_end:'')"  >
+		<div class="col-md-1" style="">
+			<input id="endHour" type="number" name="endHour"   oninput="if(value>23||value<0)value=23;if(value<=23&& value>=0) value=parseInt(value); "   class="form-control" >
 		</div>
-		<label class="col-md-1 control-label">类别</label>
-		<div class="col-md-5">
+		<label class="col-md-1 control-label" style="width: 10px;size: 10px;font-weight: bold;font-size: 30px;">:</label>
+		<div class="col-md-1">
+			<input id="endMin" type="number"   oninput="if(value>59||value<0)value=59;if(value<=9&& value>=0 && value.length>=1) value='0'+parseInt(value);if(value<=59&& value>=10) value=parseInt(value)" class="form-control" >
+		</div>
+
+		<label class="col-md-1 control-label" >类别</label>
+		<div class="col-md-3" style="width: 41%">
 			<input type="hidden" id="apply_type" name="#(formModelName).apply_type" class="form-control"  value="#(o?o.apply_type:'')"  >
 			<select id="applyTypeSelect" class="selectpicker form-control"   readonly="readonly" >
 				<option value="">请选择类型</option>
@@ -84,10 +91,19 @@
 
 	</div>
 	<div class="form-group">
+		<!--<label class="col-md-1 control-label">申请加班时长</label>
+		<div class="col-md-5">
+			<input type="text"  name="#(formModelName).apply_hours" class="form-control"  value="#(o?o.apply_hours:'')"  >
+		</div>-->
+
 		<label class="col-md-1 control-label">备注</label>
 		<div class="col-md-11">
 			<input type="text"  name="#(formModelName).remarks" class="form-control"  value="#(o?o.remarks:'')"  >
 		</div>
+
+	</div>
+	<div class="form-group">
+
 	</div>
 
 

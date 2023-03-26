@@ -73,7 +73,7 @@ public class XdOvertimeSummaryService{
 			}
 			String ymd=split[0]+"/"+month+"/"+day;
 			sql = sql + " and o.apply_date='"+ymd+"'";*/
-			sql = sql + " and o.apply_date='"+apply_date+"'";
+			sql = sql + " and o.apply_date  like '"+apply_date+"%'";
 		}
 
 		sql = sql + " order by o.emp_num ";
@@ -103,7 +103,7 @@ public class XdOvertimeSummaryService{
 
 				String oldTip = oldTips[oldIndex];
 				oldTip=oldTip.replaceAll(o.getApplyStart()+"-"+o.getApplyEnd(),"");
-				if("".equals(oldTip)){
+				if("".equals(oldTip)||"、".equals(oldTip)){
 					oldTip="0";
 				}
 				oldTips[oldIndex]=oldTip;
@@ -114,6 +114,15 @@ public class XdOvertimeSummaryService{
 				}
 				scheduleSummary.setTips(oldTip.replaceAll(",$",""));
 
+				String[] otFlages = scheduleSummary.getOtflags().split(",");
+				if("0".equals(oldTips[oldIndex])){
+					otFlages[oldIndex]="0";
+				}
+				String ot="";
+				for (String otFlag : otFlages) {
+					ot=ot+otFlag+",";
+				}
+				scheduleSummary.setOtflags(ot.replaceAll(",$",""));
 				if("0".equals(o.getApplyType())){
 					scheduleSummary.setNatOthours(scheduleSummary.getNatOthours()-Double.valueOf(o.getApplyHours()));
 				}else{
@@ -168,6 +177,17 @@ public class XdOvertimeSummaryService{
 					oldTip=oldTip+tip+",";
 				}
 				attendanceSummary.setTips(oldTip.replaceAll(",$",""));
+
+
+				String[] otFlags = attendanceSummary.getOtflags().split(",");
+				if("0".equals(oldTips[oldIndex])){
+					otFlags[oldIndex]="0";
+				}
+				String ot="";
+				for (String otFlag : otFlags) {
+					ot=ot+otFlag+",";
+				}
+				attendanceSummary.setOtflags(ot.replaceAll(",$",""));
 
 				if("0".equals(o.getApplyType())){
 					attendanceSummary.setNatOthours(attendanceSummary.getNatOthours()- Double.valueOf(o.getActHours()));

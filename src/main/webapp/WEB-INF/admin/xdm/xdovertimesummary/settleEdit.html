@@ -19,6 +19,40 @@
             },data);
         }
     }
+    function validateStartEnd(){
+        let start="";
+        let end="";
+        let startHour=$('#startHour').val();
+        let endHour=$('#endHour').val();
+        let startMin = $('#startMin').val();
+        let endMin = $('#endMin').val();
+        let startHM="";
+        let endHM="";
+        if(startMin){
+            start=startHour+startMin;
+            startHM=startHour+":"+startMin;
+        }else{
+            start=startHour+"00";
+            startHM=startHour+":"+"00";
+        }
+
+
+        if(endMin){
+            end=endHour+endMin;
+            endHM=endHour+":"+endMin;
+        }else{
+            end=endHour+"00";
+            endHM=endHour+":"+"00";
+        }
+        /*console.log(start)
+        console.log(end)*/
+        if (parseInt(start)>0 && parseInt(end)  && parseInt(start) >=parseInt(end)){
+            return false
+        }
+        $("#act_start").val(startHM);
+        $("#act_end").val(endHM);
+        return true
+    }
     $(document).ready(function() {
         $('#editForm').bootstrapValidator({
             excluded:[":disabled"],
@@ -40,29 +74,39 @@
                         }
                     }
                 },
-                "#(formModelName).act_start": {
-                    trigger: 'change',
+                "#(formModelName).apply_date": {
+                    validators: {
+                        notEmpty: {
+                            message: '*申请日期不能为空'
+                        }
+                    }
+                },
+                "startHour": {
                     validators: {
                         notEmpty: {
                             message: '*开始时间不能为空'
+                        },
+                        callback:{
+                            message: '*开始时间不能大于结束时间',
+                            callback : function(value, validator, $field) {
+                                return validateStartEnd();
+                            }
                         }
                     }
                 },
-                "#(formModelName).act_end": {
-                    trigger: 'change',
+                "endHour": {
                     validators: {
                         notEmpty: {
                             message: '*结束时间不能为空'
+                        },
+                        callback:{
+                            message: '*结束时间不能小于开始时间',
+                            callback : function(value, validator, $field) {
+                                return validateStartEnd();
+                            }
                         }
                     }
-                },
-                "#(formModelName).act_hours": {
-                    trigger: 'change',
-                    validators: {
-                        notEmpty: {
-                            message: '*时长不能为空'
-                        }
-                    }
+
                 },
                 "#(formModelName).apply_type": {
                     validators: {
@@ -84,8 +128,8 @@
             $(".btn").removeAttr("disabled");
         }
     }
-    $('.form_datetime').datepicker({format: 'yyyy-mm-dd',weekStart: 1,todayBtn:  1,autoclose: 1,language:  'zh-CN',todayHighlight: 1,forceParse: 0,showMeridian: 1,startDate:"#(startD)"}).on('changeDate',function(){
-        //resetVali();
+    $('.form_datetime').datepicker({format: 'yyyy-mm-dd',weekStart: 1,todayBtn:  1,autoclose: 1,language:  'zh-CN',todayHighlight: 1,forceParse: 0,showMeridian: 1,startDate:"#(startD)",endDate:"#(endD)"}).on('changeDate',function(){
+        resetVali();
     });
 
 

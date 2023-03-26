@@ -42,9 +42,9 @@
                         <div class="form-group">
                             <input id="emp_name" placeholder="姓名" class="form-control">
                         </div>
-                        <div class="form-group">
+                        <!--<div class="form-group">
                             <select class="selectpicker form-control"  id="year"  >
-                                <option value="">------请选择年份------</option>
+                                <option value="">&#45;&#45;&#45;&#45;&#45;&#45;请选择年份&#45;&#45;&#45;&#45;&#45;&#45;</option>
                                 <option value="2023">2023年</option>
                                 <option value="2024">2024年</option>
                                 <option value="2025">2025年</option>
@@ -55,7 +55,7 @@
                         </div>
                         <div class="form-group">
                             <select class="selectpicker form-control"  id="month"  >
-                                <option value="">------请选择月份------</option>
+                                <option value="">&#45;&#45;&#45;&#45;&#45;&#45;请选择月份&#45;&#45;&#45;&#45;&#45;&#45;</option>
                                 <option value="01">1月</option>
                                 <option value="02">2月</option>
                                 <option value="03">3月</option>
@@ -69,7 +69,14 @@
                                 <option value="11">11月</option>
                                 <option value="12">12月</option>
                             </select>
+                        </div>-->
+                        <div class="form-group">
+                            <div class="input-group date form_datetime">
+                                <input id="apply_date" placeholder="申请日期" class="form-control">
+                                <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+                            </div>
                         </div>
+
                         <div class="form-group">
                             <select class="selectpicker form-control"  id="overtimeType"  >
                                 <option value="">------请选择加班类型------</option>
@@ -173,8 +180,10 @@
                 "emp_name":encodeURIComponent($("#emp_name").val()),
                 "dept":$("#dept").val(),
                 "unitname":$("#unitname").val(),
-                "year":$("#year").val(),
-                "month":$("#month").val(),
+                /*"year":$("#year").val(),
+                "month":$("#month").val(),*/
+                "apply_date":$("#apply_date").val(),
+                "overtimeType":$("#overtimeType").val()
             };
         },
         //分页方式：client客户端分页，server服务端分页（*）
@@ -233,15 +242,18 @@
         let emp_name =encodeURIComponent($("#emp_name").val());
         // let emp_name =$("#emp_name").val();
         let unitname = $("#unitname").val();
-        let year =$("#year").val();
-        let month =	$("#month").val();
+        /*let year =$("#year").val();
+        let month =	$("#month").val();*/
+        let apply_date =$("#apply_date").val();
+        let overtimeType =	$("#overtimeType").val();
         var param = {
             query: {
                 "dept":dept,
                 "emp_name":emp_name,
                 "unitname":unitname,
-                "year":year,
-                "month":month
+                "apply_date":apply_date,
+                "overtimeType":overtimeType
+               /* "month":month*/
             }
         }
         // 刷新表格
@@ -249,7 +261,17 @@
     }
 
     $(document).ready(function(){
-        $('.form_datetime').datepicker({format: 'yyyy-mm-dd',weekStart: 1,todayBtn:  1,autoclose: 1,language:  'zh-CN',todayHighlight: 1,forceParse: 0,clearBtn: true }).on('changeDate',null);
+       /* $('.form_datetime').datepicker({format: 'yyyy-mm-dd',weekStart: 1,todayBtn:  1,autoclose: 1,language:  'zh-CN',todayHighlight: 1,forceParse: 0,clearBtn: true }).on('changeDate',null);
+        */
+        $('.form_datetime').datepicker({
+            format: 'yyyy-mm',
+            language: "zh-CN",
+            autoclose:true,
+            startView: 2,
+            minViewMode: 1,
+            maxViewMode: 2,
+            clearBtn: true }).on('changeDate',null);
+
         initTable();//初始化
 
         pointLion.initUploader("/admin/xd/xdovertimesummary/importExcel",function(data){

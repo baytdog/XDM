@@ -211,7 +211,7 @@
 		let emp_num=$("#emp_num").val();
 		let	apply_date=$("#apply_date").val();
 		let	overtimeType=$("#overtimeType").val();
-		var param = {
+		let param = {
 			query: {
 				"dept":dept,
 				"emp_name":emp_name,
@@ -226,7 +226,17 @@
 	}
 
 	$(document).ready(function(){
-		$('.form_datetime').datepicker({format: 'yyyy-mm-dd',weekStart: 1,todayBtn:  1,autoclose: 1,language:  'zh-CN',todayHighlight: 1,forceParse: 0,clearBtn: true }).on('changeDate',null);
+	/*	$('.form_datetime').datepicker({format: 'yyyy-mm-dd',weekStart: 1,todayBtn:  1,autoclose: 1,language:  'zh-CN',todayHighlight: 1,forceParse: 0,clearBtn: true }).on('changeDate',null);*/
+
+		$('.form_datetime').datepicker({
+			format: 'yyyy-mm',
+			language: "zh-CN",
+			autoclose:true,
+			startView: 2,
+			minViewMode: 1,
+			maxViewMode: 2,
+			clearBtn: true }).on('changeDate',null);
+
 		initTable();//初始化
 
 		pointLion.initUploader("/admin/xd/xdovertimesummary/importExcel",function(data){

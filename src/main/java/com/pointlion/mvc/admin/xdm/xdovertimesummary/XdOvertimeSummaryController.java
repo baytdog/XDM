@@ -14,7 +14,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.sql.SQLException;
+import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
 import java.util.Date;
@@ -66,8 +68,19 @@ public class XdOvertimeSummaryController extends BaseController {
 
 			String format = DateTimeFormatter.ofPattern("yyyy-MM-dd").format(localDate);
 			setAttr("startD",format);
+
+
+			XdScheduleSummary end = XdScheduleSummary.dao.findFirst("select * from  xd_schedule_summary  " +
+					"where dept_value='" + ShiroKit.getUserOrgId() + "'  order by schedule_year_month desc");
+			String scheduleYearMonth = end.getScheduleYearMonth();
+			XdDayModel dayModel = XdDayModel.dao.findFirst("select *from  xd_day_model where id like '%" + scheduleYearMonth + "%' order by id desc");
+			setAttr("endD",dayModel.getDays());
 		}else{
 			setAttr("startD","2023-01-01");
+			XdScheduleSummary end = XdScheduleSummary.dao.findFirst("select * from  xd_schedule_summary    order by schedule_year_month desc");
+			String scheduleYearMonth = end.getScheduleYearMonth();
+			XdDayModel dayModel = XdDayModel.dao.findFirst("select *from  xd_day_model where id like '%" + scheduleYearMonth + "%' order by id desc");
+			setAttr("endD",dayModel.getDays());
 		}
 		setAttr("projects",projects);
 		setAttr("formModelName",StringUtil.toLowerCaseFirstOne(XdOvertimeSummary.class.getSimpleName()));
@@ -98,6 +111,15 @@ public class XdOvertimeSummaryController extends BaseController {
      */
     public void save()  {
     	XdOvertimeSummary o = getModel(XdOvertimeSummary.class);
+
+		String[] startHM = o.getApplyStart().split(":");
+		String[] endHM = o.getApplyEnd().split(":");
+
+		LocalDateTime startTime = LocalDateTime.of(2023, 01, 01, Integer.parseInt(startHM[0]), Integer.parseInt(startHM[1]), 00);
+		LocalDateTime endTime = LocalDateTime.of(2023, 01, 01, Integer.parseInt(endHM[0]), Integer.parseInt(endHM[1]), 00);
+
+		o.setApplyHours(String.format("%.1f",( Duration.between(startTime, endTime).toMinutes()/ 60.0)));
+    	
 		String days = o.getApplyDate();
 		String[] ymd=null;
 		if (days != null) {
@@ -148,7 +170,7 @@ public class XdOvertimeSummaryController extends BaseController {
 			if("0".equals(indexTip)){
 				tipsArr[index]=o.getApplyStart()+"-"+o.getApplyEnd();
 			}else{
-				tipsArr[index]=tipsArr[index]+o.getApplyStart()+"-"+o.getApplyEnd();
+				tipsArr[index]=tipsArr[index]+"、"+o.getApplyStart()+"-"+o.getApplyEnd();
 			}
 			String sb="";
 			for (String s : tipsArr) {
@@ -158,6 +180,20 @@ public class XdOvertimeSummaryController extends BaseController {
 
 
 			scheduleSummary.setTips(sb.replaceAll(",$",""));
+
+			String[] otFlags = scheduleSummary.getOtflags().split(",");
+
+			if("0".equals(tipsArr[index])){
+				otFlags[index]="0";
+			}else{
+				otFlags[index]="1";
+			}
+
+			String ot="";
+			for (String s : otFlags) {
+				ot=ot+s+",";
+			}
+			scheduleSummary.setOtflags(ot.replaceAll(",$",""));
 
 			if("0".equals(o.getApplyType())){
 				//Double aDouble = Double.valueOf(summary.getApplyHours());
@@ -180,7 +216,7 @@ public class XdOvertimeSummaryController extends BaseController {
 				if("0".equals(indexTip)){
 					tipsArr[index]=o.getApplyStart()+"-"+o.getApplyEnd();
 				}else{
-					tipsArr[index]=tipsArr[index]+o.getApplyStart()+"-"+o.getApplyEnd();
+					tipsArr[index]=tipsArr[index]+"、"+o.getApplyStart()+"-"+o.getApplyEnd();
 				}
 				String sb="";
 				for (String s : tipsArr) {
@@ -195,6 +231,20 @@ public class XdOvertimeSummaryController extends BaseController {
 				}
 
 
+
+				String[] otFlags = scheduleSummary.getOtflags().split(",");
+
+				if("0".equals(tipsArr[index])){
+					otFlags[index]="0";
+				}else{
+					otFlags[index]="1";
+				}
+
+				String ot="";
+				for (String s : otFlags) {
+					ot=ot+s+",";
+				}
+				scheduleSummary.setOtflags(ot.replaceAll(",$",""));
 
 
 				scheduleSummary.setTips(sb.replaceAll(",$",""));
@@ -226,6 +276,14 @@ public class XdOvertimeSummaryController extends BaseController {
 
 	public void saveSettle(){
 		XdOvertimeSummary o = getModel(XdOvertimeSummary.class);
+
+		String[] startHM = o.getActStart().split(":");
+		String[] endHM = o.getActEnd().split(":");
+
+		LocalDateTime startTime = LocalDateTime.of(2023, 01, 01, Integer.parseInt(startHM[0]), Integer.parseInt(startHM[1]), 00);
+		LocalDateTime endTime = LocalDateTime.of(2023, 01, 01, Integer.parseInt(endHM[0]), Integer.parseInt(endHM[1]), 00);
+
+		o.setActHours(String.format("%.1f",( Duration.between(startTime, endTime).toMinutes()/ 60.0)));
 
 	/*	XdOvertimeSummary overtimeSummary = XdOvertimeSummary.dao.
 				findFirst("select * from  xd_overtime_summary where apply_date='"+o.getApplyDate()
@@ -335,6 +393,20 @@ public class XdOvertimeSummaryController extends BaseController {
 
 
 				attendanceSummary.setTips(sb.replaceAll(",$",""));
+
+				String[] otFlags = attendanceSummary.getOtflags().split(",");
+
+				if("0".equals(tipsArr[index])){
+					otFlags[index]="0";
+				}else{
+					otFlags[index]="1";
+				}
+
+				String ot="";
+				for (String s : otFlags) {
+					ot=ot+s+",";
+				}
+				attendanceSummary.setOtflags(ot.replaceAll(",$",""));
 				attendanceSummary.update();
 			}
 
@@ -386,10 +458,22 @@ public class XdOvertimeSummaryController extends BaseController {
 
 			String format = DateTimeFormatter.ofPattern("yyyy-MM-dd").format(localDate);
 			setAttr("startD",format);
+
+
+			XdScheduleSummary end = XdScheduleSummary.dao.findFirst("select * from  xd_schedule_summary  " +
+					"where dept_value='" + ShiroKit.getUserOrgId() + "'  order by schedule_year_month desc");
+			String scheduleYearMonth = end.getScheduleYearMonth();
+			XdDayModel dayModel = XdDayModel.dao.findFirst("select *from  xd_day_model where id like '%" + scheduleYearMonth + "%' order by id desc");
+			setAttr("endD",dayModel.getDays());
+
 		}else{
 			setAttr("startD","2023-01-01");
-		}
 
+			XdScheduleSummary end = XdScheduleSummary.dao.findFirst("select * from  xd_schedule_summary    order by schedule_year_month desc");
+			String scheduleYearMonth = end.getScheduleYearMonth();
+			XdDayModel dayModel = XdDayModel.dao.findFirst("select *from  xd_day_model where id like '%" + scheduleYearMonth + "%' order by id desc");
+			setAttr("endD",dayModel.getDays());
+		}
 
 
 
