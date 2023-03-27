@@ -100,12 +100,12 @@ public class XdEmployeeService{
 		}
 
 		if(StrKit.notBlank(inductionStatus)){
-//			sql=sql+ " and o.inductionstatus='"+inductionstatus+"'";
-			if(inductionStatus.equals("1")){
+			sql=sql+ " and o.inductionstatus='"+inductionStatus+"'";
+			/*if(inductionStatus.equals("1")){
 				sql=sql+ " and o.status='0'";
 			}else{
 				sql=sql+ " and o.status='1'";
-			}
+			}*/
 		}
 		if(StrKit.notBlank(departTime)){
 			sql=sql+ " and o.departime like '"+departTime+"%'";

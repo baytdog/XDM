@@ -96,6 +96,77 @@ public class XdEmployeeController extends BaseController {
 		setAttr("dutyList",dutyList);
 		renderIframe("list.html");
     }
+	public void getLeaveListPage(){
+		String userOrgId = ShiroKit.getUserOrgId();
+		if("1".equals(userOrgId)){
+			setAttr("personnel","Y");
+		}else{
+			setAttr("personnel","N");
+
+		}
+
+		Map<String, List<XdDict>> dictListByType = DictMapping.getDictListByType();
+		//	List<XdDict> units = XdDict.dao.find("select *from xd_dict where type='unit' order by  sortnum");
+		setAttr("units",	dictListByType.get("unit"));
+
+		if(!"1".equals(userOrgId)){
+
+			SysUser otherUser = SysUser.dao.findById(ShiroKit.getUserId());
+			String instr="";
+			if(otherUser.getOperProject()!=null && !otherUser.getOperProject().equals("")){
+				String[] split = otherUser.getOperProject().split(",");
+				for (String s : split) {
+					instr=instr+",'"+s+"'";
+				}
+				instr=instr.replaceAll("^,","");
+				if(!instr.equals("")){
+					List<XdProjects> projects = XdProjects.dao.find("select * from xd_projects where status='1' and  id in ("+instr+")");
+					setAttr("projects",projects);
+				}else{
+
+					List<XdProjects> projects = XdProjects.dao.find("select * from xd_projects where status='1' ");
+					setAttr("projects",projects);
+				}
+			}
+
+		}else{
+			List<XdProjects> projects = XdProjects.dao.find("select * from xd_projects where status='1' ");
+			setAttr("projects",projects);
+		}
+
+
+		List<SysOrg> orgList = SysOrg.dao.find("select * from  sys_org where id !='root' order by sort");
+
+		setAttr("orgs",orgList);
+		String orgStr="";
+		Map<String,String> map =new HashMap<>();
+		for (SysOrg org : orgList) {
+			orgStr=orgStr+org.getId()+"="+org.getName()+",";
+		}
+		List<XdDict> dutyList = dictListByType.get("duty");
+		String dutyStr="";
+		for (XdDict duty : dutyList) {
+			dutyStr=dutyStr+duty.getValue()+"="+duty.getName()+",";
+		}
+		List<XdDict> eduList = dictListByType.get("edu");
+		String edu = JSONUtil.listToJson(eduList);
+		List<XdDict> positionList = dictListByType.get("position");
+		List<XdDict> empRelationList = dictListByType.get("empRelation");
+
+
+		String positions = JSONUtil.listToJson(positionList);
+		String empRelations = JSONUtil.listToJson(empRelationList);
+
+		setAttr("eduStr",edu);
+		setAttr("orgStr",orgStr);
+		setAttr("dutyStr",dutyStr);
+		setAttr("positions",positions);
+		setAttr("positionList",positionList);
+		setAttr("empRelations",empRelations);
+		setAttr("empRelationList",empRelationList);
+		setAttr("dutyList",dutyList);
+		renderIframe("leaveList.html");
+    }
 
 
 	public void getCompareListPage(){

@@ -11,6 +11,7 @@ import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.plugin.activerecord.Record;
 import com.pointlion.mvc.common.base.BaseController;
 import com.pointlion.mvc.admin.oa.workflow.WorkFlowService;
+import com.pointlion.mvc.common.model.XdEmpCert;
 import com.pointlion.mvc.common.utils.StringUtil;
 import com.pointlion.mvc.common.model.XdCertificate;
 import com.pointlion.mvc.common.model.SysUser;
@@ -79,7 +80,18 @@ public class XdCertificateController extends BaseController {
 		String title = java.net.URLDecoder.decode(getPara("title",""),"UTF-8");
 		String certType = java.net.URLDecoder.decode(getPara("certType",""),"UTF-8");
     	Page<Record> page = service.getPage(Integer.valueOf(curr),Integer.valueOf(pageSize),title,certType);
-    	renderPage(page.getList(),"",page.getTotalRow());
+		List<Record> list = page.getList();
+		for (Record record : list) {
+			String certificateTitle = record.getStr("certificateTitle");
+			record.set("backup1",certificateTitle);
+			List<XdEmpCert> certList = XdEmpCert.dao.find("select * from xd_emp_cert o where status='1' and o.certid = '" + record.getStr("id") + "'");
+			int size = certList.size();
+			if(size>0){
+
+				record.set("certificateTitle",certificateTitle+"("+size+")");
+			}
+		}
+		renderPage(page.getList(),"",page.getTotalRow());
     }
     /***
      * save data

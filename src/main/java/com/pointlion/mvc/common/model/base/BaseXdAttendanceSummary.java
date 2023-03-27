@@ -569,4 +569,20 @@ public abstract class BaseXdAttendanceSummary<M extends BaseXdAttendanceSummary<
 		return getStr("tips");
 	}
 
+	public void setDayOtFlags(java.lang.String dayOtFlags) {
+		set("day_ot_flags", dayOtFlags);
+	}
+
+	public java.lang.String getDayOtFlags() {
+		return getStr("day_ot_flags");
+	}
+
+	public void setCanOvertime(java.lang.String canOvertime) {
+		set("can_overtime", canOvertime);
+	}
+
+	public java.lang.String getCanOvertime() {
+		return getStr("can_overtime");
+	}
+
 }

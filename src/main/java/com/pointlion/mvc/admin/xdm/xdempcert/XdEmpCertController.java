@@ -17,13 +17,12 @@ import com.pointlion.util.DictMapping;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.SyncFailedException;
 import java.io.UnsupportedEncodingException;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.function.Consumer;
 
 
 public class XdEmpCertController extends BaseController {
@@ -45,6 +44,55 @@ public class XdEmpCertController extends BaseController {
 
 		List<XdEmpCert> snyList = XdEmpCert.dao.find("select  DISTINCT sny from xd_emp_cert order by sny");
 		setAttr("snyList",snyList);
+		Map<String,Integer> yearMap=new HashMap<>();
+		for (XdEmpCert empCert : snyList) {
+			System.out.println(empCert.getSny());
+			String sny = empCert.getSny();
+			if(sny.contains("年")){
+				String year = sny.substring(0, 4);
+				if(yearMap.get(year)==null){
+
+					List<XdEmpCert> xdEmpCerts = XdEmpCert.dao.find("select  * from xd_emp_cert where sny like '" + year + "%'");
+					yearMap.put(year,xdEmpCerts.size());
+				}/*else{
+					yearMap.put(year,Integer.valueOf(yearMap.get(year) + 1));
+				}*/
+			}
+		}
+
+
+		/*yearMap.entrySet().stream().sorted(new Comparator<Map.Entry<String, Integer>>() {
+			@Override
+			public int compare(Map.Entry<String, Integer> o1, Map.Entry<String, Integer> o2) {
+				return o1.getKey().compareTo(o2.getKey());
+			}
+		});*/
+
+		List<Map.Entry<String,Integer>> list = new ArrayList<Map.Entry<String,Integer>>(yearMap.entrySet());
+		Collections.sort(list, new Comparator<Map.Entry<String, Integer>>() {
+			@Override
+			public int compare(Map.Entry<String, Integer> o1, Map.Entry<String, Integer> o2) {
+				return o1.getKey().compareTo(o2.getKey());
+			}
+		});
+		List<XdEmpCert> nList=new ArrayList();
+		for(Map.Entry<String,Integer> mapping:list){
+			//System.out.println(mapping.getKey()+":"+mapping.getValue());
+			XdEmpCert certN=new XdEmpCert();
+			certN.setBackup1(mapping.getKey());
+			certN.setBackup2(mapping.getKey()+"年"+"("+mapping.getValue()+")");
+			nList.add(certN);
+		}
+
+		setAttr("nNum",nList);
+		/*Set<String> set = yearMap.keySet();
+		set.forEach(new Consumer<String>() {
+			@Override
+			public void accept(String s) {
+				System.out.println(s+"-"+yearMap.get(s));
+			}
+		});
+*/
 
 		List<SysOrg> orgList = SysOrg.dao.find("select * from  sys_org where id <>'root' order by sort");
 		setAttr("orgList",orgList);

@@ -33,7 +33,8 @@ public class XdOvertimeSummaryController extends BaseController {
 
 		List<XdProjects> projects = XdProjects.dao.find("select * from  xd_projects");
 		setAttr("projects",projects);
-
+		List<SysOrg> orgList = SysOrg.dao.find("select * from  sys_org where id<>'root' order by sort");
+		setAttr("orgs",orgList);
 
 		renderIframe("list.html");
     }
@@ -43,7 +44,8 @@ public class XdOvertimeSummaryController extends BaseController {
 		List<XdProjects> projects = XdProjects.dao.find("select * from  xd_projects");
 		setAttr("projects",projects);
 
-
+		List<SysOrg> orgList = SysOrg.dao.find("select * from  sys_org where id<>'root' order by sort");
+		setAttr("orgs",orgList);
 		renderIframe("settleList.html");
 	}
 

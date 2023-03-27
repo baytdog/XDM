@@ -20,6 +20,9 @@
 		height: 15px;
 		background-color: #F5F5F5;
 	}
+	#container .table-hover > tbody > tr:hover {
+		background-color: darkgrey;
+	}
 
 </style>
 <div id="page-content">
@@ -495,7 +498,7 @@
 			{field: 'checked', checkbox : true,valign:'middle',halign:"center", align: 'center',rowspan: 3 },
 			{field: 'dept_name', title: '部门',align: 'center',width:'120',valign:'middle',halign:"center",rowspan: 3 },
 			{field: 'unit_name', title: '单元', align: 'center',width:'120',valign:'middle',halign:"center", colspan: 1,rowspan: 3 },
-			{field: 'project_name', title: '项目', align: 'center',width:'120',valign:'middle',halign:"center", colspan: 1,rowspan: 3 },
+			{field: 'project_name', title: '项目', align: 'center',width:'160',valign:'middle',halign:"center", colspan: 1,rowspan: 3 },
 			{field: 'emp_num', title: '工号', align: 'center',width:'80',valign:'middle',halign:"center", colspan: 1,rowspan: 3 },
 			{field: 'emp_name', title: '姓名', align: 'center',width:'80',valign:'middle',halign:"center", colspan: 1,rowspan: 3 },
 			{field: 'work_station', title: '岗位', align: 'center',width:'120',valign:'middle',halign:"center", colspan: 1,rowspan: 3 },
@@ -880,12 +883,18 @@
 		$(".fixed-table-header-columns>table>thead>tr>th").each(function (i,thobj) {
 			$(thobj).css("height",'105px');//设置合并单元格高度
 		})
-		$(".fixed-table-header > table > thead > tr:nth-child(1)").each(function (i,thobj) {
+		/*$(".fixed-table-header > table > thead > tr:nth-child(1)").each(function (i,thobj) {
 			console.log("111111111111")
+		})*/
+		$(".fixed-table-container > .fixed-table-body-columns > table").css("top","-4px");
+
+		console.log($(".fixed-table-container > .fixed-table-body-columns > table>tbody").find('> tr[data-index]').size())
+		$(".fixed-table-container > .fixed-table-body-columns > table>tbody").find('tr').each(function (i) {
+			console.log("1111111111")
+			console.log($(this))
+
 		})
-		console.log("222222222222")
-
-
+		/* div.fixed-table-container > div:nth-child(4) > table*/
 		 /*each(function (i,a) {
 			 console.log("2222222222")
 			 console.log(i)

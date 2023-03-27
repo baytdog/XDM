@@ -48,13 +48,16 @@
 						<div class="form-group">
 							<select class="selectpicker form-control"  id="year"  >
 								<option value="">---到期年份---</option>
-								<option value="2022">2022年</option>
+								<!--<option value="2022">2022年</option>
 								<option value="2023">2023年</option>
 								<option value="2024">2024年</option>
 								<option value="2025">2025年</option>
 								<option value="2026">2026年</option>
 								<option value="2027">2027年</option>
-								<option value="2028">2028年</option>
+								<option value="2028">2028年</option>-->
+								#for(n:nNum)
+								<option value="#(n.backup1)">#(n.backup2)</option>
+								#end
 							</select>
 						</div>
 						<div class="form-group">
