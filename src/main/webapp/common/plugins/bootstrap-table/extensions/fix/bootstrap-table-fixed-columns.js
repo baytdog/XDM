@@ -250,7 +250,7 @@
 
 
       this.$body.find('> tr').each(function (i) {
-        that.$fixedBody.find('tbody tr:eq(' + i + ')').height($(this).height()-1);
+        that.$fixedBody.find('tbody tr:eq(' + i + ')').height($(this).height());
       });
 
       //events

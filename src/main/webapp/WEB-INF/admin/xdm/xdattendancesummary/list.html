@@ -16,7 +16,9 @@
 		background-color: #F5F5F5;
 	}
 
-
+	#container .table-hover > tbody > tr:hover {
+		background-color: darkgrey;
+	}
 	/*.fixed-table-header {
 		border-right: solid 1px #ddd;
 		border-top: solid 1px #ddd;
@@ -195,11 +197,11 @@
 					</div>
 
 					<div class="form-group">
-
-						<label class="col-md-2 control-label">加班时长</label>
+						<div class="col-md-12" style="text-align: center"><span id="tips"  style="color: red;display: none" >有病假、事假、旷工、新离，不做加班。若要做加班，可在加班管理做</span></div>
+						<!--<label class="col-md-2 control-label">加班时长</label>
 						<div class="col-md-4">
 							<input type="number"  name="otHour" class="form-control"  id="otHour"   >
-						</div>
+						</div>-->
 					</div>
 
 
@@ -242,11 +244,12 @@
 		firstRow.push(
 				{field: 'nat_othours', title: '国定加班', align: 'center',width:'85',valign:'middle',halign:"center", colspan: 1,rowspan: 3},
 				{field: 'othours', title: '平时加班', align: 'center',width:'85',valign:'middle',halign:"center", colspan: 1,rowspan: 3},
-				{field: 'curmon_workhours', title: '当月工时', align: 'center',width:'85',valign:'middle',halign:"center", colspan: 1,rowspan: 3},
+				{field: 'curmon_actworkhours', title: '当月工时', align: 'center',width:'85',valign:'middle',halign:"center", colspan: 1,rowspan: 3},
 				{field: 'control', title: '操作', align: 'left', width:'110',valign:'middle',halign:"center",
 					formatter:function(value,row,index){
-						var	a = '<a class="label label-table label-danger" onclick="del(\''+row.id+'\')" href="javascript:void(0);" >删除</a>';
-						a = a + '<a class="label label-table label-success" href="'+ctx+'/admin/xd/xdattendancesummary/getEditPage?id='+row.id+'&view=edit" >编辑</a>&nbsp;';
+					/*	var	a = '<a class="label label-table label-danger" onclick="del(\''+row.id+'\')" href="javascript:void(0);" >删除</a>';
+						a = a + '<a class="label label-table label-success" href="'+ctx+'/admin/xd/xdattendancesummary/getEditPage?id='+row.id+'&view=edit" >编辑</a>&nbsp;';*/
+						let a =  '<a class="label label-table label-success" href="'+ctx+'/admin/xd/xdattendancesummary/getEditPage?id='+row.id+'&view=edit" >编辑</a>'
 						return a;
 					}, colspan: 1,rowspan: 3
 				})
@@ -278,17 +281,34 @@
 			}else{
 				suffix=i;
 			}
-			thirdRrow.push({field: 'day'+suffix, title: holidayLists[i], align: 'center',width:'80', colspan: 1,rowspan: 1,
+			let titleStyle="";
+			if(holidayLists[i].indexOf("-")!=-1){
+				titleStyle= holidayLists[i] ;
+			}else{
+				titleStyle= '<span style="color: red">'+holidayLists[i]+ '</span>';
+			}
+			thirdRrow.push({field: 'day'+suffix, title: titleStyle, align: 'center',width:'80', colspan: 1,rowspan: 1,
 				formatter:function(value,row,index){
-					if(row.flags){
+
+					let flagsArr = row.flags.split(",");
+					let tipArr= row.tips.split(",");
+					let otArr= row.otflags.split(",");
+					let styleStr='';
+					let titleStr='';
+					let intSuffix=parseInt(suffix);
+					if(flagsArr[intSuffix]!=0){
+						styleStr='color:red'
+					}
+					if(otArr[intSuffix]=='1'){
+						titleStr=tipArr[parseInt(suffix)]
+					}
+
+					return "<span style="+styleStr +" data-toggle='tooltip'  title='"+titleStr+"'>"+value+"</span>";
+
+					return value;
+					/*if(row.flags){
 						let flagsArr = row.flags.split(",");
 
-						/*if(flagsArr[parseInt(suffix)]=='1'){
-							console.log("有调整")
-							return "<span style='color:red'>"+value+"</span>";
-						}else{
-							return  value ;
-						}*/
 						let otArr= row.otflags.split(",");
 						let tipArr= row.tips.split(",");
 						if(tipArr[parseInt(suffix)]!='0'){
@@ -307,19 +327,29 @@
 						}
 					}else{
 						return  value ;
-					}
+					}*/
+
 
 
 				},cellStyle:function(value,row,index,field){                 // 修改列（单元格）的颜色
+					let otArr= row.otflags.split(",");
 					let i = field.replace("day","");
+					let inti=parseInt(i);
+					if(otArr[inti]=='0'){
+						return {css:{}} ;
+					}else{
+						return {css:{"background-color":"yellow"}};
+					}
+					/*let i = field.replace("day","");
 					inti=parseInt(i);
 					if(holidayLists[inti].indexOf("-")!=-1){
 						return {css:{}} ;
 					}else{
 						return {css:{"background-color":"yellow"}};
-					}
+					}*/
 
-				}})
+				}
+			})
 
 		}
 		col.push(secondRrow)
@@ -364,9 +394,9 @@
 		//我设置了这一项，但是貌似没起作用，而且我这默认是0,- -
 		//pageNumber:1,
 		//每页的记录行数（*）
-		pageSize: 25,
+		pageSize: 50,
 		//可供选择的每页的行数（*）
-		pageList: [25, 50, 100,200,400],
+		pageList: [100, 200, 300,400],
 		//这个接口需要处理bootstrap table传递的固定参数,并返回特定格式的json数据
 		url: ctx+"/admin/xd/xdattendancesummary/listData",
 		//默认值为 'limit',传给服务端的参数为：limit, offset, search, sort, order Else
@@ -400,14 +430,28 @@
 		rightFixedNumber:4,
 		onClickCell: function (field, value, row, $element) {
 
-			if(row.status=='0'){
+
+			let fieldNum = field.replace("day","");
+			// console.log(parseInt(fieldNum))
+
+			if(holidayLists[parseInt(fieldNum)].indexOf("-")==-1 && row.othours>=36){
+				pointLion.alertMsg("平时加班36小时封顶")
+				return;
+			}
+
+			if(row.status=='0' && row.can_overtime=='0'){
 				let index = $element.parent().data('index');
 				//修改单元格
 				if(field=="remarks"){
 					remarksmodify(index, field, value,row);
 				}else{
-					shfitsModify(index, field, value,row);
+					shiftsModify(index, field, value,row);
 				}
+			}
+
+			if(row.can_overtime=='1'){
+				pointLion.alertMsg("有病假、事假、旷工、新离，不做加班。若要做加班，可在加班管理做")
+				return;
 			}
 
 
@@ -591,7 +635,7 @@ function modSave(){
 	let endHour = $('#endHour').val();
 	let startMin = $('#startMin').val();
 	let endMin = $('#endMin').val();
-	let otHour = $('#otHour').val();
+	// let otHour = $('#otHour').val();
 	let overtime = $("input[name='ovtime']:checked").val();
 	// console.log(shift)
 	// console.log(overtime)
@@ -604,8 +648,44 @@ function modSave(){
 	// console.log(startMin)
 	// console.log(endMin)
 	// console.log(otHour)
-	let start="";
-	let end="";
+
+	if(startHour || endHour){
+		if(!startHour){
+			$("#tips").css("display","block")
+			$("#tips").text("加班开始时间必须同时有值或同时为空")
+			return ;
+		}
+
+		if(!endHour){
+			$("#tips").css("display","block")
+			$("#tips").text("加班开始时间必须同时有值或同时为空")
+			return ;
+		}
+
+		var start="";
+		var end="";
+		if(startMin){
+			start=startHour+startMin;
+		}else {
+			start=startHour+"00";
+		}
+
+		if(endMin){
+			end=endHour+endMin;
+		}else {
+			end=endHour+"00";
+		}
+
+		if(parseInt(start)>=parseInt(end)){
+			$("#tips").css("display","block")
+			$("#tips").text("加班开始时间必须小于结束时间")
+			return ;
+		}
+		console.log(end)
+	}
+
+	/*let start="";
+	let end="";*/
 	if(startHour){
 		if(startMin){
 			start=startHour+":"+startMin;
@@ -626,27 +706,67 @@ function modSave(){
 	// console.log(end)
 	//return;
 
-	let data = common_ajax.ajaxFunc("/admin/xd/xdattendancesummary/updateCell",{"id":id,"oldValue":oldValue,"modValue":shift,"overtime":overtime,"field":field,"type":"1","start":start,"end":end,"otHour":otHour}, "json", null);
-	console.log("-----"+data.message)
-	let resu1tOtArr= data.message.split(",")
+	let data = common_ajax.ajaxFunc("/admin/xd/xdattendancesummary/updateCell",{"id":id,"oldValue":oldValue,"modValue":shift,"overtime":overtime,"field":field,"type":"1","start":start,"end":end}, "json", null);
+	// console.log("-----"+data.message)
+	let resultOtArr= data.message.split("*")
 	$('#pageTable').bootstrapTable('updateCell', {
 		index: index,
 		field: "nat_othours",
-		value: resu1tOtArr[0]
+		value: resultOtArr[0]
 	})
 	$('#pageTable').bootstrapTable('updateCell', {
 		index: index,
 		field: "othours",
-		value:  resu1tOtArr[1]
+		value:  resultOtArr[1]
 	})
+	$('#pageTable').bootstrapTable('updateCell', {
+		index: index,
+		field: "curmon_actworkhours",
+		value:  resultOtArr[2]
+	})
+	$('#pageTable').bootstrapTable('updateCell', {
+		index: index,
+		field: "can_overtime",
+		value:  resultOtArr[3]
+	})
+
+	$('#pageTable').bootstrapTable('updateCell', {
+		index: index,
+		field: "flags",
+		value: resultOtArr[4]
+	})
+	$('#pageTable').bootstrapTable('updateCell', {
+		index: index,
+		field: "otflags",
+		value: resultOtArr[5]
+	})
+
+	$('#pageTable').bootstrapTable('updateCell', {
+		index: index,
+		field: "day_ot_flags",
+		value: resultOtArr[6]
+	})
+	$('#pageTable').bootstrapTable('updateCell', {
+		index: index,
+		field: "tips",
+		value: resultOtArr[7]
+	})
+	// console.log(field)
+	// console.log( resultOtArr[8])
+	$('#pageTable').bootstrapTable('updateCell', {
+		index: index,
+		field: field,
+		value: resultOtArr[8]
+	})
+
+	$("#tips").css("display","none")
 
 	$('#myModal').modal('hide');
 }
 
-	function shfitsModify(index, field, value,row) {
+function shiftsModify(index, field, value,row) {
 		$($("#myModal")).modal("show");
-
-		console.log(value+"============")
+		// console.log(value+"============")
 		$("#empName").val(row.emp_name)
 		let fieldNum = field.replace("day","");
 		$("#days").val(fieldNum)
@@ -662,8 +782,8 @@ function modSave(){
 			$('#shiftSelect').selectpicker('val',"").trigger("change");
 		}
 
-		let otArr = row.otflags.split(",");
-		if(otArr[parseInt(fieldNum)]=='1'){
+		let dayOtArr = row.day_ot_flags.split(",");
+		if(dayOtArr[parseInt(fieldNum)]=='1'){
 			$("input[name='ovtime']").prop('checked',true);
 		}else{
 			$("input[name='ovtime']").prop('checked',false);
@@ -677,7 +797,7 @@ function modSave(){
 
 
 		let data = common_ajax.ajaxFunc("/admin/xd/xdattendancesummary/getOvTime",{"id":row.id,"field":field}, "json", null);
-		console.log(data);
+		//console.log(data);
 		if(data.success){
 
 			let otArrHour=data.message.split(",")

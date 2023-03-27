@@ -294,10 +294,10 @@ public class XdScheduleSummaryController extends BaseController {
 
 
 		XdOvertimeSummary overtimeSummary = XdOvertimeSummary.dao.findFirst("select *from  xd_overtime_summary " +
-				" where  emp_name='"+scheduleSummary.getEmpName()+"' and   apply_date='"+xdDayModels.get(index).getDays() + "' and source='2'");
+				" where  emp_name='"+scheduleSummary.getEmpName()+"' and   apply_date='"+xdDayModels.get(index).getDays() + "' and source='2' and apply_hours is not null and  apply_hours!=''");
 
 		String returnOtHour="";
-		if(overtimeSummary!=null && overtimeSummary.getApplyHours()!=null&& overtimeSummary.getApplyStart()!=null){
+		if(overtimeSummary!=null && overtimeSummary.getApplyHours()!=null&& !overtimeSummary.getApplyHours().equals("")){
 			String[] splitStart = overtimeSummary.getApplyStart().split(":");
 			returnOtHour=returnOtHour+splitStart[0]+","+splitStart[1]+",";
 
@@ -687,7 +687,10 @@ public class XdScheduleSummaryController extends BaseController {
 
 				String tips="";
 				for (XdOvertimeSummary ots : overtTimeList) {
-					tips=tips+ots.getApplyStart()+"-"+ots.getApplyEnd()+"、";
+					if(ots.getApplyHours()!=null && !"".equals(ots.getApplyHours())){
+						tips=tips+ots.getApplyStart()+"-"+ots.getApplyEnd()+"、";
+					}
+
 				}
 				String[] tipsA = scheduleSummary.getTips().split(",");
 				tipsA[index]=tips.replaceAll("、$","");

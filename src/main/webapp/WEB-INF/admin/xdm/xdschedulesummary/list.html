@@ -92,8 +92,7 @@
 				<div class="panel-body table-responsive">
 	<!--				<a id="add" class="btn btn-primary data-toolbar" href="#(ctx)/admin/xd/xdschedulesummary/getEditPage?view=edit"><i class="demo-pli-add"></i> 添加</a>-->
 					<a id="del" class="btn btn-danger data-toolbar" onclick="delSel()" href="javascript:void(0);"><i class="demo-pli-cross"></i> 批量删除</a>
-					<a id="filePicker"  href="javascript:void(0);" data-toggle="tooltip" data-placement="top"
-					   title="顶部的 Tooltip" ><i class="demo-pli-add"></i> 导入</a>
+					<a id="filePicker"  href="javascript:void(0);"     ><i class="demo-pli-add"></i> 导入</a>
 					<a id="export" class="btn btn-primary data-toolbar" onclick="exportExcel()" target="_blank"><i class="demo-pli-download-from-cloud"></i> 导出</a>
 
 					<table id="pageTable" class="demo-add-niftycheck table"
@@ -281,7 +280,7 @@
 		//return;
 
 		let data = common_ajax.ajaxFunc("/admin/xd/xdschedulesummary/updateCell",{"id":id,"oldValue":oldValue,"modValue":shift,"overtime":overtime,"field":field,"type":"1","start":start,"end":end}, "json", null);
-		console.log("-----"+data.message)
+		// console.log("-----"+data.message)
 		let resu1tOtArr= data.message.split("*")
 		$('#pageTable').bootstrapTable('updateCell', {
 			index: index,
@@ -331,6 +330,7 @@
 			field: field,
 			value: resu1tOtArr[8]
 		})
+		$("#tips").css("display","none")
 		$('#myModal').modal('hide');
 	}
 
@@ -498,7 +498,7 @@
 			{field: 'checked', checkbox : true,valign:'middle',halign:"center", align: 'center',rowspan: 3 },
 			{field: 'dept_name', title: '部门',align: 'center',width:'120',valign:'middle',halign:"center",rowspan: 3 },
 			{field: 'unit_name', title: '单元', align: 'center',width:'120',valign:'middle',halign:"center", colspan: 1,rowspan: 3 },
-			{field: 'project_name', title: '项目', align: 'center',width:'160',valign:'middle',halign:"center", colspan: 1,rowspan: 3 },
+			{field: 'project_name', title: '项目', align: 'center',width:'120',valign:'middle',halign:"center", colspan: 1,rowspan: 3 },
 			{field: 'emp_num', title: '工号', align: 'center',width:'80',valign:'middle',halign:"center", colspan: 1,rowspan: 3 },
 			{field: 'emp_name', title: '姓名', align: 'center',width:'80',valign:'middle',halign:"center", colspan: 1,rowspan: 3 },
 			{field: 'work_station', title: '岗位', align: 'center',width:'120',valign:'middle',halign:"center", colspan: 1,rowspan: 3 },
@@ -886,14 +886,14 @@
 		/*$(".fixed-table-header > table > thead > tr:nth-child(1)").each(function (i,thobj) {
 			console.log("111111111111")
 		})*/
-		$(".fixed-table-container > .fixed-table-body-columns > table").css("top","-4px");
+	/*	$(".fixed-table-container > .fixed-table-body-columns > table").css("top","-4px");
 
 		console.log($(".fixed-table-container > .fixed-table-body-columns > table>tbody").find('> tr[data-index]').size())
 		$(".fixed-table-container > .fixed-table-body-columns > table>tbody").find('tr').each(function (i) {
 			console.log("1111111111")
 			console.log($(this))
 
-		})
+		})*/
 		/* div.fixed-table-container > div:nth-child(4) > table*/
 		 /*each(function (i,a) {
 			 console.log("2222222222")

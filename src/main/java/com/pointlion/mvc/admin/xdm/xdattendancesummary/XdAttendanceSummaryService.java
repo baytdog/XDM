@@ -71,7 +71,7 @@ public class XdAttendanceSummaryService{
 			sql = sql + " and o.emp_name like'%"+emp_name+"%'";
 		}
 
-		sql = sql + " order by o.create_date desc,emp_num";
+		sql = sql + " order by emp_num";
 		return Db.paginate(pnum, psize, " select * ", sql);
 	}
 
@@ -239,6 +239,7 @@ public class XdAttendanceSummaryService{
 							String otFlags="";
 							String modifyFlags="";
 							String tips="";
+							String dayOtFlags="";
 							double othours=0;//加班时间
 							int daysNum=xdDayModels.size()-1;
 							int holidays=0;
@@ -257,6 +258,7 @@ public class XdAttendanceSummaryService{
 							double alreayAnnualLeave=0;//已休年假
 							int commWorkdDay=0;
 							boolean shift18A=false;
+							String canOt="0";
 							List<String> summaryList = list.get(i);
 							XdAttendanceSummary attendanceSummary=new XdAttendanceSummary();
 
@@ -305,6 +307,7 @@ public class XdAttendanceSummaryService{
 							modifyFlags=modifyFlags+","+"0";
 							tips=tips+","+"0";
 							otFlags=otFlags+","+"0";
+							dayOtFlags=dayOtFlags+","+"0";
 
 							String lastMonLastValue = summaryList.get(6);
 							attendanceSummary.setDay00(lastMonLastValue);
@@ -330,6 +333,7 @@ public class XdAttendanceSummaryService{
 								modifyFlags=modifyFlags+","+"0";
 								tips=tips+","+"0";
 								otFlags=otFlags+","+"0";
+								dayOtFlags=dayOtFlags+","+"0";
 
 								if(j<10){
 									ymdNoLine = yearMonth + '0' + j;
@@ -461,14 +465,39 @@ public class XdAttendanceSummaryService{
 											nightShiftDays++;//夜班天数
 										}
 
-
-
-
 									}else{
 //										otFlags=otFlags+","+"0";
+										if(cellValue.equals("病")){
+											sickLeaveDays++;
+										}
+										if(cellValue.equals("事")){
+											personalLeaveDays++;
+										}
+										if(cellValue.equals("新离")){
+											newLeaveDays++;
+										}
+										if(cellValue.equals("旷")){
+											absenteeismDays++;
+										}
+										if(cellValue.contains("年")){
+											String annual = cellValue.replace("年", "");
+											if(annual.equals("")){
+												alreayAnnualLeave=alreayAnnualLeave+1;
+											}else{
+												alreayAnnualLeave=alreayAnnualLeave+Double.valueOf(annual);
+											}
+										}
+
+										if(cellValue.contains("年")||cellValue.contains("婚")||cellValue.contains("陪产")||cellValue.contains("丧")||cellValue.contains("育")){
+											actWorkHours+=Double.valueOf(shift.getHours());
+										}
+
+										if("事,病,旷,新离".indexOf(cellValue)!=-1){
+											canOt="1";//不可加班
+										}
 									}
 
-									if(cellValue.equals("病")){
+									/*if(cellValue.equals("病")){
 										sickLeaveDays++;
 									}
 									if(cellValue.equals("事")){
@@ -487,7 +516,7 @@ public class XdAttendanceSummaryService{
 										}else{
 											alreayAnnualLeave=alreayAnnualLeave+Double.valueOf(annual);
 										}
-									}
+									}*/
 
 								}else{
 									attDetail.setShiftName("");
@@ -519,7 +548,8 @@ public class XdAttendanceSummaryService{
 								}
 							}
 
-							attendanceSummary.setCurmonActworkhours(String.valueOf(actWorkHours+alreayAnnualLeave*8));//本月实际工时
+							attendanceSummary.setCanOvertime(canOt);
+							attendanceSummary.setCurmonActworkhours(String.valueOf(actWorkHours));//本月实际工时
 							//attendanceSummary.setCurmonActworkhours(String.valueOf(work_hour));//本月实际工时
 							attendanceSummary.setCurmonWorkhours(String.valueOf(cur_mon_hours));//本月工时
 //							attendanceSummary.setCurmonWorkhours(String.valueOf(actWorkHours));
@@ -557,6 +587,7 @@ public class XdAttendanceSummaryService{
 							attendanceSummary.setNatOthours(nationlOTHours);
 							attendanceSummary.setFlags(modifyFlags.replaceAll("^,",""));
 							attendanceSummary.setOtflags(otFlags.replaceAll("^,",""));
+							attendanceSummary.setDayOtFlags(dayOtFlags.replaceAll("^,",""));
 							attendanceSummary.setTips(tips.replaceAll("^,",""));
 							attendanceSummary.setCreateDate(DateUtil.getCurrentTime());
 							attendanceSummary.setCreateUser(ShiroKit.getUserId());
@@ -1045,8 +1076,6 @@ public class XdAttendanceSummaryService{
 											//当天不是法定节日
 											commWorkdDay++;
 //											otFlags=otFlags+","+"0";
-
-
 											if("1".equals(shift.getSpanDay())){
 												//跨天
 												actWorkHours+= shift.getCurdayHours();
@@ -1082,10 +1111,6 @@ public class XdAttendanceSummaryService{
 										if(shift.getNigthshift()!=null&& !shift.getNigthshift().equals("")){
 											nightShiftDays++;//夜班天数
 										}
-
-
-
-
 									}else{
 //										otFlags=otFlags+","+"0";
 									}

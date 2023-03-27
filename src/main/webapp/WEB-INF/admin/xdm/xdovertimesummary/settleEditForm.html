@@ -71,7 +71,7 @@
         <input id="act_start" type="hidden"  name="#(formModelName).act_start" class="form-control"  value="#(o?o.act_start:'')"  >
        <!-- <input id="apply_start" type="hidden"  name="#(formModelName).apply_start" class="form-control"  value="#(o?o.apply_start:'')"  >-->
         <div class="col-md-1"  >
-            <input id="startHour" type="number"  name="startHour"  oninput="if(value>23||value<0)value=23;if(value<=23&& value>=0) value=parseInt(value)"  class="form-control" min="1" max="10" style="width: 100%;">
+            <input id="startHour" type="number"  name="startHour"  oninput="if(value>23||value<0)value=23;if(value<=23&& value>=0) value=parseInt(value)"  class="form-control" min="0" max="23"  style="width: 100%;">
         </div>
         <label class="col-md-1 control-label" style="width: 10px;size: 10px;font-weight: bold;font-size: 30px;">:</label>
         <div class="col-md-1">
@@ -81,7 +81,7 @@
         <input id="act_end" type="hidden"  name="#(formModelName).act_end" class="form-control"  value="#(o?o.act_end:'')"  >
         <!--<input id="apply_end" type="hidden"   name="#(formModelName).apply_end" class="form-control"  value="#(o?o.apply_end:'')"  >-->
         <div class="col-md-1" style="">
-            <input id="endHour" type="number" name="endHour"   oninput="if(value>23||value<0)value=23;if(value<=23&& value>=0) value=parseInt(value); "   class="form-control" >
+            <input id="endHour" type="number" name="endHour"   oninput="if(value>23||value<0)value=23;if(value<=23&& value>=0) value=parseInt(value); "  min="0" max="23"  class="form-control" >
         </div>
         <label class="col-md-1 control-label" style="width: 10px;size: 10px;font-weight: bold;font-size: 30px;">:</label>
         <div class="col-md-1">
